@@ -1,0 +1,11 @@
+TextMeshPro - Font Asset Creator
+Font Settings
+Font Source: RobotoMono-Regular
+Font Size: Auto Sizing
+Font Padding: 5
+Packing Method: Optimum
+Atlas Resolution: 512 x 512
+Character Set: Extended ASCII
+Font Style: Normal, 2
+Font Render Mode: Distance Field 32
+Get Kerning Pairs? No

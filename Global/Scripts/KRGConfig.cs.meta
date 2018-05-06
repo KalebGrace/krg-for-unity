@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: 1556e90bc865f4468a18f64429ffbd97
+timeCreated: 1516496783
+licenseType: Free
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - _krgReferences: {fileID: 11400000, guid: b0d866a2718e4420f9e82f97808808c7, type: 2}
+  - _cameraCanvasControllerPrefab: {fileID: 114916832414459248, guid: 4ffa5af7941334ed6b91bcabbb50397e,
+      type: 2}
+  - _damageValuePrefab: {fileID: 114060607109851658, guid: b3c0eb9d26c444fd4b2f7adc5db2ce85,
+      type: 2}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

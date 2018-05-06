@@ -1,0 +1,11 @@
+using System.Collections;
+using System.Collections.Generic;
+using KRG;
+using UnityEngine;
+
+namespace MyGame {
+
+    public class #SCRIPTNAME# : MonoBehaviour {
+        #NOTRIM#
+    }
+}

@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8848f27cb50984b7bb7aeba54d7384c9, type: 3}
+  m_Name: KRGReferences
+  m_EditorClassIdentifier: 
+  _cameraCanvasControllerPrefab: {fileID: 114916832414459248, guid: 4ffa5af7941334ed6b91bcabbb50397e,
+    type: 2}
+  _characterDebugTextPrefab: {fileID: 114650504832300910, guid: 4969cef6cb7fc491c825d142e8e8e8c3,
+    type: 2}
+  _rasterAnimationInfoPrefab: {fileID: 114726161023918064, guid: f9041fa0d5fed9c469abf6a7d0006cfd,
+    type: 2}
