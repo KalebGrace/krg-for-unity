@@ -9,6 +9,7 @@ namespace KRG {
     /// Reverse engineered UnityEditor.TransformInspector.
     /// http://wiki.unity3d.com/index.php?title=TransformInspector (22:25, 26 September 2015‎)
     /// All "private"s have been made "protected", and all member methods have been made "virtual".
+	/// LocalizationDatabase doesn't seem to work anymore, so this has been replaced.
     /// </summary>
     [CanEditMultipleObjects, CustomEditor(typeof(Transform))]
     public class TransformInspector : Editor {
@@ -32,7 +33,8 @@ namespace KRG {
         protected SerializedProperty scaleProperty;
 
         protected static string LocalString(string text) {
-            return LocalizationDatabase.GetLocalizedString(text);
+			//return LocalizationDatabase.GetLocalizedString(text);
+			return text;
         }
 
         public virtual void OnEnable() {
