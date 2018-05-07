@@ -17,7 +17,7 @@ namespace KRG {
         /// Create a new instance of the specified prefab on the specified parent (use *null* for hierarchy root).
         /// This is essentially the same as Object.Instantiate, but allows for additional functionality.
         /// </summary>
-        /// <param name="prefab">Prefab.</param>
+        /// <param name="prefab">Prefab (original).</param>
         /// <param name="parent">Parent.</param>
         /// <typeparam name="T">The 1st type parameter.</typeparam>
         public static T New<T>(T prefab, Transform parent) where T : Object {

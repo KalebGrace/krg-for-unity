@@ -10,6 +10,8 @@ namespace KRG {
 
         void DisplayDamageValue<T>(T target, int damage) where T : MonoBehaviour, IEnd;
 
+        void DisplayDamageValue(IEnd target, Transform anchor, int damage);
+
 #endregion
 
     }
