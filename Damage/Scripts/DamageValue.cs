@@ -25,15 +25,16 @@ namespace KRG {
 #if NS_TMPRO
         [SerializeField]
         [FormerlySerializedAs("m_text100")]
-        TextMeshPro _text100;
+		TMP_Text _text100;
 
         [SerializeField]
         [FormerlySerializedAs("m_text010")]
-        TextMeshPro _text010;
+		TMP_Text _text010;
 
         [SerializeField]
         [FormerlySerializedAs("m_text001")]
-        TextMeshPro _text001;
+		TMP_Text _text001;
+
 #else
         [SerializeField]
         [FormerlySerializedAs("m_font")]
@@ -132,7 +133,7 @@ namespace KRG {
         }
 
 #if NS_TMPRO
-        void Animate(TextMeshPro textMesh, float heightMult) {
+        void Animate(TMP_Text textMesh, float heightMult) {
 #else
         void Animate(TextMesh textMesh, float heightMult) {
 #endif
