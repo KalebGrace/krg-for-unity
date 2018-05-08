@@ -16,11 +16,11 @@ namespace KRG {
             const string t = "Assets/KRGLoader.prefab";
             //see if the prefab source and target exist
             if (!File.Exists(s)) {
-                G.Err(s + " is missing!", null);
+                G.Err("Can't create KRGLoader; {0} is missing!", s);
                 return;
             }
             if (File.Exists(t)) {
-                G.Err(t + " already exists.", null);
+                G.Err("Can't create KRGLoader; {0} already exists.", t);
                 return;
             }
             //create (copy) the prefab asset

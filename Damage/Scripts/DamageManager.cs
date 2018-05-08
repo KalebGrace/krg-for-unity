@@ -37,6 +37,15 @@ namespace KRG {
             G.New(config.damageValuePrefab, anchor).Init(target, damage);
         }
 
+        public HPBar GetHPBar<T>(T target) where T : MonoBehaviour, IDamageable {
+            var hpBar = target.GetComponentInChildren<HPBar>(true);
+            if (hpBar == null) {
+                hpBar = G.New(config.hpBarPrefab, target.transform);
+                hpBar.Init(target);
+            }
+            return hpBar;
+        }
+
 #endregion
 
     }

@@ -12,6 +12,8 @@ namespace KRG {
 
         void DisplayDamageValue(IEnd target, Transform anchor, int damage);
 
+        HPBar GetHPBar<T>(T target) where T : MonoBehaviour, IDamageable;
+
 #endregion
 
     }

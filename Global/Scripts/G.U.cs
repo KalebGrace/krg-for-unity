@@ -125,8 +125,10 @@ namespace KRG {
             public static void Error(string message, params object[] objs) {
                 if (message.Contains(_formatMagicString)) {
                     Debug.LogErrorFormat(message, objs);
+                    //basically the same as G.Err(...)
                 } else {
                     Debug.LogError(message + "; " + GetInfo(objs));
+                    //TODO: migrate this functionality to G.Err(...)
                 }
             }
 

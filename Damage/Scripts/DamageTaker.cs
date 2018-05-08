@@ -5,7 +5,7 @@ using UnityEngine.Serialization;
 
 namespace KRG {
 
-    public abstract class DamageTaker : MonoBehaviour, IEnd {
+    public abstract class DamageTaker : MonoBehaviour, IDamageable, IEnd {
 
 #region constants
 
@@ -38,7 +38,15 @@ namespace KRG {
 
 #endregion
 
-#region IEnd implementation
+#region properties: IDamagable implementation
+
+        public virtual float hp { get { return _hp; } }
+
+        public virtual float hpMax { get { return _damageProfile.hpMax; } }
+
+#endregion
+
+#region properties: IEnd implementation
 
         public End end { get; private set; }
 
@@ -58,8 +66,6 @@ namespace KRG {
                 SetHPFull();
             }
         }
-
-        public virtual float hp { get { return _hp; } }
 
         public virtual bool isKnockedBack { get { return _knockBackTimeTrigger != null; } }
 
@@ -164,10 +170,10 @@ namespace KRG {
         }
 
         /// <summary>
-        /// Sets the HP to the maximum defined by the damage profile.
+        /// Sets the HP to the maximum defined by the damage profile (or whatever is defined in the hpMax property).
         /// </summary>
         protected void SetHPFull() {
-            _hp = _damageProfile.hpMax;
+            _hp = hpMax;
         }
 
 #endregion

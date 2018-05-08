@@ -102,7 +102,8 @@ namespace KRG {
             if (!_sceneControllers.Contains(sceneController)) {
                 _sceneControllers.Add(sceneController);
             } else {
-                G.Err("The SceneController list in AppManager already contains this SceneController!", null);
+                G.Err("The AppManager's SceneController list already contains the {0} SceneController!",
+                    sceneController.sceneName);
             }
         }
 

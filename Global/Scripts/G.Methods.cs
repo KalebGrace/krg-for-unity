@@ -11,6 +11,12 @@ namespace KRG {
     /// </summary>
     partial class G {
 
+#region private constants
+
+        const string _formatMagicString = "{0";
+
+#endregion
+
 #region New
 
         /// <summary>
@@ -87,8 +93,46 @@ namespace KRG {
 
 #region Err
 
-        public static void Err(object message, Object context) {
-            Debug.LogError(message, context);
+        /// <summary>
+        /// Log an error with the specified message.
+        /// </summary>
+        /// <param name="message">Message.</param>
+        public static void Err(object message) {
+            Debug.LogError(message);
+        }
+
+        /// <summary>
+        /// Log an error with the specified message and arguments.
+        /// </summary>
+        /// <param name="message">Message, or Format string (if containing "{0").</param>
+        /// <param name="args">Arguments, or Context (if no format - first object as UnityEngine.Object only).</param>
+        public static void Err(object message, params object[] args) {
+            var s = message.ToString();
+            if (s.Contains(_formatMagicString)) {
+                Debug.LogErrorFormat(s, args);
+            } else {
+                Debug.LogError(message, args[0] as Object);
+            }
+        }
+
+        /// <summary>
+        /// Log an error with the specified context, format, and arguments.
+        /// </summary>
+        /// <param name="context">Context.</param>
+        /// <param name="format">Format.</param>
+        /// <param name="args">Arguments.</param>
+        public static void Err(GameObject context, string format, params object[] args) {
+            Debug.LogErrorFormat(context, format, args);
+        }
+
+        /// <summary>
+        /// Log an error with the specified context, format, and arguments.
+        /// </summary>
+        /// <param name="context">Context.</param>
+        /// <param name="format">Format.</param>
+        /// <param name="args">Arguments.</param>
+        public static void Err(MonoBehaviour context, string format, params object[] args) {
+            Debug.LogErrorFormat(context, format, args);
         }
 
 #endregion

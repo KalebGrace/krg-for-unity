@@ -42,8 +42,12 @@ namespace KRG {
 
         [SerializeField]
         DamageValue _damageValuePrefab;
+        [SerializeField]
+        HPBar _hpBarPrefab;
 
         public DamageValue damageValuePrefab { get { return _damageValuePrefab; } }
+
+        public HPBar hpBarPrefab { get { return _hpBarPrefab; } }
 
 #endregion
 
