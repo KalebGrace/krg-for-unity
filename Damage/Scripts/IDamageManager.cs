@@ -14,6 +14,8 @@ namespace KRG {
 
         HPBar GetHPBar<T>(T target) where T : MonoBehaviour, IDamageable;
 
+		HPBar GetHPBar(IDamageable target, Transform anchor);
+
 #endregion
 
     }

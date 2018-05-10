@@ -21,7 +21,7 @@ namespace KRG {
         /// <param name="damage">Damage.</param>
         /// <typeparam name="T">The 1st type parameter.</typeparam>
         public void DisplayDamageValue<T>(T target, int damage) where T : MonoBehaviour, IEnd {
-            G.New(config.damageValuePrefab, target.transform).Init(target, damage);
+            DisplayDamageValue(target, target.transform, damage);
         }
 
         /// <summary>
@@ -37,10 +37,30 @@ namespace KRG {
             G.New(config.damageValuePrefab, anchor).Init(target, damage);
         }
 
-        public HPBar GetHPBar<T>(T target) where T : MonoBehaviour, IDamageable {
-            var hpBar = target.GetComponentInChildren<HPBar>(true);
+		/// <summary>
+		/// Gets (or creates) the HP Bar for the target.
+		/// The HP Bar will be parented to the target.
+		/// This overload is the most commonly used one.
+		/// </summary>
+		/// <param name="target">Target.</param>
+		/// <typeparam name="T">The 1st type parameter.</typeparam>
+		/// <returns>HP Bar.</returns>
+		public HPBar GetHPBar<T>(T target) where T : MonoBehaviour, IDamageable {
+            return GetHPBar(target, target.transform);
+        }
+
+		/// <summary>
+		/// Gets (or creates) the HP Bar for the target.
+		/// The HP Bar will be parented to the anchor (as specified).
+		/// This overload is useful when you need to attach the HP Bar to a sub-object of a target.
+		/// </summary>
+		/// <param name="target">Target.</param>
+		/// <param name="anchor">Anchor (parent Transform).</param>
+		/// <returns>HP Bar.</returns>
+		public HPBar GetHPBar(IDamageable target, Transform anchor) {
+            var hpBar = anchor.GetComponentInChildren<HPBar>(true);
             if (hpBar == null) {
-                hpBar = G.New(config.hpBarPrefab, target.transform);
+                hpBar = G.New(config.hpBarPrefab, anchor);
                 hpBar.Init(target);
             }
             return hpBar;

@@ -3,18 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 
 namespace KRG {
-
-    /*
+	
     /// <summary>
-    /// Displays an HP/life/health bar above a character or object that can be damaged.
-    /// Used in conjunction with the HPBar prefab and the G.damage.DisplayHPBar(...) method.
-    /// </summary>
-    */
-
-    /// <summary>
-    /// HPBar will display the health of an IDamagable game object.
+    /// HPBar will display the health of an IDamagable game object (e.g. a character that can lose life).
     /// HPBar is used via G.damage.GetHPBar(IDamagable).Display(parameters).
     /// HPBar consists of a prefab and a script (attached to said prefab's root game object).
+	/// HPBar can be extended, and a custom HPBar prefab can be assigned in the KRGConfig scriptable object.
     /// </summary>
     public class HPBar : MonoBehaviour {
 
@@ -94,7 +88,7 @@ namespace KRG {
         /// </summary>
         /// <param name="always">If set to <c>true</c> always display the HPBar.</param>
         public void Display(bool always = false) {
-            Display(!always, always, 0);
+            Display(!always, false, 0);
         }
 
         /// <summary>
@@ -108,7 +102,7 @@ namespace KRG {
                 "Did you mean to call Display(bool) or Hide()?", _displayDurationMin, duration);
                 return;
             }
-            Display(false, false, duration);
+            Display(false, true, duration);
         }
 
         /// <summary>
@@ -131,14 +125,14 @@ namespace KRG {
 
 #region private methods
 
-        void Display(bool useDefault, bool always, float duration) {
+        void Display(bool useDefault, bool useDuration, float duration) {
             KillDisplayTimer();
             gameObject.SetActive(true);
             if (useDefault) {
-                always = !_displayDuration.boolValue;
+                useDuration = _displayDuration.boolValue;
                 duration = _displayDuration.floatValue;
             }
-            if (!always) {
+            if (useDuration) {
                 G.U.Assert(duration >= _displayDurationMin);
                 _displayTimeTrigger = timeThread.AddTrigger(duration, Hide);
             }
