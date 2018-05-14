@@ -12,12 +12,18 @@ namespace KRG {
         /// <summary>
         /// The KRG version.
         /// </summary>
-        public const string krgVersion = "1.00.002";
+        public const string krgVersion = "1.00.003";
 
         /// <summary>
         /// The default master scene name.
         /// </summary>
-        public const string masterSceneNameDefault = "!_MasterScene";
+        public const string masterSceneNameDefault = "MasterScene";
+
+        /// <summary>
+        /// The default master scene path (inside the Assets folder).
+        /// </summary>
+        public const string masterScenePathDefault =
+            "!_" + masterSceneNameDefault + "/" + masterSceneNameDefault + ".unity";
 
 #endregion
 

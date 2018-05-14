@@ -109,7 +109,7 @@ namespace KRG {
         }
 
         public static string MasterScene {
-            get { return EditorPrefs.GetString(cEditorPrefMasterScene, AppManager.masterSceneNameDefault + ".unity"); }
+            get { return EditorPrefs.GetString(cEditorPrefMasterScene, AppManager.masterScenePathDefault); }
             set { EditorPrefs.SetString(cEditorPrefMasterScene, value); }
         }
 
