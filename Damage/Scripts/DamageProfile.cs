@@ -56,6 +56,11 @@ namespace KRG {
         [FormerlySerializedAs("m_invulnerabilityFlicker")]
         bool _invulnerabilityFlicker = true;
 
+        [Header("Loot")]
+
+        [SerializeField]
+        LootData _knockedOutLoot;
+
 
         //applicable time thread interface, from _timeThreadIndex
         protected ITimeThread _timeThread;
@@ -66,6 +71,8 @@ namespace KRG {
         public virtual float knockBackDistance { get { return _knockBackDistance; } }
 
         public virtual float knockBackTime { get { return _knockBackTime; } }
+
+        public virtual LootData knockedOutLoot { get { return _knockedOutLoot; } }
 
         public virtual bool invulnerabilityFlicker { get { return _invulnerabilityFlicker; } }
 

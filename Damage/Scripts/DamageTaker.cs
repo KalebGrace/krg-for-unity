@@ -176,6 +176,11 @@ namespace KRG {
             _hp = hpMax;
         }
 
+        public void AddHP(float hp) {
+            G.U.Assert(hp > 0);
+            _hp = Mathf.Min(hpMax, _hp + hp);
+        }
+
 #endregion
 
 #region Custom Methods
@@ -305,6 +310,8 @@ namespace KRG {
 #region KnockedOut Methods
 
         protected virtual void OnKnockedOut(Vector3 attackPositionCenter) {
+            var ld = _damageProfile.knockedOutLoot;
+            if (ld != null) ld.RollItem().Spawn(centerTransform.position, _transform.parent);
             G.End(gameObject);
         }
 
