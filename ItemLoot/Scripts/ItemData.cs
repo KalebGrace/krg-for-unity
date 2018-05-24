@@ -54,7 +54,7 @@ namespace KRG {
 #region MonoBehaviour methods
 
         protected virtual void OnValidate() {
-            if (string.IsNullOrEmpty(_name.Trim())) {
+            if (_name == null || string.IsNullOrEmpty(_name.Trim())) {
                 _name = name;
             }
             _autoCollect.floatValue = Mathf.Max(0, _autoCollect.floatValue);

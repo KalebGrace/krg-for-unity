@@ -25,7 +25,7 @@ namespace KRG {
         //NOTE: the probability of generating items can also be equal,
         //in which case the order is largely irrelevant
         [SerializeField, Tooltip("These are all the possible items that can be generated.")]
-        List<LootItem> _items = new List<LootItem>();
+        protected List<LootItem> _items = new List<LootItem>();
 
 #endregion
 
