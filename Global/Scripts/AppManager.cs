@@ -87,11 +87,11 @@ namespace KRG {
 
 #region IAppManager implementation: methods
 
-        /// <summary>
-        /// Adds the scene activation listener.
-        /// </summary>
-        /// <param name="sceneName">Scene name.</param>
-        /// <param name="listener">Listener.</param>
+		/// <summary>
+		/// Adds a scene activation listener.
+		/// </summary>
+		/// <param name="sceneName">Scene name.</param>
+		/// <param name="listener">Listener.</param>
         public virtual void AddSceneActivationListener(string sceneName, System.Action listener) {
             if (_sceneActivationEvents.ContainsKey(sceneName)) {
                 _sceneActivationEvents[sceneName] += listener;
@@ -100,10 +100,10 @@ namespace KRG {
             }
         }
 
-        /// <summary>
-        /// Adds a reference to a SceneController to the GameController for reference.
-        /// </summary>
-        /// <param name="sceneController">The SceneController to be added.</param>
+		/// <summary>
+		/// Adds a scene controller.
+		/// </summary>
+		/// <param name="sceneController">Scene controller.</param>
         public virtual void AddSceneController(SceneController sceneController) {
             if (!_sceneControllers.Contains(sceneController)) {
                 _sceneControllers.Add(sceneController);
@@ -113,11 +113,11 @@ namespace KRG {
             }
         }
 
-        /// <summary>
-        /// Removes the scene activation listener.
-        /// </summary>
-        /// <param name="sceneName">Scene name.</param>
-        /// <param name="listener">Listener.</param>
+		/// <summary>
+		/// Removes a scene activation listener.
+		/// </summary>
+		/// <param name="sceneName">Scene name.</param>
+		/// <param name="listener">Listener.</param>
         public virtual void RemoveSceneActivationListener(string sceneName, System.Action listener) {
             if (_sceneActivationEvents.ContainsKey(sceneName)) {
                 _sceneActivationEvents[sceneName] -= listener;

@@ -4,9 +4,11 @@ using UnityEngine;
 
 namespace KRG {
 
-    /// <summary>
-    /// G.Core.cs is a partial class of G (G.cs).
-    /// </summary>
+	/// <summary>
+	/// G.Core.cs is a partial class of G (G.cs).
+	/// This is the core part of the G class.
+	/// See G.cs for the proper class declaration and more info.
+	/// </summary>
     partial class G {
 
 #region private static fields

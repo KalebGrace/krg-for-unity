@@ -6,12 +6,15 @@ using UnityEngine;
 
 namespace KRG {
 
-    /// <summary>
-    /// G.Managers.cs is a partial class of G (G.cs).
-    /// Create a class like this for your game (e.g. "G.MyGameManagers.cs")
-    /// and use the KRG_CUSTOM_G define symbol in order to customize Manager interfaces.
-    /// NOTE: Also see the KRG_CUSTOM_G section in KRGConfig.
-    /// </summary>
+	/// <summary>
+	/// G.Managers.cs is a partial class of G (G.cs).
+	/// This is the manager-oriented part of the G class.
+	/// See G.cs for the proper class declaration and more info.
+	/// 
+	/// Create a class like this for your game (e.g. "G.ManagersMyGame.cs")
+	/// and use the KRG_CUSTOM_G define symbol in order to customize Manager interfaces.
+	/// NOTE: Also see the KRG_CUSTOM_G section in KRGConfig.
+	/// </summary>
     partial class G {
 
 #region instance fields (KRG)

@@ -13,6 +13,9 @@ namespace KRG {
 
 #region krg
 
+		//If you get an error stating `KRG.KRGConfig' does not contain a definition for `resourcePath',
+		//create a KRGConfig.MyGame.cs file containing a partial class KRGConfig with the following constants in it:
+
 #if !KRG_CUSTOM_G
 
         public const string assetPath = "Assets/Resources/KRGConfig.asset";
