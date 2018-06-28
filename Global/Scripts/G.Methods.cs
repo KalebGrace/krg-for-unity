@@ -135,6 +135,16 @@ namespace KRG {
             Debug.LogErrorFormat(context, format, args);
         }
 
+        /// <summary>
+        /// Log an error with the specified context, format, and arguments.
+        /// </summary>
+        /// <param name="context">Context.</param>
+        /// <param name="format">Format.</param>
+        /// <param name="args">Arguments.</param>
+        public static void Err(ScriptableObject context, string format, params object[] args) {
+            Debug.LogErrorFormat(context, format, args);
+        }
+
 #endregion
 
     }

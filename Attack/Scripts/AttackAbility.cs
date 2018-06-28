@@ -30,6 +30,10 @@ namespace KRG {
         int _serializedVersion;
 
         [SerializeField]
+        [Tooltip("An optional string key intended to reference this attack ability.")]
+        protected string _attackKey;
+
+        [SerializeField]
         [Tooltip("The prefab that will be instantiated upon attacking.")]
         protected Attack _attackPrefab;
 
@@ -189,6 +193,8 @@ namespace KRG {
             }
         }
 
+        public virtual string attackKey { get { return _attackKey; } }
+
         public virtual float attackLifetime { get { return _attackLifetime.floatValue; } }
 
         public virtual int attackLimit { get { return _attackLimit; } }
@@ -302,8 +308,11 @@ namespace KRG {
         /// <param name="index">Index. (Use attackerAnimationCount to get count.)</param>
         public virtual KRGAnimation GetAttackerAnimation(int index) {
             G.U.Assert(_attackerAnimations != null);
-            G.U.Assert(index < _attackerAnimations.Length);
-            G.U.Assert(index >= 0);
+            if (index < 0 || index >= _attackerAnimations.Length) {
+                G.Err(this, "Invalid index {0} specified. "
+                + "Did you forget to add an attacker animation to the attack ability?", index);
+                return null;
+            }
             return _attackerAnimations[index];
         }
 
