@@ -18,6 +18,8 @@ namespace KRG {
         [SerializeField]
         int _serializedVersion;
 
+		[Header("Raster Data")]
+
         [SerializeField]
         [FormerlySerializedAs("m_gifBytes")]
         TextAsset _gifBytes;
@@ -26,7 +28,8 @@ namespace KRG {
         [FormerlySerializedAs("m_dimensions")]
         protected Vector2 _dimensions;
 
-        [Header("Loop")]
+        [Header("Looping")]
+
         [SerializeField]
         [FormerlySerializedAs("m_loop")]
         bool _loop = true;
@@ -41,6 +44,7 @@ namespace KRG {
         int _loopToSequence;
 
         [Header("Frame Sequences")]
+
         [SerializeField]
         [FormerlySerializedAs("m_frameSequences")]
         FrameSequence[] _frameSequences;

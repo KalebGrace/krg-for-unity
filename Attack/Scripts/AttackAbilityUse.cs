@@ -97,7 +97,7 @@ namespace KRG {
             attaTF.rotation = akerTF.rotation;
 
             //finish setting up attack
-            a.Init(_attackAbility, _attacker.isFlippedX, _attacker.isPlayerCharacter);
+            a.Init(_attackAbility, _attacker);
 
             //track attack
             _attacks.Add(a);

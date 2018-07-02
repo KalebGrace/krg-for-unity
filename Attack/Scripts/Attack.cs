@@ -29,6 +29,7 @@ namespace KRG {
 
 #region private fields
 
+		Attacker _attacker;
         List<AttackTarget> _attackTargets = new List<AttackTarget>();
         BoxCollider _boxCollider;
         GraphicsController _graphicsController;
@@ -48,6 +49,8 @@ namespace KRG {
 #region properties
 
         public virtual AttackAbility attackAbility { get { return _attackAbility; } }
+
+		public virtual Attacker attacker { get { return _attacker; } }
 
         public virtual DamageDealtHandler damageDealtHandler { get; set; }
 
@@ -129,7 +132,20 @@ namespace KRG {
 
 #region custom methods
 
-        public void Init(AttackAbility attackAbility, bool isFlippedX, bool isPlayerCharacterAttacker) {
+        public void Init(AttackAbility attackAbility, Attacker attacker) {
+            if (_isInitialized) {
+                G.U.Error("Init has already been called.");
+                return;
+            }
+            _attackAbility = attackAbility;
+			_attacker = attacker;
+            _isFlippedX = attacker.isFlippedX;
+            _isPlayerCharacterAttacker = attacker.isPlayerCharacter;
+            InitInternal();
+        }
+
+		[System.Obsolete("Use Init(AttackAbility attackAbility, Attacker attacker) instead.")]
+		public void Init(AttackAbility attackAbility, bool isFlippedX, bool isPlayerCharacterAttacker) {
             if (_isInitialized) {
                 G.U.Error("Init has already been called.");
                 return;
