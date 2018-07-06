@@ -88,7 +88,9 @@ namespace KRG {
             }
 
             // isPlaying check required because cannot OpenScene while playing
-            if (!EditorApplication.isPlaying && !EditorApplication.isPlayingOrWillChangePlaymode) {
+            if (!EditorApplication.isPlaying && !EditorApplication.isPlayingOrWillChangePlaymode
+                && !string.IsNullOrEmpty(PreviousScene)
+            ) {
                 // User pressed stop -- reload previous scene.
                 try {
                     EditorSceneManager.OpenScene(PreviousScene);
