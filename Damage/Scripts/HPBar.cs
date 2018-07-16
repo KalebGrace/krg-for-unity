@@ -3,16 +3,18 @@ using System.Collections.Generic;
 using UnityEngine;
 
 namespace KRG {
-	
+
     /// <summary>
-    /// HPBar will display the health of an IDamagable game object (e.g. a character that can lose life).
-    /// HPBar is used via G.damage.GetHPBar(IDamagable).Display(parameters).
-    /// HPBar consists of a prefab and a script (attached to said prefab's root game object).
-	/// HPBar can be extended, and a custom HPBar prefab can be assigned in the KRGConfig scriptable object.
+    /// HPBar: Hit Point Bar
+    /// 1. HPBar will display the health of an IDamagable game object (e.g. a character that can lose life).
+    /// 2. HPBar is used via G.damage.GetHPBar(IDamagable).Display(parameters).
+    /// 3. HPBar consists of a prefab and a script (attached to said prefab's root game object).
+    /// 4. HPBar can be extended, and a custom HPBar prefab can be assigned in the KRGConfig scriptable object.
+    /// Last Refactor: 1.00.003 / 2018-07-15
     /// </summary>
     public class HPBar : MonoBehaviour {
 
-#region serialized fields
+#region FIELDS: SERIALIZED
 
         [Header("Parameters")]
 
@@ -30,7 +32,7 @@ namespace KRG {
 
 #endregion
 
-#region protected fields
+#region FIELDS: PROTECTED
 
         protected float _displayDurationMin = 0.01f;
         protected TimeTrigger _displayTimeTrigger;
@@ -40,7 +42,7 @@ namespace KRG {
 
 #endregion
 
-#region properties
+#region PROPERTIES
 
         public virtual IDamageable target { get { return _target; } }
 
@@ -52,7 +54,7 @@ namespace KRG {
 
 #endregion
 
-#region MonoBehaviour methods
+#region METHODS: MonoBehaviour
 
         protected virtual void Awake() {
             if (_hpBarFill != null) {
@@ -80,7 +82,7 @@ namespace KRG {
 
 #endregion
 
-#region public methods
+#region METHODS: PUBLIC
 
         /// <summary>
         /// Display the HPBar for the default display duration specified on the game object / prefab.
@@ -123,7 +125,7 @@ namespace KRG {
 
 #endregion
 
-#region private methods
+#region METHODS: PRIVATE
 
         void Display(bool useDefault, bool useDuration, float duration) {
             KillDisplayTimer();

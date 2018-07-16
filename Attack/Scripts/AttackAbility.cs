@@ -5,8 +5,16 @@ using UnityEngine;
 namespace KRG {
 
     /// <summary>
-    /// Attack ability.
-    /// Last Refactor: 0.05.002 / 2018-05-05
+    /// AttackAbility: Attack Ability
+    /// 1. AttackAbility is a body of data that defines an "attack". Specifically, it defines the ability to generate
+    /// this attack, rather than simply an instance of said attack (the latter of which is handled by the Attack class).
+    /// 2. AttackAbility is a scriptable object and can be instanced from the asset menu (see CreateAssetMenu below).
+    /// 3. AttackAbility is the nexus of the Attack system, and is used in conjunction with the following classes:
+    /// Attack, AttackAbilityUse, Attacker, AttackString, AttackTarget, and KnockBackCalcMode.
+    /// 4. AttackAbility can -- and SHOULD -- be derived on a per-project basis to allow for (future) extension. All
+    /// scriptable objects should be instanced from the derived class. If this is not done from the beginning, any
+    /// future extension work will require the scriptable objects to be re-created or nested, making things messy.
+    /// Last Refactor: 1.00.003 / 2018-07-15
     /// </summary>
     [CreateAssetMenu(
         fileName = "NewKRGAttackAbility.asset",
@@ -15,14 +23,14 @@ namespace KRG {
     )]
     public class AttackAbility : ScriptableObject {
 
-#region protected constants
+#region CONSTANTS
 
         protected const float _floatDefault = 1.5f;
         protected const float _floatMin = 0.0001f;
 
 #endregion
 
-#region serialized fields
+#region FIELDS: SERIALIZED
 
         //private serialized data version
         [HideInInspector]
@@ -172,7 +180,7 @@ namespace KRG {
 
 #endregion
 
-#region protected fields
+#region FIELDS: PROTECTED
 
         //minimum seconds between new attacks (calculated from _attackRate)
         protected float _attackRateSec;
@@ -185,7 +193,7 @@ namespace KRG {
 
 #endregion
 
-#region properties
+#region PROPERTIES
 
         public virtual int attackerAnimationCount {
             get {
@@ -272,7 +280,7 @@ namespace KRG {
 
 #endregion
 
-#region MonoBehaviour methods
+#region METHODS: MonoBehaviour
 
         //WARNING: this function will only be called automatically if playing a GAME BUILD
         //...it will NOT be called if using the Unity editor
@@ -299,7 +307,7 @@ namespace KRG {
 
 #endregion
 
-#region public methods
+#region METHODS: PUBLIC
 
         /// <summary>
         /// Gets the attacker animation.
@@ -318,7 +326,7 @@ namespace KRG {
 
 #endregion
 
-#region protected methods
+#region METHODS: PROTECTED
 
         protected virtual void SetTimeThread() {
             _timeThread = G.time.GetTimeThread(_timeThreadIndex, TimeThreadInstance.Gameplay);
@@ -326,7 +334,7 @@ namespace KRG {
 
 #endregion
 
-#region private methods
+#region METHODS: PRIVATE
 
         void SetAttackRateSec() {
             _attackRateSec = 1f / _attackRate;
@@ -347,7 +355,7 @@ namespace KRG {
                     if (_attackerAnimations[ol - 1] == null) {
                         _attackerAnimations[ol - 1] = m_attackerAnimation;
                     } else {
-                        System.Array.Resize<KRGAnimation>(ref _attackerAnimations, ol + 1);
+                        System.Array.Resize(ref _attackerAnimations, ol + 1);
                         _attackerAnimations[ol] = m_attackerAnimation;
                     }
                     m_attackerAnimation = null;

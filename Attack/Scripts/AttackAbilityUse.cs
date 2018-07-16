@@ -5,12 +5,19 @@ using UnityEngine;
 namespace KRG {
 
     /// <summary>
-    /// Attack ability use.
-    /// Last Refactor: 0.05.002 / 2018-05-05
+    /// AttackAbilityUse: Attack Ability Use
+    /// 1. AttackAbilityUse is somewhat of a "wrapper" class for AttackAbility, and is mainly used to track runtime
+    /// information about the attacks that have been generated from an AttackAbility, as well as determining when new
+    /// attacks from that ability are allowed to be generated.
+    /// 2. AttackAbilityUse should generally only be instanced by the Attacker class.
+    /// 3. AttackAbilityUse is part of the Attack system, and is used in conjunction with the following classes:
+    /// Attack, AttackAbility, Attacker, AttackString, AttackTarget, and KnockBackCalcMode.
+    /// 4. AttackAbilityUse is sealed and currently has no extensibility.
+    /// Last Refactor: 1.00.003 / 2018-07-15
     /// </summary>
     public sealed class AttackAbilityUse {
 
-#region private fields
+#region FIELDS
 
         //attack ability scriptable object
         AttackAbility _attackAbility;
@@ -35,7 +42,7 @@ namespace KRG {
 
 #endregion
 
-#region properties
+#region PROPERTIES
 
         public AttackAbility attackAbility { get { return _attackAbility; } }
 
@@ -47,7 +54,7 @@ namespace KRG {
 
 #endregion
 
-#region constructors
+#region CONSTRUCTORS
 
         public AttackAbilityUse(
             AttackAbility attackAbility,
@@ -68,14 +75,14 @@ namespace KRG {
 
 #endregion
 
-#region public methods
+#region METHODS: PUBLIC
 
         public Attack AttemptAttack() {
-            if (_isAttackReady && isEnabled && _attacks.Count < _attackAbility.attackLimit) {
+            if (_isAttackReady && _isEnabled && _attacks.Count < _attackAbility.attackLimit) {
                 //TODO: add more _if_ conditions
                 //E.G. SecS: obj_pc.object.gmx "//Firing (Shooting)."
                 _isAttackReady = false;
-                //TODO: also set m_isAttackReady or isEnabled to false on related attack abilites
+                //TODO: also set _isAttackReady or _isEnabled to false on related attack abilites
                 //E.G. SecS: blocking resets firing, and disables its trigger too
                 _attackAbility.timeThread.AddTrigger(_attackAbility.attackRateSec, ReadyAttack);
                 return Attack();
@@ -86,7 +93,7 @@ namespace KRG {
 
 #endregion
 
-#region private methods
+#region METHODS: PRIVATE
 
         Attack Attack() {
             //instantiate attack GameObject using transform options

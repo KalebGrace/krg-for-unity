@@ -116,6 +116,15 @@ For the most part, established Unity and Microsoft C# conventions are used. Some
   * abstract, virtual, override, readonly, (none)
   * everything else ordered alphabetically!
 
+## Documentation Standards ##
+
+Documentation thus far has been sporadic, but going forward, every class should have a comment summary explaining the following four things:
+
+1. What the class does (what its purpose is).
+2. How to use the class (e.g. what methods or functions to call).
+3. Which related classes or objects are required, if any (e.g. prefabs and scripts).
+4. How this class can be extended and customized, if possible (typically it should be).
+
 ## Disclaimer ##
 
 I do not endorse any religion or deity. The term "God" is used purely as an apt programming metaphor.
