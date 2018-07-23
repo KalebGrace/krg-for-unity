@@ -7,16 +7,16 @@ namespace KRG {
 
     /// <summary>
     /// Attacker: Attacker
-    /// 1. Attacker allows a game object to generate "attacks" from the supplied attack abilities.
-    /// 2. Attacker is to be added to a game object as a script/component*, and then assigned attack abilities
-    /// (references to scriptable objects instanced from AttackAbility). An attack is generated during an Update
-    /// whenever an assigned ability's input signature is executed (see AttackAbility._inputSignature and
-    /// InputSignature.isExecuted [to be implemented in a per-project derived class]). That said, there are certain
-    /// conditions that can deter generation of the attack (e.g. attack rate and attack limit).
-    /// 3. Attacker is a key component of the Attack system, and is used in conjunction with the following classes:
-    /// Attack, AttackAbility, AttackAbilityUse, AttackString, AttackTarget, and KnockBackCalcMode.
-    /// 4. *Attacker is abstract and must have a per-project derived class created;
-    /// the derived class itself must be added to a game object as a script/component.
+    /// 1.  Attacker allows a game object to generate "attacks" from the supplied attack abilities.
+    /// 2.  Attacker is to be added to a game object as a script/component*, and then assigned attack abilities
+    ///     (references to scriptable objects instanced from AttackAbility). An attack is generated during an Update
+    ///     whenever an assigned ability's input signature is executed (see AttackAbility._inputSignature and
+    ///     InputSignature.isExecuted [to be implemented in a per-project derived class]). That said, there are certain
+    ///     conditions that can deter generation of the attack (e.g. attack rate and attack limit).
+    /// 3.  Attacker is a key component of the Attack system, and is used in conjunction with the following classes:
+    ///     Attack, AttackAbility, AttackAbilityUse, AttackString, AttackTarget, and KnockBackCalcMode.
+    /// 4.*-Attacker is abstract and must have a per-project derived class created;
+    ///     the derived class itself must be added to a game object as a script/component.
     /// Last Refactor: 1.00.003 / 2018-07-15
     /// </summary>
     public abstract class Attacker : MonoBehaviour {

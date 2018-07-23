@@ -6,14 +6,15 @@ namespace KRG {
 
     /// <summary>
     /// AttackAbility: Attack Ability
-    /// 1. AttackAbility is a body of data that defines an "attack". Specifically, it defines the ability to generate
-    /// this attack, rather than simply an instance of said attack (the latter of which is handled by the Attack class).
-    /// 2. AttackAbility is a scriptable object and can be instanced from the asset menu (see CreateAssetMenu below).
-    /// 3. AttackAbility is the nexus of the Attack system, and is used in conjunction with the following classes:
-    /// Attack, AttackAbilityUse, Attacker, AttackString, AttackTarget, and KnockBackCalcMode.
-    /// 4. AttackAbility can -- and SHOULD -- be derived on a per-project basis to allow for (future) extension. All
-    /// scriptable objects should be instanced from the derived class. If this is not done from the beginning, any
-    /// future extension work will require the scriptable objects to be re-created or nested, making things messy.
+    /// 1.  AttackAbility is a body of data that defines an "attack". Specifically, it defines
+    ///     the ability to generate this attack, rather than simply an instance of said attack
+    ///     (the latter of which is handled by the Attack class).
+    /// 2.  AttackAbility is a scriptable object and can be instanced from the asset menu (see CreateAssetMenu below).
+    /// 3.  AttackAbility is the nexus of the Attack system, and is used in conjunction with the following classes:
+    ///     Attack, AttackAbilityUse, Attacker, AttackString, AttackTarget, and KnockBackCalcMode.
+    /// 4.  AttackAbility can -- and SHOULD -- be derived on a per-project basis to allow for (future) extension. All
+    ///     scriptable objects should be instanced from the derived class. If this is not done from the beginning, any
+    ///     future extension work will require the scriptable objects to be re-created or nested, making things messy.
     /// Last Refactor: 1.00.003 / 2018-07-15
     /// </summary>
     [CreateAssetMenu(

@@ -6,18 +6,29 @@ using UnityEngine.Serialization;
 namespace KRG {
 
     /// <summary>
-    /// Attack.
-    /// Last Refactor: 0.05.002 / 2018-05-05
+    /// Attack: Attack
+    /// 1.  Attack allows a game object, specifically in prefab form, to be used as an "attack".
+    /// 2.  Attack is to be added to a game object as a script/component*. The following must also be done:
+    ///   a.  Attack must have a derived class specifically for this project (e.g. AttackMyGame).
+    ///   b.  GraphicsController must also have a derived class for this project (e.g. GraphicsControllerMyGame).
+    ///   c.  "AttackMyGame" (the derived class) must have a RequireComponent attribute referencing the above, as such:
+    ///       [RequireComponent(typeof(BoxCollider), typeof(GraphicsControllerMyGame))]
+    ///   d.  Any game object with the Attack component must exist on an "Attack" layer.
+    ///   e.  Any game object with the Attack component must have its box collider set as a trigger.
+    /// 3.  Attack is a key component of the Attack system, and is used in conjunction with the following classes:
+    ///     AttackAbility, AttackAbilityUse, Attacker, AttackString, AttackTarget, and KnockBackCalcMode.
+    /// 4.*-Attacker is abstract and must have a per-project derived class created (as mentioned in 2a);
+    ///     the derived class itself must be added to a game object as a script/component.
+    /// Last Refactor: 1.00.004 / 2018-07-23
     /// </summary>
     [RequireComponent(typeof(BoxCollider), typeof(GraphicsController))]
     public abstract class Attack : MonoBehaviour, IEnd {
 
-#region serialized fields
+#region FIELDS: SERIALIZED
 
         [Header("Optional Standalone Attack Ability")]
 
-        [SerializeField]
-        [FormerlySerializedAs("m_attackAbility")]
+        [SerializeField, FormerlySerializedAs("m_attackAbility")]
         AttackAbility _attackAbility;
 
         [Header("Transform")]
@@ -27,9 +38,9 @@ namespace KRG {
 
 #endregion
 
-#region private fields
+#region FIELDS: PRIVATE
 
-		Attacker _attacker;
+        Attacker _attacker;
         List<AttackTarget> _attackTargets = new List<AttackTarget>();
         BoxCollider _boxCollider;
         GraphicsController _graphicsController;
@@ -40,17 +51,17 @@ namespace KRG {
 
 #endregion
 
-#region IEnd implementation
+#region PROPERTIES: IEnd
 
         public End end { get; private set; }
 
 #endregion
 
-#region properties
+#region PROPERTIES: PUBLIC
 
         public virtual AttackAbility attackAbility { get { return _attackAbility; } }
 
-		public virtual Attacker attacker { get { return _attacker; } }
+        public virtual Attacker attacker { get { return _attacker; } }
 
         public virtual DamageDealtHandler damageDealtHandler { get; set; }
 
@@ -58,7 +69,7 @@ namespace KRG {
 
 #endregion
 
-#region MonoBehaviour methods
+#region METHODS: MonoBehaviour
 
         protected virtual void Awake() {
             _transform = transform;
@@ -130,7 +141,7 @@ namespace KRG {
 
 #endregion
 
-#region custom methods
+#region METHODS: PUBLIC, PROTECTED, & PRIVATE
 
         public void Init(AttackAbility attackAbility, Attacker attacker) {
             if (_isInitialized) {
@@ -138,14 +149,14 @@ namespace KRG {
                 return;
             }
             _attackAbility = attackAbility;
-			_attacker = attacker;
+            _attacker = attacker;
             _isFlippedX = attacker.isFlippedX;
             _isPlayerCharacterAttacker = attacker.isPlayerCharacter;
             InitInternal();
         }
 
-		[System.Obsolete("Use Init(AttackAbility attackAbility, Attacker attacker) instead.")]
-		public void Init(AttackAbility attackAbility, bool isFlippedX, bool isPlayerCharacterAttacker) {
+        [System.Obsolete("Use Init(AttackAbility attackAbility, Attacker attacker) instead.")]
+        public void Init(AttackAbility attackAbility, bool isFlippedX, bool isPlayerCharacterAttacker) {
             if (_isInitialized) {
                 G.U.Error("Init has already been called.");
                 return;

@@ -6,13 +6,13 @@ namespace KRG {
 
     /// <summary>
     /// AttackAbilityUse: Attack Ability Use
-    /// 1. AttackAbilityUse is somewhat of a "wrapper" class for AttackAbility, and is mainly used to track runtime
-    /// information about the attacks that have been generated from an AttackAbility, as well as determining when new
-    /// attacks from that ability are allowed to be generated.
-    /// 2. AttackAbilityUse should generally only be instanced by the Attacker class.
-    /// 3. AttackAbilityUse is part of the Attack system, and is used in conjunction with the following classes:
-    /// Attack, AttackAbility, Attacker, AttackString, AttackTarget, and KnockBackCalcMode.
-    /// 4. AttackAbilityUse is sealed and currently has no extensibility.
+    /// 1.  AttackAbilityUse is somewhat of a "wrapper" class for AttackAbility, and is mainly used to track
+    ///     runtime information about the attacks that have been generated from an AttackAbility,
+    ///     as well as determining when new attacks from that ability are allowed to be generated.
+    /// 2.  AttackAbilityUse should generally only be instanced by the Attacker class.
+    /// 3.  AttackAbilityUse is part of the Attack system, and is used in conjunction with the following classes:
+    ///     Attack, AttackAbility, Attacker, AttackString, AttackTarget, and KnockBackCalcMode.
+    /// 4.  AttackAbilityUse is sealed and currently has no extensibility.
     /// Last Refactor: 1.00.003 / 2018-07-15
     /// </summary>
     public sealed class AttackAbilityUse {
