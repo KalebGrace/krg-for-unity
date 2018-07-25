@@ -48,8 +48,10 @@ namespace KRG {
 
         public bool doesInterrupt { get { return _doesInterrupt; } }
 
+        //TODO: no longer used; candidate for removal
         public bool isEnabled { get { return _isEnabled; } set { _isEnabled = value; } }
 
+        //TODO: no longer used; candidate for removal
         public Attack originAttack { get { return _originAttack; } }
 
 #endregion
