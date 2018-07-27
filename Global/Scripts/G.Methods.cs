@@ -147,5 +147,19 @@ namespace KRG {
 
 #endregion
 
+#region Log
+
+        static float _logLastTime;
+
+        public static void Log() {
+            //Later overloads should use KRG.LogType.
+            var t = UnityEngine.Time.realtimeSinceStartup;
+            var d = t - _logLastTime;
+            _logLastTime = t;
+            Debug.LogFormat("{0:00.0000} seconds since last log. Current time is {1:00,000.0000}.", d, t);
+        }
+
+#endregion
+
     }
 }
