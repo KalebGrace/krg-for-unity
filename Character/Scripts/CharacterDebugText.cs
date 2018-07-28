@@ -9,14 +9,21 @@ using TMPro;
 namespace KRG {
 
     public class CharacterDebugText : MonoBehaviour {
+        
+        ICharacterDebugText _characterInterface;
 
 #if NS_TMPRO
-
-        ICharacterDebugText _characterInterface;
         TextMeshPro _text;
+#else
+        TextMesh _text;
+#endif
 
         void Awake() {
+#if NS_TMPRO
             _text = G.U.Require<TextMeshPro>(this);
+#else
+            _text = G.U.Require<TextMesh>(this);
+#endif
         }
 
         public void Init(Character character) {
@@ -31,8 +38,5 @@ namespace KRG {
         void LateUpdate() {
             _text.text = _characterInterface.lateUpdateText;
         }
-
-#endif
-
     }
 }

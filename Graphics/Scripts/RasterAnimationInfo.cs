@@ -17,9 +17,11 @@ namespace KRG {
             "p: {7} ({8}) {9}\n" + //play count: p:min (as if inclusive), p:random, p:max (as if inclusive)
             "{10}/{11}s {12}/{13}p\n" + //frame sequence current/count, play current/count, frame number/to
             "{14}/{15}t";
-        
+
 #if NS_TMPRO
         TextMeshPro _text;
+#else
+        TextMesh _text;
 #endif
 
         public string frameSequenceName { get; set; }
@@ -56,28 +58,30 @@ namespace KRG {
 
 
         void Awake() {
-#if !DEBUG_VISIBILITY && NS_TMPRO
-            var tmp = GetComponent<TextMeshPro>();
-            if (tmp != null) G.End(tmp);
-#elif NS_TMPRO
-            _text = G.U.Require<TextMeshPro>(this);
+#if NS_TMPRO
+            _text = GetComponent<TextMeshPro>();
+#else
+            _text = GetComponent<TextMesh>();
+#endif
+#if !DEBUG_VISIBILITY
+            if (_text != null) G.End(_text);
+#else
+            G.U.Require(_text, "TextMesh (Pro) Component", gameObject, "this GameObject");
 #endif
         }
 
         public void Clear() {
 #if !DEBUG_VISIBILITY
             //do nothing
-#elif NS_TMPRO
-            _text.text = "N/A";
 #else
-            G.U.Error("This method requires TMPro (TextMeshPro).");
+            _text.text = "N/A";
 #endif
         }
 
         public void Refresh() {
 #if !DEBUG_VISIBILITY
             //do nothing
-#elif NS_TMPRO
+#else
             _text.text = string.Format(
                 _infoFormat,
                 frameSequenceName,
@@ -97,8 +101,6 @@ namespace KRG {
                 frameNumber,
                 frameSequenceToFrame
             );
-#else
-            G.U.Error("This method requires TMPro (TextMeshPro).");
 #endif
         }
     }
