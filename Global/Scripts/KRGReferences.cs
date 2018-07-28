@@ -19,13 +19,13 @@ namespace KRG {
 
         void Awake() {
 #if NS_TMPRO_PAID
-            //these are only for the (obsolete) PAID version of TextMesh Pro
+            //these are only for the old PAID version of TextMesh Pro
             characterDebugTextPrefab = Resources.Load<CharacterDebugText>("Character/CharacterDebugTextTMProPaid");
             rasterAnimationInfoPrefab = Resources.Load<RasterAnimationInfo>("Graphics/RasterAnimationInfoTMProPaid");
 #elif NS_TMPRO
-            G.Err("The (new) FREE version of TextMesh Pro is currently unsupported. " +
-            "Please add NS_TMPRO_PAID to your Scripting Define Symbols--in addition " +
-            "to NS_TMPRO--if using the (obsolete) PAID version of TextMesh Pro.");
+			//these are only for the new FREE version of TextMesh Pro
+			characterDebugTextPrefab = Resources.Load<CharacterDebugText>("Character/CharacterDebugTextTMProFree");
+			rasterAnimationInfoPrefab = Resources.Load<RasterAnimationInfo>("Graphics/RasterAnimationInfoTMProFree");
 #else
             characterDebugTextPrefab = Resources.Load<CharacterDebugText>("Character/CharacterDebugText");
             rasterAnimationInfoPrefab = Resources.Load<RasterAnimationInfo>("Graphics/RasterAnimationInfo");
