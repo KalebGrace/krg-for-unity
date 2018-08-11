@@ -13,9 +13,9 @@ namespace KRG {
     /// </summary>
     public class DOTweenManager : Manager, IDOTweenManager {
 
-#region MonoBehaviour methods
+#region IManager implementation
 
-        public virtual void Awake() {
+        public override void Awake() {
 #if NS_DG_TWEENING
             if (config.doTweenUseInitSettings) {
                 DOTween.Init(config.doTweenRecycleAllByDefault, config.doTweenUseSafeMode, config.doTweenLogBehaviour);

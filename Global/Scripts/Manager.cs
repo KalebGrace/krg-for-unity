@@ -18,5 +18,11 @@ namespace KRG {
 
 #endregion
 
+#region IManager implementation
+
+        public abstract void Awake();
+
+#endregion
+
     }
 }

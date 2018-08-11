@@ -31,13 +31,13 @@ namespace KRG {
         int _threadCount;
         TimeThread[] _threads;
 
-#region MonoBehaviour methods
+#region IManager implementation
 
         /// <summary>
         /// Initialize the TimeManager's TimeThread instances.
         /// This must be done by KRGLoader before FixedUpdate occurs.
         /// </summary>
-        public virtual void Awake() {
+        public override void Awake() {
             if (_isInitialized) {
                 G.U.Warning("TimeManager is already initialized.");
                 return;
@@ -59,6 +59,10 @@ namespace KRG {
                 _threads[i] = new TimeThread(i);
             }
         }
+
+#endregion
+
+#region G/MonoBehaviour methods
 
         public virtual void FixedUpdate() {
             for (int i = 0; i < _threadCount; i++) {

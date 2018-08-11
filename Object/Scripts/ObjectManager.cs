@@ -16,15 +16,19 @@ namespace KRG {
         //TODO: maybe just make this static in KRGBehaviour?
         event System.Action _destroyRequests;
 
-#region MonoBehaviour methods
+#region IManager implementation
 
-        public virtual void Awake() {
+        public override void Awake() {
             //instantiate KRGLoader child GameObjects from prefabs
             GameObject[] ps = config.autoInstancedPrefabs;
             for (int i = 0; i < ps.Length; i++) {
                 G.New(ps[i], transform);
             }
         }
+
+#endregion
+
+#region G/MonoBehaviour methods
 
         public virtual void LateUpdate() {
             InvokeEventActions(ref _destroyRequests, true);

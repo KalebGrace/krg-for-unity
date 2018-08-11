@@ -49,9 +49,9 @@ namespace KRG {
         }
 #endif
 
-#region MonoBehaviour methods
+#region IManager implementation
 
-        public virtual void Awake() {
+        public override void Awake() {
             if (_isInitialized) {
                 G.U.Warning("AudioManager is already initialized.");
                 return;
@@ -59,6 +59,10 @@ namespace KRG {
             _isInitialized = true;
             //nothing for now
         }
+
+#endregion
+
+#region G/MonoBehaviour methods
 
         public virtual void OnDestroy() {
             StopMusic();

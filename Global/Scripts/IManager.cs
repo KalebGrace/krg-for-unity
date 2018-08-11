@@ -6,5 +6,7 @@ namespace KRG {
 
     public interface IManager {
 
+        void Awake();
+
     }
 }

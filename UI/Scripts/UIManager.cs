@@ -20,6 +20,13 @@ namespace KRG {
 
 #endregion
 
+#region IManager implementation
+
+        public override void Awake() {
+        }
+
+#endregion
+
 #region IUIManager implementation: methods
 
         public virtual Image AddColorOverlay(Color color) {
@@ -68,7 +75,7 @@ namespace KRG {
                 _colorOverlayTweener = null;
             }
 #endif
-			if (_colorOverlay != null) {
+            if (_colorOverlay != null) {
                 Object.Destroy(_colorOverlay);
                 _colorOverlay = null;
             }

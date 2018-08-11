@@ -12,7 +12,7 @@ namespace KRG {
         /// <summary>
         /// The KRG version.
         /// </summary>
-        public const string krgVersion = "1.00.004";
+        public const string krgVersion = "1.00.005";
 
         /// <summary>
         /// The default master scene name.
@@ -67,12 +67,16 @@ namespace KRG {
 
 #endregion
 
-#region G/MonoBehaviour methods
+#region IManager implementation
 
-        public virtual void Awake() {
+        public override void Awake() {
             SceneManager.sceneLoaded += OnSceneLoaded;
             SceneManager.sceneUnloaded += OnSceneUnloaded;
         }
+
+#endregion
+
+#region G/MonoBehaviour methods
 
         public virtual void OnApplicationQuit() {
             isQuitting = true;
@@ -87,11 +91,11 @@ namespace KRG {
 
 #region IAppManager implementation: methods
 
-		/// <summary>
-		/// Adds a scene activation listener.
-		/// </summary>
-		/// <param name="sceneName">Scene name.</param>
-		/// <param name="listener">Listener.</param>
+        /// <summary>
+        /// Adds a scene activation listener.
+        /// </summary>
+        /// <param name="sceneName">Scene name.</param>
+        /// <param name="listener">Listener.</param>
         public virtual void AddSceneActivationListener(string sceneName, System.Action listener) {
             if (_sceneActivationEvents.ContainsKey(sceneName)) {
                 _sceneActivationEvents[sceneName] += listener;
@@ -100,10 +104,10 @@ namespace KRG {
             }
         }
 
-		/// <summary>
-		/// Adds a scene controller.
-		/// </summary>
-		/// <param name="sceneController">Scene controller.</param>
+        /// <summary>
+        /// Adds a scene controller.
+        /// </summary>
+        /// <param name="sceneController">Scene controller.</param>
         public virtual void AddSceneController(SceneController sceneController) {
             if (!_sceneControllers.Contains(sceneController)) {
                 _sceneControllers.Add(sceneController);
@@ -113,11 +117,11 @@ namespace KRG {
             }
         }
 
-		/// <summary>
-		/// Removes a scene activation listener.
-		/// </summary>
-		/// <param name="sceneName">Scene name.</param>
-		/// <param name="listener">Listener.</param>
+        /// <summary>
+        /// Removes a scene activation listener.
+        /// </summary>
+        /// <param name="sceneName">Scene name.</param>
+        /// <param name="listener">Listener.</param>
         public virtual void RemoveSceneActivationListener(string sceneName, System.Action listener) {
             if (_sceneActivationEvents.ContainsKey(sceneName)) {
                 _sceneActivationEvents[sceneName] -= listener;

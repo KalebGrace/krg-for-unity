@@ -6,6 +6,13 @@ namespace KRG {
 
     public class CameraManager : Manager, ICameraManager {
 
+#region IManager implementation
+
+        public override void Awake() {
+        }
+
+#endregion
+
 #region ICameraManager implementation: properties
 
         public virtual Camera camera { get { return Camera.main; } }
