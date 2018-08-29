@@ -95,6 +95,11 @@ KRG has some functionality based on certain third-party libraries that can be ob
 
 Rewired (by Guavaman Enterprises) is also supported, but currently uses no define symbol.
 
+### TextMesh Pro (Additional Info) ###
+
+* TextMesh Pro resources folder should be "Text/".
+* If using the old, paid (source code) version of TextMesh Pro, you will need the `NS_TMPRO_PAID` define symbol (compiler flag) *in addition* to `NS_TMPRO`.
+
 ## Naming & Organizational Conventions ##
 
 For the most part, established Unity and Microsoft C# conventions are used. Some exceptions and explicit definitions follow:
