@@ -176,6 +176,7 @@ namespace KRG {
             _hp = hpMax;
         }
 
+        //TODO: this was added as part of the ItemLoot system and needs revision
         public void AddHP(float hp) {
             G.U.Assert(hp > 0);
             _hp = Mathf.Min(hpMax, _hp + hp);
