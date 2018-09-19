@@ -22,6 +22,7 @@ namespace KRG {
         [FormerlySerializedAs("m_rasterAnimation")]
         protected RasterAnimation _rasterAnimation;
 
+        int _frameListIndex;
         bool _isLoaded;
         Gif _previewGif;
         RasterAnimationInfo _rasterAnimationInfo;
@@ -87,10 +88,18 @@ namespace KRG {
                             if (unloadAfterPlay) {
                                 G.U.Error("Unload After Play is not supported when using Frame Sequences.");
                             }
-                            int frameNumber = i + 1;
-                            if (!_rasterAnimationState.AdvanceFrame(ref frameNumber)) {
-                                this.Stop();
-                                return;
+                            int frameNumber;
+                            if (_rasterAnimationState.frameSequenceHasFrameList) {
+                                if (!_rasterAnimationState.AdvanceFrame(ref _frameListIndex, out frameNumber)) {
+                                    this.Stop();
+                                    return;
+                                }
+                            } else {
+                                frameNumber = i + 1;
+                                if (!_rasterAnimationState.AdvanceFrame(ref frameNumber)) {
+                                    this.Stop();
+                                    return;
+                                }
                             }
                             //it's possible to advance to the same frame, so update only if it's different
                             if (i != frameNumber - 1) {
@@ -201,11 +210,13 @@ namespace KRG {
                     frameSequenceStopHandler
                 );
                 _rasterAnimationState.rasterAnimationInfo = _rasterAnimationInfo;
+                _frameListIndex = 0;
                 i = _rasterAnimationState.frameSequenceFromFrame - 1; //1-based -> 0-based
             } else {
                 file = null;
                 loop = true;
                 _rasterAnimationState = null;
+                _frameListIndex = 0;
                 i = 0;
             }
             time = 0;
@@ -290,6 +301,7 @@ namespace KRG {
             //RasterAnimation stuff
             var ra = _rasterAnimation;
             if (ra != null) _rasterAnimationState.Reset();
+            _frameListIndex = 0;
             i = ra != null ? _rasterAnimationState.frameSequenceFromFrame - 1 : 0;
             //uGIF stuff
             isPlaying = true;

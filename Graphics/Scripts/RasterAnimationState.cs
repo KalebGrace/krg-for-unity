@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using UnityEngine;
 
 namespace KRG {
@@ -45,9 +46,19 @@ namespace KRG {
         int _frameSequenceIndex;
 
         /// <summary>
-        /// The name of the frame sequence.
+        /// The name of the current frame sequence.
         /// </summary>
         protected string _frameSequenceName;
+
+        /// <summary>
+        /// The ordered list of frames to play in the current frame sequence.
+        /// </summary>
+        ReadOnlyCollection<int> _frameSequenceFrameList;
+
+        /// <summary>
+        /// The index of the current frame within the frame list of the current frame sequence.
+        /// </summary>
+        int _frameSequenceFrameListIndex;
 
         /// <summary>
         /// The current frame sequence's From Frame (one-based; may be a cached random value).
@@ -82,7 +93,14 @@ namespace KRG {
 
         public virtual string frameSequenceName { get { return _frameSequenceName; } }
 
-        public virtual int frameSequenceFromFrame { get { return _frameSequenceFromFrame; } }
+        public virtual int frameSequenceFromFrame {
+            get { return frameSequenceHasFrameList ? _frameSequenceFrameList[0] : _frameSequenceFromFrame; }
+        }
+
+        public virtual bool frameSequenceHasFrameList {
+            //this function will probably go away soon after I integrate things better, as it should always be true
+            get { return _frameSequenceFrameList != null && _frameSequenceFrameList.Count > 0; }
+        }
 
         public virtual RasterAnimation rasterAnimation { get { return _rasterAnimation; } }
 
@@ -115,11 +133,53 @@ namespace KRG {
 #region public methods
 
         /// <summary>
+        /// Advances the frame number. This uses the new frame list which allows for playing frames in any order.
+        /// </summary>
+        /// <returns><c>true</c>, if the animation should continue playing, <c>false</c> otherwise.</returns>
+        /// <param name="frameListIndex">Frame list index.</param>
+        /// <param name="frameNumber">Frame number (one-based).</param>
+        public virtual bool AdvanceFrame(ref int frameListIndex, out int frameNumber) {
+            frameNumber = 0;
+            if (!frameSequenceHasFrameList) {
+                G.Err("Wrong function. Use AdvanceFrame(ref int frameNumber) instead.");
+                return false;
+            }
+            if (frameListIndex < _frameSequenceFrameList.Count - 1) {
+                frameNumber = _frameSequenceFrameList[++frameListIndex];
+            } else if (_frameSequencePlayIndex < _frameSequencePlayCount - 1) {
+                ++_frameSequencePlayIndex;
+                frameListIndex = 0;
+                frameNumber = _frameSequenceFrameList[0];
+            } else if (_frameSequenceIndex < _rasterAnimation.frameSequenceCount - 1) {
+                InvokeFrameSequenceStopHandlers();
+                SetFrameSequence(_frameSequenceIndex + 1);
+                frameListIndex = 0;
+                frameNumber = _frameSequenceFrameList[0];
+            } else if (_rasterAnimation.DoesLoop(_loopIndex)) {
+                InvokeFrameSequenceStopHandlers();
+                ++_loopIndex;
+                SetFrameSequence(_rasterAnimation.loopToSequence);
+                frameListIndex = 0;
+                frameNumber = _frameSequenceFrameList[0];
+            } else {
+                InvokeFrameSequenceStopHandlers();
+                //the animation has finished playing
+                return false;
+            }
+            RefreshRasterAnimationInfo(frameNumber); //TODO: update parameters as needed
+            return true;
+        }
+
+        /// <summary>
         /// Advances the frame number. Currently this only supports moving forward by a single frame.
         /// </summary>
         /// <returns><c>true</c>, if the animation should continue playing, <c>false</c> otherwise.</returns>
         /// <param name="frameNumber">Frame number (one-based).</param>
         public virtual bool AdvanceFrame(ref int frameNumber) {
+            if (frameSequenceHasFrameList) {
+                G.Err("Wrong function. Use AdvanceFrame(ref int frameListIndex, out int frameNumber) instead.");
+                return false;
+            }
             if (frameNumber < _frameSequenceToFrame) {
                 frameNumber++;
             } else if (_frameSequencePlayIndex < _frameSequencePlayCount - 1) {
@@ -155,6 +215,8 @@ namespace KRG {
             RasterAnimationInfo i = _rasterAnimationInfo;
             if (i == null) return;
             i.frameSequenceName = _frameSequenceName;
+            //TODO: add frame list (_frameSequenceFrameList) to raster animation info
+            //TODO: add frame list index (_frameSequenceFrameListIndex) to raster animation info
             i.frameSequenceFromFrameMin = _rasterAnimation.GetFrameSequenceFromFrameMin(_frameSequenceIndex);
             i.frameSequenceFromFrame = _frameSequenceFromFrame;
             i.frameSequenceFromFrameMax = _rasterAnimation.GetFrameSequenceFromFrameMax(_frameSequenceIndex);
@@ -198,6 +260,8 @@ namespace KRG {
             }
             _frameSequenceIndex = frameSequenceIndex;
             _frameSequenceName = _rasterAnimation.GetFrameSequenceName(frameSequenceIndex);
+            _frameSequenceFrameList = _rasterAnimation.GetFrameSequenceFrameList(frameSequenceIndex);
+            _frameSequenceFrameListIndex = 0;
             _frameSequenceFromFrame = _rasterAnimation.GetFrameSequenceFromFrame(frameSequenceIndex);
             _frameSequenceToFrame = _rasterAnimation.GetFrameSequenceToFrame(frameSequenceIndex);
             _frameSequencePlayCount = playCount;

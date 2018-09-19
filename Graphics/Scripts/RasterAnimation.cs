@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using UnityEngine;
 using UnityEngine.Serialization;
 
@@ -114,6 +115,11 @@ namespace KRG {
         public virtual string GetFrameSequenceName(int frameSequenceIndex) {
             FrameSequence fs = GetFrameSequence(frameSequenceIndex);
             return fs != null ? fs.name : "";
+        }
+
+        public ReadOnlyCollection<int> GetFrameSequenceFrameList(int frameSequenceIndex) {
+            FrameSequence fs = GetFrameSequence(frameSequenceIndex);
+            return fs != null ? fs.frameList : null;
         }
 
         public virtual int GetFrameSequenceFromFrame(int frameSequenceIndex) {
