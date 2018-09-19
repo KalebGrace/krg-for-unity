@@ -56,11 +56,6 @@ namespace KRG {
         ReadOnlyCollection<int> _frameSequenceFrameList;
 
         /// <summary>
-        /// The index of the current frame within the frame list of the current frame sequence.
-        /// </summary>
-        int _frameSequenceFrameListIndex;
-
-        /// <summary>
         /// The current frame sequence's From Frame (one-based; may be a cached random value).
         /// </summary>
         int _frameSequenceFromFrame;
@@ -261,7 +256,6 @@ namespace KRG {
             _frameSequenceIndex = frameSequenceIndex;
             _frameSequenceName = _rasterAnimation.GetFrameSequenceName(frameSequenceIndex);
             _frameSequenceFrameList = _rasterAnimation.GetFrameSequenceFrameList(frameSequenceIndex);
-            _frameSequenceFrameListIndex = 0;
             _frameSequenceFromFrame = _rasterAnimation.GetFrameSequenceFromFrame(frameSequenceIndex);
             _frameSequenceToFrame = _rasterAnimation.GetFrameSequenceToFrame(frameSequenceIndex);
             _frameSequencePlayCount = playCount;
