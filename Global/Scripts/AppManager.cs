@@ -12,7 +12,7 @@ namespace KRG {
         /// <summary>
         /// The KRG version.
         /// </summary>
-        public const string krgVersion = "1.00.005";
+        public const string krgVersion = "1.00.006";
 
         /// <summary>
         /// The default master scene name.
