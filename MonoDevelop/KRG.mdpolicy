@@ -8,18 +8,23 @@
   <VersionControlPolicy inheritsSet="Mono" />
   <CSharpFormattingPolicy inheritsSet="Mono" inheritsScope="text/x-csharp" scope="text/x-csharp">
     <IndentSwitchBody>True</IndentSwitchBody>
+    <SimplePropertyFormatting>ForceOneLine</SimplePropertyFormatting>
     <AutoPropertyFormatting>ForceOneLine</AutoPropertyFormatting>
     <IndentPreprocessorDirectives>False</IndentPreprocessorDirectives>
-    <NamespaceBraceStyle>EndOfLine</NamespaceBraceStyle>
-    <ClassBraceStyle>EndOfLine</ClassBraceStyle>
-    <InterfaceBraceStyle>EndOfLine</InterfaceBraceStyle>
-    <StructBraceStyle>EndOfLine</StructBraceStyle>
-    <EnumBraceStyle>EndOfLine</EnumBraceStyle>
-    <MethodBraceStyle>EndOfLine</MethodBraceStyle>
-    <ConstructorBraceStyle>EndOfLine</ConstructorBraceStyle>
-    <DestructorBraceStyle>EndOfLine</DestructorBraceStyle>
-    <AllowEventAddBlockInline>False</AllowEventAddBlockInline>
-    <AllowEventRemoveBlockInline>False</AllowEventRemoveBlockInline>
+    <AnonymousMethodBraceStyle>NextLine</AnonymousMethodBraceStyle>
+    <PropertyBraceStyle>NextLine</PropertyBraceStyle>
+    <PropertyGetBraceStyle>NextLine</PropertyGetBraceStyle>
+    <PropertySetBraceStyle>NextLine</PropertySetBraceStyle>
+    <SimpleGetBlockFormatting>ForceOneLine</SimpleGetBlockFormatting>
+    <SimpleSetBlockFormatting>ForceOneLine</SimpleSetBlockFormatting>
+    <EventBraceStyle>NextLine</EventBraceStyle>
+    <EventAddBraceStyle>NextLine</EventAddBraceStyle>
+    <EventRemoveBraceStyle>NextLine</EventRemoveBraceStyle>
+    <StatementBraceStyle>NextLine</StatementBraceStyle>
+    <ElseNewLinePlacement>NewLine</ElseNewLinePlacement>
+    <CatchNewLinePlacement>NewLine</CatchNewLinePlacement>
+    <FinallyNewLinePlacement>NewLine</FinallyNewLinePlacement>
+    <WhileNewLinePlacement>NewLine</WhileNewLinePlacement>
     <EmbeddedStatementPlacement>SameLine</EmbeddedStatementPlacement>
     <BeforeMethodDeclarationParentheses>False</BeforeMethodDeclarationParentheses>
     <BeforeMethodCallParentheses>False</BeforeMethodCallParentheses>
@@ -31,7 +36,6 @@
     <AfterDelegateDeclarationParameterComma>True</AfterDelegateDeclarationParameterComma>
     <NewParentheses>False</NewParentheses>
     <SpacesBeforeBrackets>False</SpacesBeforeBrackets>
-    <BlankLinesBeforeFirstDeclaration>1</BlankLinesBeforeFirstDeclaration>
     <MethodCallArgumentWrapping>WrapIfTooLong</MethodCallArgumentWrapping>
     <NewLineAferMethodCallOpenParentheses>NewLine</NewLineAferMethodCallOpenParentheses>
     <MethodCallClosingParenthesesOnNewLine>NewLine</MethodCallClosingParenthesesOnNewLine>
