@@ -24,7 +24,7 @@ namespace KRG {
 			//ping the asset in the Project window
 			EditorGUIUtility.PingObject(config);
 			//finish
-			G.U.Log("A KRGConfig asset was created at {0}.", KRGConfig.assetPath);
+			G.Log("A KRGConfig asset was created at {0}.", KRGConfig.assetPath);
         }
     }
 }

@@ -35,7 +35,7 @@ namespace KRG {
 			Selection.activeGameObject = i;
 			EditorSceneManager.MarkSceneDirty(scene);
 			//finish
-            G.U.Log("A KRGLoader prefab was created at {0} and instantiated in the scene.", t);
+            G.Log("A KRGLoader prefab was created at {0} and instantiated in the scene.", t);
         }
     }
 }

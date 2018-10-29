@@ -24,7 +24,7 @@ namespace KRG {
 
 #endregion
 
-#region private methods
+#region private (& public) methods
 
             static void ErrorOrException(string s, bool throwException) {
                 if (throwException) {
@@ -34,7 +34,7 @@ namespace KRG {
                 }
             }
 
-            static string GetInfo(params object[] objs) {
+            public static string GetInfo(params object[] objs) {
                 int len;
                 object o;
                 string s = "";
@@ -176,25 +176,14 @@ namespace KRG {
 
 #region Log methods
 
-            /// <summary>
-            /// Log the specified objects.
-            /// </summary>
-            /// <param name="objs">Objects.</param>
+            [Obsolete("Use G.Log instead.")]
             public static void Log(params object[] objs) {
-                Debug.Log(GetInfo(objs));
+                G.Log(objs);
             }
 
-            /// <summary>
-            /// Log the specified message and optional objects.
-            /// </summary>
-            /// <param name="message">Message, or format (if containing "{0").</param>
-            /// <param name="objs">Objects.</param>
+            [Obsolete("Use G.Log instead.")]
             public static void Log(string message, params object[] objs) {
-                if (message.Contains(_formatMagicString)) {
-                    Debug.LogFormat(message, objs);
-                } else {
-                    Debug.Log(message + "; " + GetInfo(objs));
-                }
+                G.Log(message, objs);
             }
 
 #endregion

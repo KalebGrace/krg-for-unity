@@ -151,12 +151,102 @@ namespace KRG {
 
         static float _logLastTime;
 
+        /// <summary>
+        /// Log the time.
+        /// </summary>
         public static void Log() {
-            //Later overloads should use KRG.LogType.
             var t = UnityEngine.Time.realtimeSinceStartup;
             var d = t - _logLastTime;
             _logLastTime = t;
             Debug.LogFormat("{0:00.0000} seconds since last log. Current time is {1:00,000.0000}.", d, t);
+        }
+
+        /// <summary>
+        /// Log the specified objects.
+        /// </summary>
+        /// <param name="objs">Objects.</param>
+        public static void Log(params object[] objs) {
+            Log(LogType.Log, objs);
+        }
+
+        /// <summary>
+        /// Log the specified message and optional objects.
+        /// </summary>
+        /// <param name="message">Message, or format (if containing "{0").</param>
+        /// <param name="objs">Objects.</param>
+        public static void Log(string message, params object[] objs) {
+            Log(LogType.Log, message, objs);
+        }
+
+        /// <summary>
+        /// Log the specified objects using the specified log type.
+        /// </summary>
+        /// <param name="logType">Log type.</param>
+        /// <param name="objs">Objects.</param>
+        public static void Log(LogType logType, params object[] objs) {
+            LogInner(logType, U.GetInfo(objs));
+        }
+
+        /// <summary>
+        /// Log the specified message and optional objects using the specified log type.
+        /// </summary>
+        /// <param name="logType">Log type.</param>
+        /// <param name="message">Message, or format (if containing "{0").</param>
+        /// <param name="objs">Objects.</param>
+        public static void Log(LogType logType, string message, params object[] objs) {
+            if (message.Contains(_formatMagicString)) {
+                LogInnerFormat(logType, message, objs);
+            } else {
+                LogInner(logType, message + "; " + U.GetInfo(objs));
+            }
+        }
+
+        static void LogInner(LogType logType, string message) {
+            switch (logType)
+            {
+                case LogType.Assert:
+                    Debug.LogAssertion(message);
+                    break;
+                case LogType.Error:
+                    Debug.LogError(message);
+                    break;
+                case LogType.Exception:
+                    Debug.LogException(new System.Exception(message));
+                    break;
+                case LogType.Log:
+                    Debug.Log(message);
+                    break;
+                case LogType.Warning:
+                    Debug.LogWarning(message);
+                    break;
+                default:
+                    G.U.Unsupported(G.instance, logType);
+                    break;
+            }
+        }
+
+        static void LogInnerFormat(LogType logType, string format, params object[] args) {
+            switch (logType)
+            {
+                case LogType.Assert:
+                    Debug.LogAssertionFormat(format, args);
+                    break;
+                case LogType.Error:
+                    Debug.LogErrorFormat(format, args);
+                    break;
+                case LogType.Exception:
+                    Debug.LogException(new System.Exception(string.Format(format, args)));
+                    break;
+                case LogType.Log:
+                    Debug.LogFormat(format, args);
+                    break;
+                case LogType.Warning:
+                    Debug.LogWarningFormat(format, args);
+                    break;
+                default:
+                    G.U.Unsupported(G.instance, logType);
+                    break;
+            }
         }
 
 #endregion
