@@ -23,6 +23,10 @@ namespace KRG {
 
 #region FIELDS: SERIALIZED
 
+        //TODO: display the following information in the UI
+        //IMPORTANT: frame sequences can't use both "Frames" and "From/To Frame" in the same animation
+        //- must be all one or all the other
+
         [HideInInspector]
         [SerializeField]
         [FormerlySerializedAs("m_serializedVersion")]
