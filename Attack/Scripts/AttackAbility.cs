@@ -24,12 +24,8 @@ namespace KRG {
     )]
     public class AttackAbility : ScriptableObject {
 
-#region CONSTANTS
-
-        protected const float _floatDefault = 1.5f;
-        protected const float _floatMin = 0.0001f;
-
-#endregion
+        protected const float FLOAT_DEFAULT = 1.5f;
+        protected const float FLOAT_MIN = 0.0001f;
 
 #region FIELDS: SERIALIZED
 
@@ -81,7 +77,7 @@ namespace KRG {
 
         [SerializeField]
         [Tooltip("Maximum new attacks per second.")]
-        protected float _attackRate = _floatDefault;
+        protected float _attackRate = FLOAT_DEFAULT;
 
         //
         //
@@ -101,7 +97,7 @@ namespace KRG {
         [SerializeField]
         [Tooltip("Distance traveled by attack in units per second (the speed)."
         + " Using a value of \"0\" makes the attack's local position stationary.")]
-        protected float _travelSpeed = _floatDefault;
+        protected float _travelSpeed = FLOAT_DEFAULT;
 
         //
         //
@@ -179,6 +175,22 @@ namespace KRG {
         [Tooltip("Time (in SECONDS) the target is in a knock back state when damaged (overlaps invulnerability time).")]
         protected float _knockBackTime = 1;
 
+        //
+        //
+        [Header("Attacker Movement")]
+
+        [SerializeField]
+        [Tooltip("Distance (in UNITS) the attacker moves horizontally during an attack.")]
+        protected float _attackerMoveDistance;
+
+        [SerializeField]
+        [Tooltip("Time (in SECONDS) the attacker takes at the start of the attack to move said distance.")]
+        protected float _attackerMoveTime;
+
+        [SerializeField]
+        [Tooltip("Does attacker movement require directional input?")]
+        protected bool _attackerMoveRequiresInput;
+
 #endregion
 
 #region FIELDS: PROTECTED
@@ -201,6 +213,12 @@ namespace KRG {
                 return _attackerAnimations != null ? _attackerAnimations.Length : 0;
             }
         }
+
+        public virtual float attackerMoveDistance { get { return _attackerMoveDistance; } }
+
+        public virtual bool attackerMoveRequiresInput { get { return _attackerMoveRequiresInput; } }
+
+        public virtual float attackerMoveTime { get { return _attackerMoveTime; } }
 
         public virtual string attackKey { get { return _attackKey; } }
 
@@ -294,9 +312,9 @@ namespace KRG {
         protected virtual void OnValidate() {
             UpdateSerializedVersion();
             _attackLimit = Mathf.Max(1, _attackLimit);
-            _attackRate = Mathf.Max(_floatMin, _attackRate);
-            _attackLifetime.floatValue = Mathf.Max(_floatMin, _attackLifetime.floatValue);
-            _hpDamageRate.floatValue = Mathf.Max(_floatMin, _hpDamageRate.floatValue);
+            _attackRate = Mathf.Max(FLOAT_MIN, _attackRate);
+            _attackLifetime.floatValue = Mathf.Max(FLOAT_MIN, _attackLifetime.floatValue);
+            _hpDamageRate.floatValue = Mathf.Max(FLOAT_MIN, _hpDamageRate.floatValue);
             _maxHitsPerTarget.intValue = Mathf.Max(1, _maxHitsPerTarget.intValue);
             _knockBackTime = Mathf.Max(0, _knockBackTime);
         }

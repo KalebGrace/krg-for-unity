@@ -21,6 +21,12 @@ namespace KRG {
     /// </summary>
     public abstract class Attacker : MonoBehaviour {
 
+        public enum AttackState { STARTED, INTERRUPTED, COMPLETED }
+
+        public event AttackEventHandler attackStateChanged;
+
+        public delegate void AttackEventHandler(Attack attack, AttackState state);
+
 #region FIELDS: SERIALIZED
 
         [SerializeField, FormerlySerializedAs("m_attackAbilities")]
@@ -99,7 +105,7 @@ namespace KRG {
                         //otherwise, queue the attack to be tried when the current attack ends
                         if (aaUse.doesInterrupt) {
                             //try the attack; if successful, stop searching for attacks to try and just return
-                            if (TryAttack(aaUse)) {
+                            if (_TryAttack(aaUse)) {
                                 return;
                             }
                         } else {
@@ -119,23 +125,25 @@ namespace KRG {
             return true;
         }
 
-        bool TryAttack(AttackAbilityUse aaUse) {
+        bool _TryAttack(AttackAbilityUse aaUse)
+        {
             Attack attack = aaUse.AttemptAttack();
             //if the attack attempt failed, return FALSE (otherwise, proceed)
-            if (attack == null) {
-                return false;
-            }
+            if (attack == null) return false;
             //the attack attempt succeeded!
-            //first off, if we interrupted an attack (_currentAttack), remove its end callback
-            if (_currentAttack != null) {
-                _currentAttack.end.actions -= OnAttackEnd;
+            //first off, if we interrupted an attack (_currentAttack), remove its end callback and fire the event
+            if (_currentAttack != null)
+            {
+                _currentAttack.end.actions -= _OnAttackCompleted;
+                if (attackStateChanged != null) attackStateChanged(_currentAttack, AttackState.INTERRUPTED);
             }
             //now, set up the NEW current attack
             _currentAttack = attack;
-            attack.end.actions += OnAttackEnd;
+            attack.end.actions += _OnAttackCompleted;
             attack.damageDealtHandler = OnDamageDealt;
             UpdateAvailableAttacks(attack);
             OnAttack(attack);
+            if (attackStateChanged != null) attackStateChanged(attack, AttackState.STARTED);
             //and since the attack attempt succeeded, return TRUE
             return true;
         }
@@ -159,13 +167,14 @@ namespace KRG {
             }
         }
 
-        void OnAttackEnd() {
+        void _OnAttackCompleted() {
+            if (attackStateChanged != null) attackStateChanged(_currentAttack, AttackState.COMPLETED);
             _currentAttack = null;
             //the current attack has ended, so try the queued attack; if successful, return (otherwise, proceed)
             if (_queuedAttack != null) {
                 var aaUse = _queuedAttack;
                 _queuedAttack = null;
-                if (TryAttack(aaUse)) {
+                if (_TryAttack(aaUse)) {
                     return;
                 }
             }
