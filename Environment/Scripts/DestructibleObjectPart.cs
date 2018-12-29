@@ -48,6 +48,19 @@ namespace KRG {
             _renderer.enabled = false;
         }
 
+        void FixedUpdate() {
+        //TODO: remove this code when all bugs are fixed
+            if (float.IsNaN(transform.position.x) ||
+                float.IsNaN(transform.position.y) ||
+                float.IsNaN(transform.position.z) ||
+                float.IsInfinity(transform.position.x) ||
+                float.IsInfinity(transform.position.y) ||
+                float.IsInfinity(transform.position.z)) {
+                G.Log("Invalid position for DestructibleObjectPart.");
+                Destroy(gameObject);
+            }
+        }
+
         void OnDestroy() {
             end.InvokeActions();
         }
