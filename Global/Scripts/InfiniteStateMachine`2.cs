@@ -125,7 +125,7 @@ namespace KRG {
             //clear the pending addition cache
             pendingAddition = null;
             //if the lifetime is zero, but a time thread is provided, this state is a facade; remove it
-            if (stateLifetime.IsZero() && stateTimeThread != null) Remove(stateIndex);
+            if (stateLifetime.ap(0) && stateTimeThread != null) Remove(stateIndex);
         }
 
         protected bool CanAdd(int stateIndex) {

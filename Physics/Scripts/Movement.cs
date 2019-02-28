@@ -231,10 +231,10 @@ namespace KRG {
                             case Direction.West:
                                 tryRemainder &= freezeZ <= 0;
                                 break;
-                            case Direction.Northeast:
-                            case Direction.Southeast:
-                            case Direction.Southwest:
-                            case Direction.Northwest:
+                            case Direction.NorthEast:
+                            case Direction.SouthEast:
+                            case Direction.SouthWest:
+                            case Direction.NorthWest:
                                 tryRemainder &= freezeX <= 0 && freezeZ <= 0;
                                 break;
                             default:

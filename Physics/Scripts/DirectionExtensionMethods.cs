@@ -51,7 +51,7 @@ namespace KRG {
                 case DirectionType.Cardinal:
                     return direction;
                 case DirectionType.Ordinal:
-                    if (direction == Direction.Northwest || direction == Direction.Southwest) {
+                    if (direction == Direction.NorthWest || direction == Direction.SouthWest) {
                         return Direction.West;
                     } else {
                         return Direction.East;

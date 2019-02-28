@@ -281,7 +281,7 @@ namespace KRG {
                     return;
             }
 
-            if (knockBackDistance.IsZero()) return;
+            if (knockBackDistance.ap(0)) return;
 
             BeginKnockBack(attackAbility, attackPositionCenter, knockBackTime, knockBackDistance);
         }

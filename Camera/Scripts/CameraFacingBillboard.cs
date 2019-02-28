@@ -184,7 +184,7 @@ namespace KRG {
                     myRotY = _graphicsControllerTransform.eulerAngles.y;
                     break;
             }
-            float ry = (rotY - myRotY).ClampRotationDegrees();
+            float ry = (rotY - myRotY).rotation().clamped_0_360x;
             if (ry < 45 || ry >= 315) {
                 //ry ≈ 0
                 isFlippedX = false;

@@ -153,19 +153,19 @@ namespace KRG {
                     float mag1 = 0f;
                     float mag2 = 0f;
                     switch (dir) {
-                        case Direction.Northeast:
+                        case Direction.NorthEast:
                             mag1 = GetDirectionMagnitude(Direction.North);
                             mag2 = GetDirectionMagnitude(Direction.East);
                             break;
-                        case Direction.Southeast:
+                        case Direction.SouthEast:
                             mag1 = GetDirectionMagnitude(Direction.South);
                             mag2 = GetDirectionMagnitude(Direction.East);
                             break;
-                        case Direction.Southwest:
+                        case Direction.SouthWest:
                             mag1 = GetDirectionMagnitude(Direction.South);
                             mag2 = GetDirectionMagnitude(Direction.West);
                             break;
-                        case Direction.Northwest:
+                        case Direction.NorthWest:
                             mag1 = GetDirectionMagnitude(Direction.North);
                             mag2 = GetDirectionMagnitude(Direction.West);
                             break;
@@ -228,19 +228,19 @@ namespace KRG {
                     }
 				//Else, if it's AdditiveCardinal, no change in magnitude is needed.
                     switch (dir) {
-                        case Direction.Northeast:
+                        case Direction.NorthEast:
                             SetDirectionMagnitude(Direction.North, mag);
                             SetDirectionMagnitude(Direction.East, mag);
                             break;
-                        case Direction.Southeast:
+                        case Direction.SouthEast:
                             SetDirectionMagnitude(Direction.South, mag);
                             SetDirectionMagnitude(Direction.East, mag);
                             break;
-                        case Direction.Southwest:
+                        case Direction.SouthWest:
                             SetDirectionMagnitude(Direction.South, mag);
                             SetDirectionMagnitude(Direction.West, mag);
                             break;
-                        case Direction.Northwest:
+                        case Direction.NorthWest:
                             SetDirectionMagnitude(Direction.North, mag);
                             SetDirectionMagnitude(Direction.West, mag);
                             break;
