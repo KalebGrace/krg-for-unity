@@ -4,10 +4,13 @@ using UnityEngine;
 
 namespace KRG
 {
-    public class Sign : V<bool>
+    public struct Sign : IValue<bool>
     {
-        public Sign(bool v) : base(v)
+        public bool v { get; set; }
+
+        public Sign(bool v)
         {
+            this.v = v;
         }
 
         public Sign(float v)
@@ -15,14 +18,8 @@ namespace KRG
             this.v = v > 0;
         }
 
-        public float to_1_0()
-        {
-            return v ? 1 : 0;
-        }
+        public float to_f_1_0 { get { return v ? 1 : 0; } }
 
-        public float to_1_n1()
-        {
-            return v ? 1 : -1;
-        }
+        public float to_f_1_n1 { get { return v ? 1 : -1; } }
     }
 }

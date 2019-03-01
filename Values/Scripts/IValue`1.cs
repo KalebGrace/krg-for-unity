@@ -4,36 +4,9 @@ using UnityEngine;
 
 namespace KRG
 {
-    public class V<T>
+    public interface IValue<T>
     {
-        bool __init = true;
-        T __initVal;
-        T __val;
-
-        public T initVal { get { return __initVal; } }
-
-        public T v
-        {
-            get { return __val; }
-            set
-            {
-                if (__init)
-                {
-                    __initVal = value;
-                    __init = false;
-                }
-                __val = value;
-            }
-        }
-
-        public V()
-        {
-        }
-
-        public V(T v)
-        {
-            this.v = v;
-        }
+        T v { get; set; }
     }
 
     /* STRUCT PATTERN

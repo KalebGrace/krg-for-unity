@@ -4,10 +4,13 @@ using UnityEngine;
 
 namespace KRG
 {
-    public class Rotation : V<float>
+    public struct Rotation : IValue<float>
     {
-        public Rotation(float v) : base(v)
+        public float v { get; set; }
+
+        public Rotation(float v)
         {
+            this.v = v;
         }
 
         public float clamped_0_360x
