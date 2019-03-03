@@ -4,6 +4,10 @@ using System.Collections.ObjectModel;
 using UnityEngine;
 using UnityEngine.Serialization;
 
+#if KRG_X_ODIN
+using Sirenix.OdinInspector;
+#endif
+
 namespace KRG {
 
     [CreateAssetMenu(
@@ -21,31 +25,53 @@ namespace KRG {
 
 		[Header("Raster Data")]
 
+#if KRG_X_ODIN
+        [PropertyOrder(-10)]
+#endif
         [SerializeField]
         [FormerlySerializedAs("m_gifBytes")]
         TextAsset _gifBytes;
 
+#if KRG_X_ODIN
+        [PropertyOrder(-10)]
+#endif
         [SerializeField]
         [FormerlySerializedAs("m_dimensions")]
         protected Vector2 _dimensions;
 
+        //--
+
         [Header("Looping")]
 
+#if KRG_X_ODIN
+        [PropertyOrder(10)]
+#endif
         [SerializeField]
         [FormerlySerializedAs("m_loop")]
         bool _loop = true;
 
+#if KRG_X_ODIN
+        [PropertyOrder(10)]
+#endif
         [SerializeField]
         [Tooltip("Checked: How many ADDITIONAL times to play this animation. Unchecked: Loop indefinitely.")]
         [BoolObjectDisable(false, "Infinite Loop")]
         BoolInt _loopCount = new BoolInt(false, 1);
 
+#if KRG_X_ODIN
+        [PropertyOrder(10)]
+#endif
         [SerializeField]
         [Tooltip("Index of the frame sequence from which to start any loops.")]
         int _loopToSequence;
 
+        //--
+
         [Header("Frame Sequences")]
 
+#if KRG_X_ODIN
+        [PropertyOrder(20)]
+#endif
         [SerializeField]
         [FormerlySerializedAs("m_frameSequences")]
         FrameSequence[] _frameSequences;

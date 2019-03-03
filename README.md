@@ -88,6 +88,7 @@ Do the following for any object you want to be damaged:
 
 KRG has some functionality based on certain third-party libraries that can be obtained from the Asset Store. In order to enable this functionality, you must import a package into your project, and then add a specific define symbol to your player settings based on the library that was added. As follows is the list of define symbols for the currently supported libraries:
 
+* `KRG_X_ODIN` - Namespace: Sirenix.OdinInspector
 * `NS_DG_TWEENING` - Namespace: DG.Tweening (DOTween)
 * `NS_FMOD` - Namespace: FMOD & FMODUnity
 * `NS_TMPRO` - Namespace: TMPro (TextMesh Pro)
