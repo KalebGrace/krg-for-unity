@@ -22,5 +22,13 @@ namespace KRG
             to_add.CopyTo(ret, me.Length);
             return ret;
         }
+
+        public static string[] plus(this string[] me, List<string> to_add)
+        {
+            string[] ret = new string[me.Length + to_add.Count];
+            me.CopyTo(ret, 0);
+            to_add.CopyTo(ret, me.Length);
+            return ret;
+        }
     }
 }
