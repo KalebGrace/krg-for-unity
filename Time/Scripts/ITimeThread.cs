@@ -1,6 +1,6 @@
-﻿using UnityEngine;
-using System.Collections;
-using System.Collections.Generic;
+﻿#if NS_DG_TWEENING
+using DG.Tweening;
+#endif
 
 namespace KRG {
 
@@ -73,15 +73,19 @@ namespace KRG {
 
         bool UnlinkTrigger(TimeTrigger tt);
 
+        void trigger(ref TimeTrigger tt, float iv, TimeTriggerHandler handler, bool disallowFacade = false);
+
 #endregion
 
 #if NS_DG_TWEENING
         
 #region Methods: Tween
 
-        void AddTween(DG.Tweening.Tween t);
+        void AddTween(Tween t);
 
-        void RemoveTween(DG.Tweening.Tween t);
+        void RemoveTween(Tween t);
+
+        void tween(ref Tween t_ref, Tween t);
 
 #endregion
 

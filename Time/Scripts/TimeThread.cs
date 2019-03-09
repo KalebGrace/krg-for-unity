@@ -331,7 +331,8 @@ namespace KRG {
         /// <param name="disallowFacade">If set to <c>true</c> disallow use of a time trigger facade.</param>
         public TimeTrigger AddTrigger(float iv, TimeTriggerHandler handler, bool disallowFacade = false) {
             if (iv > 0) {
-                TimeTrigger tt = AddTrigger(iv);
+                TimeTrigger tt = new TimeTrigger(this, iv);
+                _triggersNew.Add(tt);
                 tt.AddHandler(handler);
                 return tt;
             } else if (disallowFacade) {
@@ -344,19 +345,6 @@ namespace KRG {
                 return ttfc;
             } else {
                 G.U.Error("The trigger's interval must be greater than or equal to zero.");
-                return null;
-            }
-        }
-
-        //TODO: is this used publicly in SoAm? there is nothing in the interface for it
-        //NOTE: this is not used publicly in OSH
-        public TimeTrigger AddTrigger(float iv) {
-            if (iv > 0) {
-                TimeTrigger tt = new TimeTrigger(this, iv);
-                _triggersNew.Add(tt);
-                return tt;
-            } else {
-                G.U.Error("The trigger's interval must be greater than zero.");
                 return null;
             }
         }
@@ -401,6 +389,18 @@ namespace KRG {
             }
         }
 
+        /// <summary>
+        /// Passes in a trigger reference, disposes of it (if exists), then assigns it a new trigger (AddTrigger).
+        /// </summary>
+        /// <param name="tt">The TimeTrigger reference to be operated upon.</param>
+        /// <param name="iv">Time INTERVAL (in seconds).</param>
+        /// <param name="handler">HANDLER to be called at the end of the interval.</param>
+        /// <param name="disallowFacade">If set to <c>true</c> disallow use of a time trigger facade.</param>
+        public void trigger(ref TimeTrigger tt, float iv, TimeTriggerHandler handler, bool disallowFacade = false) {
+            if (tt != null) tt.Dispose();
+            tt = AddTrigger(iv, handler, disallowFacade);
+        }
+
 #endregion
 
         void UpdateTriggers() {
@@ -437,6 +437,12 @@ namespace KRG {
 
         public void RemoveTween(Tween t) {
             _tweens.Remove(t);
+        }
+
+        public void tween(ref Tween t_ref, Tween t) {
+            if (t_ref != null) t_ref.Kill();
+            t_ref = t;
+            AddTween(t);
         }
 
 #endregion

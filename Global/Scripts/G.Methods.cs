@@ -166,19 +166,6 @@ namespace KRG
 
 #endregion
 
-#region Ass
-
-        /// <summary>
-        /// Ass this instance. (MonoDevelop actually wrote this.)
-        /// Asserts an assumption and makes an ass out of u and me.
-        /// </summary>
-        public static void Ass(bool condition)
-        {
-            Debug.Assert(condition);
-        }
-
-#endregion
-
 #region Log
 
         static float _logLastTime;
