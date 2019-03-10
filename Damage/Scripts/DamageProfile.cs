@@ -66,6 +66,8 @@ namespace KRG {
         protected ITimeThread _timeThread;
 
 
+        public virtual float hpMin { get { return 0; } }
+
         public virtual float hpMax { get { return _hpMax; } }
 
         public virtual float knockBackDistance { get { return _knockBackDistance; } }

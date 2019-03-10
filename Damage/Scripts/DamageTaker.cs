@@ -7,12 +7,6 @@ namespace KRG {
 
     public abstract class DamageTaker : MonoBehaviour, IDamageable, IEnd {
 
-#region constants
-
-        const float _hpMin = 0;
-
-#endregion
-
 #region fields
 
         [SerializeField]
@@ -42,9 +36,9 @@ namespace KRG {
 
         public virtual float hp { get { return _hp; } }
 
-        public virtual float hpMax { get { return _damageProfile.hpMax; } }
+        public virtual float hpMin { get { return _damageProfile.hpMin; } }
 
-        public virtual float hpMin { get { return _hpMin; } }
+        public virtual float hpMax { get { return _damageProfile.hpMax; } }
 
 #endregion
 
@@ -71,7 +65,7 @@ namespace KRG {
 
         public virtual bool isKnockedBack { get { return _knockBackTimeTrigger != null; } }
 
-        public virtual bool isKnockedOut { get { return _hp <= _hpMin; } }
+        public virtual bool isKnockedOut { get { return _hp.Ap(hpMin); } }
 
         public virtual Direction knockBackDirection { get; set; }
 
@@ -144,7 +138,7 @@ namespace KRG {
         }
 
         protected virtual void DealDamage(AttackAbility attackAbility) {
-            _hp = Mathf.Max(_hpMin, _hp - attackAbility.hpDamage);
+            _hp = Mathf.Clamp(_hp - attackAbility.hpDamage, hpMin, hpMax);
         }
 
         protected virtual void DisplayDamageVFX(
@@ -168,7 +162,7 @@ namespace KRG {
         /// Sets the HP to the minimum. Does not check isKnockedOut or call OnKnockedOut, etc.
         /// </summary>
         protected void SetHPEmpty() {
-            _hp = _hpMin;
+            _hp = hpMin;
         }
 
         /// <summary>
@@ -180,8 +174,7 @@ namespace KRG {
 
         //TODO: this was added as part of the ItemLoot system and needs revision
         public void AddHP(float hp) {
-            G.U.Assert(hp > 0);
-            _hp = Mathf.Min(hpMax, _hp + hp);
+            _hp = Mathf.Clamp(_hp + hp, hpMin, hpMax);
         }
 
 #endregion
