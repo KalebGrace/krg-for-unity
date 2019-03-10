@@ -191,6 +191,13 @@ namespace KRG {
         [Tooltip("Does attacker movement require directional input?")]
         protected bool _attackerMoveRequiresInput;
 
+        //
+        //
+        [Header("Effectors")]
+
+        [SerializeField]
+        protected List<Effector> effectors = new List<Effector>();
+
 #endregion
 
 #region FIELDS: PROTECTED

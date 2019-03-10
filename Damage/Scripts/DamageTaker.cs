@@ -44,6 +44,8 @@ namespace KRG {
 
         public virtual float hpMax { get { return _damageProfile.hpMax; } }
 
+        public virtual float hpMin { get { return _hpMin; } }
+
 #endregion
 
 #region properties: IEnd implementation
@@ -281,7 +283,7 @@ namespace KRG {
                     return;
             }
 
-            if (knockBackDistance.ap(0)) return;
+            if (knockBackDistance.Ap(0)) return;
 
             BeginKnockBack(attackAbility, attackPositionCenter, knockBackTime, knockBackDistance);
         }

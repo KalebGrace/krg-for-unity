@@ -1,8 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
-namespace KRG
+﻿namespace KRG
 {
     public struct Rotation : IValue<float>
     {

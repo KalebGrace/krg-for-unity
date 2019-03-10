@@ -273,7 +273,7 @@ namespace KRG {
 
         void CheckFreeze() {
             if (_freezePauseKey.HasValue) {
-                if (_freezeTime.ap(0)) {
+                if (_freezeTime.Ap(0)) {
                     QueueUnpause(_freezePauseKey.Value);
                     _freezePauseKey = null;
                 } else {
@@ -338,7 +338,7 @@ namespace KRG {
             } else if (disallowFacade) {
                 G.U.Error("The trigger's interval must be greater than zero.");
                 return null;
-            } else if (iv.ap(0)) {
+            } else if (iv.Ap(0)) {
                 //if there is no measurable interval, call the handler immediately with a time trigger facade
                 TimeTriggerFacade ttfc = new TimeTriggerFacade(this);
                 handler(ttfc);
