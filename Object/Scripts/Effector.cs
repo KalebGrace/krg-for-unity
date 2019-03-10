@@ -1,4 +1,5 @@
 ﻿using System;
+using UnityEngine;
 
 namespace KRG
 {
@@ -18,44 +19,47 @@ namespace KRG
         public double value;
 
         //shortcut constructor
-        public Effector(float? v = null, float? d = null, bool min = false, bool max = false)
+        public Effector(float? v = null, float d = 0, bool min = false, bool max = false)
         {
-            condition = default(int);
-            subject = default(int);
-            property = default(int);
+            condition = 0;
+            subject = 0;
+            property = 0;
 
             if (max)
             {
                 operation = (int)EffectorOperation.PercentOfMax;
                 value = 100;
-                return;
             }
-            if (min)
+            else if (min)
             {
                 operation = (int)EffectorOperation.PercentOfMax;
                 value = 0;
-                return;
             }
-            if (v.HasValue)
+            else if (v.HasValue)
             {
                 operation = (int)EffectorOperation.Set;
-                if (d.HasValue) v += d;
-                value = v.Value;
+                value = v.Value + d;
             }
-            else if (d.HasValue)
+            else if (!d.Ap(0))
             {
                 operation = (int)EffectorOperation.Add;
-                value = d.Value;
+                value = d;
             }
             else
             {
                 operation = (int)EffectorOperation.None;
-                value = default(double);
+                value = 0;
             }
         }
 
         public bool Operate(ref float pv, float min, float max)
         {
+            if (min > max)
+            {
+                G.Err("Min is greater than max.");
+                return false;
+            }
+
             float ev = (float)value;
 
             switch ((EffectorOperation)operation)
@@ -78,24 +82,7 @@ namespace KRG
                     return false;
             }
 
-            if (min > max)
-            {
-                G.Err("Wrong order, dummy.");
-                return false;
-            }
-
-            if (ev < min)
-            {
-                pv = min;
-            }
-            else if (ev > max)
-            {
-                pv = max;
-            }
-            else
-            {
-                pv = ev;
-            }
+            pv = Mathf.Clamp(ev, min, max);
 
             return true;
         }
