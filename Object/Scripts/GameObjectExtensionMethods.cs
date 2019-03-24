@@ -7,6 +7,11 @@ namespace KRG {
 
     public static class GameObjectExtensionMethods {
 
+        public static void Dispose(this GameObject gameObject)
+        {
+            Object.Destroy(gameObject);
+        }
+
 #region Persist New Scene
 
         public static void PersistNewScene(this GameObject obj) {
