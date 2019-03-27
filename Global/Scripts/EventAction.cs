@@ -16,15 +16,17 @@ namespace KRG
             actionHigh += action;
         }
 
-        public void Add(Action action)
+        public static EventAction operator + (EventAction eventAction, Action action)
         {
-            actionNormal += action;
+            eventAction.actionNormal += action;
+            return eventAction;
         }
 
-        public void Remove(Action action)
+        public static EventAction operator - (EventAction eventAction, Action action)
         {
-            actionHigh -= action;
-            actionNormal -= action;
+            eventAction.actionHigh -= action;
+            eventAction.actionNormal -= action;
+            return eventAction;
         }
 
         public void Invoke()
@@ -48,15 +50,17 @@ namespace KRG
             actionHigh += action;
         }
 
-        public void Add(Action<T> action)
+        public static EventAction<T> operator + (EventAction<T> eventAction, Action<T> action)
         {
-            actionNormal += action;
+            eventAction.actionNormal += action;
+            return eventAction;
         }
 
-        public void Remove(Action<T> action)
+        public static EventAction<T> operator - (EventAction<T> eventAction, Action<T> action)
         {
-            actionHigh -= action;
-            actionNormal -= action;
+            eventAction.actionHigh -= action;
+            eventAction.actionNormal -= action;
+            return eventAction;
         }
 
         public void Invoke(T in1)
