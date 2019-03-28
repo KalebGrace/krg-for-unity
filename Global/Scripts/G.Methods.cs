@@ -280,5 +280,10 @@ namespace KRG
 
 #endregion
 
+        public static T Require<T>(T thing) where T : Component
+        {
+            if (thing == default(T)) throw new RequireException(typeof(T));
+            return thing;
+        }
     }
 }

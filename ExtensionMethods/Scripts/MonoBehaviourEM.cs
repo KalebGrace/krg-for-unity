@@ -4,12 +4,12 @@ namespace KRG
 {
     public static class MonoBehaviourEM
     {
-        public static void dispose(this MonoBehaviour me)
+        public static void Dispose(this MonoBehaviour me)
         {
             G.End(me);
         }
 
-        public static T require<T>(this MonoBehaviour me) where T : Component
+        public static T Require<T>(this MonoBehaviour me) where T : Component
         {
             return G.U.Require<T>(me);
         }
