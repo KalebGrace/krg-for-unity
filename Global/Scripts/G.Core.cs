@@ -52,6 +52,8 @@ namespace KRG {
             if (isDuplicateInstance) return;
             //ensure the config is set (and if not, log an error)
             GetConfig();
+            //initialize managers specific to my game/application
+            InitMyGameManagers();
             //cache manager interfaces in publicly accessible properties
             SetManagerProperties();
             //awake the managers
@@ -90,6 +92,7 @@ namespace KRG {
         }
 
 #endregion
-        
+
+        partial void InitMyGameManagers();
     }
 }
