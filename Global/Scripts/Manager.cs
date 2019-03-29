@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace KRG {
 
-    public abstract class Manager : IManager {
+    public abstract class Manager {
 
 #region shortcut properties
 
