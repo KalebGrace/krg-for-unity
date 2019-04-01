@@ -25,13 +25,17 @@ namespace KRG {
             string stringType = attr.enumType.ToString();
             SwapEnum(ref stringType);
 
-            if (property.propertyType == SerializedPropertyType.Integer) {
+            if (property.propertyType == SerializedPropertyType.Integer)
+            {
                 System.Enum selected = EnumGeneric.ToEnum(stringType, property.intValue);
                 selected = EditorGUI.EnumPopup(rect, label, selected);
                 property.intValue = System.Convert.ToInt32(selected);
-            } else {
-                G.U.Error("The Enum attribute is only supported on Integer types. "
-                + property.name + " is a " + property.propertyType + ".");
+            }
+            else
+            {
+                G.U.Error("The Enum attribute doesn't have support for the {0} type."
+                    + " Property name: {1}. Attribute enum type: {2}.",
+                    property.propertyType, property.name, stringType);
                 EditorGUI.PropertyField(rect, property, label);
             }
 
