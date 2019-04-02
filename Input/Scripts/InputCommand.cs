@@ -1,14 +1,10 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
-namespace KRG {
-
-    public enum InputCommand {
-        
+﻿namespace KRG
+{
+    public enum InputCommand
+    {
         None = 0,
         Attack = 1,
         //TODO: fill this with some basic stuff
-        //EG: Up = 2,
+        //EG: Up = 2, Down = 3,
     }
 }

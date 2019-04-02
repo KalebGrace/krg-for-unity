@@ -1,22 +1,33 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Serialization;
 
-namespace KRG {
+namespace KRG
+{
+    public abstract class InputSignature : ScriptableObject
+    {
+        //serialized fields
 
-    public abstract class InputSignature : ScriptableObject {
+        [Header("Optional Easy Access Key")]
 
-        //TODO: custom "Enum" attribute on an int array doesn't play well w/ Odin Inspector
-        [Header("Obsolete KRG InputSignature")]
-        //[Enum(typeof(InputCommand))]
+        [SerializeField, Enum(typeof(InputEzKey))]
+        protected int m_EzKey;
+
+        [Header("Input Signature Elements")]
+
         [SerializeField]
-        [FormerlySerializedAs("m_inputCommands")]
-        protected int[] _inputCommands;
+        protected List<InputSignatureElement> m_Elements;
 
-        string _key;
+        //private fields
 
-        public virtual int complexity { get { return _inputCommands.Length; } }
+        string m_Key;
+
+        //public properties
+
+        public virtual int complexity { get { return m_Elements != null ? m_Elements.Count : 0; } }
+
+        public virtual int ezKey { get { return m_EzKey; } }
+
+        public virtual bool hasEzKey { get { return m_EzKey != 0; } }
 
         public abstract bool isExecuted { get; }
 
@@ -24,20 +35,28 @@ namespace KRG {
         /// Gets the key, a unique identifier. It will be cached upon first acesss.
         /// </summary>
         /// <value>The key.</value>
-        public virtual string key {
-            get {
-                if (string.IsNullOrEmpty(_key)) {
-                    if (G.U.Assert(_inputCommands != null)) {
-                        int len = _inputCommands.Length;
-                        if (G.U.Assert(len > 0)) {
-                            _key = "" + _inputCommands[0];
-                            for (int i = 1; i < len; i++) {
-                                _key += "+" + _inputCommands[i];
+        public virtual string key
+        {
+            get
+            {
+                if (string.IsNullOrEmpty(m_Key))
+                {
+                    m_Key = m_EzKey.ToString();
+
+                    if (!hasEzKey && G.U.Assert(m_Elements != null))
+                    {
+                        int len = m_Elements.Count;
+                        if (G.U.Assert(len > 0))
+                        {
+                            for (int i = 0; i < len; ++i)
+                            {
+                                var e = m_Elements[i];
+                                m_Key += "+" + e.inputCommand;
                             }
                         }
                     }
                 }
-                return _key;
+                return m_Key;
             }
         }
     }

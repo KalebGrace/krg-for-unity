@@ -44,6 +44,8 @@ namespace KRG {
 
         Attack _currentAttack;
 
+        Dictionary<int, InputSignature> _inputEzKeySigMap = new Dictionary<int, InputSignature>();
+
         AttackAbilityUse _queuedAttack;
 
 #endregion
@@ -70,16 +72,28 @@ namespace KRG {
 
 #region METHODS: PROTECTED & PRIVATE
 
-        void InitAvailableAttacks() {
-            AttackAbility aa;
-            AttackAbilityUse aaUse;
-            for (int i = 0; i < _attackAbilities.Length; ++i) {
-                aa = _attackAbilities[i];
-                aaUse = new AttackAbilityUse(aa, this);
-                //TODO: this assumes every attack ability has a unique input signature
-                //but this may need to be checked and enforced with a message on error
-                _availableAttacks.Add(aa.inputSignature, aaUse);
-                _availableAttacksBase.Add(aa.inputSignature, aaUse);
+        void InitAvailableAttacks()
+        {
+            for (int i = 0; i < _attackAbilities.Length; ++i)
+            {
+                var aa = _attackAbilities[i];
+                var sig = aa.inputSignature;
+                if (sig == null)
+                {
+                    G.Err("Missing input signature for {0}.", aa.name);
+                }
+                else if (_availableAttacks.ContainsKey(sig))
+                {
+                    G.Err("Duplicate input signature key {0} for {1} & {2}.",
+                        sig, aa.name, _availableAttacks[sig].attackAbility.name);
+                }
+                else
+                {
+                    var aaUse = new AttackAbilityUse(aa, this);
+                    _availableAttacks.Add(sig, aaUse);
+                    _availableAttacksBase.Add(sig, aaUse);
+                    if (sig.hasEzKey) _inputEzKeySigMap.Add(sig.ezKey, sig);
+                }
             }
         }
 
@@ -117,11 +131,20 @@ namespace KRG {
             }
         }
 
-        protected virtual bool IsInputSignatureExecuted(InputSignature inputSig) {
+        protected virtual void AttackViaInputEzKey(int ezKey)
+        {
+            var sig = _inputEzKeySigMap[ezKey];
+            var aaUse = _availableAttacksBase[sig];
+            _TryAttack(aaUse);
+        }
+
+        protected virtual bool IsInputSignatureExecuted(InputSignature inputSig)
+        {
             return inputSig.isExecuted;
         }
 
-        protected virtual bool IsAttackAbilityUseAvailable(AttackAbilityUse aaUse) {
+        protected virtual bool IsAttackAbilityUseAvailable(AttackAbilityUse aaUse)
+        {
             return true;
         }
 
@@ -131,12 +154,9 @@ namespace KRG {
             //if the attack attempt failed, return FALSE (otherwise, proceed)
             if (attack == null) return false;
             //the attack attempt succeeded!
-            //first off, if we interrupted an attack (_currentAttack), remove its end callback and fire the event
-            if (_currentAttack != null)
-            {
-                _currentAttack.end.actions -= _OnAttackCompleted;
-                if (attackStateChanged != null) attackStateChanged(_currentAttack, AttackState.INTERRUPTED);
-            }
+
+            //first, interrupt the current attack (if applicable)
+            InterruptCurrentAttack();
             //now, set up the NEW current attack
             _currentAttack = attack;
             attack.end.actions += _OnAttackCompleted;
@@ -146,6 +166,17 @@ namespace KRG {
             if (attackStateChanged != null) attackStateChanged(attack, AttackState.STARTED);
             //and since the attack attempt succeeded, return TRUE
             return true;
+        }
+
+        void InterruptCurrentAttack()
+        {
+            if (_currentAttack == null) return;
+            //remove the end callback
+            _currentAttack.end.actions -= _OnAttackCompleted;
+            //fire the state changed event
+            if (attackStateChanged != null) attackStateChanged(_currentAttack, AttackState.INTERRUPTED);
+            //set null
+            _currentAttack = null;
         }
 
         void UpdateAvailableAttacks(Attack attack) {
