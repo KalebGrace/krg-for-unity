@@ -1,12 +1,13 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System;
 using UnityEngine;
 
-namespace KRG {
+namespace KRG
+{
+    public abstract class Manager : IAwake
+    {
+        public abstract float priority { get; }
 
-    public abstract class Manager {
-
-#region shortcut properties
+        public abstract void Awake();
 
         protected KRGConfig config { get { return G.config; } }
 
@@ -15,14 +16,5 @@ namespace KRG {
         protected MonoBehaviour monoBehaviour { get { return G.instance; } }
 
         protected Transform transform { get { return G.instance.transform; } }
-
-#endregion
-
-#region IManager implementation
-
-        public abstract void Awake();
-
-#endregion
-
     }
 }

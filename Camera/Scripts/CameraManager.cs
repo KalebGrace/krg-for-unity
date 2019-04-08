@@ -1,31 +1,28 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
-namespace KRG {
+namespace KRG
+{
+    public class CameraManager : Manager
+    {
+        public override float priority { get { return 90; } }
 
-    public class CameraManager : Manager, ICameraManager {
-
-#region IManager implementation
-
-        public override void Awake() {
+        public override void Awake()
+        {
         }
 
-#endregion
-
-#region ICameraManager implementation: properties
-
+        /// <summary>
+        /// Gets the active camera (typically the main camera).
+        /// </summary>
+        /// <value>The active camera.</value>
         public virtual Camera camera { get { return Camera.main; } }
 
-#endregion
-
-#region ICameraManager implementation: methods
-
-        public virtual void Shake(float duration) {
+        /// <summary>
+        /// Shake the active camera for the specified duration.
+        /// </summary>
+        /// <param name="duration">Duration in seconds.</param>
+        public virtual void Shake(float duration)
+        {
             G.U.Warning("Shake(...) is not implemented.");
         }
-
-#endregion
-        
     }
 }

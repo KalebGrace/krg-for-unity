@@ -1,13 +1,8 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
-namespace KRG {
-
-    /// <summary>
-    /// SCRIPT EXECUTION ORDER: #04
-    /// </summary>
-    public class TimeManager : Manager, ITimeManager {
+﻿namespace KRG
+{
+    public class TimeManager : Manager, IFixedUpdate
+    {
+        public override float priority { get { return 40; } }
         
         const string _timeThreadInstanceInfo =
             "Furthermore, the following must be adhered to: " +
@@ -31,63 +26,67 @@ namespace KRG {
         int _threadCount;
         TimeThread[] _threads;
 
-#region IManager implementation
-
         /// <summary>
         /// Initialize the TimeManager's TimeThread instances.
         /// This must be done by KRGLoader before FixedUpdate occurs.
         /// </summary>
-        public override void Awake() {
-            if (_isInitialized) {
+        public override void Awake()
+        {
+            if (_isInitialized)
+            {
                 G.U.Warning("TimeManager is already initialized.");
                 return;
             }
             _isInitialized = true;
             var eg = new EnumGeneric(config.timeThreadInstanceEnum);
             int len = eg.length;
-            if (len < 3) {
+            if (len < 3)
+            {
                 G.U.Error("There must be at least three time thread instance enum entries. "
                 + _timeThreadInstanceInfo);
                 len = 3;
-            } else if (!eg.HasSequentialValues(-1, 1)) {
+            }
+            else if (!eg.HasSequentialValues(-1, 1))
+            {
                 G.U.Error("Time thread instance integer values must start at -1 and increment by 1. "
                 + _timeThreadInstanceInfo);
             }
             _threadCount = len - 1; //ignore "UseDefault"
             _threads = new TimeThread[_threadCount];
-            for (int i = 0; i < _threadCount; i++) {
+            for (int i = 0; i < _threadCount; i++)
+            {
                 _threads[i] = new TimeThread(i);
             }
         }
 
-#endregion
-
-#region G/MonoBehaviour methods
-
-        public virtual void FixedUpdate() {
-            for (int i = 0; i < _threadCount; i++) {
+        public virtual void FixedUpdate()
+        {
+            for (int i = 0; i < _threadCount; i++)
+            {
                 _threads[i].FixedUpdate();
             }
         }
 
-#endregion
-
-#region ITimeManager implementation: methods
-
-        public ITimeThread GetTimeThread(int timeThreadIndex, System.Enum defaultTimeThreadInstance) {
-            if (timeThreadIndex == (int)TimeThreadInstance.UseDefault) {
+        public ITimeThread GetTimeThread(int timeThreadIndex, System.Enum defaultTimeThreadInstance)
+        {
+            if (timeThreadIndex == (int)TimeThreadInstance.UseDefault)
+            {
                 return GetTimeThread(defaultTimeThreadInstance);
-            } else {
+            }
+            else
+            {
                 return GetTimeThread(timeThreadIndex);
             }
         }
 
-        public ITimeThread GetTimeThread(System.Enum timeThreadInstance) {
+        public ITimeThread GetTimeThread(System.Enum timeThreadInstance)
+        {
             //TODO: consider utilizing the EnumGeneric created in Init
             return GetTimeThread(System.Convert.ToInt32(timeThreadInstance));
         }
 
-        public ITimeThread GetTimeThread(int timeThreadIndex) {
+        public ITimeThread GetTimeThread(int timeThreadIndex)
+        {
             //TODO: FIX
             /*
             if (G.app.isQuitting && instance == null) {
@@ -98,7 +97,8 @@ namespace KRG {
             var tm = instance;
             */
             var tm = this; //TEMP FIX
-            if (timeThreadIndex < 0 || timeThreadIndex >= tm._threadCount) {
+            if (timeThreadIndex < 0 || timeThreadIndex >= tm._threadCount)
+            {
                 G.U.Error(
                     "The specified time thread index must be 0 to {0}, but {1} was provided.",
                     tm._threadCount - 1,
@@ -108,8 +108,5 @@ namespace KRG {
             }
             return tm._threads[timeThreadIndex];
         }
-
-#endregion
-
     }
 }
