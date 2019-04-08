@@ -8,7 +8,9 @@ namespace KRG
     {
         public override float priority { get { return 10; } }
 
-        float IOnDestroy.priority { get { return 1000; } }
+        float IOnDestroy.priority { get { return priorityOnDestroy; } }
+
+        protected virtual float priorityOnDestroy { get { return 1000; } }
 
         public virtual void StartApp()
         {

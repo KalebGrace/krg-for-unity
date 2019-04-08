@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Reflection;
 
 namespace KRG
 {
@@ -13,6 +14,24 @@ namespace KRG
     /// </summary>
     partial class G
     {
+
+#if !KRG_CUSTOM_G
+
+        public static readonly AppManager app = new AppManager();
+#pragma warning disable 0109
+        //building the game in Unity 2017.2.0f3 will log a warning saying this "does not hide an inherited member"
+        //however, this is incorrect, as it is actually hiding the deprecated Component.audio property
+        public static readonly new AudioManager audio = new AudioManager();
+#pragma warning restore 0109
+        public static readonly CameraManager cam = new CameraManager();
+        public static readonly DamageManager damage = new DamageManager();
+        public static readonly DOTweenManager dotween = new DOTweenManager();
+        public static readonly ObjectManager obj = new ObjectManager();
+        public static readonly TimeManager time = new TimeManager();
+        public static readonly UIManager ui = new UIManager();
+
+#endif
+        
         readonly List<Manager> m_Managers = new List<Manager>();
 
         readonly SortedList<float, IFixedUpdate> m_ManagerEventsFixedUpdate
@@ -27,39 +46,16 @@ namespace KRG
         readonly SortedList<float, IOnDestroy> m_ManagerEventsOnDestroy
         = new SortedList<float, IOnDestroy>();
 
-#if !KRG_CUSTOM_G
-        
-        public static readonly AppManager app = new AppManager();
-#pragma warning disable 0109
-        //building the game in Unity 2017.2.0f3 will log a warning saying this "does not hide an inherited member"
-        //however, this is incorrect, as it is actually hiding the deprecated Component.audio property
-        public static readonly new AudioManager audio = new AudioManager();
-#pragma warning restore 0109
-        public static readonly CameraManager cam = new CameraManager();
-        public static readonly DamageManager damage = new DamageManager();
-        public static readonly DOTweenManager dotween = new DOTweenManager();
-        public static readonly ObjectManager obj = new ObjectManager();
-        public static readonly TimeManager time = new TimeManager();
-        public static readonly UIManager ui = new UIManager();
-
         void InitManagers()
         {
-            m_Managers.Add(app);
-            m_Managers.Add(audio);
-            m_Managers.Add(cam);
-            m_Managers.Add(damage);
-            m_Managers.Add(dotween);
-            m_Managers.Add(obj);
-            m_Managers.Add(time);
-            m_Managers.Add(ui);
+            var fields = typeof(G).GetFields(BindingFlags.Public | BindingFlags.Static);
 
-            InitManagersInternal();
-        }
+            for (int i = 0; i < fields.Length; ++i)
+            {
+                var m = fields[i].GetValue(null) as Manager;
+                if (m != null) m_Managers.Add(m);
+            }
 
-#endif
-
-        void InitManagersInternal()
-        {
             m_Managers.Sort(
                 (x, y) =>
                 {
@@ -96,24 +92,24 @@ namespace KRG
 
         void FixedUpdate()
         {
-            foreach (var x in m_ManagerEventsFixedUpdate.Values) x.FixedUpdate();
+            foreach (var m in m_ManagerEventsFixedUpdate.Values) m.FixedUpdate();
         }
 
         void LateUpdate()
         {
-            foreach (var x in m_ManagerEventsLateUpdate.Values) x.LateUpdate();
+            foreach (var m in m_ManagerEventsLateUpdate.Values) m.LateUpdate();
         }
 
         void OnApplicationQuit()
         {
-            foreach (var x in m_ManagerEventsOnApplicationQuit.Values) x.OnApplicationQuit();
+            foreach (var m in m_ManagerEventsOnApplicationQuit.Values) m.OnApplicationQuit();
         }
 
         // MORE KRG METHODS
 
         void DestroyManagers()
         {
-            foreach (var x in m_ManagerEventsOnDestroy.Values) x.OnDestroy();
+            foreach (var m in m_ManagerEventsOnDestroy.Values) m.OnDestroy();
         }
     }
 }
