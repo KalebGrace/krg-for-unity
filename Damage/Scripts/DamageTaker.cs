@@ -42,12 +42,6 @@ namespace KRG {
 
 #endregion
 
-#region properties: IEnd implementation
-
-        public End end { get; private set; }
-
-#endregion
-
 #region properties
 
         //to be set by HitBox only
@@ -73,11 +67,9 @@ namespace KRG {
 
 #endregion
 
-#region MonoBehaviour methods
+
 
         protected virtual void Awake() {
-            end = new End(this);
-
             _transform = transform;
 
             G.U.Require(_damageProfile, "Damage Profile");
@@ -94,11 +86,18 @@ namespace KRG {
                 "The centerTransform property is null. Did you forget to add a HitBox to the VisRect?", this);
         }
 
-        protected virtual void OnDestroy() {
-            end.InvokeActions();
+
+
+        End my_end = new End();
+
+        public End end { get { return my_end; } }
+
+        protected virtual void OnDestroy()
+        {
+            my_end.Invoke();
         }
 
-#endregion
+
 
 #region Primary Methods
 
@@ -134,7 +133,7 @@ namespace KRG {
 
         protected virtual bool CanBeDamaged() {
             //these could pop up at any time, so let's be safe
-            return !end.isEnded && !isKnockedOut && !IsInvulnerableTo(_damageAttackAbility);
+            return !my_end.wasInvoked && !isKnockedOut && !IsInvulnerableTo(_damageAttackAbility);
         }
 
         protected virtual void DealDamage(AttackAbility attackAbility) {

@@ -1,32 +1,28 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
-namespace KRG {
-
+﻿namespace KRG
+{
     /// <summary>
     /// I end.
     /// </summary>
-    public interface IEnd {
+    public interface IEnd
+    {
+        End end { get; }
 
-        // SAMPLE IMPLEMENTATION:
+        #region SAMPLE IMPLEMENTATION
+
         /*
-#region IEnd implementation
 
-        public End end { get; private set; }
+        End my_end = new End();
 
-        void Awake() {
-            end = new End(this);
+        public End end { get { return my_end; } }
+
+        void OnDestroy()
+        {
+            my_end.Invoke();
         }
 
-        void OnDestroy() {
-            end.InvokeActions();
-        }
-
-#endregion
         */
 
-        End end { get; }
+        #endregion
 
     }
 }

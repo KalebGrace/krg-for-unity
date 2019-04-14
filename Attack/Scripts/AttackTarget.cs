@@ -121,7 +121,7 @@ namespace KRG {
                 _attackAbility.timeThread.LinkTrigger(_damageTimeTrigger);
             } else {
                 Damage();
-                if (!target.end.isEnded && !target.isKnockedOut && !isHitLimitReached) {
+                if (!target.end.wasInvoked && !target.isKnockedOut && !isHitLimitReached) {
                     if (_attackAbility.hasHPDamageRate) {
                         _damageTimeTrigger = _attackAbility.timeThread.AddTrigger(
                             _attackAbility.hpDamageRateSec, Damage);
@@ -153,7 +153,7 @@ namespace KRG {
 
         void Damage(TimeTrigger tt) {
             Damage();
-            if (!target.end.isEnded && !target.isKnockedOut && !isHitLimitReached) {
+            if (!target.end.wasInvoked && !target.isKnockedOut && !isHitLimitReached) {
                 tt.Proceed();
             }
         }

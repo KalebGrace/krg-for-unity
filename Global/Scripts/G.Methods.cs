@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace KRG
 {
@@ -54,8 +52,9 @@ namespace KRG
         public static void End(GameObject obj)
         {
             if (EndNull(obj)) return;
-            obj.CallInterfaces<IEnd>(MarkAsEnded);
-            Object.Destroy(obj);
+            Destroy(obj);
+            //TODO: the following does not work properly; fix or remove
+            //obj.CallInterfaces<IEnd>(CheckEnded);
         }
 
         /// <summary>
@@ -66,8 +65,8 @@ namespace KRG
         public static void End(IEnd obj)
         {
             if (EndNull(obj)) return;
-            MarkAsEnded(obj);
-            Object.Destroy(obj.end.owner);
+            Destroy((Object)obj);
+            CheckEnded(obj);
         }
 
         /// <summary>
@@ -78,8 +77,7 @@ namespace KRG
         public static void End(Object obj)
         {
             if (EndNull(obj)) return;
-            //
-            Object.Destroy(obj);
+            Destroy(obj);
         }
 
         static bool EndNull(object o)
@@ -95,9 +93,12 @@ namespace KRG
             }
         }
 
-        static void MarkAsEnded(IEnd iEnd)
+        static void CheckEnded(IEnd iEnd)
         {
-            iEnd.end.MarkAsEnded();
+            if (!iEnd.end.wasInvoked)
+            {
+                Err("{0} has been destroyed without calling my_end.Invoke() in the OnDestroy method.", iEnd.ToString());
+            }
         }
 
 #endregion

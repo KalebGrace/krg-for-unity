@@ -1,34 +1,37 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using KRG;
-using UnityEngine;
+﻿using UnityEngine;
 
-namespace KRG {
-
-    public class End {
-
+namespace KRG
+{
+    public class End
+    {
         public event System.Action actions;
 
-        public bool isEnded { get; private set; }
+        public State state { get; private set; }
 
-        public MonoBehaviour owner { get; private set; }
-
-        public End(MonoBehaviour owner) {
-            this.owner = owner;
+        public enum State
+        {
+            Endless = 0,
+            Ending = 1,
+            Ended = 2,
         }
 
-        /// <summary>
-        /// Invokes the end actions. Should only be called by the owner class.
-        /// </summary>
-        public void InvokeActions() {
+        public bool wasInvoked
+        {
+            get
+            {
+                return state != State.Endless;
+            }
+        }
+
+        public void Invoke()
+        {
+            if (wasInvoked) return;
+
+            state = State.Ending;
+
             if (actions != null) actions();
-        }
 
-        /// <summary>
-        /// Marks the owner as ended. Should only be called by G.End(...).
-        /// </summary>
-        public void MarkAsEnded() {
-            isEnded = true;
+            state = State.Ended;
         }
     }
 }

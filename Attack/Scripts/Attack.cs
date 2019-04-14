@@ -51,12 +51,6 @@ namespace KRG {
 
 #endregion
 
-#region PROPERTIES: IEnd
-
-        public End end { get; private set; }
-
-#endregion
-
 #region PROPERTIES: PUBLIC
 
         public virtual AttackAbility attackAbility { get { return _attackAbility; } }
@@ -69,7 +63,7 @@ namespace KRG {
 
 #endregion
 
-#region METHODS: MonoBehaviour
+
 
         protected virtual void Awake() {
             _transform = transform;
@@ -81,8 +75,7 @@ namespace KRG {
 
             _graphicsController = G.U.Require<GraphicsController>(this);
 
-            end = new End(this);
-            end.actions += ForceOnTriggerExit;
+            my_end.actions += ForceOnTriggerExit;
         }
 
         void Start() {
@@ -102,7 +95,7 @@ namespace KRG {
             HitBox hitbox = other.GetComponent<HitBox>();
             if (hitbox == null) return;
             DamageTaker target = hitbox.damageTaker;
-            if (target.end.isEnded) return;
+            if (target.end.wasInvoked) return;
             AttackTarget at = _attackTargets.Find(x => x.target == target);
             if (at == null) {
                 G.U.Assert(damageDealtHandler != null, "The damageDealtHandler must be set before collision occurs.");
@@ -118,7 +111,7 @@ namespace KRG {
             HitBox hitbox = other.GetComponent<HitBox>();
             if (hitbox == null) return;
             DamageTaker target = hitbox.damageTaker;
-            if (target.end.isEnded) return;
+            if (target.end.wasInvoked) return;
             AttackTarget at = _attackTargets.Find(x => x.target == target);
             G.U.Assert(at != null, string.Format(
                 "Target \"{0}\" exited the trigger of Attack \"{1}\", but was not found in m_attackTargets.",
@@ -134,12 +127,20 @@ namespace KRG {
             if (boxCollider != null) Gizmos.DrawWireCube(p + boxCollider.center, boxCollider.size);
         }
 
-        protected virtual void OnDestroy() {
-            end.InvokeActions();
+
+
+        End my_end = new End();
+
+        public End end { get { return my_end; } }
+
+        protected virtual void OnDestroy()
+        {
+            my_end.Invoke();
+
             ForceReleaseTargets();
         }
 
-#endregion
+
 
 #region METHODS: PUBLIC, PROTECTED, & PRIVATE
 
@@ -229,7 +230,7 @@ namespace KRG {
             AttackTarget at;
             for (int i = 0; i < _attackTargets.Count; i++) {
                 at = _attackTargets[i];
-                if (at != null && at.isInProgress && !at.target.end.isEnded) {
+                if (at != null && at.isInProgress && !at.target.end.wasInvoked) {
                     at.StopTakingDamage();
                 }
             }

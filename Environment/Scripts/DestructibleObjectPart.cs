@@ -28,17 +28,9 @@ namespace KRG {
 
 #endregion
 
-#region IEnd implementation
 
-        public End end { get; private set; }
-
-#endregion
-
-#region MonoBehaviour methods
 
         void Awake() {
-            end = new End(this);
-
             _collider = G.U.Require<Collider>(this);
             _renderer = G.U.Require<Renderer>(this);
             _rigidbody = G.U.Require<Rigidbody>(this);
@@ -61,11 +53,18 @@ namespace KRG {
             }
         }
 
-        void OnDestroy() {
-            end.InvokeActions();
+
+
+        End my_end = new End();
+
+        public End end { get { return my_end; } }
+
+        void OnDestroy()
+        {
+            my_end.Invoke();
         }
 
-#endregion
+
 
         public void Explode(Vector3 explosionPosition) {
             G.U.Require(_data, "Data");
@@ -92,7 +91,7 @@ namespace KRG {
 
         void Dispose(TimeTrigger tt) {
             //this may already be ended at the end of a scene
-            if (!end.isEnded) G.End(gameObject);
+            if (!my_end.wasInvoked) G.End(gameObject);
         }
     }
 }
