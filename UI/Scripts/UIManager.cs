@@ -29,7 +29,7 @@ namespace KRG
             RemoveColorOverlay();
 
             _colorOverlay = new GameObject("ColorOverlayCanvas", typeof(Canvas));
-            _colorOverlay.PersistNewScene();
+            _colorOverlay.PersistNewScene(PersistNewSceneType.MoveToHierarchyRoot);
             var c = _colorOverlay.GetComponent<Canvas>();
             c.renderMode = RenderMode.ScreenSpaceOverlay;
             c.sortingOrder = 1024;

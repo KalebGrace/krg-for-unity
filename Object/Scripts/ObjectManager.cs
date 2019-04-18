@@ -72,7 +72,7 @@ namespace KRG
                 //this is the FIRST instance; set it as the singleton instance
                 T first = (T)instance;
                 instance.singletonInstance = first;
-                first.PersistNewScene();
+                first.PersistNewScene(PersistNewSceneType.MoveToHierarchyRoot);
                 G.U.Prevent(instance.isDuplicateInstance, "First instance marked as duplicate.", instance, t);
             }
             else
@@ -97,7 +97,7 @@ namespace KRG
                     T oldIn = instance.singletonInstance;
                     //set the NEW instance as the new singleton instance
                     instance.singletonInstance = newIn;
-                    newIn.PersistNewScene();
+                    newIn.PersistNewScene(PersistNewSceneType.MoveToHierarchyRoot);
                     //mark the OLD instance as a duplicate and destroy it
                     oldIn.isDuplicateInstance = true;
                     oldIn.duplicateDestroyType = DestroyType.GameObjectNormal; //default
