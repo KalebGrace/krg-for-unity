@@ -27,17 +27,17 @@ namespace KRG
 
             if (max)
             {
-                operation = (int)EffectorOperation.PercentOfMax;
+                operation = (int)EffectorOperation.SetToXPercentOfMax;
                 value = 100;
             }
             else if (min)
             {
-                operation = (int)EffectorOperation.PercentOfMax;
+                operation = (int)EffectorOperation.SetToXPercentOfMax;
                 value = 0;
             }
             else if (v.HasValue)
             {
-                operation = (int)EffectorOperation.Set;
+                operation = (int)EffectorOperation.SetTo;
                 value = v.Value + d;
             }
             else if (!d.Ap(0))
@@ -67,18 +67,22 @@ namespace KRG
                 case EffectorOperation.None:
                     //do nothing
                     return true;
-                case EffectorOperation.Set:
+                case EffectorOperation.SetTo:
                     //keep ev as is
                     break;
                 case EffectorOperation.Add:
                     ev += pv;
                     break;
-                case EffectorOperation.Multiply:
+                case EffectorOperation.MultiplyBy:
                     ev *= pv;
                     break;
-                case EffectorOperation.PercentOfMax:
+                case EffectorOperation.SetToXPercentOfMax:
                     ev *= 0.01f * (max - min);
                     ev += min;
+                    break;
+                case EffectorOperation.AddXPercentOfMax:
+                    ev *= 0.01f * (max - min);
+                    ev += pv;
                     break;
                 default:
                     G.U.Unsupported(null, (EffectorOperation)operation);
@@ -117,12 +121,14 @@ namespace KRG
     {
         None = 0,
         //
-        Set = 100,
+        SetTo = 100,
         //add, or subtract (if value is negative)
         Add = 200,
         //multiply, or divide (via decimal value)
-        Multiply = 300,
+        MultiplyBy = 300,
         //percentage of the maximum value (0~100)
-        PercentOfMax = 400,
+        SetToXPercentOfMax = 400,
+        //add specified percent
+        AddXPercentOfMax = 500,
     }
 }

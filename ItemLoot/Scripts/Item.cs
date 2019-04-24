@@ -8,6 +8,13 @@ namespace KRG
 {
     public class Item : MonoBehaviour
     {
+        //TODO: later
+        /*
+         * MAKE SURE that an item has a (non-serialized) property called "owner" that it defaults to if auto-collected.
+         * Also, the default of this default should be the player character.
+         * When an Item is spawned via Loot, this should be a constructor parameter.
+        */
+
         [Header("VFX")]
 
         [SerializeField]
@@ -48,8 +55,7 @@ namespace KRG
         {
             //TODO: differentiate between the character, etc. using the item
             if (other.gameObject.tag != "Player") return false;
-            var dt = other.GetComponent<DamageTaker>();
-            if (dt != null && _itemData.hp > 0) dt.AddHP(_itemData.hp);
+            //TODO: do effectors as appropriate
             return true;
         }
 
