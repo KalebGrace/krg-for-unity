@@ -22,6 +22,7 @@ namespace KRG
 
 
         protected ItemData _itemData;
+        protected ISpawn _spawner;
 
 
         protected virtual void Start()
@@ -40,9 +41,10 @@ namespace KRG
         }
 
 
-        public virtual void Init(ItemData itemData)
+        public virtual void Init(ItemData itemData, ISpawn spawner)
         {
             _itemData = itemData;
+            _spawner = spawner;
         }
 
         public virtual bool OnCollect(Collider other)

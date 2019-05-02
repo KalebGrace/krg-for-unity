@@ -1,19 +1,23 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
-namespace KRG {
-
-    public class ItemSpawner : MonoBehaviour {
-
+namespace KRG
+{
+    public class ItemSpawner : MonoBehaviour, ISpawn
+    {
         [SerializeField]
         ItemData _item;
 
-        void Start() {
-            if (_item != null) {
-                _item.Spawn(transform.position, transform.parent);
+        public Transform centerTransform => transform;
+
+        void Start()
+        {
+            if (_item != null)
+            {
+                _item.SpawnFrom(this);
             }
-            G.End(gameObject);
+
+            gameObject.Dispose();
         }
     }
 }

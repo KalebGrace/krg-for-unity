@@ -1,9 +1,8 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
-namespace KRG {
-
+namespace KRG
+{
     /// <summary>
     /// Loot data. Represents the conditions and probability of generating an item.
     /// </summary>
@@ -12,10 +11,8 @@ namespace KRG {
         menuName = "KRG Scriptable Object/Loot Data",
         order = 123
     )]
-    public class LootData : ScriptableObject {
-
-#region serialized fields
-
+    public class LootData : ScriptableObject
+    {
         //[SerializeField]
         //float _probabilityScale = 100;
 
@@ -27,16 +24,19 @@ namespace KRG {
         [SerializeField, Tooltip("These are all the possible items that can be generated.")]
         protected List<LootItem> _items = new List<LootItem>();
 
-#endregion
+        //
+        //
+        //
 
-#region public methods
-
-        public LootItem[] GetItemArray() {
+        public LootItem[] GetItemArray()
+        {
             return _items.ToArray();
         }
 
-        public virtual ItemData RollItem() {
-            if (_items == null) {
+        public virtual ItemData RollItem()
+        {
+            if (_items == null)
+            {
                 G.Err(this, "No items are available for the {0} loot data.", name);
                 return null;
             }
@@ -45,7 +45,9 @@ namespace KRG {
             return li.item;
         }
 
-#endregion
-
+        internal void Drop(ISpawn spawner)
+        {
+            RollItem().SpawnFrom(spawner);
+        }
     }
 }

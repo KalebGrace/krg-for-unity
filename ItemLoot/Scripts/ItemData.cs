@@ -1,9 +1,8 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
-namespace KRG {
-
+namespace KRG
+{
     /// <summary>
     /// Item data. Represents the item data, including pickup, effects, and physical GameObject.
     /// </summary>
@@ -12,8 +11,8 @@ namespace KRG {
         menuName = "KRG Scriptable Object/Item Data",
         order = 123
     )]
-    public class ItemData : ScriptableObject {
-        
+    public class ItemData : ScriptableObject
+    {
         [SerializeField, Tooltip("The name of the item, as displayed to the player.")]
         string displayName;
 
@@ -40,17 +39,24 @@ namespace KRG {
         //
         //
 
-        protected virtual void OnValidate() {
-            if (displayName == null || string.IsNullOrEmpty(displayName.Trim())) {
+        protected virtual void OnValidate()
+        {
+            if (displayName == null || string.IsNullOrEmpty(displayName.Trim()))
+            {
                 displayName = name;
             }
             _autoCollect.floatValue = Mathf.Max(0, _autoCollect.floatValue);
         }
 
-        public Item Spawn(Vector3 position, Transform parent) {
-            var item = Instantiate(_prefab, parent);
+        public Item SpawnFrom(ISpawn spawner)
+        {
+            Transform parent = spawner.transform.parent;
+            Vector3 position = spawner.centerTransform.position;
+
+            Item item = Instantiate(_prefab, parent);
             item.transform.position = item.transform.localPosition + position;
-            item.Init(this);
+            item.Init(this, spawner);
+
             return item;
         }
     }

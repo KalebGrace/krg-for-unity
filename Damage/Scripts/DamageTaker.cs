@@ -5,7 +5,7 @@ using UnityEngine.Serialization;
 
 namespace KRG {
 
-    public abstract class DamageTaker : MonoBehaviour, IDamageable, IEnd {
+    public abstract class DamageTaker : MonoBehaviour, IDamageable, IEnd, ISpawn {
 
 #region fields
 
@@ -306,7 +306,7 @@ namespace KRG {
 
         protected virtual void OnKnockedOut(Vector3 attackPositionCenter) {
             var ld = _damageProfile.knockedOutLoot;
-            if (ld != null) ld.RollItem().Spawn(centerTransform.position, _transform.parent);
+            if (ld != null) ld.Drop(this);
             G.End(gameObject);
         }
 
