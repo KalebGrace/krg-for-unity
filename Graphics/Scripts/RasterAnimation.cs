@@ -19,9 +19,11 @@ namespace KRG {
 
 #region serialized fields
 
+        /*
         [HideInInspector]
         [SerializeField]
-        int _serializedVersion;
+        int _serializedVersion = default;
+        */       
 
 		[Header("Raster Data")]
 
@@ -30,14 +32,14 @@ namespace KRG {
 #endif
         [SerializeField]
         [FormerlySerializedAs("m_gifBytes")]
-        TextAsset _gifBytes;
+        TextAsset _gifBytes = default;
 
 #if KRG_X_ODIN
         [PropertyOrder(-10)]
 #endif
         [SerializeField]
         [FormerlySerializedAs("m_dimensions")]
-        protected Vector2 _dimensions;
+        protected Vector2 _dimensions = default;
 
         //--
 
@@ -63,7 +65,7 @@ namespace KRG {
 #endif
         [SerializeField]
         [Tooltip("Index of the frame sequence from which to start any loops.")]
-        int _loopToSequence;
+        int _loopToSequence = default;
 
         //--
 
@@ -74,7 +76,7 @@ namespace KRG {
 #endif
         [SerializeField]
         [FormerlySerializedAs("m_frameSequences")]
-        FrameSequence[] _frameSequences;
+        FrameSequence[] _frameSequences = default;
 
 #endregion
 

@@ -34,7 +34,7 @@ namespace KRG {
 
         [SerializeField]
         [FormerlySerializedAs("m_physicMaterial")]
-        PhysicMaterial _physicMaterial;
+        PhysicMaterial _physicMaterial = default;
 
         [Header("Requires DOTween")]
         [SerializeField]

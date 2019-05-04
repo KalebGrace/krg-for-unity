@@ -6,7 +6,7 @@ namespace KRG
     public class ItemSpawner : MonoBehaviour, ISpawn
     {
         [SerializeField]
-        ItemData _item;
+        ItemData _item = default;
 
         public Transform centerTransform => transform;
 

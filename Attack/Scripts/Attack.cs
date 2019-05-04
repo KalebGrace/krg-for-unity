@@ -29,12 +29,12 @@ namespace KRG {
         [Header("Optional Standalone Attack Ability")]
 
         [SerializeField, FormerlySerializedAs("m_attackAbility")]
-        AttackAbility _attackAbility;
+        AttackAbility _attackAbility = default;
 
         [Header("Transform")]
 
         [SerializeField]
-        List<Transform> _flippableTransforms;
+        List<Transform> _flippableTransforms = default;
 
 #endregion
 

@@ -24,16 +24,18 @@ namespace KRG {
 
 #endif
 
+        /*
         [HideInInspector]
         [SerializeField]
         [FormerlySerializedAs("m_serializedVersion")]
-        int _serializedVersion;
+        int _serializedVersion = default;
+        */       
 
         [Header("KRG: King's Royal Gold")]
 
         [SerializeField]
         [FormerlySerializedAs("m_references")]
-        KRGReferences _krgReferences;
+        KRGReferences _krgReferences = default;
 
         public KRGReferences krgReferences { get { return _krgReferences; } }
 
@@ -44,9 +46,9 @@ namespace KRG {
         [Header("Damage (KRG)")]
 
         [SerializeField]
-        DamageValue _damageValuePrefab;
+        DamageValue _damageValuePrefab = default;
         [SerializeField]
-        HPBar _hpBarPrefab;
+        HPBar _hpBarPrefab = default;
 
         public DamageValue damageValuePrefab { get { return _damageValuePrefab; } }
 
@@ -59,11 +61,11 @@ namespace KRG {
         [Header("DOTween (KRG)")]
 
         [SerializeField]
-        bool _doTweenUseInitSettings;
+        bool _doTweenUseInitSettings = default;
         [SerializeField]
-        bool _doTweenRecycleAllByDefault;
+        bool _doTweenRecycleAllByDefault = default;
         [SerializeField]
-        bool _doTweenUseSafeMode;
+        bool _doTweenUseSafeMode = default;
 #if NS_DG_TWEENING
         [SerializeField]
         LogBehaviour _doTweenLogBehaviour = LogBehaviour.Default;
@@ -88,7 +90,7 @@ namespace KRG {
         [SerializeField]
         [Tooltip("Add prefabs here to have them automatically instantiated as child GameObjects of KRGLoader."
         + " As children of KRGLoader, they will persist across scenes for the lifetime of the application.")]
-        GameObject[] _autoInstancedPrefabs;
+        GameObject[] _autoInstancedPrefabs = default;
 
         public GameObject[] autoInstancedPrefabs { get { return (GameObject[])_autoInstancedPrefabs.Clone(); } }
 

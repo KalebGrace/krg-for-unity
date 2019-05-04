@@ -9,11 +9,11 @@ namespace KRG {
 
         [SerializeField]
         [FormerlySerializedAs("m_partData")]
-        protected DestructibleObjectData _partData;
+        protected DestructibleObjectData _partData = default;
         [SerializeField]
-        Collider _externalCollider;
+        Collider _externalCollider = default;
         [SerializeField]
-        Renderer _externalRenderer;
+        Renderer _externalRenderer = default;
 
         Vector3 _explosionPosition;
 

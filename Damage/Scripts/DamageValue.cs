@@ -25,36 +25,36 @@ namespace KRG {
 #if NS_TMPRO
         [SerializeField]
         [FormerlySerializedAs("m_text100")]
-		TMP_Text _text100;
+		TMP_Text _text100 = default;
 
         [SerializeField]
         [FormerlySerializedAs("m_text010")]
-		TMP_Text _text010;
+		TMP_Text _text010 = default;
 
         [SerializeField]
         [FormerlySerializedAs("m_text001")]
-		TMP_Text _text001;
+		TMP_Text _text001 = default;
 
 #else
         [SerializeField]
         [FormerlySerializedAs("m_font")]
-        Font _font;
+        Font _font = default;
 
         [SerializeField]
         [FormerlySerializedAs("m_material")]
-        Material _material;
+        Material _material = default;
 
         [SerializeField]
         [FormerlySerializedAs("m_text100")]
-        TextMesh _text100;
+        TextMesh _text100 = default;
 
         [SerializeField]
         [FormerlySerializedAs("m_text010")]
-        TextMesh _text010;
+        TextMesh _text010 = default;
 
         [SerializeField]
         [FormerlySerializedAs("m_text001")]
-        TextMesh _text001;
+        TextMesh _text001 = default;
 #endif
 
 #if NS_DG_TWEENING

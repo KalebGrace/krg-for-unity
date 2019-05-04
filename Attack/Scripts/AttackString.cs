@@ -22,11 +22,11 @@ namespace KRG {
 
         [SerializeField]
         [FormerlySerializedAs("m_attackAbility")]
-        AttackAbility _attackAbility;
+        AttackAbility _attackAbility = default;
 
         [SerializeField]
         [FormerlySerializedAs("m_doesInterrupt")]
-        bool _doesInterrupt;
+        bool _doesInterrupt = default;
 
 #endregion
 

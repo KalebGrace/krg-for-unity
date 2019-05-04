@@ -10,7 +10,7 @@ namespace KRG {
 
         [SerializeField]
         [FormerlySerializedAs("m_damageTaker")]
-        DamageTaker _damageTaker;
+        DamageTaker _damageTaker = default;
 
         public DamageTaker damageTaker { get { return _damageTaker; } }
 

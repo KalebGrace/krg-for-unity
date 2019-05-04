@@ -12,7 +12,7 @@ namespace KRG {
 		[SerializeField]
 		string _sortingLayerName = "Default";
 		[SerializeField]
-		int _sortingOrder;
+		int _sortingOrder = default;
 
 #endregion
 

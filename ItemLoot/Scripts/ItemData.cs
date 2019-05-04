@@ -14,11 +14,11 @@ namespace KRG
     public class ItemData : ScriptableObject
     {
         [SerializeField, Tooltip("The name of the item, as displayed to the player.")]
-        string displayName;
+        string displayName = default;
 
         [SerializeField, Tooltip("A prefab that has an Item component on its root GameObject. " +
         "This is used to instantiate a physical GameObject for this item in the world.")]
-        Item _prefab;
+        Item _prefab = default;
 
         //will the item be picked up automatically? (makes this an "auto-collected" item)
         //and if so, how long after the item is instantiated will the item be picked up? (delay in seconds)
@@ -26,7 +26,7 @@ namespace KRG
         [LabelText("Auto-Collect (+Delay)")]
         [Tooltip("Will this be picked up automatically? And if so, with how much delay (in seconds)?")]
         [BoolObjectDisable(false)]
-        BoolFloat _autoCollect;
+        BoolFloat _autoCollect = default;
 
         //
         //

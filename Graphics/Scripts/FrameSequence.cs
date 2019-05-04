@@ -30,16 +30,16 @@ namespace KRG {
         [HideInInspector]
         [SerializeField]
         [FormerlySerializedAs("m_serializedVersion")]
-        int _serializedVersion;
+        int _serializedVersion = default;
 
         [SerializeField]
         [Tooltip("An optional name you may give this frame sequence.")]
         [FormerlySerializedAs("m_name")]
-        string _name;
+        string _name = default;
 
         [SerializeField]
         [Tooltip("Commas seperate frames/groups. 1-3-1 means 1,2,3,2,1. 1-3x2-1 means 1-3,3-1 means 1,2,3,3,2,1.")]
-        string _frames;
+        string _frames = default;
 
         [HideInInspector]
         [SerializeField]
@@ -60,19 +60,19 @@ namespace KRG {
         [SerializeField]
         [Tooltip("Denotes that this does call code upon starting this frame sequence.")]
         [FormerlySerializedAs("m_doesCallCode")]
-        bool _doesCallCode;
+        bool _doesCallCode = default;
 
         //[System.Obsolete("Use _fromFrame instead.")]
         [HideInInspector]
         [SerializeField]
         [FormerlySerializedAs("m_from")]
-        int _from;
+        int _from = default;
 
         //[System.Obsolete("Use _toFrame instead.")]
         [HideInInspector]
         [SerializeField]
         [FormerlySerializedAs("m_to")]
-        int _to;
+        int _to = default;
 
 #endregion
 

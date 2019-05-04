@@ -26,7 +26,7 @@ namespace KRG {
 #endif
         [SerializeField]
         [FormerlySerializedAs("m_sfxFmodEvent")]
-        string _sfxFmodEvent;
+        string _sfxFmodEvent = default;
 
         //base HP (hit point) maximum
         [Header("HP")]
@@ -38,18 +38,18 @@ namespace KRG {
         [Header("Knock Back")]
         [SerializeField]
         [FormerlySerializedAs("m_knockBackDistance")]
-        float _knockBackDistance;
+        float _knockBackDistance = default;
 
         //time (in SECONDS) the object is in a knock back state when damaged (overlaps invulnerability time)
         [SerializeField]
         [FormerlySerializedAs("m_knockBackTime")]
-        float _knockBackTime;
+        float _knockBackTime = default;
 
         //time (in SECONDS) the object is in an invulnerable state when damaged (overlaps knock back time)
         [Header("Invulnerability")]
         [SerializeField]
         [FormerlySerializedAs("m_invulnerabilityTime")]
-        float _invulnerabilityTime;
+        float _invulnerabilityTime = default;
 
         //does invulnerability cause the object's graphics to flicker?
         [SerializeField]
@@ -59,7 +59,7 @@ namespace KRG {
         [Header("Loot")]
 
         [SerializeField]
-        LootData _knockedOutLoot;
+        LootData _knockedOutLoot = default;
 
 
         //applicable time thread interface, from _timeThreadIndex

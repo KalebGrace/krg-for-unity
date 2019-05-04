@@ -9,7 +9,7 @@ namespace KRG {
 #region serialized fields
 
         [SerializeField]
-        GameObject[] _redundantObjects;
+        GameObject[] _redundantObjects = default;
 
 #endregion
 
