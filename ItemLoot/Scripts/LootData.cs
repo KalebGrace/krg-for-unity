@@ -13,20 +13,16 @@ namespace KRG
     )]
     public class LootData : ScriptableObject
     {
-        //[SerializeField]
-        //float _probabilityScale = 100;
+        public float probabilityScale = 100;
 
-        //list of LootItems that can be generated:
-        //▲ top item is most commonly generated
-        //▼ bottom item is most rarely generated
-        //NOTE: the probability of generating items can also be equal,
-        //in which case the order is largely irrelevant
         [SerializeField, Tooltip("These are all the possible items that can be generated.")]
         protected List<LootItem> _items = new List<LootItem>();
 
         //
         //
         //
+
+        //TODO: validate that probabilityScale is greater than or equal to sum of probabilities
 
         public LootItem[] GetItemArray()
         {
@@ -40,14 +36,37 @@ namespace KRG
                 G.Err(this, "No items are available for the {0} loot data.", name);
                 return null;
             }
-            var idx = Random.Range(0, _items.Count);
-            var li = _items[idx];
-            return li.item;
+
+            if (probabilityScale <= 0)
+            {
+                G.Err(this, "The probability scale must be greater than zero.");
+                return null;
+            }
+
+            float r = 0;
+            while (r <= 0)
+            {
+                r = Random.Range(0, probabilityScale);
+            }
+
+            float e = 0;
+            for (int i = 0; i < _items.Count; ++i)
+            {
+                LootItem loot = _items[i];
+                e += loot.probability;
+                if (r <= e)
+                {
+                    return loot.item;
+                }
+            }
+
+            //no item
+            return null;
         }
 
         internal void Drop(ISpawn spawner)
         {
-            RollItem().SpawnFrom(spawner);
+            RollItem()?.SpawnFrom(spawner);
         }
     }
 }

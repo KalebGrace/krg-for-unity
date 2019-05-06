@@ -50,6 +50,23 @@ namespace KRG
 
         public Item SpawnFrom(ISpawn spawner)
         {
+            if (_autoCollect.boolValue && _autoCollect.floatValue <= 0)
+            {
+                return InstaCollect(spawner);
+            }
+            else
+            {
+                return SpawnFoSho(spawner);
+            }
+        }
+
+        protected virtual Item InstaCollect(ISpawn spawner)
+        {
+            return SpawnFoSho(spawner);
+        }
+
+        protected virtual Item SpawnFoSho(ISpawn spawner)
+        {
             Transform parent = spawner.transform.parent;
             Vector3 position = spawner.centerTransform.position;
 
