@@ -11,20 +11,19 @@ namespace KRG {
     /// 2.  Attack is to be added to a game object as a script/component*. The following must also be done:
     ///   a.  Attack must have a derived class specifically for this project (e.g. AttackMyGame).
     ///   b.  GraphicsController must also have a derived class for this project (e.g. GraphicsControllerMyGame).
-    ///   c.  "AttackMyGame" (the derived class) must have a RequireComponent attribute referencing the above, as such:
-    ///       [RequireComponent(typeof(BoxCollider), typeof(GraphicsControllerMyGame))]
-    ///   d.  Any game object with the Attack component must exist on an "Attack" layer.
-    ///   e.  Any game object with the Attack component must have its box collider set as a trigger.
+    ///   c.  Any game object with the Attack component must exist on an "Attack" layer.
+    ///   d.  Any game object with the Attack component must have its box collider set as a trigger.
     /// 3.  Attack is a key component of the Attack system, and is used in conjunction with the following classes:
     ///     AttackAbility, AttackAbilityUse, Attacker, AttackString, AttackTarget, and KnockBackCalcMode.
     /// 4.*-Attacker is abstract and must have a per-project derived class created (as mentioned in 2a);
     ///     the derived class itself must be added to a game object as a script/component.
-    /// Last Refactor: 1.00.004 / 2018-07-23
     /// </summary>
-    [RequireComponent(typeof(BoxCollider), typeof(GraphicsController))]
+    [RequireComponent(typeof(GraphicsController))]
     public abstract class Attack : MonoBehaviour, IEnd {
 
-#region FIELDS: SERIALIZED
+        public BoxCollider hitbox;
+
+        public BoxCollider hurtbox;
 
         [Header("Optional Standalone Attack Ability")]
 
@@ -36,7 +35,7 @@ namespace KRG {
         [SerializeField]
         List<Transform> _flippableTransforms = default;
 
-#endregion
+
 
 #region FIELDS: PRIVATE
 
@@ -65,13 +64,24 @@ namespace KRG {
 
 
 
-        protected virtual void Awake() {
+        protected virtual void Awake()
+        {
             _transform = transform;
 
             G.U.Assert(gameObject.layer != Layer.Default, "This GameObject must exist on an attack Layer.");
 
-            _boxCollider = G.U.Require<BoxCollider>(this);
+            if (hitbox != null)
+            {
+                _boxCollider = hitbox;
+            }
+            else
+            {
+                _boxCollider = G.U.Require<BoxCollider>(this);
+            }
             G.U.Assert(_boxCollider.isTrigger, "The BoxCollider Component must be a trigger.");
+
+            //TODO: apply hurtbox where needed
+            if (hurtbox) hurtbox.enabled = false;
 
             _graphicsController = G.U.Require<GraphicsController>(this);
 
