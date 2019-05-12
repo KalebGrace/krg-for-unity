@@ -267,13 +267,52 @@ namespace KRG {
 
             RuntimeGifLoader i = new RuntimeGifLoader();
             _previewGif = i.BeginLoad(file.name, file.bytes);
-            if (i.LoadNextFrame()) {
-                i.EndLoad();
-                if (mode == GifPlayerMode.UI) {
-                    playImage.texture = _previewGif.frames[0];
-                } else if (mode == GifPlayerMode.Material) {
-                    playMat.SetTexture(materialProperty, _previewGif.frames[0]);
+            
+            for (int counter = 0; counter < previewFrame; ++counter)
+            {
+                if (!i.SkipNextFrame())
+                {
+                    i.EndLoad();
+
+                    Clear();
+
+                    return;
                 }
+            }
+
+            if (i.LoadNextFrame())
+            {
+                i.EndLoad();
+
+                previewFrame = Mathf.Min(previewFrame, _previewGif.Frames - 1);
+
+                SetPreviewTextureKRG(_previewGif.frames[previewFrame]);
+            }
+            else
+            {
+                i.EndLoad();
+
+                Clear();
+            }
+        }
+
+        private void Clear()
+        {
+            Texture2D tex = new Texture2D(1, 1);
+            tex.SetPixels(new Color[] { Color.clear });
+            tex.Apply();
+            SetPreviewTextureKRG(tex);
+        }
+
+        void SetPreviewTextureKRG(Texture2D tex)
+        {
+            if (mode == GifPlayerMode.UI)
+            {
+                playImage.texture = tex;
+            }
+            else if (mode == GifPlayerMode.Material)
+            {
+                playMat.SetTexture(materialProperty, tex);
             }
         }
 
