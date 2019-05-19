@@ -52,6 +52,10 @@ namespace KRG {
 
 #region PROPERTIES
 
+        public Character Character { get; protected set; }
+
+        public GraphicsController GraphicsController { get; protected set; }
+
         public abstract bool isFlippedX { get; }
 
         public abstract bool isPlayerCharacter { get; }
@@ -60,17 +64,27 @@ namespace KRG {
 
 #region METHODS: MonoBehaviour
 
-        protected virtual void Awake() {
+        protected virtual void Awake()
+        {
+            InitProperties();
+
             InitAvailableAttacks();
         }
 
-        protected virtual void Update() {
+        protected virtual void Update()
+        {
             CheckInputAndTryAttack();
         }
 
 #endregion
 
 #region METHODS: PROTECTED & PRIVATE
+
+        protected virtual void InitProperties()
+        {
+            GraphicsController = GetComponent<GraphicsController>();
+            Character = GraphicsController?.GetComponent<Character>();
+        }
 
         void InitAvailableAttacks()
         {

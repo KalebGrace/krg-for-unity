@@ -88,13 +88,18 @@ namespace KRG {
             my_end.actions += ForceOnTriggerExit;
         }
 
-        void Start() {
+        protected virtual void Start()
+        {
             //if the attack is spawned normally, through AttackAbility, Init should have already been called by now
             //however, if it hasn't, and there is an Optional Standalone Attack Ability assigned, use this ability
-            if (!_isInitialized) {
-                if (_attackAbility != null) {
+            if (!_isInitialized)
+            {
+                if (_attackAbility != null)
+                {
                     InitInternal();
-                } else {
+                }
+                else
+                {
                     G.U.Warning("If this Attack exists on its own, " +
                     "it should probably have a Standalone Attack Ability.");
                 }
