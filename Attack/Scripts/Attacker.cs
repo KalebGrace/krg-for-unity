@@ -154,7 +154,7 @@ namespace KRG {
 
         protected virtual bool IsInputSignatureExecuted(InputSignature inputSig)
         {
-            return inputSig.isExecuted;
+            return inputSig.IsExecuted(this);
         }
 
         protected virtual bool IsAttackAbilityUseAvailable(AttackAbilityUse aaUse)

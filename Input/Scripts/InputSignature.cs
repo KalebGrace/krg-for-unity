@@ -5,8 +5,6 @@ namespace KRG
 {
     public abstract class InputSignature : ScriptableObject
     {
-        //serialized fields
-
         [Header("Optional Easy Access Key")]
 
         [SerializeField, Enum(typeof(InputEzKey))]
@@ -17,19 +15,15 @@ namespace KRG
         [SerializeField]
         protected List<InputSignatureElement> m_Elements;
 
-        //private fields
 
         string m_Key;
 
-        //public properties
 
         public virtual int complexity { get { return m_Elements != null ? m_Elements.Count : 0; } }
 
         public virtual int ezKey { get { return m_EzKey; } }
 
         public virtual bool hasEzKey { get { return m_EzKey != 0; } }
-
-        public abstract bool isExecuted { get; }
 
         /// <summary>
         /// Gets the key, a unique identifier. It will be cached upon first acesss.
@@ -59,5 +53,8 @@ namespace KRG
                 return m_Key;
             }
         }
+
+
+        public abstract bool IsExecuted(Attacker attacker);
     }
 }
