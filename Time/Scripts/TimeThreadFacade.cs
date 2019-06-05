@@ -49,7 +49,7 @@ namespace KRG {
 
         public void RemoveTween(Tween t) { }
 
-        public void tween(ref Tween t_ref, Tween t) { }
+        public void Tween(ref Tween t_ref, Tween t) { }
 
 #endif
 

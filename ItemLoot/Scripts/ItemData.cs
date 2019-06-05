@@ -1,5 +1,5 @@
-﻿using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
+using System.Collections.Generic;
 
 namespace KRG
 {
@@ -13,44 +13,65 @@ namespace KRG
     )]
     public class ItemData : ScriptableObject
     {
+        [Header("Item Data")]
+
         [SerializeField, Tooltip("The name of the item, as displayed to the player.")]
-        string displayName = default;
+        protected string displayName = default;
+
+        [SerializeField, Tooltip("If this represents a key item, set it here.")]
+        [Enum(typeof(KeyItem))]
+        protected int m_KeyItem = default;
 
         [SerializeField, Tooltip("A prefab that has an Item component on its root GameObject. " +
-        "This is used to instantiate a physical GameObject for this item in the world.")]
-        Item _prefab = default;
+            "This is used to instantiate a physical GameObject for this item in the world.")]
+        public Item itemPrefab = default;
 
         //will the item be picked up automatically? (makes this an "auto-collected" item)
         //and if so, how long after the item is instantiated will the item be picked up? (delay in seconds)
-        [SerializeField]
+        [SerializeField, Tooltip("Will this be picked up automatically? " +
+            "And if so, with how much delay (in seconds)?")]
         [LabelText("Auto-Collect (+Delay)")]
-        [Tooltip("Will this be picked up automatically? And if so, with how much delay (in seconds)?")]
         [BoolObjectDisable(false)]
-        BoolFloat _autoCollect = default;
+        protected BoolFloat autoCollect = default;
 
-        //
-        //
+
         [Header("Effectors")]
 
         [SerializeField]
         protected List<Effector> effectors = new List<Effector>();
 
-        //
-        //
-        //
+
+        // properties
+
+        public bool HasEffectors => effectors != null && effectors.Count > 0;
+
+        public bool IsKeyItem => m_KeyItem != 0;
+
+
+        // MonoBehaviour methods
 
         protected virtual void OnValidate()
         {
-            if (displayName == null || string.IsNullOrEmpty(displayName.Trim()))
+            if (displayName == null || displayName.Trim() == "")
             {
                 displayName = name;
             }
-            _autoCollect.floatValue = Mathf.Max(0, _autoCollect.floatValue);
+
+            if (itemPrefab != null)
+            {
+                itemPrefab.itemData = this;
+                //TODO: set as dirty?
+            }
+
+            autoCollect.floatValue = Mathf.Max(0, autoCollect.floatValue);
         }
+
+
+        // custom methods
 
         public Item SpawnFrom(ISpawn spawner)
         {
-            if (_autoCollect.boolValue && _autoCollect.floatValue <= 0)
+            if (autoCollect.boolValue && autoCollect.floatValue <= 0)
             {
                 return InstaCollect(spawner);
             }
@@ -70,7 +91,7 @@ namespace KRG
             Transform parent = spawner.transform.parent;
             Vector3 position = spawner.centerTransform.position;
 
-            Item item = Instantiate(_prefab, parent);
+            Item item = Instantiate(itemPrefab, parent);
             item.transform.position = item.transform.localPosition + position;
             item.Init(this, spawner);
 

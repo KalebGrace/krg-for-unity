@@ -439,7 +439,7 @@ namespace KRG {
             _tweens.Remove(t);
         }
 
-        public void tween(ref Tween t_ref, Tween t) {
+        public void Tween(ref Tween t_ref, Tween t) {
             if (t_ref != null) t_ref.Kill();
             t_ref = t;
             AddTween(t);

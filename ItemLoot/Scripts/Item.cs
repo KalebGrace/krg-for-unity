@@ -1,9 +1,5 @@
 ﻿using UnityEngine;
 
-#if NS_DG_TWEENING
-using DG.Tweening;
-#endif
-
 namespace KRG
 {
     public class Item : MonoBehaviour
@@ -15,24 +11,42 @@ namespace KRG
          * When an Item is spawned via Loot, this should be a constructor parameter.
         */
 
-        [Header("VFX")]
+        [Header("Item")]
 
         [SerializeField]
-        protected Transform _animatingBody;
+        public ItemData itemData = default;
 
 
-        protected ItemData _itemData;
-        protected ISpawn _spawner;
+        [Header("Visual Effects")]
 
+        [SerializeField]
+        protected Transform animatingBody = default;
+
+
+        // non-serialized fields
+
+        protected ISpawn spawner;
+
+
+        // MonoBehaviour methods
+
+        protected virtual void OnValidate()
+        {
+            if (itemData != null)
+            {
+                itemData.itemPrefab = this;
+                //TODO: set as dirty?
+            }
+        }
 
         protected virtual void Start()
         {
-            if (_animatingBody != null) StartAnimateBody();
+            if (animatingBody != null) StartAnimateBody();
         }
 
         protected virtual void OnDestroy()
         {
-            if (_animatingBody != null) EndAnimateBody();
+            if (animatingBody != null) EndAnimateBody();
         }
 
         protected virtual void OnTriggerEnter(Collider other)
@@ -41,10 +55,17 @@ namespace KRG
         }
 
 
+        // custom methods
+
         public virtual void Init(ItemData itemData, ISpawn spawner)
         {
-            _itemData = itemData;
-            _spawner = spawner;
+            if (this.itemData != null)
+            {
+                G.U.Warning("m_ItemData already contains {0}. Overwriting with {1}.", this.itemData, itemData);
+            }
+
+            this.itemData = itemData;
+            this.spawner = spawner;
         }
 
         public virtual bool OnCollect(Collider other)
