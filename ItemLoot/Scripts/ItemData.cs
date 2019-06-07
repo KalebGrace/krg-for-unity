@@ -47,6 +47,8 @@ namespace KRG
 
         public bool IsKeyItem => m_KeyItem != 0;
 
+        public int KeyItemIndex => m_KeyItem;
+
 
         // MonoBehaviour methods
 

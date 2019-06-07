@@ -26,13 +26,18 @@ namespace KRG
         public static readonly CameraManager cam = new CameraManager();
         public static readonly DamageManager damage = new DamageManager();
         public static readonly DOTweenManager dotween = new DOTweenManager();
+        public static readonly InventoryManager inv = new InventoryManager();
         public static readonly ObjectManager obj = new ObjectManager();
+        public static readonly SaveManager save = new SaveManager();
         public static readonly TimeManager time = new TimeManager();
         public static readonly UIManager ui = new UIManager();
 
 #endif
-        
+
         readonly List<Manager> m_Managers = new List<Manager>();
+
+        readonly SortedList<float, IStart> m_ManagerEventsStart
+        = new SortedList<float, IStart>();
 
         readonly SortedList<float, IFixedUpdate> m_ManagerEventsFixedUpdate
         = new SortedList<float, IFixedUpdate>();
@@ -52,8 +57,7 @@ namespace KRG
 
             for (int i = 0; i < fields.Length; ++i)
             {
-                var m = fields[i].GetValue(null) as Manager;
-                if (m != null) m_Managers.Add(m);
+                if (fields[i].GetValue(null) is Manager m) m_Managers.Add(m);
             }
 
             m_Managers.Sort(
@@ -72,23 +76,27 @@ namespace KRG
 
             foreach (Manager m in m_Managers)
             {
-                var fx = m as IFixedUpdate;
-                if (fx != null) m_ManagerEventsFixedUpdate.Add(fx.priority, fx);
+                if (m is IStart st) m_ManagerEventsStart.Add(st.priority, st);
 
-                var lt = m as ILateUpdate;
-                if (lt != null) m_ManagerEventsLateUpdate.Add(lt.priority, lt);
+                if (m is IFixedUpdate fx) m_ManagerEventsFixedUpdate.Add(fx.priority, fx);
 
-                var aq = m as IOnApplicationQuit;
-                if (aq != null) m_ManagerEventsOnApplicationQuit.Add(aq.priority, aq);
+                if (m is ILateUpdate lu) m_ManagerEventsLateUpdate.Add(lu.priority, lu);
 
-                var ds = m as IOnDestroy;
-                if (ds != null) m_ManagerEventsOnDestroy.Add(ds.priority, ds);
+                if (m is IOnApplicationQuit aq) m_ManagerEventsOnApplicationQuit.Add(aq.priority, aq);
+
+                if (m is IOnDestroy ds) m_ManagerEventsOnDestroy.Add(ds.priority, ds);
             }
 
             app.StartApp();
         }
 
+
         // TRUE MONOBEHAVIOUR METHODS
+
+        void Start()
+        {
+            foreach (var m in m_ManagerEventsStart.Values) m.Start();
+        }
 
         void FixedUpdate()
         {
@@ -105,11 +113,32 @@ namespace KRG
             foreach (var m in m_ManagerEventsOnApplicationQuit.Values) m.OnApplicationQuit();
         }
 
-        // MORE KRG METHODS
+
+        // PRIVATE KRG METHODS
 
         void DestroyManagers()
         {
             foreach (var m in m_ManagerEventsOnDestroy.Values) m.OnDestroy();
+        }
+
+
+        // PUBLIC KRG METHODS
+
+        public void InvokeManagers<T>(System.Action<T> action)
+        {
+            if (!typeof(T).IsInterface)
+            {
+                Err("InvokeManagers is intended for use with interfaces only. {0} is not an interface.", typeof(T));
+                return;
+            }
+
+            for (int i = 0; i < m_Managers.Count; ++i)
+            {
+                if (m_Managers[i] is T t)
+                {
+                    action(t);
+                }
+            }
         }
     }
 }

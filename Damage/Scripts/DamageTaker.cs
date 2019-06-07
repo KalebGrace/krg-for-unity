@@ -19,8 +19,9 @@ namespace KRG {
         protected Vector3 _damageAttackPositionCenter;
         protected Vector3 _damageHitPositionCenter;
 
-        //current HP (hit points)
+        //current & maximum HP (hit points)
         float _hp;
+        float _hpMaxNew;
 
         //damage stuff
         TimeTrigger _invulnerabilityTimeTrigger;
@@ -38,7 +39,7 @@ namespace KRG {
 
         public virtual float hpMin { get { return _damageProfile.hpMin; } }
 
-        public virtual float hpMax { get { return _damageProfile.hpMax; } }
+        public virtual float hpMax { get { return _hpMaxNew; } }
 
 #endregion
 
@@ -73,6 +74,8 @@ namespace KRG {
             _transform = transform;
 
             G.U.Require(_damageProfile, "Damage Profile");
+
+            _hpMaxNew = _damageProfile.hpMax;
 
             SetHPFull();
 
@@ -169,6 +172,11 @@ namespace KRG {
         /// </summary>
         protected void SetHPFull() {
             _hp = hpMax;
+        }
+
+        public void SetNewHpMax(float newHpMax)
+        {
+            _hpMaxNew = newHpMax;
         }
 
         //TODO: this was added as part of the ItemLoot system and needs revision

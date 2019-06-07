@@ -41,6 +41,13 @@ namespace KRG
 
         protected virtual void Start()
         {
+            if (itemData.IsKeyItem && G.inv.Has(itemData.KeyItemIndex))
+            {
+                // player already has this key item
+                gameObject.Dispose();
+                return;
+            }
+
             if (animatingBody != null) StartAnimateBody();
         }
 
