@@ -51,6 +51,10 @@ namespace KRG {
         [System.Obsolete("Use _attackerAnimations instead.")]
         protected KRGAnimation m_attackerAnimation;
 
+        [SerializeField, Tooltip("This ability is locked until the attacker obtains this key item.")]
+        [Enum(typeof(KeyItem))]
+        protected int m_KeyItem = default;
+
         [SerializeField]
         [Tooltip("The input signature for the attack.")]
         protected InputSignature _inputSignature;
@@ -276,6 +280,8 @@ namespace KRG {
         public virtual InputSignature inputSignature { get { return _inputSignature; } }
 
         public virtual bool isJoinedToAttacker { get { return _isJoinedToAttacker; } }
+
+        public virtual bool isKeyItemRequired { get { return m_KeyItem != 0; } }
 
         public virtual float knockBackDistance { get { return _knockBackDistance; } }
 
