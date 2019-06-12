@@ -2,24 +2,24 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-#if NS_TMPRO
+#if KRG_X_TMPRO || NS_TMPRO_PAID || NS_TMPRO
 using TMPro;
 #endif
 
 namespace KRG {
 
     public class CharacterDebugText : MonoBehaviour {
-        
+
         ICharacterDebugText _characterInterface;
 
-#if NS_TMPRO
+#if KRG_X_TMPRO || NS_TMPRO_PAID || NS_TMPRO
         TextMeshPro _text;
 #else
         TextMesh _text;
 #endif
 
         void Awake() {
-#if NS_TMPRO
+#if KRG_X_TMPRO || NS_TMPRO_PAID || NS_TMPRO
             _text = G.U.Require<TextMeshPro>(this);
 #else
             _text = G.U.Require<TextMesh>(this);

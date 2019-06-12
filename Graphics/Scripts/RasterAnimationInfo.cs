@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-#if NS_TMPRO
+#if KRG_X_TMPRO || NS_TMPRO_PAID || NS_TMPRO
 using TMPro;
 #endif
 
@@ -18,7 +18,7 @@ namespace KRG {
             "{10}/{11}s {12}/{13}p\n" + //frame sequence current/count, play current/count, frame number/to
             "{14}/{15}t";
 
-#if NS_TMPRO
+#if KRG_X_TMPRO || NS_TMPRO_PAID || NS_TMPRO
         TextMeshPro _text;
 #else
         TextMesh _text;
@@ -58,7 +58,7 @@ namespace KRG {
 
 
         void Awake() {
-#if NS_TMPRO
+#if KRG_X_TMPRO || NS_TMPRO_PAID || NS_TMPRO
             _text = GetComponent<TextMeshPro>();
 #else
             _text = GetComponent<TextMesh>();

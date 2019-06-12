@@ -6,7 +6,7 @@ using UnityEngine;
 using DG.Tweening;
 #endif
 
-#if NS_TMPRO
+#if KRG_X_TMPRO || NS_TMPRO_PAID || NS_TMPRO
 using TMPro;
 #endif
 
@@ -14,7 +14,7 @@ namespace KRG {
 
     public static class TextMeshProUGUIExtensionMethods {
 
-#if NS_DG_TWEENING && NS_TMPRO
+#if NS_DG_TWEENING && (KRG_X_TMPRO || NS_TMPRO_PAID || NS_TMPRO)
         public static Tweener DOColor(this TextMeshProUGUI text, Color endValue, float duration) {
             return DOTween.To(() => text.color, x => text.color = x, endValue, duration);
         }

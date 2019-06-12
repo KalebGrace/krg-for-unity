@@ -7,7 +7,7 @@ using UnityEngine.Serialization;
 using DG.Tweening;
 #endif
 
-#if NS_TMPRO
+#if KRG_X_TMPRO || NS_TMPRO_PAID || NS_TMPRO
 using TMPro;
 #endif
 
@@ -22,7 +22,7 @@ namespace KRG {
         int _timeThreadIndex = (int)TimeThreadInstance.UseDefault;
 #pragma warning restore 0414
 
-#if NS_TMPRO
+#if KRG_X_TMPRO || NS_TMPRO_PAID || NS_TMPRO
         [SerializeField]
         [FormerlySerializedAs("m_text100")]
 		TMP_Text _text100 = default;
@@ -68,7 +68,7 @@ namespace KRG {
         }
 
         void Awake() {
-#if !NS_TMPRO
+#if !(KRG_X_TMPRO || NS_TMPRO_PAID || NS_TMPRO)
             _text001.font = _font;
             _text010.font = _font;
             _text100.font = _font;
@@ -89,7 +89,7 @@ namespace KRG {
                 case 1:
                     _text100.gameObject.SetActive(false);
                     _text010.gameObject.SetActive(false);
-                
+
                     _text001.text = d[l - 1].ToString();
 
                     _text001.transform.localPosition = Vector3.zero;
@@ -101,10 +101,10 @@ namespace KRG {
 
                     _text010.text = d[l - 2].ToString();
                     _text001.text = d[l - 1].ToString();
-                
+
                     _text010.transform.localPosition = Vector3.left * 0.25f;
                     _text001.transform.localPosition = Vector3.right * 0.25f;
-                
+
                     _text010.GetComponent<Renderer>().material.renderQueue += 1;
 
                     Animate(_text010, 1f);
@@ -114,7 +114,7 @@ namespace KRG {
                     _text100.text = d[l - 3].ToString();
                     _text010.text = d[l - 2].ToString();
                     _text001.text = d[l - 1].ToString();
-                
+
                     _text100.transform.localPosition = Vector3.left * 0.5f;
                     _text010.transform.localPosition = Vector3.zero;
                     _text001.transform.localPosition = Vector3.right * 0.5f;
@@ -132,7 +132,7 @@ namespace KRG {
             }
         }
 
-#if NS_TMPRO
+#if KRG_X_TMPRO || NS_TMPRO_PAID || NS_TMPRO
         void Animate(TMP_Text textMesh, float heightMult) {
 #else
         void Animate(TextMesh textMesh, float heightMult) {
@@ -157,12 +157,12 @@ namespace KRG {
             s.Append(textTf.DOLocalMoveX(0f, 4f / 30f).SetEase(Ease.Linear));
 
             //Darken (at same time).
-#if NS_TMPRO
+#if KRG_X_TMPRO || NS_TMPRO_PAID || NS_TMPRO
             s.Join(textMesh.DOColor(Color.black, 4f / 30f).SetEase(Ease.Linear));
 #else
             s.Join(textMesh.GetComponent<Renderer>().material.DOColor(Color.black, 4f / 30f).SetEase(Ease.Linear));
 #endif
-            
+
             //Wait.
             s.AppendInterval(2f / 30f);
 

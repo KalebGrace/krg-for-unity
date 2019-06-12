@@ -31,7 +31,7 @@ namespace KRG {
 
 #region private & protected fields
 
-#if DEBUG_VISIBILITY && !NS_TMPRO
+#if DEBUG_VISIBILITY && !(KRG_X_TMPRO || NS_TMPRO_PAID || NS_TMPRO)
         private static bool s_isCharacterDebugTextWarningLogged;
 #endif
 
@@ -68,11 +68,11 @@ namespace KRG {
 
 #if DEBUG_VISIBILITY
             KRGReferences refs = G.config.krgReferences;
-#if NS_TMPRO
+#if KRG_X_TMPRO || NS_TMPRO_PAID || NS_TMPRO
             Instantiate(refs.characterDebugTextPrefab, _visRect.transform).Init(this);
 #else
             if (!s_isCharacterDebugTextWarningLogged) {
-                G.U.Warning("CharacterDebugText requires the paid version of TextMesh Pro.");
+                G.U.Warning("CharacterDebugText requires TextMesh Pro.");
                 s_isCharacterDebugTextWarningLogged = true;
             }
 #endif
