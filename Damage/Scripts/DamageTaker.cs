@@ -54,7 +54,7 @@ namespace KRG {
             }
             set {
                 _damageProfile = value;
-                SetHPFull();
+                InitHP();
             }
         }
 
@@ -75,9 +75,7 @@ namespace KRG {
 
             G.U.Require(_damageProfile, "Damage Profile");
 
-            _hpMaxNew = _damageProfile.hpMax;
-
-            SetHPFull();
+            InitHP();
 
             _graphicsControllerKRG = GetComponent<GraphicsController>();
 
@@ -176,7 +174,16 @@ namespace KRG {
 
         public void SetNewHpMax(float newHpMax)
         {
+            //TODO: this should all be reworked to keep track of persistent HP max increasing items
             _hpMaxNew = newHpMax;
+            _hp = Mathf.Min(_hp, newHpMax);
+        }
+
+        private void InitHP()
+        {
+            //TODO: this should all be reworked to keep track of persistent HP max increasing items
+            _hpMaxNew = _damageProfile.hpMax;
+            SetHPFull();
         }
 
         //TODO: this was added as part of the ItemLoot system and needs revision
