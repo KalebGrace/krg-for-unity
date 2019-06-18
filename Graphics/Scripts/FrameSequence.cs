@@ -297,7 +297,7 @@ namespace KRG {
 
         static void Error(string message) {
             //TODO: add this into the GUI instead
-            G.Err("Error in FrameSequence. {0}", message);
+            G.U.Err("Error in FrameSequence. {0}", message);
         }
 
 #endregion

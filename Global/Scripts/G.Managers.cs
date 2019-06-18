@@ -128,7 +128,7 @@ namespace KRG
         {
             if (!typeof(T).IsInterface)
             {
-                Err("InvokeManagers is intended for use with interfaces only. {0} is not an interface.", typeof(T));
+                U.Err("InvokeManagers is intended for use with interfaces only. {0} is not an interface.", typeof(T));
                 return;
             }
 

@@ -100,7 +100,7 @@ namespace KRG {
         /// <param name="duration">Duration.</param>
         public void Display(float duration) {
             if (duration < _displayDurationMin) {
-                G.Err("The duration must be at least {0}, but the provided value was {1}. " +
+                G.U.Err("The duration must be at least {0}, but the provided value was {1}. " +
                 "Did you mean to call Display(bool) or Hide()?", _displayDurationMin, duration);
                 return;
             }

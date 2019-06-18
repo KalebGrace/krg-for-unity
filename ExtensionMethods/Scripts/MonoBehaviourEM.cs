@@ -6,7 +6,7 @@ namespace KRG
     {
         public static void Dispose(this MonoBehaviour me)
         {
-            G.End(me);
+            G.U.End(me);
         }
 
         public static T Require<T>(this MonoBehaviour me) where T : Component

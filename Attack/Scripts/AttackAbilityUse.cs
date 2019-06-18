@@ -100,7 +100,7 @@ namespace KRG {
         Attack Attack() {
             //instantiate attack GameObject using transform options
             Transform akerTF = _attacker.transform;
-            Attack a = G.New(_attackAbility.attackPrefab, _attackAbility.isJoinedToAttacker ? akerTF : null);
+            Attack a = G.U.New(_attackAbility.attackPrefab, _attackAbility.isJoinedToAttacker ? akerTF : null);
             Transform attaTF = a.transform;
             attaTF.position = akerTF.position;
             attaTF.rotation = akerTF.rotation;

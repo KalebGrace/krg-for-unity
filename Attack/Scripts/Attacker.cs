@@ -94,11 +94,11 @@ namespace KRG {
                 var sig = aa.inputSignature;
                 if (sig == null)
                 {
-                    G.Err("Missing input signature for {0}.", aa.name);
+                    G.U.Err("Missing input signature for {0}.", aa.name);
                 }
                 else if (_availableAttacks.ContainsKey(sig))
                 {
-                    G.Err("Duplicate input signature key {0} for {1} & {2}.",
+                    G.U.Err("Duplicate input signature key {0} for {1} & {2}.",
                         sig, aa.name, _availableAttacks[sig].attackAbility.name);
                 }
                 else

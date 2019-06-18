@@ -33,13 +33,13 @@ namespace KRG
         {
             if (_items == null)
             {
-                G.Err(this, "No items are available for the {0} loot data.", name);
+                G.U.Err(this, "No items are available for the {0} loot data.", name);
                 return null;
             }
 
             if (probabilityScale <= 0)
             {
-                G.Err(this, "The probability scale must be greater than zero.");
+                G.U.Err(this, "The probability scale must be greater than zero.");
                 return null;
             }
 

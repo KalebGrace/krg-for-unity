@@ -17,7 +17,7 @@ namespace KRG
             GameObject[] ps = config.autoInstancedPrefabs;
             for (int i = 0; i < ps.Length; i++)
             {
-                G.New(ps[i], transform);
+                G.U.New(ps[i], transform);
             }
         }
 

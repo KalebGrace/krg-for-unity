@@ -16,11 +16,11 @@ namespace KRG {
             const string t = "Assets/KRGLoader.prefab";
             //see if the prefab source and target exist
             if (!File.Exists(s)) {
-                G.Err("Can't create KRGLoader; {0} is missing!", s);
+                G.U.Err("Can't create KRGLoader; {0} is missing!", s);
                 return;
             }
             if (File.Exists(t)) {
-                G.Err("Can't create KRGLoader; {0} already exists.", t);
+                G.U.Err("Can't create KRGLoader; {0} already exists.", t);
                 return;
             }
             //create (copy) the prefab asset
@@ -35,7 +35,7 @@ namespace KRG {
 			Selection.activeGameObject = i;
 			EditorSceneManager.MarkSceneDirty(scene);
 			//finish
-            G.Log("A KRGLoader prefab was created at {0} and instantiated in the scene.", t);
+            G.U.Log("A KRGLoader prefab was created at {0} and instantiated in the scene.", t);
         }
     }
 }

@@ -136,7 +136,7 @@ namespace KRG {
         public virtual bool AdvanceFrame(ref int frameListIndex, out int frameNumber) {
             frameNumber = 0;
             if (!frameSequenceHasFrameList) {
-                G.Err("Wrong function. Use AdvanceFrame(ref int frameNumber) instead.");
+                G.U.Err("Wrong function. Use AdvanceFrame(ref int frameNumber) instead.");
                 return false;
             }
             if (frameListIndex < _frameSequenceFrameList.Count - 1) {
@@ -172,7 +172,7 @@ namespace KRG {
         /// <param name="frameNumber">Frame number (one-based).</param>
         public virtual bool AdvanceFrame(ref int frameNumber) {
             if (frameSequenceHasFrameList) {
-                G.Err("Wrong function. Use AdvanceFrame(ref int frameListIndex, out int frameNumber) instead.");
+                G.U.Err("Wrong function. Use AdvanceFrame(ref int frameListIndex, out int frameNumber) instead.");
                 return false;
             }
             if (frameNumber < _frameSequenceToFrame) {

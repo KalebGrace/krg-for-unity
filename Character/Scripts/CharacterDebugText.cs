@@ -31,7 +31,7 @@ namespace KRG {
             if (_characterInterface == null) {
                 G.U.Warning("This character must implement the ICharacterDebugText interface to show debug info.",
                     this, character);
-                G.End(gameObject);
+                G.U.End(gameObject);
             }
         }
 

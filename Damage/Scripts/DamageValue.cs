@@ -175,7 +175,7 @@ namespace KRG {
         }
 
         void Dispose() {
-            G.End(gameObject);
+            G.U.End(gameObject);
         }
 
         void OnDestroy() {

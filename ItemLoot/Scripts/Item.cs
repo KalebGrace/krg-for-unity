@@ -58,7 +58,7 @@ namespace KRG
 
         protected virtual void OnTriggerEnter(Collider other)
         {
-            if (OnCollect(other)) G.End(gameObject);
+            if (OnCollect(other)) G.U.End(gameObject);
         }
 
 

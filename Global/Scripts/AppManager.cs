@@ -111,7 +111,7 @@ namespace KRG
             }
             else
             {
-                G.Err("The AppManager's SceneController list already contains the {0} SceneController!",
+                G.U.Err("The AppManager's SceneController list already contains the {0} SceneController!",
                     sceneController.sceneName);
             }
         }

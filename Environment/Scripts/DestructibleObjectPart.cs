@@ -48,7 +48,7 @@ namespace KRG {
                 float.IsInfinity(transform.position.x) ||
                 float.IsInfinity(transform.position.y) ||
                 float.IsInfinity(transform.position.z)) {
-                G.Log("Invalid position for DestructibleObjectPart.");
+                G.U.Log("Invalid position for DestructibleObjectPart.");
                 Destroy(gameObject);
             }
         }
@@ -91,7 +91,7 @@ namespace KRG {
 
         void Dispose(TimeTrigger tt) {
             //this may already be ended at the end of a scene
-            if (!my_end.wasInvoked) G.End(gameObject);
+            if (!my_end.wasInvoked) G.U.End(gameObject);
         }
     }
 }

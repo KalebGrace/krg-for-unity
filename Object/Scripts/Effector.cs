@@ -56,7 +56,7 @@ namespace KRG
         {
             if (min > max)
             {
-                G.Err("Min is greater than max.");
+                G.U.Err("Min is greater than max.");
                 return false;
             }
 

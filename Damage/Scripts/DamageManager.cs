@@ -35,7 +35,7 @@ namespace KRG
         /// <param name="damage">Damage.</param>
         public void DisplayDamageValue(IEnd target, Transform anchor, int damage)
         {
-            G.New(config.damageValuePrefab, anchor).Init(target, damage);
+            G.U.New(config.damageValuePrefab, anchor).Init(target, damage);
         }
 
         /// <summary>
@@ -64,7 +64,7 @@ namespace KRG
             var hpBar = anchor.GetComponentInChildren<HPBar>(true);
             if (hpBar == null)
             {
-                hpBar = G.New(config.hpBarPrefab, anchor);
+                hpBar = G.U.New(config.hpBarPrefab, anchor);
                 hpBar.Init(target);
             }
             return hpBar;

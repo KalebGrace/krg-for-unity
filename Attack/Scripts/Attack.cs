@@ -221,7 +221,7 @@ namespace KRG {
 
         void Dispose(TimeTrigger tt) {
             if (this != null) { //this may be null if e.g. this is joined to an attacker that was destroyed
-                G.End(gameObject);
+                G.U.End(gameObject);
             }
         }
 

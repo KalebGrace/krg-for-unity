@@ -70,7 +70,7 @@ namespace KRG
                 //if the config is still null, log an error
                 if (m_Config == null)
                 {
-                    G.Err("Please ensure a KRGConfig is located in a Resources folder."
+                    G.U.Err("Please ensure a KRGConfig is located in a Resources folder."
                     + " You may use the KRG menu to create a new one if needed.");
                 }
             }

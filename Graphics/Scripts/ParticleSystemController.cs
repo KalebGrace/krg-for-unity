@@ -43,7 +43,7 @@ namespace KRG {
         void Update() {
             if (!G.isInEditMode) return;
             if (_autoDispose && !_particleSystem.IsAlive()) {
-                G.End(gameObject);
+                G.U.End(gameObject);
             }
         }
 

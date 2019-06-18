@@ -13,7 +13,7 @@ namespace KRG {
             //see if the config already exists
             config = Resources.Load<KRGConfig>(KRGConfig.resourcePath);
             if (config != null) {
-                G.Err("A KRGConfig asset already exists in a Resources folder.", config);
+                G.U.Err("A KRGConfig asset already exists in a Resources folder.", config);
                 Resources.UnloadAsset(config);
                 return;
             }
@@ -24,7 +24,7 @@ namespace KRG {
 			//ping the asset in the Project window
 			EditorGUIUtility.PingObject(config);
 			//finish
-			G.Log("A KRGConfig asset was created at {0}.", KRGConfig.assetPath);
+			G.U.Log("A KRGConfig asset was created at {0}.", KRGConfig.assetPath);
         }
     }
 }
