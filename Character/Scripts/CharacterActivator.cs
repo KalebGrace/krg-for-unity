@@ -49,7 +49,7 @@ namespace KRG {
             //currently there is an issue with the collider affecting AI
             //so we are simply going to destroy this GameObject after activation
             //TODO: find a proper solution; maybe use layers and the collision matrix?
-            if (value) G.U.End(gameObject);
+            if (value) gameObject.Dispose();
         }
 
 #endregion

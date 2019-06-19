@@ -21,7 +21,7 @@ namespace KRG {
 
         public virtual void Explode(Vector3 explosionPosition) {
             _explosionPosition = explosionPosition;
-            G.U.End(gameObject);
+            gameObject.Dispose();
         }
 
 #endregion

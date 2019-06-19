@@ -49,7 +49,7 @@ namespace KRG {
                 });
             }
 
-            G.U.End(this);
+            this.Dispose();
         }
     }
 }

@@ -322,7 +322,7 @@ namespace KRG {
         protected virtual void OnKnockedOut(Vector3 attackPositionCenter) {
             var ld = _damageProfile.knockedOutLoot;
             if (ld != null) ld.Drop(this);
-            G.U.End(gameObject);
+            gameObject.Dispose();
         }
 
 #endregion

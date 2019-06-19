@@ -64,7 +64,7 @@ namespace KRG {
             _text = GetComponent<TextMesh>();
 #endif
 #if !DEBUG_VISIBILITY
-            if (_text != null) G.U.End(_text);
+            _text?.Dispose();
 #else
             G.U.Require(_text, "TextMesh (Pro) Component", gameObject, "this GameObject");
 #endif

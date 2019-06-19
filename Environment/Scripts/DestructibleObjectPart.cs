@@ -91,7 +91,7 @@ namespace KRG {
 
         void Dispose(TimeTrigger tt) {
             //this may already be ended at the end of a scene
-            if (!my_end.wasInvoked) G.U.End(gameObject);
+            if (!my_end.wasInvoked) gameObject.Dispose();
         }
     }
 }

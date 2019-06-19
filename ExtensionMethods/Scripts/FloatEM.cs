@@ -7,19 +7,19 @@ namespace KRG
         /// <summary>
         /// Is approximately equal to...
         /// </summary>
-        public static bool Ap(this float v, float f)
+        public static bool Ap(this float me, float f)
         {
-            return Mathf.Approximately(v, f);
+            return Mathf.Approximately(me, f);
         }
 
-        public static Rotation Rotation(this float v)
+        public static Rotation Rotation(this float me)
         {
-            return new Rotation(v);
+            return new Rotation(me);
         }
 
-        public static Sign Sign(this float v)
+        public static Sign Sign(this float me)
         {
-            return new Sign(v);
+            return new Sign(me);
         }
     }
 }

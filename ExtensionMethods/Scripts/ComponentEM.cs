@@ -2,11 +2,21 @@
 
 namespace KRG
 {
-    public static class ComponentExtensionMethods
+    public static class ComponentEM
     {
-        public static void PersistNewScene(this Component obj, PersistNewSceneType persistNewSceneType)
+        public static void Dispose(this Component me)
         {
-            Transform t = obj.transform;
+            if (me == null)
+            {
+                G.U.Warning("The Component you wish to dispose of is null.");
+                return;
+            }
+            Object.Destroy(me);
+        }
+
+        public static void PersistNewScene(this Component me, PersistNewSceneType persistNewSceneType)
+        {
+            Transform t = me.transform;
             switch (persistNewSceneType)
             {
                 case PersistNewSceneType.PersistAllParents:
@@ -19,7 +29,7 @@ namespace KRG
                     t.SetParent(null);
                     break;
                 default:
-                    G.U.Unsupported(obj, persistNewSceneType);
+                    G.U.Unsupported(me, persistNewSceneType);
                     break;
             }
             Object.DontDestroyOnLoad(t);
