@@ -37,7 +37,7 @@ namespace KRG.Unused {
                     m_result = ActionResult.NONE;
                     return ActionResult.SUCCESS;
                 default:
-                    G.U.Error("Unsupported ActionResult {0} for TimeThreadTimer {1}.", m_result, actionName);
+                    G.U.Err("Unsupported ActionResult {0} for TimeThreadTimer {1}.", m_result, actionName);
                     return m_result;
             }
         }

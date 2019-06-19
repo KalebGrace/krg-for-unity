@@ -122,7 +122,7 @@ namespace KRG {
                 .SetEase(Ease.OutSine)
             );
 #else
-            G.U.Error("This function requires DG.Tweening (DOTween).");
+            G.U.Err("This function requires DG.Tweening (DOTween).");
 #endif
         }
 

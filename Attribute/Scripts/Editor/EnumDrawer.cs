@@ -33,7 +33,7 @@ namespace KRG {
             }
             else
             {
-                G.U.Error("The Enum attribute doesn't have support for the {0} type."
+                G.U.Err("The Enum attribute doesn't have support for the {0} type."
                     + " Property name: {1}. Attribute enum type: {2}.",
                     property.propertyType, property.name, stringType);
                 EditorGUI.PropertyField(rect, property, label);

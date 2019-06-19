@@ -29,7 +29,7 @@ namespace KRG {
                 default:
                     string s = "The compassTop parameter must be cardinal. " +
                                "Its current value is \"{0}\" and its direction type is \"{1}\".";
-                    G.U.Error(s, compassTop.ToString(), compassTop.GetDirectionType());
+                    G.U.Err(s, compassTop.ToString(), compassTop.GetDirectionType());
                     return direction;
             }
             switch (direction.GetDirectionType()) {
@@ -41,7 +41,7 @@ namespace KRG {
                     return (Direction)((convertedForNorth + (int)compassTop) % 360);
                 default:
                     string s = "The direction \"{0}\" is of an unsupported direction type \"{1}\".";
-                    G.U.Error(s, direction.ToString(), direction.GetDirectionType());
+                    G.U.Err(s, direction.ToString(), direction.GetDirectionType());
                     return direction;
             }
         }
@@ -65,7 +65,7 @@ namespace KRG {
                         return direction;
                     }
                 default:
-                    G.U.Error("Currently unsupported.");
+                    G.U.Err("Currently unsupported.");
                     return Direction.Unknown;
             }
         }
@@ -82,7 +82,7 @@ namespace KRG {
                     newDir = (int)direction - 1;
                     return (Direction)(newDir == -9 ? -1 : newDir);
                 default:
-                    G.U.Error("Currently unsupported.");
+                    G.U.Err("Currently unsupported.");
                     return Direction.Unknown;
             }
         }
@@ -99,7 +99,7 @@ namespace KRG {
                     newDir = (int)direction + 1;
                     return (Direction)(newDir == 0 ? -8 : newDir);
                 default:
-                    G.U.Error("Currently unsupported.");
+                    G.U.Err("Currently unsupported.");
                     return Direction.Unknown;
             }
         }
@@ -137,7 +137,7 @@ namespace KRG {
                 case DirectionType.Altitude:
                     return direction == Direction.Above ? Direction.Below : Direction.Above;
                 default:
-                    G.U.Error("Currently unsupported.");
+                    G.U.Err("Currently unsupported.");
                     return Direction.Unknown;
             }
         }
@@ -153,11 +153,11 @@ namespace KRG {
                             newDir = (int)target - (int)culprit;
                             return (Direction)(newDir.ClampRotationDegrees());
                         default:
-                            G.U.Error("Currently unsupported.");
+                            G.U.Err("Currently unsupported.");
                             return Direction.Unknown;
                     }
                 default:
-                    G.U.Error("Currently unsupported.");
+                    G.U.Err("Currently unsupported.");
                     return Direction.Unknown;
             }
         }
@@ -168,7 +168,7 @@ namespace KRG {
                 case DirectionType.Ordinal:
                     return (int)direction;
                 default:
-                    G.U.Error("Currently unsupported.");
+                    G.U.Err("Currently unsupported.");
                     return 0f;
             }
         }
@@ -179,7 +179,7 @@ namespace KRG {
                 case DirectionType.Ordinal:
                     return new Vector3(0f, (int)direction, 0f);
                 default:
-                    G.U.Error("Currently unsupported.");
+                    G.U.Err("Currently unsupported.");
                     return Vector3.zero;
             }
         }

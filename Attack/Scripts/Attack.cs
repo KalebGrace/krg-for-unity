@@ -161,7 +161,7 @@ namespace KRG {
 
         public void Init(AttackAbility attackAbility, Attacker attacker) {
             if (_isInitialized) {
-                G.U.Error("Init has already been called.");
+                G.U.Err("Init has already been called.");
                 return;
             }
             _attackAbility = attackAbility;
@@ -174,7 +174,7 @@ namespace KRG {
         [System.Obsolete("Use Init(AttackAbility attackAbility, Attacker attacker) instead.")]
         public void Init(AttackAbility attackAbility, bool isFlippedX, bool isPlayerCharacterAttacker) {
             if (_isInitialized) {
-                G.U.Error("Init has already been called.");
+                G.U.Err("Init has already been called.");
                 return;
             }
             _attackAbility = attackAbility;

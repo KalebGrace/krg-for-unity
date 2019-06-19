@@ -63,7 +63,7 @@ namespace KRG
             }
             else
             {
-                G.U.Error("Error while getting interfaces for {0}: {1} is not an interface.",
+                G.U.Err("Error while getting interfaces for {0}: {1} is not an interface.",
                     me.name, typeof(T));
                 return new T[0];
             }

@@ -61,7 +61,7 @@ namespace KRG {
                 case "BoolInt":
                     return "_int";
                 default:
-                    G.U.Error("Unsupported property type: " + property.type);
+                    G.U.Err("Unsupported property type: " + property.type);
                     return null;
             }
         }

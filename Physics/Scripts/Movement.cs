@@ -110,7 +110,7 @@ namespace KRG {
                 default:
                     //TODO: Is this restriction still relevant? If so, why? SoAm only?
                     //May have had to do with "Remainder" of AttemptMove, but this has been updated.
-                    G.U.Error("The direction parameter must be of " +
+                    G.U.Err("The direction parameter must be of " +
                     "an absolute direction type. " +
                     "Its current value is \"{0}\" " +
                     "and its direction type is \"{1}\".",

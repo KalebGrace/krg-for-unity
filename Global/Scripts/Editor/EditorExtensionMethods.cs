@@ -17,7 +17,7 @@ namespace KRG {
         ) {
             SerializedProperty prop = editor.serializedObject.FindProperty(name);
             if (prop == null) {
-                G.U.Error("Cannot find {0} property on {1} editor.", name, editor.name);
+                G.U.Err("Cannot find {0} property on {1} editor.", name, editor.name);
                 return;
             }
             if (doMultiEdit) EditorGUI.BeginChangeCheck();

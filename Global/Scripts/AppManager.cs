@@ -176,7 +176,7 @@ namespace KRG
                     return;
                 }
             }
-            G.U.Error("No scene controller found for the {0} scene.", _activeSceneName);
+            G.U.Err("No scene controller found for the {0} scene.", _activeSceneName);
         }
 
         /// <summary>

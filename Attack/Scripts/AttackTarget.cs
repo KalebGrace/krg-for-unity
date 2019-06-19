@@ -109,7 +109,7 @@ namespace KRG {
         }
 
         void DelayCallbackRemovalError() {
-            G.U.Error("DelayCallback was made with no delay flags set to true.");
+            G.U.Err("DelayCallback was made with no delay flags set to true.");
         }
 
 #endregion
@@ -162,7 +162,7 @@ namespace KRG {
             if (_attackAbility.hasMaxHitsPerTarget) {
                 StartTakingDamageForReal();
             } else {
-                G.U.Error(_infiniteLoopError);
+                G.U.Err(_infiniteLoopError);
             }
         }
 

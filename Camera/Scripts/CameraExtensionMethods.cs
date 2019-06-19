@@ -13,7 +13,7 @@ namespace KRG {
         /// <param name="camera">Camera.</param>
         public static Bounds GetOrthographicBounds(this Camera camera) {
             if (!camera.orthographic) {
-                G.U.Error("The {0} Camera does not use orthographic projection.", camera.name);
+                G.U.Err("The {0} Camera does not use orthographic projection.", camera.name);
                 return new Bounds();
             }
             float screenAspect = (float)Screen.width / (float)Screen.height;
@@ -32,7 +32,7 @@ namespace KRG {
         /// <param name="z">The distance to the specified plane from the camera along the z-axis.</param>
         public static Bounds GetPerspectiveBounds(this Camera camera, float z) {
             if (camera.orthographic) {
-                G.U.Error("The {0} Camera does not use perspective projection.", camera.name);
+                G.U.Err("The {0} Camera does not use perspective projection.", camera.name);
                 return new Bounds();
             }
             Vector3 bottomLeft = camera.ViewportToWorldPoint(new Vector3(0, 0, z));

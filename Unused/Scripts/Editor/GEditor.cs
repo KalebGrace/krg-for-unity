@@ -32,7 +32,7 @@ namespace KRG.Unused {
             const string path = "Assets/Resources/KRGConfig.asset";
 
             if (File.Exists(path)) {
-                G.U.Error("{0} already exists.", path);
+                G.U.Err("{0} already exists.", path);
                 return;
             }
 

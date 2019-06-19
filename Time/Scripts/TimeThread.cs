@@ -152,7 +152,7 @@ namespace KRG {
                 if (_freezePauseKey.Value == pauseKey) {
                     _freezeTime = Mathf.Max(iv, _freezeTime);
                 } else {
-                    G.U.Error("A time freeze has already been queued with a different pause key.");
+                    G.U.Err("A time freeze has already been queued with a different pause key.");
                 }
             } else {
                 _freezeTime = iv;
@@ -163,11 +163,11 @@ namespace KRG {
 
         public bool QueuePause(int pauseKey) {
             if (_isAppThread) {
-                G.U.Error("The TimeRate for the \"Application\" time thread cannot be changed."); 
+                G.U.Err("The TimeRate for the \"Application\" time thread cannot be changed."); 
                 return false;
             }
             if (isTimeRateQueued && _timeRateQueued != TimeRate.Paused) { //TODO: re-evaluate this condition
-                G.U.Error("A new TimeRate has already been queued.");
+                G.U.Err("A new TimeRate has already been queued.");
                 return false;
             }
             // (comment lines added for visual symmetry)
@@ -199,11 +199,11 @@ namespace KRG {
 
         public bool QueueUnpause(int pauseKey) {
             if (_isAppThread) {
-                G.U.Error("The TimeRate for the \"Application\" time thread cannot be changed."); 
+                G.U.Err("The TimeRate for the \"Application\" time thread cannot be changed."); 
                 return false;
             }
             if (isTimeRateQueued && _timeRateQueued != _timeRateUnpause) { //TODO: re-evaluate this condition
-                G.U.Error("A new TimeRate has already been queued.");
+                G.U.Err("A new TimeRate has already been queued.");
                 return false;
             }
             if (_pauseKeys.Count == 0) {
@@ -243,11 +243,11 @@ namespace KRG {
 
         public void QueueTimeRate(TimeRate timeRate, float timeScale = 1, int pauseKey = -1) {
             if (_isAppThread) {
-                G.U.Error("The TimeRate for the \"Application\" time thread cannot be changed.");
+                G.U.Err("The TimeRate for the \"Application\" time thread cannot be changed.");
                 return;
             }
             if (isTimeRateQueued) {
-                G.U.Error("A new TimeRate has already been queued.");
+                G.U.Err("A new TimeRate has already been queued.");
                 return;
             }
             switch (timeRate) {
@@ -336,7 +336,7 @@ namespace KRG {
                 tt.AddHandler(handler);
                 return tt;
             } else if (disallowFacade) {
-                G.U.Error("The trigger's interval must be greater than zero.");
+                G.U.Err("The trigger's interval must be greater than zero.");
                 return null;
             } else if (iv.Ap(0)) {
                 //if there is no measurable interval, call the handler immediately with a time trigger facade
@@ -344,7 +344,7 @@ namespace KRG {
                 handler(ttfc);
                 return ttfc;
             } else {
-                G.U.Error("The trigger's interval must be greater than or equal to zero.");
+                G.U.Err("The trigger's interval must be greater than or equal to zero.");
                 return null;
             }
         }
@@ -357,7 +357,7 @@ namespace KRG {
             if (tt.totalInterval > 0) {
                 _triggersNew.Add(tt);
             } else {
-                G.U.Error("The trigger's interval must be greater than zero.");
+                G.U.Err("The trigger's interval must be greater than zero.");
             }
         }
 

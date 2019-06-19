@@ -50,9 +50,9 @@ namespace KRG {
 
         void Preview(Prefab prefab) {
             if (prefab.instance) {
-                G.U.Error("{0}'s prefab component already has a preview.", prefab.gameObject.name);
+                G.U.Err("{0}'s prefab component already has a preview.", prefab.gameObject.name);
             } else if (!prefab.prefab) {
-                G.U.Error("{0}'s prefab component has no prefab reference.", prefab.gameObject.name);
+                G.U.Err("{0}'s prefab component has no prefab reference.", prefab.gameObject.name);
             } else {
                 prefab.instance = (Transform)PrefabUtility.InstantiatePrefab(prefab.prefab);
                 Vector3 pos = prefab.instance.localPosition;
@@ -92,7 +92,7 @@ namespace KRG {
                 }
                 DestroyImmediate(prefab.instance.gameObject);
             } else {
-                G.U.Error(
+                G.U.Err(
                     "{0}'s prefab component has no preview to destroy.",
                     prefab.gameObject.name
                 );

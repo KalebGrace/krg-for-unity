@@ -234,7 +234,7 @@ namespace KRG {
         /// <param name="frameSequenceIndex">Frame sequence index.</param>
         protected virtual void SetFrameSequence(int frameSequenceIndex) {
             if (!_rasterAnimation.hasPlayableFrameSequences) {
-                G.U.Error("This Raster Animation must have playable Frame Sequences.", this, _rasterAnimation);
+                G.U.Err("This Raster Animation must have playable Frame Sequences.", this, _rasterAnimation);
                 return;
             }
             int playCount, fsLoopCount = 0;
@@ -249,7 +249,7 @@ namespace KRG {
                 frameSequenceIndex++;
                 fsLoopCount++;
                 if (fsLoopCount >= _rasterAnimation.frameSequenceCountMax) {
-                    G.U.Error("Stuck in an infinite loop.", this, _rasterAnimation);
+                    G.U.Err("Stuck in an infinite loop.", this, _rasterAnimation);
                     return;
                 }
             }

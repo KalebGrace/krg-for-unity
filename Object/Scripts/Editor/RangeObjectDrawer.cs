@@ -87,7 +87,7 @@ namespace KRG {
                     }
                     break;
                 default:
-                    G.U.Error("Invalid type: " + _minValueProp.type);
+                    G.U.Err("Invalid type: " + _minValueProp.type);
                     break;
             }
 

@@ -25,7 +25,7 @@ namespace KRG {
         protected void DrawProperty(string name, string label, string tooltip = "") {
             SerializedProperty prop = serializedObject.FindProperty(name);
             if (prop == null) {
-                G.U.Error("Player Editor: Property \"" + name + "\" could not be found.");
+                G.U.Err("Player Editor: Property \"" + name + "\" could not be found.");
                 return;
             }
             EditorGUI.BeginChangeCheck();

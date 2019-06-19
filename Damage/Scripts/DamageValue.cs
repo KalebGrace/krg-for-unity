@@ -127,7 +127,7 @@ namespace KRG {
                     Animate(_text001, 0.75f);
                     break;
                 default:
-                    G.U.Error("Damage must be 1~3 digits in length. Damage value is: " + d);
+                    G.U.Err("Damage must be 1~3 digits in length. Damage value is: " + d);
                     break;
             }
         }
@@ -213,7 +213,7 @@ namespace KRG {
         }
 #else
         public void Init(MonoBehaviour target, int damage) {
-            G.U.Error("This class requires DG.Tweening (DOTween).");
+            G.U.Err("This class requires DG.Tweening (DOTween).");
         }
 #endif
     }

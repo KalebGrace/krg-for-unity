@@ -104,7 +104,7 @@ namespace KRG {
 
         static Type GetType(string enumType) {
             if (string.IsNullOrEmpty(enumType)) {
-                G.U.Error("The type is null or empty. The type needs to be an enum (enumeration).");
+                G.U.Err("The type is null or empty. The type needs to be an enum (enumeration).");
                 return null;
             }
             Type t = System.Reflection.Assembly.GetExecutingAssembly().GetType(enumType);
@@ -132,10 +132,10 @@ namespace KRG {
 
         static bool AssertIsEnum(Type enumType) {
             if (enumType == null) {
-                G.U.Error("The type is null. The type needs to be an enum (enumeration).");
+                G.U.Err("The type is null. The type needs to be an enum (enumeration).");
                 return false;
             } else if (!enumType.IsEnum) {
-                G.U.Error("The type \"{0}\" is invalid. The type needs to be an enum (enumeration).", enumType);
+                G.U.Err("The type \"{0}\" is invalid. The type needs to be an enum (enumeration).", enumType);
                 return false;
             } else {
                 return true;

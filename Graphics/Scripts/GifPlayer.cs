@@ -86,7 +86,7 @@ namespace KRG {
                             //begin Frame Sequence code
                             //NOTE: GifPlayer uses zero-based frame index (i); RasterAnimation uses one-based frame num.
                             if (unloadAfterPlay) {
-                                G.U.Error("Unload After Play is not supported when using Frame Sequences.");
+                                G.U.Err("Unload After Play is not supported when using Frame Sequences.");
                             }
                             int frameNumber;
                             if (_rasterAnimationState.frameSequenceHasFrameList) {

@@ -16,30 +16,18 @@ namespace KRG
         {
             // KRG CODING STYLE REFERENCE
 
-
-            //=====================//
-            //                     //
-            //  C O N S T A N T S  //
-            //                     //
-            //=====================//
+            /* ~~~~~~~~~
+             * CONSTANTS
+             * ~~~~~~~~~
+             */
 
             const string FORMAT_MAGIC_STRING = "{0";
 
 
-            //=========//
-            //         //
-            //  N E W  // (End, Err, Log, Require)
-            //         //
-            //=========//
-
-            // TODO: Organize these methods and remove redundancies.
-
-
-            //=========//
-            //         //
-            //  O L D  //
-            //         //
-            //=========//
+            /* ~~~
+             * NEW : instantiate those prefabs
+             * ~~~
+             */
 
             /// <summary>
             /// Create a new instance of the specified prefab on the specified parent (use *null* for hierarchy root).
@@ -52,17 +40,22 @@ namespace KRG
             {
                 if (prefab == null)
                 {
-                    G.U.Error("Null prefab/original supplied for new object on {0}.", parent.name);
+                    Err("Null prefab/original supplied for new object on {0}.", parent.name);
                     return null;
                 }
 
-                T clone = Object.Instantiate(prefab, parent);
+                T clone = Instantiate(prefab, parent);
 
                 clone.name = prefab.name; //remove "(Clone)" from name
 
                 return clone;
             }
 
+
+            /* ~~~
+             * ERR : log those errors
+             * ~~~
+             */
 
             /// <summary>
             /// Log an error with the specified message.
@@ -87,7 +80,7 @@ namespace KRG
                 }
                 else
                 {
-                    Debug.LogError(message, args[0] as Object);
+                    Debug.LogError(message + "; " + GetInfo(args), args[0] as Object);
                 }
             }
 
@@ -97,33 +90,16 @@ namespace KRG
             /// <param name="context">Context.</param>
             /// <param name="format">Format.</param>
             /// <param name="args">Arguments.</param>
-            public static void Err(GameObject context, string format, params object[] args)
+            public static void Err(Object context, string format, params object[] args)
             {
                 Debug.LogErrorFormat(context, format, args);
             }
 
-            /// <summary>
-            /// Log an error with the specified context, format, and arguments.
-            /// </summary>
-            /// <param name="context">Context.</param>
-            /// <param name="format">Format.</param>
-            /// <param name="args">Arguments.</param>
-            public static void Err(MonoBehaviour context, string format, params object[] args)
-            {
-                Debug.LogErrorFormat(context, format, args);
-            }
 
-            /// <summary>
-            /// Log an error with the specified context, format, and arguments.
-            /// </summary>
-            /// <param name="context">Context.</param>
-            /// <param name="format">Format.</param>
-            /// <param name="args">Arguments.</param>
-            public static void Err(ScriptableObject context, string format, params object[] args)
-            {
-                Debug.LogErrorFormat(context, format, args);
-            }
-
+            /* ~~~
+             * TODO : organize this old code and remove redundancies
+             * ~~~
+             */
 
             static float _logLastTime;
 
@@ -251,7 +227,7 @@ namespace KRG
                 }
                 else
                 {
-                    Error(s);
+                    Err(s);
                 }
             }
 
@@ -350,26 +326,6 @@ namespace KRG
                     Debug.Assert(condition, message + "; " + GetInfo(objs));
                 }
                 return condition;
-            }
-
-
-            /// <summary>
-            /// Log an error with the specified message and optional objects.
-            /// </summary>
-            /// <param name="message">Message, or format (if containing "{0").</param>
-            /// <param name="objs">Objects.</param>
-            public static void Error(string message, params object[] objs)
-            {
-                if (message.Contains(FORMAT_MAGIC_STRING))
-                {
-                    Debug.LogErrorFormat(message, objs);
-                    //basically the same as G.Err(...)
-                }
-                else
-                {
-                    Debug.LogError(message + "; " + GetInfo(objs));
-                    //TODO: migrate this functionality to G.Err(...)
-                }
             }
 
 

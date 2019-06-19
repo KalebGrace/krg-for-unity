@@ -26,7 +26,7 @@ namespace KRG {
 
         public void Instantiate() {
             if (prefab == null) {
-                G.U.Error("{0}'s prefab component has no prefab reference.", gameObject.name);
+                G.U.Err("{0}'s prefab component has no prefab reference.", gameObject.name);
                 return;
             }
 

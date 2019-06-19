@@ -146,7 +146,7 @@ namespace KRG {
                         case Direction.Below:
                             return -_axisAB;
                         default:
-                            G.U.Error("Invalid Cardinal/Altitude direction.");
+                            G.U.Err("Invalid Cardinal/Altitude direction.");
                             return 0f;
                     }
                 case DirectionType.Ordinal:
@@ -170,11 +170,11 @@ namespace KRG {
                             mag2 = GetDirectionMagnitude(Direction.West);
                             break;
                         default:
-                            G.U.Error("Invalid Ordinal direction.");
+                            G.U.Err("Invalid Ordinal direction.");
                             return 0f;
                     }
                     if (!Mathf.Approximately(mag1, mag2)) {
-                        G.U.Error("This position doesn't have an Ordinal direction.");
+                        G.U.Err("This position doesn't have an Ordinal direction.");
                         return 0f;
                     }
                     if (options == SpatialOptions.TrueOrdinal) {
@@ -185,7 +185,7 @@ namespace KRG {
                 case DirectionType.Relative:
                     return GetDirectionMagnitude(dir.GetAbsoluteDirection(), options);
                 default:
-                    G.U.Error("Currently unsupported.");
+                    G.U.Err("Currently unsupported.");
                     return 0f;
             }
         }
@@ -218,7 +218,7 @@ namespace KRG {
                             _axisAB = -mag;
                             break;
                         default:
-                            G.U.Error("Invalid Cardinal/Altitude direction.");
+                            G.U.Err("Invalid Cardinal/Altitude direction.");
                             break;
                     }
                     break;
@@ -245,7 +245,7 @@ namespace KRG {
                             SetDirectionMagnitude(Direction.West, mag);
                             break;
                         default:
-                            G.U.Error("Invalid Ordinal direction.");
+                            G.U.Err("Invalid Ordinal direction.");
                             break;
                     }
                     break;
@@ -253,7 +253,7 @@ namespace KRG {
                     SetDirectionMagnitude(dir.GetAbsoluteDirection(), mag, options);
                     break;
                 default:
-                    G.U.Error("Currently unsupported.");
+                    G.U.Err("Currently unsupported.");
                     break;
             }
         }

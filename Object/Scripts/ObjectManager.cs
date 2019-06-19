@@ -127,7 +127,7 @@ namespace KRG
             }
             else
             {
-                G.U.Error(
+                G.U.Err(
                     "A singleton instance already exists for {0}. Use {0}.instance to get it.", typeof(T));
                 return null;
             }
@@ -168,7 +168,7 @@ namespace KRG
                         instance.name, instance.GetType());
                     break;
                 default:
-                    G.U.Error("Unsupported DestroyType {0} for instance {1} of type {2}.",
+                    G.U.Err("Unsupported DestroyType {0} for instance {1} of type {2}.",
                         destroyType, instance.name, instance.GetType());
                     break;
             }

@@ -123,7 +123,7 @@ namespace KRG
                     fadeOutSeconds
                 ).OnComplete(StopMusicComplete);
             #else
-                G.U.Error("Using StopMusic with fadeOutSeconds requires DG.Tweening (DOTween).");
+                G.U.Err("Using StopMusic with fadeOutSeconds requires DG.Tweening (DOTween).");
             #endif
             } else {
                 musicStopVolume = 0;

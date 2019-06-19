@@ -42,13 +42,13 @@
             int len = eg.length;
             if (len < 3)
             {
-                G.U.Error("There must be at least three time thread instance enum entries. "
+                G.U.Err("There must be at least three time thread instance enum entries. "
                 + _timeThreadInstanceInfo);
                 len = 3;
             }
             else if (!eg.HasSequentialValues(-1, 1))
             {
-                G.U.Error("Time thread instance integer values must start at -1 and increment by 1. "
+                G.U.Err("Time thread instance integer values must start at -1 and increment by 1. "
                 + _timeThreadInstanceInfo);
             }
             _threadCount = len - 1; //ignore "UseDefault"
@@ -99,7 +99,7 @@
             var tm = this; //TEMP FIX
             if (timeThreadIndex < 0 || timeThreadIndex >= tm._threadCount)
             {
-                G.U.Error(
+                G.U.Err(
                     "The specified time thread index must be 0 to {0}, but {1} was provided.",
                     tm._threadCount - 1,
                     timeThreadIndex

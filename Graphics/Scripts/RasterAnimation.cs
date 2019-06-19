@@ -208,14 +208,14 @@ namespace KRG {
             if (_frameSequences.Length > frameSequenceIndex) {
                 return _frameSequences[frameSequenceIndex];
             } else {
-                G.U.Error("The frameSequenceIndex is out of bounds.", this, frameSequenceIndex);
+                G.U.Err("The frameSequenceIndex is out of bounds.", this, frameSequenceIndex);
                 return null;
             }
         }
 
         protected virtual void CheckForPlayableFrameSequences() {
             if (_frameSequences.Length > frameSequenceCountMax) {
-                G.U.Error("Frame sequence count is higher than maximum.",
+                G.U.Err("Frame sequence count is higher than maximum.",
                     this, _frameSequences.Length, frameSequenceCountMax);
             }
             FrameSequence fs;
