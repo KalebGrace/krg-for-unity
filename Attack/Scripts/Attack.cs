@@ -76,14 +76,14 @@ namespace KRG {
             }
             else
             {
-                _boxCollider = G.U.Require<BoxCollider>(this);
+                _boxCollider = this.Require<BoxCollider>();
             }
             G.U.Assert(_boxCollider.isTrigger, "The BoxCollider Component must be a trigger.");
 
             //TODO: apply hurtbox where needed
             if (hurtbox) hurtbox.enabled = false;
 
-            _graphicsController = G.U.Require<GraphicsController>(this);
+            _graphicsController = this.Require<GraphicsController>();
 
             my_end.actions += ForceOnTriggerExit;
         }

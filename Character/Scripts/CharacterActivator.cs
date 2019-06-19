@@ -26,9 +26,9 @@ namespace KRG {
 #region MonoBehaviour methods
 
         void Awake() {
-            _collider = G.U.Require<Collider>(this);
+            _collider = this.Require<Collider>();
             G.U.Assert(_collider.isTrigger);
-            _character = G.U.Require<Character>(transform.parent);
+            _character = transform.parent.Require<Character>();
             Activate(false);
         }
 

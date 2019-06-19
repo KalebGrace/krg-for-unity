@@ -63,7 +63,7 @@ namespace KRG {
             } else {
                 G.U.Require(_center, "VisRect (or \"Center\" GameObject)");
             }
-            _graphicsController = G.U.Require<GraphicsController>(this);
+            _graphicsController = this.Require<GraphicsController>();
             _transform = transform;
 
 #if DEBUG_VISIBILITY

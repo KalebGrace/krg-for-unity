@@ -20,9 +20,9 @@ namespace KRG {
 
         void Awake() {
 #if KRG_X_TMPRO || NS_TMPRO_PAID || NS_TMPRO
-            _text = G.U.Require<TextMeshPro>(this);
+            _text = this.Require<TextMeshPro>();
 #else
-            _text = G.U.Require<TextMesh>(this);
+            _text = this.Require<TextMesh>();
 #endif
         }
 

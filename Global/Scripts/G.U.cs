@@ -219,7 +219,7 @@ namespace KRG
             }
 
 
-            static void ErrorOrException(string s, bool throwException)
+            internal static void ErrorOrException(string s, bool throwException)
             {
                 if (throwException)
                 {
@@ -285,7 +285,7 @@ namespace KRG
                 return s;
             }
 
-            static bool SourceExists(Object source, System.Type t, bool throwException)
+            internal static bool SourceExists(Object source, System.Type t, bool throwException)
             {
                 if (IsNull(source))
                 {
@@ -443,48 +443,6 @@ namespace KRG
                     return false;
                 }
                 return true;
-            }
-
-            /// <summary>
-            /// REQUIRE COMPONENT on SPECIFIED COMPONENT'S GAME OBJECT:
-            /// Require the specified Component type to exist on the specified source Component's GameObject.
-            /// </summary>
-            /// <param name="source">Source Component.</param>
-            /// <param name="throwException">If set to <c>true</c> throw exception.</param>
-            /// <typeparam name="T">The required Component type.</typeparam>
-            public static T Require<T>(Component source, bool throwException = true) where T : Component
-            {
-                if (!SourceExists(source, typeof(T), throwException)) return null;
-                T comp = source.GetComponent<T>();
-                if (IsNull(comp))
-                {
-                    string s = string.Format("A {0} Component must exist on the {1}'s {2} GameObject.",
-                                   typeof(T), source.GetType(), source.name);
-                    ErrorOrException(s, throwException);
-                    return null;
-                }
-                return comp;
-            }
-
-            /// <summary>
-            /// REQUIRE COMPONENT on SPECIFIED GAME OBJECT:
-            /// Require the specified Component type to exist on the specified source GameObject.
-            /// </summary>
-            /// <param name="source">Source GameObject.</param>
-            /// <param name="throwException">If set to <c>true</c> throw exception.</param>
-            /// <typeparam name="T">The required Component type.</typeparam>
-            public static T Require<T>(GameObject source, bool throwException = true) where T : Component
-            {
-                if (!SourceExists(source, typeof(T), throwException)) return null;
-                T comp = source.GetComponent<T>();
-                if (IsNull(comp))
-                {
-                    string s = string.Format("A {0} Component must exist on the {1} GameObject.",
-                                   typeof(T), source.name);
-                    ErrorOrException(s, throwException);
-                    return null;
-                }
-                return comp;
             }
 
             /// <summary>

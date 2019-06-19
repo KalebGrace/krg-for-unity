@@ -34,5 +34,26 @@ namespace KRG
             }
             Object.DontDestroyOnLoad(t);
         }
+
+        /// <summary>
+        /// REQUIRE COMPONENT on SPECIFIED COMPONENT'S GAME OBJECT:
+        /// Require the specified Component type to exist on the specified source Component's GameObject.
+        /// </summary>
+        /// <param name="me">Source Component.</param>
+        /// <param name="throwException">If set to <c>true</c> throw exception.</param>
+        /// <typeparam name="T">The required Component type.</typeparam>
+        public static T Require<T>(this Component me, bool throwException = true) where T : Component
+        {
+            if (!G.U.SourceExists(me, typeof(T), throwException)) return null;
+            T comp = me.GetComponent<T>();
+            if (G.U.IsNull(comp))
+            {
+                string s = string.Format("A {0} Component must exist on the {1}'s {2} GameObject.",
+                               typeof(T), me.GetType(), me.name);
+                G.U.ErrorOrException(s, throwException);
+                return null;
+            }
+            return comp;
+        }
     }
 }

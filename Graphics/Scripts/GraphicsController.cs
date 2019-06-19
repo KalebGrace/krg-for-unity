@@ -130,7 +130,7 @@ namespace KRG {
             if (_spriteGraphic == null) return;
             _canvasRenderer = GetComponent<CanvasRenderer>();
             if (_canvasRenderer == null) {
-                _spriteRenderer = G.U.Require<Renderer>(_spriteGraphic);
+                _spriteRenderer = _spriteGraphic.Require<Renderer>();
             }
             _meshSortingLayer = G.U.Guarantee<MeshSortingLayer>(_spriteGraphic);
             //the following must be done to refresh it with the current value of isVisibilityOK

@@ -31,9 +31,9 @@ namespace KRG {
 
 
         void Awake() {
-            _collider = G.U.Require<Collider>(this);
-            _renderer = G.U.Require<Renderer>(this);
-            _rigidbody = G.U.Require<Rigidbody>(this);
+            _collider = this.Require<Collider>();
+            _renderer = this.Require<Renderer>();
+            _rigidbody = this.Require<Rigidbody>();
 
             _rigidbody.isKinematic = true;
             _collider.enabled = false;

@@ -34,7 +34,7 @@ namespace KRG {
 #endregion
 
         void Awake() {
-            _rt = G.U.Require<RectTransform>(this);
+            _rt = this.Require<RectTransform>();
         }
     }
 }

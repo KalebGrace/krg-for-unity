@@ -17,7 +17,7 @@ namespace KRG {
         void Awake() {
             G.U.Assert(gameObject.layer != Layer.Default, "This GameObject must exist on a hit box Layer.");
 
-            G.U.Require<BoxCollider>(this);
+            this.Require<BoxCollider>();
 
             //we always want to have a Rigidbody on this (hit box) GameObject in order to exclude its
             //BoxCollider from the parent (bounding box) GameObject's Rigidbody when doing SweepTestAll
