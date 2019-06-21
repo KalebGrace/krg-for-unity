@@ -80,7 +80,7 @@ namespace KRG
                 }
                 else
                 {
-                    Debug.LogError(message + "; " + GetInfo(args), args[0] as Object);
+                    Debug.LogError(message + "\n" + GetInfo(args), args[0] as Object);
                 }
             }
 
@@ -157,7 +157,7 @@ namespace KRG
                 }
                 else
                 {
-                    LogInner(logType, message + "; " + U.GetInfo(objs));
+                    LogInner(logType, message + "\n" + U.GetInfo(objs));
                 }
             }
 
@@ -252,7 +252,7 @@ namespace KRG
                         for (int i = 0; i < len; i++)
                         {
                             o = objs[i];
-                            if (i > 0) s += "; ";
+                            if (i > 0) s += "\n";
                             s += string.Format("[#{0}] {1}", i, o);
                             if (o == null)
                             {
@@ -281,7 +281,7 @@ namespace KRG
                         }
                     }
                 }
-                s += "; [*] frame " + Time.frameCount + ", sec " + Time.realtimeSinceStartup;
+                s += "\n[*] frame " + Time.frameCount + ", sec " + Time.realtimeSinceStartup;
                 return s;
             }
 
@@ -323,7 +323,7 @@ namespace KRG
                 }
                 else
                 {
-                    Debug.Assert(condition, message + "; " + GetInfo(objs));
+                    Debug.Assert(condition, message + "\n" + GetInfo(objs));
                 }
                 return condition;
             }
@@ -513,7 +513,7 @@ namespace KRG
                 }
                 else
                 {
-                    Debug.LogWarning(message + "; " + GetInfo(objs));
+                    Debug.LogWarning(message + "\n" + GetInfo(objs));
                 }
             }
 
