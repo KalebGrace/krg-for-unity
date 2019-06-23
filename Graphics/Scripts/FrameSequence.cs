@@ -11,7 +11,7 @@ namespace KRG {
     public sealed class FrameSequence {
 
         class FrameCommand {
-            public bool isNumber, isExtender, isRange, isSeparator;
+            public bool isNumber, isExtender, isRange, isSeparator; //TODO: make this an enum
             public int number, times = 1;
         }
 
@@ -40,6 +40,11 @@ namespace KRG {
         [SerializeField]
         [Tooltip("Commas seperate frames/groups. 1-3-1 means 1,2,3,2,1. 1-3x2-1 means 1-3,3-1 means 1,2,3,3,2,1.")]
         string _frames = default;
+
+        //TODO: make w/ odin control
+        [System.NonSerialized]
+        [Tooltip("This is how the code sees your Frames input.")]
+        public string _framesInterpreted;
 
         [HideInInspector]
         [SerializeField]
@@ -163,8 +168,7 @@ namespace KRG {
             _frameList.Clear();
             _frameCommands.Clear();
             _number = new StringBuilder();
-            if (_frames == null) _frames = "";
-            _frames = _frames.Trim();
+            _frames = _frames?.Trim() ?? "";
             if (_frames == "") return;
             char c;
             for (int i = 0; i < _frames.Length; ++i) {
@@ -186,6 +190,7 @@ namespace KRG {
                         FlushNumberToFrameCommands();
                         _frameCommands.Enqueue(new FrameCommand { isExtender = true });
                         break;
+                    case 't': // to
                     case '-':
                         FlushNumberToFrameCommands();
                         _frameCommands.Enqueue(new FrameCommand { isRange = true });
