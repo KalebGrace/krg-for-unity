@@ -37,7 +37,7 @@ namespace KRG
         }
 
         /// <summary>
-        /// REQUIRE COMPONENT on SPECIFIED GAME OBJECT:
+        /// REQUIRE COMPONENT to be on SPECIFIED GAME OBJECT:
         /// Require the specified Component type to exist on the specified source GameObject.
         /// </summary>
         /// <param name="me">Source GameObject.</param>
@@ -50,7 +50,7 @@ namespace KRG
             if (G.U.IsNull(comp))
             {
                 string s = string.Format("A {0} Component must exist on the {1} GameObject.",
-                               typeof(T), me.name);
+                    typeof(T), me.name);
                 G.U.ErrorOrException(s, throwException);
                 return null;
             }

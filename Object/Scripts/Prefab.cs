@@ -6,6 +6,7 @@ namespace KRG {
 
     /// <summary>
     /// SCRIPT EXECUTION ORDER: #10
+    /// TODO: Re-evaluate this. Also see string in PrefabInspector.
     /// </summary>
     public class Prefab : MonoBehaviour {
 
