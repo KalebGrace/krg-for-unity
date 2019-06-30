@@ -9,7 +9,7 @@
         public int[] acquiredItems;
         public float hpMax;
         public float spMax;
-        //serialized version of map data
+        public AutoMapSaveData[] maps;
         //etc...
 
         public static SaveFile New()
