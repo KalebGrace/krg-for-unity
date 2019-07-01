@@ -9,8 +9,14 @@ namespace KRG
 
         public SwitchCommand command;
 
-        public SwitchContext context; //for the Behaviour to Enable/Disable
+        //for the Behaviour to Enable/Disable
+        // or the component State to modify
+        public SwitchContext context;
 
-        public GameObject destination; //for the MoveTo command only
+        //for the MoveTo command only
+        public GameObject destination;
+
+        //for the StateGoTo command only
+        public int index;
     }
 }

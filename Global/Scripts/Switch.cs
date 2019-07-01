@@ -21,11 +21,11 @@ namespace KRG
         {
         }
 
-        public void GoTo(int stateIndex)
+        public void Prev()
         {
             if (!enabled) return;
 
-            m_StateIndex = stateIndex;
+            m_StateIndex = (m_StateIndex + states.Count - 1) % states.Count;
 
             BeginState(states[m_StateIndex]);
         }
@@ -39,34 +39,51 @@ namespace KRG
             BeginState(states[m_StateIndex]);
         }
 
+        public void GoTo(int stateIndex)
+        {
+            if (!enabled) return;
+
+            m_StateIndex = stateIndex;
+
+            BeginState(states[m_StateIndex]);
+        }
+
         protected void BeginState(SwitchState state)
         {
             for (int i = 0; i < state.actions.Count; ++i)
             {
                 var action = state.actions[i];
+                var subject = action.subject;
+                var command = action.command;
+                var context = action.context;
 
-                switch (action.command)
+                switch (command)
                 {
                     case SwitchCommand.None:
                         //do nothing
                         break;
                     case SwitchCommand.Enable:
-                        SetEnabled(action.subject, action.context, true);
+                        SetSubjectEnabled(subject, context, true);
                         break;
                     case SwitchCommand.Disable:
-                        SetEnabled(action.subject, action.context, false);
+                        SetSubjectEnabled(subject, context, false);
                         break;
                     case SwitchCommand.MoveTo:
-                        MoveTo(action.subject, action.destination);
+                        MoveTo(subject, action.destination);
+                        break;
+                    case SwitchCommand.StatePrev:
+                    case SwitchCommand.StateNext:
+                    case SwitchCommand.StateGoTo:
+                        SetSubjectState(subject, command, context, action.index);
                         break;
                     default:
-                        G.U.Unsupported(this, action.command);
+                        G.U.Unsupported(this, command);
                         break;
                 }
             }
         }
 
-        protected void SetEnabled(SwitchSubject subject, SwitchContext context, bool enabled)
+        protected void SetSubjectEnabled(SwitchSubject subject, SwitchContext context, bool enabled)
         {
             MonoBehaviour component;
 
@@ -89,6 +106,37 @@ namespace KRG
         protected virtual void MoveTo(SwitchSubject subject, GameObject destination)
         {
             throw new System.Exception("Not yet implemented.");
+        }
+
+        protected void SetSubjectState(SwitchSubject subject, SwitchCommand command, SwitchContext context, int stateIndex)
+        {
+            Switch component;
+
+            switch (context)
+            {
+                case SwitchContext.Switch:
+                    component = subject.GetComponent<Switch>();
+                    break;
+                default:
+                    G.U.Unsupported(this, context);
+                    return;
+            }
+
+            switch (command)
+            {
+                case SwitchCommand.StatePrev:
+                    component.Prev();
+                    break;
+                case SwitchCommand.StateNext:
+                    component.Next();
+                    break;
+                case SwitchCommand.StateGoTo:
+                    component.GoTo(stateIndex);
+                    break;
+                default:
+                    G.U.Unsupported(this, command);
+                    break;
+            }
         }
     }
 }
