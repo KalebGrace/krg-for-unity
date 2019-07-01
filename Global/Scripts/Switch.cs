@@ -6,12 +6,16 @@ namespace KRG
     public class Switch : MonoBehaviour
     {
         [SerializeField]
-        protected int m_StateIndex = 0; //TODO: base 0 tooltip
+        protected int m_StateIndex = -1; //TODO: base 0 tooltip
         //0 is the first state. 1 is the second state. And so on...
 
         public List<SwitchState> states = new List<SwitchState>();
 
         public int StateIndex => m_StateIndex;
+
+        protected virtual void OnEnable()
+        {
+        }
 
         protected virtual void Update()
         {
