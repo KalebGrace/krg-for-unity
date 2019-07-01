@@ -4,7 +4,7 @@
     {
         public int version;
         public int appState;
-        public int activeScene;
+        public int activeScene; // sceneId
         public int checkpointId; // for position
         public int[] acquiredItems;
         public float hpMax;
