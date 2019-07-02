@@ -251,8 +251,16 @@ namespace KRG {
             ObjectManager.InvokeEventActions(ref _endInvulnerabilityHandlers);
         }
 
-        public virtual bool IsInvulnerableTo(AttackAbility attackAbility) {
-            return _invulnerabilityTimeTrigger != null;
+        public virtual bool IsInvulnerableTo(AttackAbility attackAbility)
+        {
+            if (_invulnerabilityTimeTrigger != null) return true;
+
+            var vList = _damageProfile.attackVulnerabilities;
+            int count = vList?.Count ?? 0;
+
+            if (count > 0 && !vList.Contains(attackAbility)) return true;
+
+            return false;
         }
 
 #endregion
