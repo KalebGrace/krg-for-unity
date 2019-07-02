@@ -61,10 +61,17 @@ namespace KRG {
         [SerializeField]
         LootData _knockedOutLoot = default;
 
+        [Header("Attack Vulnerabilities")]
+
+        [SerializeField, Tooltip("If none are listed explicity, it is vulnerable to all attacks.")]
+        List<AttackAbility> _attackVulnerabilities = new List<AttackAbility>();
+
 
         //applicable time thread interface, from _timeThreadIndex
         protected ITimeThread _timeThread;
 
+
+        public virtual List<AttackAbility> attackVulnerabilities => _attackVulnerabilities;
 
         public virtual float hpMin { get { return 0; } }
 
