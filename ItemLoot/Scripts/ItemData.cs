@@ -18,6 +18,9 @@ namespace KRG
         [SerializeField, Tooltip("The name of the item, as displayed to the player.")]
         protected string displayName = default;
 
+        [SerializeField, Tooltip("Instruction for item use, as displayed to the player.")]
+        protected string instruction = default;
+
         [SerializeField, Tooltip("If this represents a key item, set it here.")]
         [Enum(typeof(KeyItem))]
         protected int m_KeyItem = default;
@@ -42,6 +45,10 @@ namespace KRG
 
 
         // properties
+
+        public string DisplayName => displayName;
+
+        public string Instruction => instruction;
 
         public bool HasEffectors => effectors != null && effectors.Count > 0;
 

@@ -7,20 +7,27 @@ namespace KRG
         public override float priority => 130;
 
 
-        // FIELDS & DELEGATES
+        // FIELDS, DELEGATES, & EVENTS
 
         readonly List<int> m_AcquiredItems = new List<int>();
 
         readonly Dictionary<int, ItemAcquiredHandler> m_ItemAcquiredHandlers
            = new Dictionary<int, ItemAcquiredHandler>();
 
+        readonly Dictionary<int, ItemData> m_ItemDataDictionary
+           = new Dictionary<int, ItemData>();
+
         public delegate void ItemAcquiredHandler(int acquiredItem);
+
+        public event ItemAcquiredHandler KeyItemAcquired;
 
 
         // MONOBEHAVIOUR-LIKE METHODS
 
         public override void Awake()
         {
+            BuildItemDataDictionary();
+
             ResetContents();
         }
 
@@ -39,6 +46,8 @@ namespace KRG
                     m_ItemAcquiredHandlers.Remove(item);
                 }
 
+                KeyItemAcquired?.Invoke(item);
+
                 G.save.SaveCheckpoint();
             }
             else
@@ -47,9 +56,19 @@ namespace KRG
             }
         }
 
+        public ItemData GetItemData(int item)
+        {
+            return m_ItemDataDictionary[item];
+        }
+
         public bool Has(int item)
         {
             return m_AcquiredItems.Contains(item);
+        }
+
+        public void ResetContents()
+        {
+            m_AcquiredItems.Clear();
         }
 
         /// <summary>
@@ -79,15 +98,10 @@ namespace KRG
 
         public void RemoveItemAcquiredHandler(int item, ItemAcquiredHandler handler)
         {
-            if (m_ItemAcquiredHandlers.ContainsKey(item) )
+            if (m_ItemAcquiredHandlers.ContainsKey(item))
             {
                 m_ItemAcquiredHandlers[item] -= handler;
             }
-        }
-
-        public void ResetContents()
-        {
-            m_AcquiredItems.Clear();
         }
 
 
@@ -103,6 +117,21 @@ namespace KRG
             ResetContents();
 
             if (sf.acquiredItems != null) m_AcquiredItems.AddRange(sf.acquiredItems);
+        }
+
+
+        // PRIVATE METHODS
+
+        private void BuildItemDataDictionary()
+        {
+            var refs = config.KeyItemDataReferences;
+
+            for (int i = 0; i < refs.Length; ++i)
+            {
+                ItemData id = refs[i];
+
+                m_ItemDataDictionary.Add(id.KeyItemIndex, id);
+            }
         }
     }
 }

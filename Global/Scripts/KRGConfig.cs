@@ -11,8 +11,6 @@ namespace KRG {
 
     public sealed partial class KRGConfig : ScriptableObject {
 
-#region krg
-
 		//If you get an error stating `KRG.KRGConfig' does not contain a definition for `resourcePath',
 		//create a KRGConfig.MyGame.cs file containing a partial class KRGConfig with the following constants in it:
 
@@ -31,6 +29,7 @@ namespace KRG {
         int _serializedVersion = default;
         */       
 
+
         [Header("KRG: King's Royal Gold")]
 
         [SerializeField]
@@ -39,9 +38,6 @@ namespace KRG {
 
         public KRGReferences krgReferences { get { return _krgReferences; } }
 
-#endregion
-
-#region damage
 
         [Header("Damage (KRG)")]
 
@@ -54,9 +50,6 @@ namespace KRG {
 
         public HPBar hpBarPrefab { get { return _hpBarPrefab; } }
 
-#endregion
-
-#region dotween
 
         [Header("DOTween (KRG)")]
 
@@ -81,9 +74,14 @@ namespace KRG {
         public LogBehaviour doTweenLogBehaviour { get { return _doTweenLogBehaviour; } }
 #endif
 
-#endregion
 
-#region object
+        [Header("ItemLoot (KRG)")]
+
+        [SerializeField]
+        ItemData[] _keyItemDataReferences = default;
+
+        public ItemData[] KeyItemDataReferences => (ItemData[])_keyItemDataReferences.Clone();
+
 
         [Header("Object (KRG)")]
 
@@ -94,9 +92,6 @@ namespace KRG {
 
         public GameObject[] autoInstancedPrefabs { get { return (GameObject[])_autoInstancedPrefabs.Clone(); } }
 
-#endregion
-
-#region time
 
         [Header("Time (KRG)")]
 
@@ -105,9 +100,6 @@ namespace KRG {
 
         public string timeThreadInstanceEnum { get { return _timeThreadInstanceEnum; } }
 
-#endregion
-
-#region MonoBehaviour methods
 
         //WARNING: this function will only be called automatically if playing a GAME BUILD
         //...it will NOT be called if using the Unity editor
@@ -121,9 +113,6 @@ namespace KRG {
             UpdateSerializedVersion();
         }
 
-#endregion
-
-#region private methods
 
         void UpdateSerializedVersion() {
             /*
@@ -135,8 +124,5 @@ namespace KRG {
             }
             */
         }
-
-#endregion
-
     }
 }
