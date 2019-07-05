@@ -58,6 +58,8 @@ namespace KRG
 
         public ItemData GetItemData(int item)
         {
+            G.U.Assert(m_ItemDataDictionary.ContainsKey(item), "Set item {0} ref in KRGConfig.", item);
+
             return m_ItemDataDictionary[item];
         }
 

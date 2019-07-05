@@ -37,6 +37,9 @@ namespace KRG
         [BoolObjectDisable(false)]
         protected BoolFloat autoCollect = default;
 
+        [SerializeField, Tooltip("Show item title card upon acquiring. Only applies to key items.")]
+        protected bool showCardOnAcquire = true;
+
 
         [Header("Effectors")]
 
@@ -50,11 +53,13 @@ namespace KRG
 
         public string Instruction => instruction;
 
-        public bool HasEffectors => effectors != null && effectors.Count > 0;
-
         public bool IsKeyItem => m_KeyItem != 0;
 
         public int KeyItemIndex => m_KeyItem;
+
+        public bool ShowCardOnAcquire => showCardOnAcquire;
+
+        public bool HasEffectors => effectors != null && effectors.Count > 0;
 
 
         // MonoBehaviour methods

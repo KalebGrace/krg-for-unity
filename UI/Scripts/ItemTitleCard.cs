@@ -30,6 +30,8 @@ namespace KRG
         {
             ItemData id = G.inv.GetItemData(acquiredItem);
 
+            if (!id.ShowCardOnAcquire) return;
+
             itemDisplayNameText.text = id.DisplayName;
             itemInstructionText.text = id.Instruction;
 
