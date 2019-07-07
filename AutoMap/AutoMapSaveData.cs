@@ -3,6 +3,7 @@
     public struct AutoMapSaveData
     {
         public int sceneId;
-        public bool[,] visited;
+
+        public bool[,] discovered; //visited
     }
 }
