@@ -3,6 +3,6 @@
     public struct AutoMapSaveData
     {
         public int gameplaySceneId;
-        public bool[,] discovered; //visited
+        public bool[][] discoveredJagged; //visited
     }
 }

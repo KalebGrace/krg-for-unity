@@ -59,7 +59,11 @@ namespace KRG
             var n = cb.size.x;
             var m = cb.size.y;
 
-            saveData.discovered = new bool[n, m];
+            saveData.discoveredJagged = new bool[n][];
+            for (int i = 0; i < n; ++i)
+            {
+                saveData.discoveredJagged[i] = new bool[m];
+            }
 
             visibility = defaultVisibility;
         }
@@ -108,9 +112,9 @@ namespace KRG
         {
             var ai = GetArrayIndices(cp);
 
-            if (IsInBounds(cp) && !saveData.discovered[ai.x, ai.y])
+            if (IsInBounds(cp) && !saveData.discoveredJagged[ai.x][ai.y])
             {
-                saveData.discovered[ai.x, ai.y] = true;
+                saveData.discoveredJagged[ai.x][ai.y] = true;
                 return true;
             }
 
@@ -121,15 +125,15 @@ namespace KRG
         {
             var ai = GetArrayIndices(cp);
 
-            return IsInBounds(cp) && saveData.discovered[ai.x, ai.y];
+            return IsInBounds(cp) && saveData.discoveredJagged[ai.x][ai.y];
         }
 
         bool IsInBounds(Vector3Int cp)
         {
             var ai = GetArrayIndices(cp);
 
-            bool xInBounds = ai.x.Between(0, saveData.discovered.GetLength(0));
-            bool yInBounds = ai.y.Between(0, saveData.discovered.GetLength(1));
+            bool xInBounds = ai.x.Between(0, saveData.discoveredJagged.Length);
+            bool yInBounds = ai.y.Between(0, saveData.discoveredJagged[0].Length);
 
             return xInBounds && yInBounds;
         }
