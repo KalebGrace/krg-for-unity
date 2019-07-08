@@ -5,165 +5,189 @@ using UnityEngine.Tilemaps;
 
 namespace KRG
 {
-	public class AutoMap : MonoBehaviour
-	{
-		public Color discoveredColor = new Color(255, 133, 234);
+    public class AutoMap : MonoBehaviour
+    {
+        public Color discoveredColor = new Color(255, 133, 234);
 
-		public Color undiscoveredColor = new Color(20, 123, 193);
+        public Color undiscoveredColor = new Color(20, 123, 193);
 
-		public Color hiddenColor = new Color(22, 28, 34);
+        public Color hiddenColor = new Color(22, 28, 34);
 
-		public Grid grid { get; private set; }
+        public Grid grid { get; private set; }
 
-		public Tilemap tilemap { get; private set; }
+        public Tilemap tilemap { get; private set; }
 
-		public Camera mapCamera { get; private set; }
+        public Camera mapCamera { get; private set; }
 
-		public bool[,] discovered;
+        public AutoMapSaveData saveData;
 
-		public Visibility visibility;
+        public Visibility visibility;
 
-		Visibility defaultVisibility;
+        Visibility defaultVisibility;
 
-		public enum Visibility
-		{
-			None = 0,
-			Revealed = 1,
-		}
+        public enum Visibility
+        {
+            None = 0,
+            Revealed = 1,
+        }
 
-		void Awake()
-		{
-			grid = this.Require<Grid>();
+        static AutoMapSaveData[] s_SaveDataArray;
 
-			tilemap = G.U.Require(gameObject.GetComponentInChildren<Tilemap>());
+        void Awake()
+        {
+            grid = this.Require<Grid>();
 
-			mapCamera = G.U.Require(gameObject.GetComponentInChildren<Camera>());
+            tilemap = G.U.Require(gameObject.GetComponentInChildren<Tilemap>());
 
-			tilemap.CompressBounds();
+            mapCamera = G.U.Require(gameObject.GetComponentInChildren<Camera>());
 
-			tilemap.color = Color.white;
+            tilemap.CompressBounds();
 
-			defaultVisibility = visibility;
+            tilemap.color = Color.white;
 
-			ResetProgress();
+            defaultVisibility = visibility;
 
-			RenderAll();
-		}
+            ResetProgress();
 
-		public void ResetProgress()
-		{
-			var cb = tilemap.cellBounds;
+            RenderAll();
+        }
 
-			var n = cb.size.x;
-			var m = cb.size.y;
+        public void ResetProgress()
+        {
+            var cb = tilemap.cellBounds;
 
-			discovered = new bool[n, m];
+            var n = cb.size.x;
+            var m = cb.size.y;
 
-			visibility = defaultVisibility;
-		}
+            saveData.discovered = new bool[n, m];
 
-		public void LateUpdate()
-		{
-			var pc = PlayerCharacter.instance;
+            visibility = defaultVisibility;
+        }
 
-			if (pc == null) return;
+        public void LateUpdate()
+        {
+            var pc = PlayerCharacter.instance;
 
-			var pcPos = pc.transform.position;
+            if (pc == null) return;
 
-			var cp = tilemap.WorldToCell(pcPos);
+            var pcPos = pc.transform.position;
 
-			Discover(cp);
+            var cp = tilemap.WorldToCell(pcPos);
 
-			var camTF = mapCamera.transform;
-			var cpV3 = (Vector3)cp;
-			var csz = grid.cellSize;
+            Discover(cp);
 
-			cpV3.Scale(csz); //cell to world (snapped to grid)
-			cpV3 += csz / 2; //half-cell offset
-			cpV3.z = camTF.position.z;
-			camTF.position = cpV3;
-		}
+            var camTF = mapCamera.transform;
+            var cpV3 = (Vector3)cp;
+            var csz = grid.cellSize;
 
-		public void Discover(Vector3Int cp)
-		{
-			if (SetDiscovered(cp))
-			{
-				Render(cp);
-			}
-		}
+            cpV3.Scale(csz); //cell to world (snapped to grid)
+            cpV3 += csz / 2; //half-cell offset
+            cpV3.z = camTF.position.z;
+            camTF.position = cpV3;
+        }
 
-		bool SetDiscovered(Vector3Int cp)
-		{
-			var ai = GetArrayIndices(cp);
+        private void OnDestroy()
+        {
+            var m = s_SaveDataArray;
+            int l = s_SaveDataArray.Length + 1; //rip
+            s_SaveDataArray = new AutoMapSaveData[l];
+            m.CopyTo(s_SaveDataArray, 0);
+            saveData.gameplaySceneId = G.app.GameplaySceneId;
+            s_SaveDataArray[l - 1] = saveData;
+        }
 
-			if (IsInBounds(cp) && !discovered[ai.x, ai.y])
-			{
-				discovered[ai.x, ai.y] = true;
-				return true;
-			}
+        public void Discover(Vector3Int cp)
+        {
+            if (SetDiscovered(cp))
+            {
+                Render(cp);
+            }
+        }
 
-			return false;
-		}
+        bool SetDiscovered(Vector3Int cp)
+        {
+            var ai = GetArrayIndices(cp);
 
-		bool IsDiscovered(Vector3Int cp)
-		{
-			var ai = GetArrayIndices(cp);
+            if (IsInBounds(cp) && !saveData.discovered[ai.x, ai.y])
+            {
+                saveData.discovered[ai.x, ai.y] = true;
+                return true;
+            }
 
-			return IsInBounds(cp) && discovered[ai.x, ai.y];
-		}
+            return false;
+        }
 
-		bool IsInBounds(Vector3Int cp)
-		{
-			var ai = GetArrayIndices(cp);
+        bool IsDiscovered(Vector3Int cp)
+        {
+            var ai = GetArrayIndices(cp);
 
-			bool xInBounds = ai.x.Between(0, discovered.GetLength(0));
-			bool yInBounds = ai.y.Between(0, discovered.GetLength(1));
+            return IsInBounds(cp) && saveData.discovered[ai.x, ai.y];
+        }
 
-			return xInBounds && yInBounds;
-		}
+        bool IsInBounds(Vector3Int cp)
+        {
+            var ai = GetArrayIndices(cp);
 
-		Vector2Int GetArrayIndices(Vector3Int cp)
-		{
-			var cb = tilemap.cellBounds;
+            bool xInBounds = ai.x.Between(0, saveData.discovered.GetLength(0));
+            bool yInBounds = ai.y.Between(0, saveData.discovered.GetLength(1));
 
-			int ix = cp.x - cb.min.x;
-			int iy = cp.y - cb.min.y;
+            return xInBounds && yInBounds;
+        }
 
-			return new Vector2Int(ix, iy);
-		}
+        Vector2Int GetArrayIndices(Vector3Int cp)
+        {
+            var cb = tilemap.cellBounds;
 
-		public void RenderAll()
-		{
-			var b = tilemap.cellBounds;
+            int ix = cp.x - cb.min.x;
+            int iy = cp.y - cb.min.y;
 
-			for (int x = b.min.x; x < b.max.x; ++x)
-			{
-				for (int y = b.min.y; y < b.max.y; ++y)
-				{
-					for (int z = b.min.z; z < b.max.z; ++z)
-					{
-						Render(new Vector3Int(x, y, z));
-					}
-				}
-			}
-		}
+            return new Vector2Int(ix, iy);
+        }
 
-		public void Render(Vector3Int cp)
-		{
-			tilemap.SetTileFlags(cp, tilemap.GetTileFlags(cp) & ~TileFlags.LockColor);
+        public void RenderAll()
+        {
+            var b = tilemap.cellBounds;
 
-			if (IsDiscovered(cp))
-			{
-				tilemap.SetColor(cp, discoveredColor);
-			}
-			else if (visibility == Visibility.Revealed)
-			{
-				tilemap.SetColor(cp, undiscoveredColor);
-			}
-			else
-			{
-				tilemap.SetColor(cp, hiddenColor);
-			}
-		}
-	}
+            for (int x = b.min.x; x < b.max.x; ++x)
+            {
+                for (int y = b.min.y; y < b.max.y; ++y)
+                {
+                    for (int z = b.min.z; z < b.max.z; ++z)
+                    {
+                        Render(new Vector3Int(x, y, z));
+                    }
+                }
+            }
+        }
+
+        public void Render(Vector3Int cp)
+        {
+            tilemap.SetTileFlags(cp, tilemap.GetTileFlags(cp) & ~TileFlags.LockColor);
+
+            if (IsDiscovered(cp))
+            {
+                tilemap.SetColor(cp, discoveredColor);
+            }
+            else if (visibility == Visibility.Revealed)
+            {
+                tilemap.SetColor(cp, undiscoveredColor);
+            }
+            else
+            {
+                tilemap.SetColor(cp, hiddenColor);
+            }
+        }
+
+        internal static AutoMapSaveData[] GetSaveData()
+        {
+            return (AutoMapSaveData[])s_SaveDataArray.Clone();
+            //TODO: just make s_SaveDataArray into s_SaveDataDictionary
+        }
+
+        internal static void SetSaveData(AutoMapSaveData[] maps)
+        {
+            s_SaveDataArray = maps;
+            //TODO: load it out of here
+        }
+    }
 }

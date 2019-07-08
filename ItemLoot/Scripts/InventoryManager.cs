@@ -112,6 +112,8 @@ namespace KRG
         public virtual void SaveTo(ref SaveFile sf)
         {
             sf.acquiredItems = m_AcquiredItems.ToArray();
+
+            sf.maps = AutoMap.GetSaveData();
         }
 
         public virtual void LoadFrom(SaveFile sf)
@@ -119,6 +121,8 @@ namespace KRG
             ResetContents();
 
             if (sf.acquiredItems != null) m_AcquiredItems.AddRange(sf.acquiredItems);
+
+            AutoMap.SetSaveData((AutoMapSaveData[])sf.maps.Clone());
         }
 
 

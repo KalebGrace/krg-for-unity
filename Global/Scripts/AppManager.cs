@@ -31,7 +31,7 @@ namespace KRG
         /// </summary>
         public const string masterScenePathDefault =
             "!_" + masterSceneNameDefault + "/" + masterSceneNameDefault + ".unity";
-        
+
         /// <summary>
         /// The asynchronous scene loading progress value at which scene activation becomes available.
         /// </summary>
@@ -54,6 +54,23 @@ namespace KRG
         /// </summary>
         protected List<SceneController> _sceneControllers = new List<SceneController>();
 
+
+        // MAIN PROPERTIES
+
+        public virtual int GameplaySceneId
+        {
+            get
+            {
+                _ = System.Enum.TryParse(_activeSceneName, out SceneName sn);
+                return (int)sn;
+            }
+            set
+            {
+                SceneName sn = (SceneName)value;
+                _activeSceneName = sn.ToString();
+            }
+        }
+
         /// <summary>
         /// Gets a value indicating whether this <see cref="KRG.AppManager"/>
         /// is in the Unity Editor while running a single scene (and the App State is None).
@@ -64,6 +81,9 @@ namespace KRG
         public virtual bool isQuitting { get; private set; }
 
         public virtual string masterSceneName { get { return masterSceneNameDefault; } }
+
+
+        // METHODS
 
         public override void Awake()
         {

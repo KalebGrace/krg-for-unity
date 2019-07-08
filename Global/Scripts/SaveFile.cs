@@ -1,4 +1,6 @@
-﻿namespace KRG
+﻿using UnityEngine;
+
+namespace KRG
 {
     /// <summary>
     /// A SaveFile can be used for a checkpoint or hard save.
@@ -9,12 +11,11 @@
         public int version;
         public SaveContext saveContext;
         public int appState;
-        public int activeScene; //sceneId
-        public int checkpointId; //for position //TODO: for sure
-        public int[] acquiredItems;
-        public float hpMax; //TODO: remove
-        public float spMax; //TODO: remove
-        public AutoMapSaveData[] maps; //TODO
+        public int gameplaySceneId;
+        public int checkpointId; //for loading position
+        public Vector3 position; //for logging only
+        public int[] acquiredItems; //TODO: change to ItemStack[] items LATER; ItemStack: context (e.g. ItemContext.Acquired), keyItemId, count
+        public AutoMapSaveData[] maps;
         //etc...
 
         public static SaveFile New(SaveContext sc)
