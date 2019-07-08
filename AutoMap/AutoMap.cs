@@ -178,13 +178,13 @@ namespace KRG
             }
         }
 
-        internal static AutoMapSaveData[] GetSaveData()
+        public static AutoMapSaveData[] GetSaveData()
         {
-            return (AutoMapSaveData[])s_SaveDataArray.Clone();
+            return s_SaveDataArray != null ? (AutoMapSaveData[])s_SaveDataArray.Clone() : null;
             //TODO: just make s_SaveDataArray into s_SaveDataDictionary
         }
 
-        internal static void SetSaveData(AutoMapSaveData[] maps)
+        public static void SetSaveData(AutoMapSaveData[] maps)
         {
             s_SaveDataArray = maps;
             //TODO: load it out of here
