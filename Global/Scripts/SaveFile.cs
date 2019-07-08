@@ -10,7 +10,6 @@ namespace KRG
     {
         public int version;
         public SaveContext saveContext;
-        public int appState;
         public int gameplaySceneId;
         public int checkpointId; //for loading position
         public Vector3 position; //for logging only
