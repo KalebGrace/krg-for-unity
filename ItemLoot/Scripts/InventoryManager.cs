@@ -122,7 +122,7 @@ namespace KRG
 
             if (sf.acquiredItems != null) m_AcquiredItems.AddRange(sf.acquiredItems);
 
-            AutoMap.SetSaveData((AutoMapSaveData[])sf.maps.Clone());
+            if (sf.maps != null) AutoMap.SetSaveData((AutoMapSaveData[])sf.maps.Clone());
         }
 
 
