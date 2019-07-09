@@ -61,13 +61,20 @@ namespace KRG
         {
             get
             {
-                _ = System.Enum.TryParse(_activeSceneName, out SceneName sn);
-                return (int)sn;
+                if (System.Enum.TryParse(_activeSceneName, out SceneName sn))
+                {
+                    return (int)sn;
+                }
+                G.U.Err("Active scene {0} does not exist in SceneName enum.", _activeSceneName);
+                return 0;
             }
             set
             {
-                SceneName sn = (SceneName)value;
-                _activeSceneName = sn.ToString();
+                if (value != 0)
+                {
+                    SceneName sn = (SceneName)value;
+                    _activeSceneName = sn.ToString();
+                }
             }
         }
 

@@ -34,7 +34,8 @@
         {
             lock (m_SaveLock)
             {
-                SaveCheckpoint((LetterName)m_CurrentCheckpoint.checkpointId);
+                //no checkpoint specified, so keep previous data
+                SaveCheckpoint(m_CurrentCheckpoint.gameplaySceneId, m_CurrentCheckpoint.checkpointId);
             }
         }
 
@@ -42,30 +43,39 @@
         {
             lock (m_SaveLock)
             {
-                m_CurrentCheckpoint = SaveFile.New(SaveContext.ContinueCheckpoint);
-                m_CurrentCheckpoint.checkpointId = (int)checkpointName;
+                //checkpoint specified; use current scene as well
+                SaveCheckpoint(G.app.GameplaySceneId, (int)checkpointName);
+            }
+        }
 
-                var pc = PlayerCharacter.instance;
-                if (pc != null)
-                {
-                    m_CurrentCheckpoint.position = pc.transform.position; //for logging only
-                }
+        private void SaveCheckpoint(int gameplaySceneId, int checkpointId)
+        {
+            m_CurrentCheckpoint = SaveFile.New(SaveContext.ContinueCheckpoint);
+            m_CurrentCheckpoint.gameplaySceneId = gameplaySceneId;
+            m_CurrentCheckpoint.checkpointId = checkpointId;
 
-                G.instance.InvokeManagers<ISave>(i => i.SaveTo(ref m_CurrentCheckpoint));
+            var pc = PlayerCharacter.instance;
+            if (pc != null)
+            {
+                m_CurrentCheckpoint.position = pc.transform.position; //for logging only
+            }
+
+            G.instance.InvokeManagers<ISave>(i => i.SaveTo(ref m_CurrentCheckpoint));
 
 #if KRG_X_EASY_SAVE_3
-                ES3.Save<SaveFile>("CheckpointSaveFile", m_CurrentCheckpoint);
+            ES3.Save<SaveFile>("CheckpointSaveFile", m_CurrentCheckpoint);
 #endif
-            }
         }
 
         public void LoadCheckpoint()
         {
             lock (m_SaveLock)
             {
-                G.instance.InvokeManagers<ISave>(i => i.LoadFrom(m_CurrentCheckpoint));
+                G.app.GameplaySceneId = m_CurrentCheckpoint.gameplaySceneId;
 
-                //TODO: load player character position from checkpoint
+                //TODO: set player position based on checkpoint id
+
+                G.instance.InvokeManagers<ISave>(i => i.LoadFrom(m_CurrentCheckpoint));
             }
         }
     }
