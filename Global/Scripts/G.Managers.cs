@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Reflection;
+using System.Linq;
 
 namespace KRG
 {
@@ -118,7 +119,9 @@ namespace KRG
 
         void DestroyManagers()
         {
-            foreach (var m in m_ManagerEventsOnDestroy.Values) m.OnDestroy();
+            var reversedList = m_ManagerEventsOnDestroy.Values.Reverse();
+
+            foreach (var m in reversedList) m.OnDestroy();
         }
 
 

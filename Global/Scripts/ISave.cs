@@ -2,8 +2,7 @@
 {
     public interface ISave
     {
-        void SaveTo(ref SaveFile sf);
-
-        void LoadFrom(SaveFile sf);
+        void OnSaving(ref SaveFile sf);
+        void OnLoading(SaveFile sf);
     }
 }

@@ -349,9 +349,8 @@ namespace KRG {
         public virtual KRGAnimation GetAttackerAnimation(int index) {
             G.U.Assert(_attackerAnimations != null);
             if (index < 0 || index >= _attackerAnimations.Length) {
-                G.U.Err(this, "Invalid index {0} specified. "
-                + "Did you forget to add an attacker animation to the attack ability?", index);
-                return null;
+                G.U.Err("Invalid index {1} specified. "
+                + "Did you forget to add an attacker animation to the {0} attack ability?", this, index);
             }
             return _attackerAnimations[index];
         }

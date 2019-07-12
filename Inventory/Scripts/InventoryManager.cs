@@ -1,13 +1,14 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 
 namespace KRG
 {
-    public class InventoryManager : Manager, ISave
+    public class InventoryManager : Manager, ISave, IOnDestroy
     {
         public override float priority => 130;
 
 
-        // FIELDS, DELEGATES, & EVENTS
+        // fields, delegates, events : ITEMS
 
         readonly List<int> m_AcquiredItems = new List<int>();
 
@@ -22,13 +23,29 @@ namespace KRG
         public event ItemAcquiredHandler KeyItemAcquired;
 
 
+        // fields & events : AUTOMAPS
+
+        readonly Dictionary<int, AutoMapSaveData> m_AutoMaps
+           = new Dictionary<int, AutoMapSaveData>();
+
+        public event System.Action AutoMapSaveDataRequested;
+        public event System.Action AutoMapSaveDataProvided;
+
+
         // MONOBEHAVIOUR-LIKE METHODS
 
         public override void Awake()
         {
+            G.save.Subscribe(this);
+
             BuildItemDataDictionary();
 
             ResetContents();
+        }
+
+        public void OnDestroy()
+        {
+            G.save.Unsubscribe(this);
         }
 
 
@@ -71,6 +88,8 @@ namespace KRG
         public void ResetContents()
         {
             m_AcquiredItems.Clear();
+
+            m_AutoMaps.Clear();
         }
 
         /// <summary>
@@ -106,23 +125,67 @@ namespace KRG
             }
         }
 
+        public AutoMapSaveData GetAutoMapSaveData(AutoMap autoMap)
+        {
+            AutoMapSaveData saveData;
+
+            int gameplaySceneId = G.app.GameplaySceneId;
+
+            var cb = autoMap.tilemap.cellBounds;
+
+            var width = cb.size.x;
+            var height = cb.size.y;
+
+            if (!m_AutoMaps.ContainsKey(gameplaySceneId))
+            {
+                saveData = new AutoMapSaveData(gameplaySceneId, width, height);
+
+                m_AutoMaps.Add(gameplaySceneId, saveData);
+            }
+            else
+            {
+                saveData = m_AutoMaps[gameplaySceneId];
+
+                saveData.UpdateDimensions(width, height);
+            }
+
+            return saveData;
+        }
+
+        public void SetAutoMapSaveData(AutoMapSaveData saveData)
+        {
+            m_AutoMaps[saveData.gameplaySceneId] = saveData;
+        }
+
 
         // ISAVE METHODS
 
-        public virtual void SaveTo(ref SaveFile sf)
+        public virtual void OnSaving(ref SaveFile sf)
         {
             sf.acquiredItems = m_AcquiredItems.ToArray();
 
-            sf.maps = AutoMap.GetSaveData();
+            AutoMapSaveDataRequested?.Invoke();
+
+            sf.autoMaps = m_AutoMaps.Values.ToArray();
         }
 
-        public virtual void LoadFrom(SaveFile sf)
+        public virtual void OnLoading(SaveFile sf)
         {
             ResetContents();
 
             if (sf.acquiredItems != null) m_AcquiredItems.AddRange(sf.acquiredItems);
 
-            if (sf.maps != null) AutoMap.SetSaveData((AutoMapSaveData[])sf.maps.Clone());
+            if (sf.autoMaps != null)
+            {
+                for (int i = 0; i < sf.autoMaps.Length; ++i)
+                {
+                    AutoMapSaveData map = sf.autoMaps[i];
+
+                    m_AutoMaps.Add(map.gameplaySceneId, map);
+                }
+
+                AutoMapSaveDataProvided?.Invoke();
+            }
         }
 
 

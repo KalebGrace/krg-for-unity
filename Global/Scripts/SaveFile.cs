@@ -14,7 +14,7 @@ namespace KRG
         public int checkpointId; //for loading position
         public Vector3 position; //for logging only
         public int[] acquiredItems; //TODO: change to ItemStack[] items LATER; ItemStack: context (e.g. ItemContext.Acquired), keyItemId, count
-        public AutoMapSaveData[] maps;
+        public AutoMapSaveData[] autoMaps;
         //etc...
 
         public static SaveFile New(SaveContext sc)
@@ -24,6 +24,24 @@ namespace KRG
                 version = 1,
                 saveContext = sc,
             };
+        }
+
+        public string Key
+        {
+            get
+            {
+                switch (saveContext)
+                {
+                    case SaveContext.ContinueCheckpoint:
+                        return "CheckSaveFile";
+                    case SaveContext.QuickSave:
+                        return "QuickSaveFile";
+                    case SaveContext.HardSave:
+                        return "PermaSaveFile";
+                }
+                G.U.Err("unknown saveContext", saveContext);
+                return "UnknownSaveFile";
+            }
         }
     }
 }

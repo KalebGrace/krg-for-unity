@@ -6,11 +6,16 @@ namespace KRG
 {
     public class AppManager : Manager, IOnApplicationQuit, IOnDestroy
     {
-        public override float priority { get { return 10; } }
+        public override float priority => 10;
 
+        /* example for changing priorities of different methods
+         * the following is no longer needed, since OnDestroy priority is now reversed by default
+        
         float IOnDestroy.priority { get { return priorityOnDestroy; } }
 
         protected virtual float priorityOnDestroy { get { return 1000; } }
+
+        */
 
         public virtual void StartApp()
         {

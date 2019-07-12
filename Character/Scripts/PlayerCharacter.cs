@@ -1,9 +1,11 @@
 ﻿namespace KRG
 {
-    public static class PlayerCharacter //a temporary solution
+    public class PlayerCharacter : Character
     {
+        public static Character instance; //a temporary solution
+
         public const string TAG = "Player";
 
-        public static Character instance;
+        public override CharacterType Type => CharacterType.PlayerCharacter;
     }
 }

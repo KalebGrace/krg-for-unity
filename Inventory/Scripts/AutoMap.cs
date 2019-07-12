@@ -19,11 +19,9 @@ namespace KRG
 
         public Camera mapCamera { get; private set; }
 
-        public AutoMapSaveData saveData;
-
         public Visibility visibility;
 
-        Visibility defaultVisibility;
+        private AutoMapSaveData saveData;
 
         public enum Visibility
         {
@@ -31,9 +29,7 @@ namespace KRG
             Revealed = 1,
         }
 
-        static AutoMapSaveData[] s_SaveDataArray;
-
-        void Awake()
+        private void Awake()
         {
             grid = this.Require<Grid>();
 
@@ -45,27 +41,11 @@ namespace KRG
 
             tilemap.color = Color.white;
 
-            defaultVisibility = visibility;
-
-            ResetProgress();
+            G.inv.AutoMapSaveDataRequested += OnAutoMapSaveDataRequested;
+            G.inv.AutoMapSaveDataProvided += OnAutoMapSaveDataProvided;
+            OnAutoMapSaveDataProvided();
 
             RenderAll();
-        }
-
-        public void ResetProgress()
-        {
-            var cb = tilemap.cellBounds;
-
-            var n = cb.size.x;
-            var m = cb.size.y;
-
-            saveData.discoveredJagged = new bool[n][];
-            for (int i = 0; i < n; ++i)
-            {
-                saveData.discoveredJagged[i] = new bool[m];
-            }
-
-            visibility = defaultVisibility;
         }
 
         public void LateUpdate()
@@ -92,12 +72,9 @@ namespace KRG
 
         private void OnDestroy()
         {
-            var m = s_SaveDataArray;
-            int l = s_SaveDataArray.Length + 1; //rip
-            s_SaveDataArray = new AutoMapSaveData[l];
-            m.CopyTo(s_SaveDataArray, 0);
-            saveData.gameplaySceneId = G.app.GameplaySceneId;
-            s_SaveDataArray[l - 1] = saveData;
+            G.inv.AutoMapSaveDataRequested -= OnAutoMapSaveDataRequested;
+            G.inv.AutoMapSaveDataProvided -= OnAutoMapSaveDataProvided;
+            OnAutoMapSaveDataRequested();
         }
 
         public void Discover(Vector3Int cp)
@@ -112,9 +89,9 @@ namespace KRG
         {
             var ai = GetArrayIndices(cp);
 
-            if (IsInBounds(cp) && !saveData.discoveredJagged[ai.x][ai.y])
+            if (IsInBounds(cp) && !saveData.GetIsVisited(ai.x, ai.y))
             {
-                saveData.discoveredJagged[ai.x][ai.y] = true;
+                saveData.SetIsVisted(ai.x, ai.y, true);
                 return true;
             }
 
@@ -125,15 +102,15 @@ namespace KRG
         {
             var ai = GetArrayIndices(cp);
 
-            return IsInBounds(cp) && saveData.discoveredJagged[ai.x][ai.y];
+            return IsInBounds(cp) && saveData.GetIsVisited(ai.x, ai.y);
         }
 
         bool IsInBounds(Vector3Int cp)
         {
             var ai = GetArrayIndices(cp);
 
-            bool xInBounds = ai.x.Between(0, saveData.discoveredJagged.Length);
-            bool yInBounds = ai.y.Between(0, saveData.discoveredJagged[0].Length);
+            bool xInBounds = ai.x.Between(0, saveData.Width);
+            bool yInBounds = ai.y.Between(0, saveData.Height);
 
             return xInBounds && yInBounds;
         }
@@ -182,16 +159,14 @@ namespace KRG
             }
         }
 
-        public static AutoMapSaveData[] GetSaveData()
+        public void OnAutoMapSaveDataRequested()
         {
-            return s_SaveDataArray != null ? (AutoMapSaveData[])s_SaveDataArray.Clone() : null;
-            //TODO: just make s_SaveDataArray into s_SaveDataDictionary
+            G.inv.SetAutoMapSaveData(saveData);
         }
 
-        public static void SetSaveData(AutoMapSaveData[] maps)
+        public void OnAutoMapSaveDataProvided()
         {
-            s_SaveDataArray = maps;
-            //TODO: load it out of here
+            saveData = G.inv.GetAutoMapSaveData(this);
         }
     }
 }

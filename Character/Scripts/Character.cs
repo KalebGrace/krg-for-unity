@@ -45,7 +45,7 @@ namespace KRG {
 
         public GraphicsController graphicsController { get { return _graphicsController; } }
 
-        public abstract CharacterType type { get; }
+        public abstract CharacterType Type { get; }
 
         public VisRect visRect { get { return _visRect; } }
 

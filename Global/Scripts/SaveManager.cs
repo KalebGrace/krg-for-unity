@@ -2,14 +2,22 @@
 {
     public class SaveManager : Manager
     {
-        public override float priority => 20;
+        public override float priority => 5;
 
 
-        // FIELDS
+        // fields, delegates, events : SAVE FILE
 
         private SaveFile m_CurrentCheckpoint;
 
-        private object m_SaveLock = new object();
+        private readonly object m_SaveLock = new object();
+
+        public delegate void SaveFileWriteHandler(ref SaveFile sf);
+        public delegate void SaveFileReadHandler(SaveFile sf);
+
+        private event SaveFileWriteHandler Saving;
+        private event SaveFileReadHandler SavingCompleted;
+        private event SaveFileReadHandler Loading;
+        private event SaveFileReadHandler LoadingCompleted;
 
 
         // MONOBEHAVIOUR-LIKE METHODS
@@ -24,58 +32,74 @@
 
         // PUBLIC METHODS
 
+        public void Subscribe(ISave iSave)
+        {
+            Saving += iSave.OnSaving;
+            Loading += iSave.OnLoading;
+
+            if (iSave is ISaveComplete iSaveComplete)
+            {
+                SavingCompleted += iSaveComplete.OnSavingCompleted;
+                LoadingCompleted += iSaveComplete.OnLoadingCompleted;
+            }
+        }
+
+        public void Unsubscribe(ISave iSave)
+        {
+            Saving -= iSave.OnSaving;
+            Loading -= iSave.OnLoading;
+
+            if (iSave is ISaveComplete iSaveComplete)
+            {
+                SavingCompleted -= iSaveComplete.OnSavingCompleted;
+                LoadingCompleted -= iSaveComplete.OnLoadingCompleted;
+            }
+        }
+
         public bool IsCurrentCheckpoint(LetterName checkpointName)
         {
             return (int)checkpointName == m_CurrentCheckpoint.checkpointId &&
-                G.app.GameplaySceneId == m_CurrentCheckpoint.gameplaySceneId;
+                 G.app.GameplaySceneId == m_CurrentCheckpoint.gameplaySceneId;
         }
 
-        public void SaveCheckpoint()
+        public void SaveCheckpoint(LetterName checkpointName = 0)
         {
             lock (m_SaveLock)
             {
-                //no checkpoint specified, so keep previous data
-                SaveCheckpoint(m_CurrentCheckpoint.gameplaySceneId, m_CurrentCheckpoint.checkpointId);
+                m_CurrentCheckpoint = SaveFile.New(SaveContext.ContinueCheckpoint);
+
+                m_CurrentCheckpoint.checkpointId = (int)checkpointName;
+
+                Saving?.Invoke(ref m_CurrentCheckpoint);
+
+                WriteToDisk(m_CurrentCheckpoint);
+
+                SavingCompleted?.Invoke(m_CurrentCheckpoint);
             }
         }
 
-        public void SaveCheckpoint(LetterName checkpointName)
+        protected virtual void WriteToDisk(SaveFile sf)
         {
-            lock (m_SaveLock)
-            {
-                //checkpoint specified; use current scene as well
-                SaveCheckpoint(G.app.GameplaySceneId, (int)checkpointName);
-            }
-        }
-
-        private void SaveCheckpoint(int gameplaySceneId, int checkpointId)
-        {
-            m_CurrentCheckpoint = SaveFile.New(SaveContext.ContinueCheckpoint);
-            m_CurrentCheckpoint.gameplaySceneId = gameplaySceneId;
-            m_CurrentCheckpoint.checkpointId = checkpointId;
-
-            var pc = PlayerCharacter.instance;
-            if (pc != null)
-            {
-                m_CurrentCheckpoint.position = pc.transform.position; //for logging only
-            }
-
-            G.instance.InvokeManagers<ISave>(i => i.SaveTo(ref m_CurrentCheckpoint));
-
 #if KRG_X_EASY_SAVE_3
-            ES3.Save<SaveFile>("CheckpointSaveFile", m_CurrentCheckpoint);
+            ES3.Save<SaveFile>(sf.Key, sf);
 #endif
         }
 
         public void LoadCheckpoint()
         {
+            Load(m_CurrentCheckpoint);
+        }
+
+        private void Load(SaveFile sf)
+        {
             lock (m_SaveLock)
             {
-                G.app.GameplaySceneId = m_CurrentCheckpoint.gameplaySceneId;
+                //TODO: add this for implementing quicksaves/hardsaves
+                //ReadFromDisk();
 
-                //TODO: set player position based on checkpoint id
+                Loading?.Invoke(sf);
 
-                G.instance.InvokeManagers<ISave>(i => i.LoadFrom(m_CurrentCheckpoint));
+                LoadingCompleted?.Invoke(sf);
             }
         }
     }

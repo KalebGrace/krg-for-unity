@@ -58,41 +58,29 @@ namespace KRG
              */
 
             /// <summary>
-            /// Log an error with the specified message.
-            /// </summary>
-            /// <param name="message">Message.</param>
-            public static void Err(object message)
-            {
-                Debug.LogError(message);
-            }
-
-            /// <summary>
-            /// Log an error with the specified message and arguments.
+            /// Log an error with the specified message and optional arguments.
             /// </summary>
             /// <param name="message">Message, or Format string (if containing "{0").</param>
-            /// <param name="args">Arguments, or Context (if no format - first object as UnityEngine.Object only).</param>
-            public static void Err(object message, params object[] args)
+            /// <param name="args">Arguments, with first object as Context (UnityEngine.Object only).</param>
+            public static void Err(string message, params object[] args)
             {
-                var s = message.ToString();
-                if (s.Contains(FORMAT_MAGIC_STRING))
+                if (message.Contains(FORMAT_MAGIC_STRING))
                 {
-                    Debug.LogErrorFormat(s, args);
+                    message = string.Format(message, args);
+                }
+
+                message += "\n" + GetInfo(args);
+
+                if (args.Length > 0)
+                {
+                    Debug.LogError(message, args[0] as Object);
                 }
                 else
                 {
-                    Debug.LogError(message + "\n" + GetInfo(args), args[0] as Object);
+                    Debug.LogError(message);
                 }
-            }
 
-            /// <summary>
-            /// Log an error with the specified context, format, and arguments.
-            /// </summary>
-            /// <param name="context">Context.</param>
-            /// <param name="format">Format.</param>
-            /// <param name="args">Arguments.</param>
-            public static void Err(Object context, string format, params object[] args)
-            {
-                Debug.LogErrorFormat(context, format, args);
+                throw new System.Exception(message);
             }
 
 
