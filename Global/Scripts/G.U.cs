@@ -75,10 +75,6 @@ namespace KRG
                 {
                     Debug.LogError(message, args[0] as Object);
                 }
-                else
-                {
-                    Debug.LogError(message);
-                }
 
                 throw new System.Exception(message);
             }

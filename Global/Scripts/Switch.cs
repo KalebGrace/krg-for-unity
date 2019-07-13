@@ -17,6 +17,10 @@ namespace KRG
         {
         }
 
+        protected virtual void OnDisable()
+        {
+        }
+
         protected virtual void Update()
         {
         }
@@ -75,6 +79,12 @@ namespace KRG
                     case SwitchCommand.StateNext:
                     case SwitchCommand.StateGoTo:
                         SetSubjectState(subject, command, context, action.index);
+                        break;
+                    case SwitchCommand.SetGameObjectActive:
+                        SetSubjectGameObjectActive(subject, true);
+                        break;
+                    case SwitchCommand.SetGameObjectInactive:
+                        SetSubjectGameObjectActive(subject, false);
                         break;
                     default:
                         G.U.Unsupported(this, command);
@@ -137,6 +147,11 @@ namespace KRG
                     G.U.Unsupported(this, command);
                     break;
             }
+        }
+
+        protected void SetSubjectGameObjectActive(SwitchSubject subject, bool value)
+        {
+            subject.gameObject.SetActive(value);
         }
     }
 }

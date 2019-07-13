@@ -9,5 +9,7 @@
         StatePrev = 40,
         StateNext = 50,
         StateGoTo = 60,
+        SetGameObjectActive = 70,
+        SetGameObjectInactive = 80,
     }
 }

@@ -45,6 +45,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   checkpointName: 1
+  autoNameGameObject: 1
 --- !u!65 &3648093027775919281
 BoxCollider:
   m_ObjectHideFlags: 0
