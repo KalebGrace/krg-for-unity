@@ -83,7 +83,8 @@ namespace KRG {
 #endif
 
             //unparent from DestructibleObject, as that will be disposed after this method ends
-            transform.parent = transform.parent.parent;
+            //null is safer to use than an ancestor, as an ancestor may be destroyed
+            transform.parent = null;
 
             //dispose of me later
             _data.timeThread.AddTrigger(_data.lifetime, Dispose);
