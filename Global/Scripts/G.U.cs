@@ -512,22 +512,26 @@ namespace KRG
             /// <param name="source">Source.</param>
             public static void Unsupported(Component source)
             {
-                Debug.LogErrorFormat("Unsupported condition for {0} Component on {1} GameObject.",
+                string message = string.Format("Unsupported condition for {0} Component on {1} GameObject.",
                     source.GetType(),
                     source.name);
+
+                Err(message, source);
             }
 
             /// <summary>
             /// Logs an error regarding an unsupported condition on the specified source.
             /// </summary>
             /// <param name="source">Source.</param>
-            /// <param name="message">Message.</param>
-            public static void Unsupported(Component source, string message)
+            /// <param name="originalMessage">Message.</param>
+            public static void Unsupported(Component source, string originalMessage)
             {
-                Debug.LogErrorFormat("Unsupported condition for {0} Component on {1} GameObject: {2}.",
+                string message = string.Format("Unsupported condition for {0} Component on {1} GameObject: {2}.",
                     source.GetType(),
                     source.name,
-                    message);
+                    originalMessage);
+
+                Err(message, source);
             }
 
             /// <summary>
@@ -537,11 +541,13 @@ namespace KRG
             /// <param name="unsupportedEnum">Unsupported enum.</param>
             public static void Unsupported(Component source, System.Enum unsupportedEnum)
             {
-                Debug.LogErrorFormat("Unsupported {0}: {1} for {2} Component on {3} GameObject.",
+                string message = string.Format("Unsupported {0}: {1} for {2} Component on {3} GameObject.",
                     unsupportedEnum.GetType(),
                     unsupportedEnum,
                     source.GetType(),
                     source.name);
+
+                Err(message, source);
             }
 
             /// <summary>
@@ -551,10 +557,12 @@ namespace KRG
             /// <param name="unsupportedEnum">Unsupported enum.</param>
             public static void Unsupported(object source, System.Enum unsupportedEnum)
             {
-                Debug.LogErrorFormat("Unsupported {0}: {1} for {2} object.",
+                string message = string.Format("Unsupported {0}: {1} for {2} object.",
                     unsupportedEnum.GetType(),
                     unsupportedEnum,
                     source.GetType());
+
+                Err(message, source);
             }
         }
     }
