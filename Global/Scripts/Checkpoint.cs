@@ -9,9 +9,14 @@ namespace KRG
     {
         public LetterName checkpointName;
 
+        public bool autoNameGameObject = true;
+
         private void OnValidate()
         {
-            gameObject.name = "Checkpoint" + checkpointName;
+            if (autoNameGameObject)
+            {
+                gameObject.name = "Checkpoint" + checkpointName;
+            }
         }
 
         private void OnTriggerEnter(Collider other)
