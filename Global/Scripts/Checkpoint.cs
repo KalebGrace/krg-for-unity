@@ -11,6 +11,8 @@ namespace KRG
 
         public bool autoNameGameObject = true;
 
+        public bool saveOnTriggerEnter = true;
+
         private void OnValidate()
         {
             if (autoNameGameObject)
@@ -21,7 +23,7 @@ namespace KRG
 
         private void OnTriggerEnter(Collider other)
         {
-            if (other.tag == PlayerCharacter.TAG && !G.save.IsCurrentCheckpoint(checkpointName))
+            if (saveOnTriggerEnter && other.tag == PlayerCharacter.TAG && !G.save.IsCurrentCheckpoint(checkpointName))
             {
                 G.save.SaveCheckpoint(checkpointName);
             }
