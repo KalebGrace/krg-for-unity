@@ -21,6 +21,8 @@ namespace KRG
 
         public Visibility visibility;
 
+        private AutoMapPaletteData paletteData;
+
         private AutoMapSaveData saveData;
 
         public enum Visibility
@@ -44,6 +46,8 @@ namespace KRG
             G.inv.AutoMapSaveDataRequested += OnAutoMapSaveDataRequested;
             G.inv.AutoMapSaveDataProvided += OnAutoMapSaveDataProvided;
             OnAutoMapSaveDataProvided();
+
+            paletteData = G.config.AutoMapPaletteData;
 
             RenderAll();
         }
@@ -143,19 +147,27 @@ namespace KRG
 
         public void Render(Vector3Int cp)
         {
-            tilemap.SetTileFlags(cp, tilemap.GetTileFlags(cp) & ~TileFlags.LockColor);
+            //tilemap.SetTileFlags(cp, tilemap.GetTileFlags(cp) & ~TileFlags.LockColor);
 
             if (IsDiscovered(cp))
             {
-                tilemap.SetColor(cp, discoveredColor);
+                //tilemap.SetColor(cp, discoveredColor);
+
+                TileBase tile = tilemap.GetTile(cp);
+
+                if (tile != null)
+                {
+                    tile = paletteData.GetVisitedTile(tile);
+                    tilemap.SetTile(cp, tile);
+                }
             }
             else if (visibility == Visibility.Revealed)
             {
-                tilemap.SetColor(cp, undiscoveredColor);
+                //tilemap.SetColor(cp, undiscoveredColor);
             }
             else
             {
-                tilemap.SetColor(cp, hiddenColor);
+                //tilemap.SetColor(cp, hiddenColor);
             }
         }
 

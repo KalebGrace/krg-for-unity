@@ -1,18 +1,16 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.Serialization;
 
 #if NS_DG_TWEENING
 using DG.Tweening;
 #endif
 
-namespace KRG {
-
-    public sealed partial class KRGConfig : ScriptableObject {
-
-		//If you get an error stating `KRG.KRGConfig' does not contain a definition for `resourcePath',
-		//create a KRGConfig.MyGame.cs file containing a partial class KRGConfig with the following constants in it:
+namespace KRG
+{
+    public sealed partial class KRGConfig : ScriptableObject
+    {
+        //If you get an error stating `KRG.KRGConfig' does not contain a definition for `resourcePath',
+        //create a KRGConfig.MyGame.cs file containing a partial class KRGConfig with the following constants in it:
 
 #if !KRG_CUSTOM_G
 
@@ -27,7 +25,7 @@ namespace KRG {
         [SerializeField]
         [FormerlySerializedAs("m_serializedVersion")]
         int _serializedVersion = default;
-        */       
+        */
 
 
         [Header("KRG: King's Royal Gold")]
@@ -75,12 +73,17 @@ namespace KRG {
 #endif
 
 
-        [Header("ItemLoot (KRG)")]
+        [Header("Inventory (KRG)")]
 
         [SerializeField]
         ItemData[] _keyItemDataReferences = default;
 
         public ItemData[] KeyItemDataReferences => (ItemData[])_keyItemDataReferences.Clone();
+
+        [SerializeField]
+        AutoMapPaletteData _autoMapPaletteData = default;
+
+        public AutoMapPaletteData AutoMapPaletteData => _autoMapPaletteData;
 
 
         [Header("Object (KRG)")]
@@ -103,18 +106,21 @@ namespace KRG {
 
         //WARNING: this function will only be called automatically if playing a GAME BUILD
         //...it will NOT be called if using the Unity editor
-        void Awake() {
+        void Awake()
+        {
             UpdateSerializedVersion();
         }
 
         //WARNING: this function will only be called automatically if using the UNITY EDITOR
         //...it will NOT be called if playing a game build
-        void OnValidate() {
+        void OnValidate()
+        {
             UpdateSerializedVersion();
         }
 
 
-        void UpdateSerializedVersion() {
+        void UpdateSerializedVersion()
+        {
             /*
             switch (_serializedVersion) {
                 case 0:
