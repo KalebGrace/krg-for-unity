@@ -1,11 +1,13 @@
-﻿namespace KRG
+﻿using System.Collections.Generic;
+
+namespace KRG
 {
     public class SaveManager : Manager
     {
         public override float priority => 5;
 
 
-        // fields, delegates, events : SAVE FILE
+        // SAVE FILE
 
         private SaveFile m_CurrentCheckpoint;
 
@@ -70,6 +72,8 @@
 
                 m_CurrentCheckpoint.checkpointId = (int)checkpointName;
 
+                m_CurrentCheckpoint.switchStates = m_SwitchStates;
+
                 Saving?.Invoke(ref m_CurrentCheckpoint);
 
                 WriteToDisk(m_CurrentCheckpoint);
@@ -97,9 +101,39 @@
                 //TODO: add this for implementing quicksaves/hardsaves
                 //ReadFromDisk();
 
+                m_SwitchStates = sf.switchStates;
+
                 Loading?.Invoke(sf);
 
                 LoadingCompleted?.Invoke(sf);
+            }
+        }
+
+
+        // SWITCH STATES
+
+        private Dictionary<int, int> m_SwitchStates = new Dictionary<int, int>();
+
+        public bool GetSwitchState(Switch @switch, out int stateIndex)
+        {
+            if (m_SwitchStates.ContainsKey(@switch.ID))
+            {
+                stateIndex = m_SwitchStates[@switch.ID];
+                return true;
+            }
+            stateIndex = -1;
+            return false;
+        }
+
+        public void SetSwitchState(Switch @switch)
+        {
+            if (m_SwitchStates.ContainsKey(@switch.ID))
+            {
+                m_SwitchStates[@switch.ID] = @switch.StateIndex;
+            }
+            else
+            {
+                m_SwitchStates.Add(@switch.ID, @switch.StateIndex);
             }
         }
     }

@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 
 namespace KRG
 {
@@ -15,6 +16,7 @@ namespace KRG
         public Vector3 position; //for logging only
         public int[] acquiredItems; //TODO: change to ItemStack[] items LATER; ItemStack: context (e.g. ItemContext.Acquired), keyItemId, count
         public AutoMapSaveData[] autoMaps;
+        public Dictionary<int, int> switchStates;
         //etc...
 
         public static SaveFile New(SaveContext sc)
@@ -23,6 +25,7 @@ namespace KRG
             {
                 version = 1,
                 saveContext = sc,
+                switchStates = new Dictionary<int, int>() //TODO: does this serialize right?
             };
         }
 

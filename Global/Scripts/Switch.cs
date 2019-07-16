@@ -6,15 +6,40 @@ namespace KRG
     public class Switch : MonoBehaviour
     {
         [SerializeField]
+        protected bool m_SaveState = true;
+
+        [SerializeField]
         protected int m_StateIndex = -1; //TODO: base 0 tooltip
         //0 is the first state. 1 is the second state. And so on...
 
         public List<SwitchState> states = new List<SwitchState>();
 
+        [SerializeField]
+        protected int m_ID;
+
+        public int ID => m_ID;
+
         public int StateIndex => m_StateIndex;
+
+        protected virtual void OnValidate()
+        {
+            if (m_ID == 0)
+            {
+                m_ID = GetInstanceID();
+            }
+        }
 
         protected virtual void OnEnable()
         {
+            if (m_SaveState)
+            {
+                if (G.save.GetSwitchState(this, out int stateIndex))
+                {
+                    m_StateIndex = stateIndex;
+
+                    BeginState(states[m_StateIndex], true);
+                }
+            }
         }
 
         protected virtual void OnDisable()
@@ -29,30 +54,36 @@ namespace KRG
         {
             if (!enabled) return;
 
-            m_StateIndex = (m_StateIndex + states.Count - 1) % states.Count;
-
-            BeginState(states[m_StateIndex]);
+            SetStateIndex((m_StateIndex + states.Count - 1) % states.Count);
         }
 
         public void Next()
         {
             if (!enabled) return;
 
-            m_StateIndex = (m_StateIndex + 1) % states.Count;
-
-            BeginState(states[m_StateIndex]);
+            SetStateIndex((m_StateIndex + 1) % states.Count);
         }
 
         public void GoTo(int stateIndex)
         {
             if (!enabled) return;
 
+            SetStateIndex(stateIndex);
+        }
+
+        protected void SetStateIndex(int stateIndex)
+        {
             m_StateIndex = stateIndex;
+
+            if (m_SaveState)
+            {
+                G.save.SetSwitchState(this);
+            }
 
             BeginState(states[m_StateIndex]);
         }
 
-        protected void BeginState(SwitchState state)
+        protected void BeginState(SwitchState state, bool isInstant = false)
         {
             for (int i = 0; i < state.actions.Count; ++i)
             {
@@ -73,7 +104,7 @@ namespace KRG
                         SetSubjectEnabled(subject, context, false);
                         break;
                     case SwitchCommand.MoveTo:
-                        MoveTo(subject, action.destination);
+                        MoveTo(subject, action.destination, isInstant);
                         break;
                     case SwitchCommand.StatePrev:
                     case SwitchCommand.StateNext:
@@ -113,7 +144,7 @@ namespace KRG
             component.enabled = enabled;
         }
 
-        protected virtual void MoveTo(SwitchSubject subject, GameObject destination)
+        protected virtual void MoveTo(SwitchSubject subject, GameObject destination, bool isInstant)
         {
             throw new System.Exception("Not yet implemented.");
         }
