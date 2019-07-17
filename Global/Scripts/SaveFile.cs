@@ -11,6 +11,7 @@ namespace KRG
     {
         public int version;
         public SaveContext saveContext;
+        public int saveSlotIndex;
         public int gameplaySceneId;
         public int checkpointId; //for loading position
         public Vector3 position; //for logging only
@@ -29,22 +30,21 @@ namespace KRG
             };
         }
 
-        public string Key
+        public string Key => GetKeyPrefix(saveContext) + saveSlotIndex;
+
+        public static string GetKeyPrefix(SaveContext saveContext)
         {
-            get
+            switch (saveContext)
             {
-                switch (saveContext)
-                {
-                    case SaveContext.ContinueCheckpoint:
-                        return "CheckSaveFile";
-                    case SaveContext.QuickSave:
-                        return "QuickSaveFile";
-                    case SaveContext.HardSave:
-                        return "PermaSaveFile";
-                }
-                G.U.Err("unknown saveContext", saveContext);
-                return "UnknownSaveFile";
+                case SaveContext.ContinueCheckpoint:
+                    return "CheckSaveFile";
+                case SaveContext.QuickSave:
+                    return "QuickSaveFile";
+                case SaveContext.HardSave:
+                    return "PermaSaveFile";
             }
+            G.U.Err("unknown saveContext", saveContext);
+            return "UnknownSaveFile";
         }
     }
 }

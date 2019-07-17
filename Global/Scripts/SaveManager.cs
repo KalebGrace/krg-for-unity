@@ -21,13 +21,27 @@ namespace KRG
         private event SaveFileReadHandler Loading;
         private event SaveFileReadHandler LoadingCompleted;
 
+        protected virtual string DefaultGameplaySaveKey => SaveFile.GetKeyPrefix(SaveContext.ContinueCheckpoint) + 0;
+
+        public virtual bool HasDefaultGameplaySave
+        {
+            get
+            {
+#if KRG_X_EASY_SAVE_3
+                return ES3.KeyExists(DefaultGameplaySaveKey);
+#else
+                return false;
+#endif
+            }
+        }
+
 
         // MONOBEHAVIOUR-LIKE METHODS
 
         public override void Awake()
         {
 #if KRG_X_EASY_SAVE_3
-            m_CurrentCheckpoint = ES3.Load("CheckpointSaveFile", SaveFile.New(SaveContext.ContinueCheckpoint));
+            m_CurrentCheckpoint = ES3.Load(DefaultGameplaySaveKey, SaveFile.New(SaveContext.ContinueCheckpoint));
 #endif
         }
 
@@ -107,6 +121,13 @@ namespace KRG
 
                 LoadingCompleted?.Invoke(sf);
             }
+        }
+
+        public virtual void EraseDefaultGameplaySave()
+        {
+            ES3.DeleteKey(DefaultGameplaySaveKey);
+            G.app.ResetGameplaySceneId(); //TODO: fix this
+            m_CurrentCheckpoint = SaveFile.New(SaveContext.ContinueCheckpoint);
         }
 
 

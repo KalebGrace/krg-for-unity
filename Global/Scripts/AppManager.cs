@@ -178,6 +178,14 @@ namespace KRG
         }
 
         /// <summary>
+        /// This is a bit of a hack.
+        /// </summary>
+        public virtual void ResetGameplaySceneId()
+        {
+            _activeSceneName = null;
+        }
+
+        /// <summary>
         /// Calls the OnSceneActive method on the SceneController for the active scene.
         /// </summary>
         protected void CallOnSceneActive()
