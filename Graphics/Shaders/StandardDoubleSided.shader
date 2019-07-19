@@ -1,4 +1,4 @@
-Shader "Standard (Double-Sided setup)"
+﻿Shader "Standard Double-Sided"
 {
 	Properties
 	{

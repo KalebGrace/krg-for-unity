@@ -1,4 +1,4 @@
-Shader "Standard (Specular Double-Sided setup)"
+﻿Shader "Standard Double-Sided Specular"
 {
 	Properties
 	{
