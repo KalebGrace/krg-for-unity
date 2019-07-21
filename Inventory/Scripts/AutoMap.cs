@@ -13,6 +13,8 @@ namespace KRG
 
         public Color hiddenColor = new Color(22, 28, 34);
 
+        public Vector3 offset = default;
+
         public Grid grid { get; private set; }
 
         public Tilemap tilemap { get; private set; }
@@ -60,7 +62,7 @@ namespace KRG
 
             var pcPos = pc.transform.position;
 
-            var cp = tilemap.WorldToCell(pcPos);
+            var cp = tilemap.WorldToCell(pcPos + offset);
 
             Discover(cp);
 
