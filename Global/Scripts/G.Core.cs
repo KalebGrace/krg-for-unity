@@ -66,7 +66,7 @@ namespace KRG
             //cache the config if not done already
             if (m_Config == null)
             {
-                m_Config = Resources.Load<KRGConfig>(KRGConfig.resourcePath);
+                m_Config = Resources.Load<KRGConfig>(KRGConfig.RESOURCE_PATH);
                 //if the config is still null, log an error
                 if (m_Config == null)
                 {

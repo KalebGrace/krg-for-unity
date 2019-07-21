@@ -9,14 +9,14 @@ namespace KRG
 {
     public sealed partial class KRGConfig : ScriptableObject
     {
-        //If you get an error stating `KRG.KRGConfig' does not contain a definition for `resourcePath',
+        //If you get an error stating `KRG.KRGConfig' does not contain a definition for `RESOURCE_PATH',
         //create a KRGConfig.MyGame.cs file containing a partial class KRGConfig with the following constants in it:
 
 #if !KRG_CUSTOM_G
 
-        public const string assetPath = "Assets/Resources/KRGConfig.asset";
+        public const string ASSET_PATH = "Assets/Resources/KRGConfig.asset";
 
-        public const string resourcePath = "KRGConfig";
+        public const string RESOURCE_PATH = "KRGConfig";
 
 #endif
 
