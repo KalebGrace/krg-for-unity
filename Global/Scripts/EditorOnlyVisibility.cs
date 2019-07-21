@@ -12,7 +12,7 @@ namespace KRG
         {
             m_Renderer = GetComponent<Renderer>();
 
-            if (m_Renderer != null && m_Renderer.sharedMaterial.name == "Default-Material")
+            if (m_Renderer != null && (m_Renderer.sharedMaterial == null || m_Renderer.sharedMaterial.name == "Default-Material"))
             {
                 m_Renderer.sharedMaterial = Resources.Load<Material>("Global/EditorOnlyVisibilityMaterial");
             }
