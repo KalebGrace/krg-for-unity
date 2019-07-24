@@ -5,6 +5,7 @@ using UnityEngine;
 namespace KRG {
 
     /// <summary>
+    /// TODO: re-evaluate this class. may be broken
     /// Character activator. Intended to be placed on a child GameObject of a Character GameObject.
     /// </summary>
     [RequireComponent(typeof(Collider))]

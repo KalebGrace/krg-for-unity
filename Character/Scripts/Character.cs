@@ -5,10 +5,8 @@ using UnityEngine.Serialization;
 
 namespace KRG {
 
-    [RequireComponent(typeof(GraphicsController))]
     public abstract class Character : MonoBehaviour, IStateOwner {
 
-#region serialized fields
 
         /// <summary>
         /// A VisRect GameObject is an advanced form of the old "Center" GameObject.
@@ -27,21 +25,11 @@ namespace KRG {
         [FormerlySerializedAs("m_center")]
         protected GameObject _center;
 
-#endregion
-
-#region private & protected fields
-
-#if DEBUG_VISIBILITY && !(KRG_X_TMPRO || NS_TMPRO_PAID || NS_TMPRO)
-        private static bool s_isCharacterDebugTextWarningLogged;
-#endif
 
         GraphicsController _graphicsController;
 
         protected Transform _transform;
 
-#endregion
-
-#region properties
 
         public GraphicsController graphicsController { get { return _graphicsController; } }
 
@@ -49,9 +37,6 @@ namespace KRG {
 
         public VisRect visRect { get { return _visRect; } }
 
-#endregion
-
-#region MonoBehaviour methods
 
         protected virtual void Awake() {
             if (_visRect != null) {
@@ -68,19 +53,9 @@ namespace KRG {
 
 #if DEBUG_VISIBILITY
             KRGReferences refs = G.config.krgReferences;
-#if KRG_X_TMPRO || NS_TMPRO_PAID || NS_TMPRO
             Instantiate(refs.characterDebugTextPrefab, _visRect.transform).Init(this);
-#else
-            if (!s_isCharacterDebugTextWarningLogged) {
-                G.U.Warning("CharacterDebugText requires TextMesh Pro.");
-                s_isCharacterDebugTextWarningLogged = true;
-            }
-#endif
             _graphicsController.rasterAnimationInfo = Instantiate(refs.rasterAnimationInfoPrefab, _visRect.transform);
 #endif
         }
-
-#endregion
-
     }
 }
