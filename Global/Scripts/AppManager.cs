@@ -207,13 +207,13 @@ namespace KRG
                 //if this is the active scene...
                 if (sceneName == _activeSceneName)
                 {
+                    _ = AnalyticsEvent.LevelStart(sceneName);
                     //call OnSceneActive
                     sc.OnSceneActive();
                     //call events
                     if (_sceneActivationEvents.ContainsKey(sceneName))
                     {
-                        var e = _sceneActivationEvents[sceneName];
-                        if (e != null) e();
+                        _sceneActivationEvents[sceneName]?.Invoke();
                     }
                     return;
                 }
