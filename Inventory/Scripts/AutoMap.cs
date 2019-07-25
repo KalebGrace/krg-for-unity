@@ -7,12 +7,6 @@ namespace KRG
 {
     public class AutoMap : MonoBehaviour
     {
-        public Color discoveredColor = new Color(255, 133, 234);
-
-        public Color undiscoveredColor = new Color(20, 123, 193);
-
-        public Color hiddenColor = new Color(22, 28, 34);
-
         public Vector3 offset = default;
 
         public Grid grid { get; private set; }
@@ -22,6 +16,8 @@ namespace KRG
         public Camera mapCamera { get; private set; }
 
         public Visibility visibility;
+
+        private Vector3 anchor;
 
         private AutoMapPaletteData paletteData;
 
@@ -40,6 +36,8 @@ namespace KRG
             tilemap = G.U.Require(gameObject.GetComponentInChildren<Tilemap>());
 
             mapCamera = G.U.Require(gameObject.GetComponentInChildren<Camera>());
+
+            anchor = transform.position;
 
             tilemap.CompressBounds();
 
@@ -71,6 +69,7 @@ namespace KRG
             var csz = grid.cellSize;
 
             cpV3.Scale(csz); //cell to world (snapped to grid)
+            cpV3 += anchor;  //if auto-map is not at origin
             cpV3 += csz / 2; //half-cell offset
             cpV3.z = camTF.position.z;
             camTF.position = cpV3;
@@ -149,27 +148,22 @@ namespace KRG
 
         public void Render(Vector3Int cp)
         {
-            //tilemap.SetTileFlags(cp, tilemap.GetTileFlags(cp) & ~TileFlags.LockColor);
+            tilemap.SetTileFlags(cp, tilemap.GetTileFlags(cp) & ~TileFlags.LockColor);
+
+            TileBase tile = tilemap.GetTile(cp);
+
+            if (tile == null) return;
 
             if (IsDiscovered(cp))
             {
-                //tilemap.SetColor(cp, discoveredColor);
+                tilemap.SetColor(cp, Color.white);
 
-                TileBase tile = tilemap.GetTile(cp);
-
-                if (tile != null)
-                {
-                    tile = paletteData.GetVisitedTile(tile);
-                    tilemap.SetTile(cp, tile);
-                }
+                tile = paletteData.GetVisitedTile(tile);
+                tilemap.SetTile(cp, tile);
             }
-            else if (visibility == Visibility.Revealed)
+            else if (paletteData.IsHiddenArea(tile) || visibility != Visibility.Revealed)
             {
-                //tilemap.SetColor(cp, undiscoveredColor);
-            }
-            else
-            {
-                //tilemap.SetColor(cp, hiddenColor);
+                tilemap.SetColor(cp, Color.clear);
             }
         }
 

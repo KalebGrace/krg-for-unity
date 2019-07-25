@@ -22,10 +22,14 @@ namespace KRG
             {
                 return tiles[i + visitedStartIndex];
             }
-            else
-            {
-                return currentTile;
-            }
+            return currentTile;
+        }
+
+        public bool IsHiddenArea(TileBase currentTile)
+        {
+            int i = int.Parse(currentTile.name.Split('_')[1]);
+
+            return i >= visitedStartIndex;
         }
     }
 }
