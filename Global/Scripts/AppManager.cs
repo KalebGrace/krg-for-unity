@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Analytics;
 using UnityEngine.SceneManagement;
 
 namespace KRG
@@ -19,6 +20,7 @@ namespace KRG
 
         public virtual void StartApp()
         {
+            _ = AnalyticsEvent.GameStart();
         }
 
         /// <summary>
