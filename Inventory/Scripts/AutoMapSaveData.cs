@@ -6,64 +6,61 @@ namespace KRG
     {
         public readonly int version;
         public readonly int gameplaySceneId;
-        public bool[][] discoveredJagged; //visited
+        public bool[][] visited;
 
-        public int Width { get; private set; }
-        public int Height { get; private set; }
+        public int Width => visited?.Length ?? 0;
+        public int Height => Width > 0 ? visited[0].Length : 0;
 
         public AutoMapSaveData(int gameplaySceneId, int width, int height)
         {
             version = 1;
             this.gameplaySceneId = gameplaySceneId;
 
-            Width = width;
-            Height = height;
-
-            discoveredJagged = new bool[width][];
+            visited = new bool[width][];
 
             for (int i = 0; i < width; ++i)
             {
-                discoveredJagged[i] = new bool[height];
+                visited[i] = new bool[height];
             }
         }
 
         public bool GetIsVisited(int x, int y)
         {
-            return discoveredJagged[x][y];
+            return visited[x][y];
         }
 
         public void SetIsVisted(int x, int y, bool value)
         {
-            discoveredJagged[x][y] = value;
+            visited[x][y] = value;
         }
 
         public void UpdateDimensions(int newWidth, int newHeight)
         {
-            if (newWidth > Width || newHeight > Height)
+            int curWidth = Width;
+            int curHeight = Height;
+
+            if (newWidth > curWidth || newHeight > curHeight)
             {
-                newWidth = Mathf.Max(newWidth, Width);
-                newHeight = Mathf.Max(newHeight, Height);
+                newWidth = Mathf.Max(newWidth, curWidth);
+                newHeight = Mathf.Max(newHeight, curHeight);
 
-                var old = discoveredJagged;
+                bool[][] oldVisited = visited;
 
-                discoveredJagged = new bool[newWidth][];
+                visited = new bool[newWidth][];
 
                 for (int i = 0; i < newWidth; ++i)
                 {
-                    discoveredJagged[i] = new bool[newHeight];
+                    visited[i] = new bool[newHeight];
 
-                    if (i < Width)
+                    if (i < curWidth)
                     {
-                        for (int j = 0; j < Height; ++j)
+                        for (int j = 0; j < curHeight; ++j)
                         {
-                            discoveredJagged[i][j] = old[i][j];
+                            visited[i][j] = oldVisited[i][j];
                         }
                     }
                 }
             }
-
-            Width = newWidth;
-            Height = newHeight;
         }
     }
 }

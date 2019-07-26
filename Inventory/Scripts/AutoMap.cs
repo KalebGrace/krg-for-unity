@@ -9,13 +9,15 @@ namespace KRG
     {
         public Vector3 offset = default;
 
+        public Visibility visibility;
+
+        public Camera miniMapCamera = default;
+
+        public Camera pauseMapCamera = default;
+
         public Grid grid { get; private set; }
 
         public Tilemap tilemap { get; private set; }
-
-        public Camera mapCamera { get; private set; }
-
-        public Visibility visibility;
 
         private Vector3 anchor;
 
@@ -35,21 +37,17 @@ namespace KRG
 
             tilemap = G.U.Require(gameObject.GetComponentInChildren<Tilemap>());
 
-            mapCamera = G.U.Require(gameObject.GetComponentInChildren<Camera>());
-
             anchor = transform.position;
 
             tilemap.CompressBounds();
 
             tilemap.color = Color.white;
 
+            paletteData = G.config.AutoMapPaletteData;
+
             G.inv.AutoMapSaveDataRequested += OnAutoMapSaveDataRequested;
             G.inv.AutoMapSaveDataProvided += OnAutoMapSaveDataProvided;
             OnAutoMapSaveDataProvided();
-
-            paletteData = G.config.AutoMapPaletteData;
-
-            RenderAll();
         }
 
         public void LateUpdate()
@@ -64,7 +62,7 @@ namespace KRG
 
             Discover(cp);
 
-            var camTF = mapCamera.transform;
+            var camTF = miniMapCamera.transform;
             var cpV3 = (Vector3)cp;
             var csz = grid.cellSize;
 
@@ -73,6 +71,8 @@ namespace KRG
             cpV3 += csz / 2; //half-cell offset
             cpV3.z = camTF.position.z;
             camTF.position = cpV3;
+
+            pauseMapCamera.transform.position = cpV3;
         }
 
         private void OnDestroy()
@@ -99,7 +99,6 @@ namespace KRG
                 saveData.SetIsVisted(ai.x, ai.y, true);
                 return true;
             }
-
             return false;
         }
 
@@ -175,6 +174,8 @@ namespace KRG
         public void OnAutoMapSaveDataProvided()
         {
             saveData = G.inv.GetAutoMapSaveData(this);
+
+            RenderAll();
         }
     }
 }
