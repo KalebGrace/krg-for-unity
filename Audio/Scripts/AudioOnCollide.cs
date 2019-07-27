@@ -15,7 +15,7 @@ namespace KRG
 
         private void OnCollisionEnter(Collision collision)
         {
-            if (collision.transform.tag == PlayerCharacter.TAG)
+            if (PlayerCharacter.IsPlayerCollider(collision.transform))
             {
                 G.audio.PlaySFX(_sfxFmodEvent, transform.position);
             }
