@@ -62,6 +62,8 @@ namespace KRG {
         [FormerlySerializedAs("m_playCount")]
         RangeInt _playCount = new RangeInt();
 
+        public int _frameCountTemp;
+
         [SerializeField]
         [Tooltip("Denotes that this does call code upon starting this frame sequence.")]
         [FormerlySerializedAs("m_doesCallCode")]
@@ -204,6 +206,7 @@ namespace KRG {
             if (_number.Length > 0) FlushNumberToFrameCommands();
             ProcessFrameCommandExtenders();
             ProcessFrameCommandRanges();
+            _frameCountTemp = _frameList.Count;
         }
 
         void FlushNumberToFrameCommands() {
