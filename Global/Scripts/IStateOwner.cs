@@ -1,10 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
-namespace KRG {
-
-    public interface IStateOwner {
-
-    }
+﻿namespace KRG
+{
+    public interface IStateOwner { }
 }

@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿//KRG reference
+
+using UnityEngine;
 
 namespace KRG
 {
