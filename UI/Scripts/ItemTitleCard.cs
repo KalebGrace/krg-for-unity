@@ -13,6 +13,11 @@ namespace KRG
         public TextMeshProUGUI itemDisplayNameText;
         public TextMeshProUGUI itemInstructionText;
 
+#if NS_FMOD
+        [FMODUnity.EventRef]
+#endif
+        public string sfxFmodEventOnShow;
+
         private ITimeThread ttApplication;
         private ITimeThread ttGameplay;
         private ITimeThread ttField;
@@ -41,6 +46,11 @@ namespace KRG
             ttField.QueuePause(PAUSE_KEY);
 
             ttApplication.AddTrigger(WAIT_TIME, OnWaitDone);
+
+            if (!string.IsNullOrEmpty(sfxFmodEventOnShow))
+            {
+                G.audio.PlaySFX(sfxFmodEventOnShow);
+            }
         }
 
         private void OnWaitDone(TimeTrigger tt)
