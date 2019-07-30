@@ -207,7 +207,7 @@ namespace KRG
                 //if this is the active scene...
                 if (sceneName == _activeSceneName)
                 {
-                    _ = AnalyticsEvent.LevelStart(sceneName);
+                    SendLevelStartAnalytics(sceneName);
                     //call OnSceneActive
                     sc.OnSceneActive();
                     //call events
@@ -270,6 +270,14 @@ namespace KRG
                 _activeSceneName = null;
                 G.U.Assert(SceneManager.SetActiveScene(SceneManager.GetSceneByName(masterSceneName)));
             }
+        }
+
+
+        // ANALYTICS
+
+        protected virtual void SendLevelStartAnalytics(string sceneName)
+        {
+            _ = AnalyticsEvent.LevelStart(sceneName);
         }
     }
 }
