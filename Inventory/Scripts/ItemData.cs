@@ -38,7 +38,7 @@ namespace KRG
         protected BoolFloat autoCollect = default;
 
         [SerializeField, Tooltip("Show item title card upon acquiring. Only applies to key items.")]
-        protected bool showCardOnAcquire = true;
+        protected bool showCardOnAcquire = default;
 
 
         [Header("Effectors")]
