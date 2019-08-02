@@ -21,7 +21,7 @@ namespace KRG
         }
 
 #if NS_UGIF
-        private Dictionary<string, Gif> m_GifCache = new Dictionary<string, Gif>();
+        protected Dictionary<string, Gif> m_GifCache = new Dictionary<string, Gif>();
 
         public virtual void ClearGifCache()
         {
