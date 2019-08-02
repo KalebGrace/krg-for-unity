@@ -22,6 +22,8 @@ namespace KRG
 
         public VisRect VisRect => _visRect;
 
+        public bool IsPlayerCharacter => Type == CharacterType.PlayerCharacter;
+
         protected virtual void Awake()
         {
             _transform = transform;
