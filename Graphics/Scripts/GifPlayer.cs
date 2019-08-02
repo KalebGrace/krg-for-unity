@@ -14,6 +14,8 @@ namespace KRG {
 
         [Header("KRG-Specific Settings")]
         [SerializeField]
+        protected GifCacheOperation _gifCacheOperation = default;
+        [SerializeField]
         [FormerlySerializedAs("m_gifMaterialMode")]
         protected GifMaterialMode _gifMaterialMode = GifMaterialMode.RendererClone;
 
@@ -43,7 +45,8 @@ namespace KRG {
 
         protected virtual void Reset() {
             mode = GifPlayerMode.Material;
-            behaviour = GifPlayerBehaviour.LoadProgressively;
+            //TODO: re-assess this
+            //behaviour = GifPlayerBehaviour.LoadProgressively;
         }
 
         protected virtual void OnValidate() {
@@ -323,8 +326,30 @@ namespace KRG {
         /// <summary>
         /// Load the gif, and track that it has been loaded.
         /// </summary>
-        public override void Load() {
-            base.Load();
+        public override void Load()
+        {
+            if (file)
+            {
+                gif = G.gfx.GetGifFromTextAsset(file, _gifCacheOperation);
+
+                if (gif != null)
+                {
+                    if (useCustomdelay)
+                    {
+                        delay = customDelay;
+                    }
+                    else
+                    {
+                        delay = gif.delay;
+                    }
+
+                    if (mode == GifPlayerMode.Material)
+                    {
+                        propertyID = Shader.PropertyToID(materialProperty);
+                    }
+                }
+            }
+
             _isLoaded = true;
         }
 

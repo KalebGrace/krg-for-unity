@@ -27,6 +27,7 @@ namespace KRG
         public static readonly CameraManager cam = new CameraManager();
         public static readonly DamageManager damage = new DamageManager();
         public static readonly DOTweenManager dotween = new DOTweenManager();
+        public static readonly GraphicsManager gfx = new GraphicsManager();
         public static readonly InventoryManager inv = new InventoryManager();
         public static readonly ObjectManager obj = new ObjectManager();
         public static readonly SaveManager save = new SaveManager();
