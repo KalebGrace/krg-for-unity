@@ -30,9 +30,8 @@ namespace KRG
 
 #if DEBUG_VISIBILITY
             Transform center = _visRect.transform;
-            KRGReferences refs = G.config.krgReferences;
-            Instantiate(refs.characterDebugTextPrefab, center).Init(this);
-            GraphicsController.rasterAnimationInfo = Instantiate(refs.rasterAnimationInfoPrefab, center);
+            Instantiate(G.config.characterDebugTextPrefab, center).Init(this);
+            GraphicsController.rasterAnimationInfo = Instantiate(G.config.rasterAnimationInfoPrefab, center);
 #endif
         }
     }

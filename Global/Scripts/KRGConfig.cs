@@ -28,15 +28,6 @@ namespace KRG
         */
 
 
-        [Header("KRG: King's Royal Gold")]
-
-        [SerializeField]
-        [FormerlySerializedAs("m_references")]
-        KRGReferences _krgReferences = default;
-
-        public KRGReferences krgReferences { get { return _krgReferences; } }
-
-
         [Header("Damage (KRG)")]
 
         [SerializeField]
@@ -61,6 +52,11 @@ namespace KRG
         [SerializeField]
         LogBehaviour _doTweenLogBehaviour = LogBehaviour.Default;
 #endif
+
+
+        public CharacterDebugText characterDebugTextPrefab { get; private set; }
+
+        public RasterAnimationInfo rasterAnimationInfoPrefab { get; private set; }
 
         public bool doTweenUseInitSettings { get { return _doTweenUseInitSettings; } }
 
@@ -108,6 +104,9 @@ namespace KRG
         //...it will NOT be called if using the Unity editor
         void Awake()
         {
+            characterDebugTextPrefab = Resources.Load<CharacterDebugText>("Character/CharacterDebugText");
+            rasterAnimationInfoPrefab = Resources.Load<RasterAnimationInfo>("Graphics/RasterAnimationInfo");
+
             UpdateSerializedVersion();
         }
 
