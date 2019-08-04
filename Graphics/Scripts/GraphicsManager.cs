@@ -64,6 +64,21 @@ namespace KRG
 
             return gif;
         }
+
+        //EXPERIMENTAL
+        public Gif GetGifFromFrameTextures(List<Texture2D> frameTextures, string name)
+        {
+            //TODO: performance warning: hook through the same cache as used above
+            Gif gif = new Gif(name, true)
+            {
+                frames = frameTextures,
+                originalFrames = frameTextures.Count,
+                width = 256, //get from raster anim or file?
+                height = 256, //get from raster anim or file?
+                delay = 0.05f //get from raster anim or file?
+            };
+            return gif;
+        }
 #endif
 
     }

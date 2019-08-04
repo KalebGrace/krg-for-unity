@@ -330,7 +330,16 @@ namespace KRG {
         {
             if (file)
             {
-                gif = G.gfx.GetGifFromTextAsset(file, _gifCacheOperation);
+                var ft = _rasterAnimation?.FrameTextures;
+
+                if (ft != null && ft.Count > 0)
+                {
+                    gif = G.gfx.GetGifFromFrameTextures(ft, file.name);
+                }
+                else
+                {
+                    gif = G.gfx.GetGifFromTextAsset(file, _gifCacheOperation);
+                }
 
                 if (gif != null)
                 {

@@ -41,6 +41,12 @@ namespace KRG {
         [FormerlySerializedAs("m_dimensions")]
         protected Vector2 _dimensions = default;
 
+#if KRG_X_ODIN
+        [PropertyOrder(-10)]
+#endif
+        [SerializeField]
+        protected List<Texture2D> _frameTextures = new List<Texture2D>();
+
         //--
 
         [Header("Looping")]
@@ -93,6 +99,8 @@ namespace KRG {
         public virtual int frameSequenceCount { get { return _frameSequences.Length; } }
 
         public virtual int frameSequenceCountMax { get { return 20; } }
+
+        public virtual List<Texture2D> FrameTextures => _frameTextures;
 
         public virtual TextAsset gifBytes { get { return _gifBytes; } }
 
