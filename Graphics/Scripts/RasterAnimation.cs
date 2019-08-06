@@ -8,6 +8,10 @@ using UnityEngine.Serialization;
 using Sirenix.OdinInspector;
 #endif
 
+#if NS_UGIF
+using uGIF;
+#endif
+
 namespace KRG {
 
     [CreateAssetMenu(
@@ -16,8 +20,6 @@ namespace KRG {
         order = 123
     )]
     public class RasterAnimation : KRGAnimation {
-
-#region serialized fields
 
         /*
         [HideInInspector]
@@ -38,14 +40,33 @@ namespace KRG {
         [PropertyOrder(-10)]
 #endif
         [SerializeField]
-        [FormerlySerializedAs("m_dimensions")]
-        protected Vector2 _dimensions = default;
+        protected string m_GifName = default;
 
 #if KRG_X_ODIN
         [PropertyOrder(-10)]
 #endif
         [SerializeField]
-        protected List<Texture2D> _frameTextures = new List<Texture2D>();
+        protected float m_SecondsPerFrame = default;
+
+#if KRG_X_ODIN
+        [PropertyOrder(-10)]
+#endif
+        [SerializeField]
+        protected Vector2Int m_Dimensions = default;
+
+#if KRG_X_ODIN
+        [PropertyOrder(-10)]
+#endif
+        [SerializeField]
+        [FormerlySerializedAs("_dimensions")]
+        [FormerlySerializedAs("m_dimensions")]
+        protected Vector2 m_OldDimensions = default;
+
+#if KRG_X_ODIN
+        [PropertyOrder(-10)]
+#endif
+        [SerializeField]
+        protected List<Texture2D> m_FrameTextures = new List<Texture2D>();
 
         //--
 
@@ -84,23 +105,19 @@ namespace KRG {
         [FormerlySerializedAs("m_frameSequences")]
         FrameSequence[] _frameSequences = default;
 
-#endregion
 
-#region private fields
 
         bool _hasPlayableFrameSequences;
 
-#endregion
 
-#region properties
 
-        public virtual Vector2 dimensions { get { return _dimensions; } }
+        public virtual Vector2 dimensions => m_Dimensions != Vector2Int.zero ? m_Dimensions : m_OldDimensions;
 
         public virtual int frameSequenceCount { get { return _frameSequences.Length; } }
 
         public virtual int frameSequenceCountMax { get { return 20; } }
 
-        public virtual List<Texture2D> FrameTextures => _frameTextures;
+        public virtual List<Texture2D> FrameTextures => m_FrameTextures;
 
         public virtual TextAsset gifBytes { get { return _gifBytes; } }
 
@@ -108,9 +125,7 @@ namespace KRG {
 
         public virtual int loopToSequence { get { return _loopToSequence; } }
 
-#endregion
 
-#region MonoBehaviour methods
 
         //WARNING: this function will only be called automatically if playing a GAME BUILD
         //...it will NOT be called if using the Unity editor
@@ -135,9 +150,18 @@ namespace KRG {
             }
         }
 
-#endregion
 
-#region public methods
+
+#if NS_UGIF
+        public void ReplaceGifWithFrameTextures(Gif gif, List<Texture2D> frameTextures)
+        {
+            m_GifName = _gifBytes.name;
+            m_SecondsPerFrame = gif.delay;
+            m_Dimensions = new Vector2Int(gif.width, gif.height);
+            m_FrameTextures = frameTextures;
+            _gifBytes = null;
+        }
+#endif
 
         /// <summary>
         /// Does this loop? NOTE: The loop index passed in (starting at 0) should be incremented every loop.
@@ -208,9 +232,7 @@ namespace KRG {
             return fs != null && fs.doesCallCode;
         }
 
-#endregion
 
-#region protected methods
 
         protected virtual FrameSequence GetFrameSequence(int frameSequenceIndex) {
             if (_frameSequences.Length > frameSequenceIndex) {
@@ -258,8 +280,5 @@ namespace KRG {
             int max = (_frameSequences == null || _frameSequences.Length == 0) ? 0 : _frameSequences.Length - 1;
             _loopToSequence = Mathf.Clamp(_loopToSequence, 0, max);
         }
-
-#endregion
-
     }
 }
