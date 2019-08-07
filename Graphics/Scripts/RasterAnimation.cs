@@ -152,6 +152,8 @@ namespace KRG {
 
 
 
+        public bool IsGifReplacedWithFrameTextures => !string.IsNullOrEmpty(m_GifName);
+
 #if NS_UGIF
         public void ReplaceGifWithFrameTextures(Gif gif, List<Texture2D> frameTextures)
         {
@@ -159,7 +161,6 @@ namespace KRG {
             m_SecondsPerFrame = gif.delay;
             m_Dimensions = new Vector2Int(gif.width, gif.height);
             m_FrameTextures = frameTextures;
-            _gifBytes = null;
         }
 #endif
 
