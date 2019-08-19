@@ -34,7 +34,9 @@ namespace KRG
             if (m_BoxCollider != null)
             {
                 Gizmos.color = Color.magenta;
-                Gizmos.DrawWireCube(transform.position + m_BoxCollider.center, m_BoxCollider.size);
+                Vector3 center = transform.position + m_BoxCollider.center;
+                Vector3 size = transform.lossyScale.Multiply(m_BoxCollider.size);
+                Gizmos.DrawWireCube(center, size);
             }
         }
     }
