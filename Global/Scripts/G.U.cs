@@ -57,6 +57,11 @@ namespace KRG
              * ~~~
              */
 
+            public static void Err(System.Exception ex)
+            {
+                Err(ex.ToString());
+            }
+
             /// <summary>
             /// Log an error with the specified message and optional arguments.
             /// </summary>
