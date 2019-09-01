@@ -32,6 +32,8 @@ namespace KRG {
 
         public bool isLoaded { get { return _isLoaded; } }
 
+        public RasterAnimation RasterAnimation => _rasterAnimation;
+
         public RasterAnimationInfo rasterAnimationInfo {
             set {
                 _rasterAnimationInfo = value;
