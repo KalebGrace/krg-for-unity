@@ -83,6 +83,10 @@ namespace KRG {
         [Tooltip("Maximum new attacks per second.")]
         protected float _attackRate = FLOAT_DEFAULT;
 
+        [SerializeField]
+        [Tooltip("Delay before attack instance becomes active. Useful if the attack animation has a wind up.")]
+        protected float _attackDelay = 0;
+
         //
         //
         [Header("Attack Instance Parameters")]
@@ -218,6 +222,8 @@ namespace KRG {
 #endregion
 
 #region PROPERTIES
+
+        public virtual float attackDelay { get { return _attackDelay; } }
 
         public virtual int attackerAnimationCount {
             get {

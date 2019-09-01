@@ -229,7 +229,20 @@ namespace KRG {
                 //TODO: support Y dimension
             }
 
-            PlayAttackSFX();
+            float attackDelay = _attackAbility.attackDelay;
+            if (attackDelay > 0)
+            {
+                _timeThread.AddTrigger(attackDelay, x =>
+                {
+                    gameObject.SetActive(true);
+                    PlayAttackSFX();
+                });
+                gameObject.SetActive(false);
+            }
+            else
+            {
+                PlayAttackSFX();
+            }
         }
 
         protected virtual void PlayAttackSFX() {
