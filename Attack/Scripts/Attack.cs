@@ -46,7 +46,9 @@ namespace KRG {
         bool _isFlippedX;
         bool _isInitialized;
         bool _isPlayerCharacterAttacker;
+        ITimeThread _timeThread;
         Transform _transform;
+        Vector2 _velocity;
 
 #endregion
 
@@ -107,6 +109,14 @@ namespace KRG {
                     G.U.Warning("If this Attack exists on its own, " +
                     "it should probably have a Standalone Attack Ability.");
                 }
+            }
+        }
+
+        protected virtual void Update()
+        {
+            if (!_timeThread.isPaused && _velocity != Vector2.zero)
+            {
+                transform.Translate(_velocity * _timeThread.deltaTime);
             }
         }
 
@@ -190,11 +200,13 @@ namespace KRG {
         protected virtual void InitInternal() {
             _isInitialized = true;
 
+            _timeThread = _attackAbility.timeThread;
+
             if (_attackAbility.hasAttackLifetime) {
                 //TODO: dispose callback causes optional delay for related attacks
                 //E.G. SecS: stopping block makes the fire/shot m_attackRateSec restart at 1.5x:
                 //alarm[e_pc_alarm.fire_ready] = global.framerate / fire_rate * 1.5;
-                _attackAbility.timeThread.AddTrigger(_attackAbility.attackLifetime, Dispose);
+                _timeThread.AddTrigger(_attackAbility.attackLifetime, Dispose);
             }
 
             if (_isFlippedX) { //flip horizontal (x-axis)
@@ -209,9 +221,13 @@ namespace KRG {
                 }
             }
 
-            //TODO:
-            //- set trajectory (travel direction)
-            //- set speed/velocity (adjust for time thread & delta time)
+            float travelSpeed = _attackAbility.travelSpeed;
+            if (!travelSpeed.Ap(0))
+            {
+                float flipX = _isFlippedX ? -1 : 1;
+                _velocity = new Vector2(travelSpeed * flipX, 0);
+                //TODO: support Y dimension
+            }
 
             PlayAttackSFX();
         }
