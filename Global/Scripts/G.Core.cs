@@ -18,20 +18,19 @@ namespace KRG
         /// Gets the config (KRGConfig). Runtime only. Will return null if either the G instance or the config is null.
         /// </summary>
         /// <value>The config.</value>
-        public static KRGConfig config { get { return instance != null ? instance.LoadConfig() : null; } }
+        public static KRGConfig config => instance != null ? instance.LoadConfig() : null;
 
         /// <summary>
         /// Gets a value indicating whether Unity is in edit mode.
         /// This cannot be accessed from AppManager because that is only created at runtime.
         /// </summary>
         /// <value><c>true</c> if Unity is in edit mode; otherwise, <c>false</c>.</value>
-        public static bool isInEditMode { get { return Application.isEditor && !Application.isPlaying; } }
+        public static bool isInEditMode => Application.isEditor && !Application.isPlaying;
 
         /// <summary>
-        /// Gets the KRG version.
+        /// The version of G.
         /// </summary>
-        /// <value>The KRG version.</value>
-        public static string krgVersion { get { return AppManager.krgVersion; } }
+        public const int version = 2;
 
         // TRUE MONOBEHAVIOUR METHODS
 
@@ -59,7 +58,7 @@ namespace KRG
             if (m_Config != null) Resources.UnloadAsset(m_Config);
         }
 
-        // MORE KRG METHODS
+        // KRG METHODS
 
         KRGConfig LoadConfig()
         {

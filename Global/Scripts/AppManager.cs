@@ -10,11 +10,13 @@ namespace KRG
         public override float priority => 10;
 
         /* example for changing priorities of different methods
-         * the following is no longer needed, since OnDestroy priority is now reversed by default
+         *
+         * NOTE: the following is actually no longer needed,
+         * since OnDestroy priority is now reversed by default
         
-        float IOnDestroy.priority { get { return priorityOnDestroy; } }
+        float IOnDestroy.priority => priorityOnDestroy;
 
-        protected virtual float priorityOnDestroy { get { return 1000; } }
+        protected virtual float priorityOnDestroy => 1000;
 
         */
 
@@ -22,11 +24,6 @@ namespace KRG
         {
             _ = AnalyticsEvent.GameStart();
         }
-
-        /// <summary>
-        /// The KRG version.
-        /// </summary>
-        public const string krgVersion = "1.01.001";
 
         /// <summary>
         /// The default master scene name.

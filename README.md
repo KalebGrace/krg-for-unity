@@ -1,13 +1,11 @@
 # KRG #
 
-KRG: King's Royal Gold
-( or Knowledgeably Reaching God )
-*A Unity Framework Library*
-v1.00 - code@kalebgrace.com
+__Knowledgeably Reaching God__
 
-Tested with Unity 2017.2.0p2 (64-bit)
+a Unity 2019 framework library
 
-Previously known as "UnityCoreKRG", KRG serves as a launchpad for initializing any Unity project and providing core functionality for a variety of purposes. KRG also provides support for many third-party libraries, such as TextMesh Pro.
+KRG serves as a launchpad for initializing any Unity project and providing core functionality for a variety of purposes.
+KRG also provides support for many third-party libraries, such as TextMesh Pro.
 
 ## One-Time Setup ##
 
@@ -38,7 +36,7 @@ Example Usage:
 
     using KRG;
     //...
-    G.audio.volume++;
+    G.audio.Volume++;
 
 * The G singleton MonoBehaviour provides a narration, or an order, to the chaos of the equal execution of all possible objects.
 * KRG.G's script execution order is -30000 (to be run before everything except Rewired).
@@ -56,14 +54,17 @@ Many of the KRG classes derived from MonoBehaviour and ScriptableObject are abst
 Enums used in KRG can be swapped with your own custom enums when they use EnumAttribute. Let's take the following example:
 
     [Enum(typeof(SomeEnum))]
-    private int m_someEnumValue;
+    private int m_SomeEnumValue;
 
 You can change KRG.SomeEnum to MyGame.SomeEnum simply by creating an EnumDrawer.cs file in an Editor folder and using the following:
 
-    namespace MyGame {
+    namespace MyGame
+    {
         [CustomPropertyDrawer(typeof(EnumAttribute))]
-        public class EnumDrawer : KRG.EnumDrawer {
-            protected override bool SwapEnum(ref string stringType) {
+        public class EnumDrawer : KRG.EnumDrawer
+        {
+            protected override bool SwapEnum(ref string stringType)
+            {
                 stringType = stringType.Replace("KRG.", "MyGame.");
                 return true;
             }
