@@ -19,19 +19,23 @@ namespace KRG {
 
         RectTransform _rt;
 
-#region Basic VisRect transform (world space) position
+        // Basic VisRect transform world space position
 
         public Vector3 center { get { return _rt.position; } }
 
-#endregion
-
-#region Rectangle top and bottom (world space) positions
+        // Rectangle top and bottom world space positions
 
         public Vector3 rectTop { get { return _rt.position.Add(y: _rt.rect.yMax); } }
 
         public Vector3 rectBottom { get { return _rt.position.Add(y: _rt.rect.yMin); } }
 
-#endregion
+        // Rectangle top and bottom local positions / offsets
+
+        public Vector3 OffsetTop => new Vector3(0, _rt.rect.yMax);
+
+        public Vector3 OffsetBottom => new Vector3(0, _rt.rect.yMin);
+
+        // Methods
 
         void Awake() {
             _rt = this.Require<RectTransform>();

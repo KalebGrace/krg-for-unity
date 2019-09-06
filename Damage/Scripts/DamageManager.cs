@@ -44,11 +44,17 @@ namespace KRG
         /// This overload is the most commonly used one.
         /// </summary>
         /// <param name="target">Target.</param>
+        /// <param name="visRect">Optional VisRect, used for precise automatic positioning.</param>
         /// <typeparam name="T">The 1st type parameter.</typeparam>
         /// <returns>HP Bar.</returns>
-        public HPBar GetHPBar<T>(T target) where T : MonoBehaviour, IDamageable
+        public HPBar GetHPBar<T>(T target, VisRect visRect = null) where T : MonoBehaviour, IDamageable
         {
-            return GetHPBar(target, target.transform);
+            if (visRect == null)
+            {
+                return GetHPBar(target, target.transform, Vector3.up);
+            }
+
+            return GetHPBar(target, visRect.transform, visRect.OffsetTop.Add(y: 0.1f));
         }
 
         /// <summary>
@@ -58,13 +64,15 @@ namespace KRG
         /// </summary>
         /// <param name="target">Target.</param>
         /// <param name="anchor">Anchor (parent Transform).</param>
+        /// <param name="offset">Positional offset. When in doubt, use Vector3.up.</param>
         /// <returns>HP Bar.</returns>
-        public HPBar GetHPBar(IDamageable target, Transform anchor)
+        public HPBar GetHPBar(IDamageable target, Transform anchor, Vector3 offset)
         {
             var hpBar = anchor.GetComponentInChildren<HPBar>(true);
             if (hpBar == null)
             {
                 hpBar = G.U.New(config.hpBarPrefab, anchor);
+                hpBar.transform.localPosition = offset;
                 hpBar.Init(target);
             }
             return hpBar;
