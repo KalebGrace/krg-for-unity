@@ -7,8 +7,13 @@ namespace KRG
     public class GameObjectEntity : MonoBehaviour
     {
         [SerializeField]
-        private GameObjectEntityType m_Type = default;
+        private GameObjectType m_Type = default;
 
+		[Enum(typeof(CharacterIdentifier))]
+		public int CharacterId;
 
+		public SpriteLogic SpriteLogic;
+
+		public GameObjectData Data;
     }
 }

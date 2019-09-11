@@ -10,6 +10,8 @@ namespace KRG
 
 		public GameObject SpriteGameObject;
 
+        public string BundlePath;
+
         public string RasterAnimationName;
 
         private AssetBundle m_AssetBundle;
@@ -107,6 +109,14 @@ namespace KRG
             int y = imageIndex / ImageGridCols;
 
             SetUVGrid(x, y);
+            */
+
+            /*
+            uv grid
+            material needs to be set as follows:
+            for 2x2
+            tiling x 0.5 y 0.5
+            offset x 0   y 0.5
             */
         }
 
