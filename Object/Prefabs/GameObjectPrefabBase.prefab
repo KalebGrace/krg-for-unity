@@ -45,8 +45,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 617d6fff6851645ecb9a7bc5bb2ae97c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Type:
-    Name: 0
+  m_Type: 0
+  CharacterId: 0
+  SpriteLogic: {fileID: 4108862544982052519}
 --- !u!114 &4108862544982052519
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -60,7 +61,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   SpriteGameObject: {fileID: 6722352719591099782}
-  RasterAnimation: {fileID: 0}
+  BundlePath: 
+  RasterAnimationName: 
 --- !u!1 &6722352719591099782
 GameObject:
   m_ObjectHideFlags: 0
