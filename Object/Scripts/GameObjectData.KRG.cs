@@ -1,7 +1,7 @@
 ﻿namespace KRG
 {
     [System.Serializable]
-    public partial struct GameObjectData
+    public partial struct GameObjectData //.KRG
     {
     }
 }

@@ -69,7 +69,7 @@ namespace KRG
             }
             else
             {
-                G.U.Warning("Already has key item {0}.", item);
+                G.U.Warn("Already has key item {0}.", item);
             }
         }
 

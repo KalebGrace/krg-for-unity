@@ -1,6 +1,4 @@
-﻿//KRG reference
-
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.Tilemaps;
 
 namespace KRG
@@ -52,7 +50,7 @@ namespace KRG
 
         public void LateUpdate()
         {
-            var pc = PlayerCharacter.instance;
+            var pc = G.obj.FirstPlayerCharacter;
 
             if (pc == null) return;
 

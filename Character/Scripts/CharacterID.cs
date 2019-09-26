@@ -1,6 +1,6 @@
 ﻿namespace KRG
 {
-    public enum CharacterIdentifier
+    public enum CharacterID
     {
         None = 0,
 

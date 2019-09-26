@@ -241,7 +241,7 @@ namespace KRG {
 
         void LogRendererCloneWarning() {
             if (playMat != null && !enablePreview) {
-                G.U.Warning(
+                G.U.Warn(
                     "Setting a Material is unnecessary for Renderer Clone mode (unless Enable Preview is checked).",
                     file.name
                 );
@@ -371,7 +371,7 @@ namespace KRG {
         /// <param name="del">Delay in seconds.</param>
         public override void Play(float del) {
             if (isPaused) {
-                G.U.Warning("Using Play while isPaused resets the animation. To unpause, use Pause(false) instead.");
+                G.U.Warn("Using Play while isPaused resets the animation. To unpause, use Pause(false) instead.");
             }
             //RasterAnimation stuff
             var ra = _rasterAnimation;

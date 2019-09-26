@@ -1,23 +1,20 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using System.Collections.Generic;
 
-namespace KRG {
-
+namespace KRG
+{
     public abstract class InfiniteStateMachine<TOwner, TLogic>
-        where TOwner : IStateOwner where TLogic : IStateLogic<TOwner> {
-
-#region derived class example code
+        where TOwner : IStateOwner
+        where TLogic : IStateLogic<TOwner>
+    {
+        // STATIC STATE LOGIC OBJECTS
 
         //>> NEEDS TO BE ADDED TO DERIVED CLASS <<
         /*
-        static readonly FooState _fooState = new FooState();
+        private static readonly FooState s_fooState = new FooState();
         */
         //...where FooState : IStateLogic
 
-#endregion
-
-#region fields
+        // FIELDS
 
         protected readonly int _stateCount;
         protected readonly TOwner _stateOwner;
@@ -27,30 +24,27 @@ namespace KRG {
         readonly List<int> _lockTargets = new List<int>();
         readonly bool[] _states;
 
-#endregion
-
-#region properties
+        // PROPERTIES
 
         protected int? pendingAddition { get; private set; }
 
-#endregion
+        // CONSTRUCTOR
 
-#region constructor
-
-        protected InfiniteStateMachine(TOwner stateOwner, int stateCount) {
+        protected InfiniteStateMachine(TOwner stateOwner, int stateCount)
+        {
             _stateOwner = stateOwner;
             _stateCount = stateCount;
             _states = new bool[stateCount];
             _lifetimeTriggers = new TimeTrigger[stateCount];
         }
 
-#endregion
-
-#region public methods
+        // PUBLIC METHODS
 
         //>> NEEDS TO BE CALLED DURING UPDATE <<
-        public virtual void Update() {
-            for (int i = 0; i < _stateCount; i++) {
+        public virtual void Update()
+        {
+            for (int i = 0; i < _stateCount; i++)
+            {
                 if (!_states[i]) continue;
                 TLogic stateLogic = GetStateLogic(i);
                 if (!IsVerified(stateLogic)) continue;
@@ -58,9 +52,7 @@ namespace KRG {
             }
         }
 
-#endregion
-
-#region protected methods
+        // PROTECTED METHODS
 
         /// <summary>
         /// Add the specified state (w/ option to set lifetime, and option to lock states).
@@ -77,7 +69,8 @@ namespace KRG {
             float stateLifetime = 0,
             int[] statesToLock = null,
             bool removeOnLock = true
-        ) {
+        )
+        {
             if (!CanAdd(stateIndex)) return;
             if (!G.U.Prevent(stateLifetime < 0,
                     "stateLifetime must be 0 or greater.")) return;
@@ -86,14 +79,16 @@ namespace KRG {
             TLogic stateLogic = GetStateLogic(stateIndex);
             if (!IsVerified(stateLogic)) return;
             //cache the pending addition so it can be viewed by callbacks (e.g. those on removed locked states)
-            if (pendingAddition.HasValue) G.U.Warning(
+            if (pendingAddition.HasValue) G.U.Warn(
                     "State {0} is being added before the pending addition of state {1} has completed.",
                     stateIndex, pendingAddition.Value);
             pendingAddition = stateIndex;
             //add locks as applicable
-            if (statesToLock != null) {
+            if (statesToLock != null)
+            {
                 int lok;
-                for (int i = 0; i < statesToLock.Length; i++) {
+                for (int i = 0; i < statesToLock.Length; i++)
+                {
                     lok = statesToLock[i];
                     if (!G.U.Prevent(stateIndex == lok, "A state cannot lock itself.")) continue;
                     //remove the locked state as applicable
@@ -106,19 +101,23 @@ namespace KRG {
             //remove (prior) lifetime trigger from the state, if it exists
             RemoveLifetimeTrigger(stateIndex);
             //add (new) lifetime trigger to the state as applicable
-            if (stateLifetime > 0) {
+            if (stateLifetime > 0)
+            {
                 TimeTrigger tt = stateTimeThread.AddTrigger(stateLifetime, OnLifetimeExpired, true);
                 tt.intData = stateIndex;
                 _lifetimeTriggers[stateIndex] = tt;
             }
             //add or renew the state based on its current value
-            if (!_states[stateIndex]) {
+            if (!_states[stateIndex])
+            {
                 //this state doesn't exist; add it, then call external methods
                 _states[stateIndex] = true;
                 OnChangedAnteEvent(stateIndex, true);
                 stateLogic.OnAdded(_stateOwner);
                 OnChangedPostEvent(stateIndex, true);
-            } else {
+            }
+            else
+            {
                 //this state already exists; renew it (via an external method)
                 stateLogic.OnRenewed(_stateOwner);
             }
@@ -128,21 +127,26 @@ namespace KRG {
             if (stateLifetime.Ap(0) && stateTimeThread != null) Remove(stateIndex);
         }
 
-        protected bool CanAdd(int stateIndex) {
+        protected bool CanAdd(int stateIndex)
+        {
             return IsVerified(stateIndex) && !_lockTargets.Contains(stateIndex);
         }
 
-        protected bool Has(int stateIndex) {
+        protected bool Has(int stateIndex)
+        {
             return IsVerified(stateIndex) && _states[stateIndex];
         }
 
-        protected void Remove(int stateIndex) {
+        protected void Remove(int stateIndex)
+        {
             if (!Has(stateIndex) || _lockTargets.Contains(stateIndex)) return;
             TLogic stateLogic = GetStateLogic(stateIndex);
             if (!IsVerified(stateLogic)) return;
             //remove locks as applicable
-            for (int i = 0; i < _lockSources.Count; i++) {
-                if (_lockSources[i] == stateIndex) {
+            for (int i = 0; i < _lockSources.Count; i++)
+            {
+                if (_lockSources[i] == stateIndex)
+                {
                     _lockSources.RemoveAt(i);
                     _lockTargets.RemoveAt(i);
                     i--;
@@ -157,13 +161,12 @@ namespace KRG {
             OnChangedPostEvent(stateIndex, false);
         }
 
-        protected void SetLifetimeInfinite(int stateIndex) {
+        protected void SetLifetimeInfinite(int stateIndex)
+        {
             if (IsVerified(stateIndex)) RemoveLifetimeTrigger(stateIndex);
         }
 
-#endregion
-
-#region abstract methods
+        // ABSTRACT METHODS
 
         protected abstract TLogic GetStateLogic(int stateIndex);
 
@@ -171,11 +174,10 @@ namespace KRG {
 
         protected abstract void OnChangedPostEvent(int stateIndex, bool stateValue);
 
-#endregion
+        // PRIVATE METHODS
 
-#region private methods
-
-        bool IsVerified(int stateIndex) {
+        bool IsVerified(int stateIndex)
+        {
             if (!G.U.Prevent(stateIndex < 0,
                     "stateIndex must be 0 or greater.")) return false;
             if (!G.U.Prevent(stateIndex >= _stateCount,
@@ -183,25 +185,25 @@ namespace KRG {
             return true;
         }
 
-        static bool IsVerified(TLogic stateLogic) {
+        static bool IsVerified(TLogic stateLogic)
+        {
             if (!G.U.Prevent(stateLogic.Equals(default(TLogic)),
                     "stateLogic must not be null/default.")) return false;
             return true;
         }
 
-        void OnLifetimeExpired(TimeTrigger tt) {
+        void OnLifetimeExpired(TimeTrigger tt)
+        {
             int stateIndex = tt.intData;
             _lifetimeTriggers[stateIndex] = null;
             Remove(stateIndex);
         }
 
-        void RemoveLifetimeTrigger(int stateIndex) {
+        void RemoveLifetimeTrigger(int stateIndex)
+        {
             TimeTrigger tt = _lifetimeTriggers[stateIndex];
             _lifetimeTriggers[stateIndex] = null;
             if (tt != null) tt.Dispose();
         }
-
-#endregion
-
     }
 }

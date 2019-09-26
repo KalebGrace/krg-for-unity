@@ -167,7 +167,7 @@ namespace KRG {
                 return false;
             }
             if (isTimeRateQueued && _timeRateQueued != TimeRate.Paused) { //TODO: re-evaluate this condition
-                G.U.Warning("A new TimeRate has already been queued.");
+                G.U.Warn("A new TimeRate has already been queued.");
             }
             // (comment lines added for visual symmetry)
             //
@@ -202,7 +202,7 @@ namespace KRG {
                 return false;
             }
             if (isTimeRateQueued && _timeRateQueued != _timeRateUnpause) { //TODO: re-evaluate this condition
-                G.U.Warning("A new TimeRate has already been queued.");
+                G.U.Warn("A new TimeRate has already been queued.");
             }
             if (_pauseKeys.Count == 0) {
                 //there is nothing left to unpause, but for functional symmetry, return true

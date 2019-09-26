@@ -25,12 +25,13 @@ namespace KRG
         /// This cannot be accessed from AppManager because that is only created at runtime.
         /// </summary>
         /// <value><c>true</c> if Unity is in edit mode; otherwise, <c>false</c>.</value>
-        public static bool isInEditMode => Application.isEditor && !Application.isPlaying;
+        [System.Obsolete("Use G.U.IsEditMode(this) instead.")]
+        public static bool isInEditMode => U.IsEditMode();
 
         /// <summary>
         /// The version of G.
         /// </summary>
-        public const int version = 2;
+        public const int version = 3;
 
         // TRUE MONOBEHAVIOUR METHODS
 

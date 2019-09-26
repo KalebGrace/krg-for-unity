@@ -1,10 +1,9 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Serialization;
 
-namespace KRG {
-
+namespace KRG
+{
     /// <summary>
     /// Attacker: Attacker
     /// 1.  Attacker allows a game object to generate "attacks" from the supplied attack abilities.
@@ -15,59 +14,52 @@ namespace KRG {
     ///     conditions that can deter generation of the attack (e.g. attack rate and attack limit).
     /// 3.  Attacker is a key component of the Attack system, and is used in conjunction with the following classes:
     ///     Attack, AttackAbility, AttackAbilityUse, AttackString, AttackTarget, and KnockBackCalcMode.
-    /// 4.*-Attacker is abstract and must have a per-project derived class created;
-    ///     the derived class itself must be added to a game object as a script/component.
-    /// Last Refactor: 1.00.003 / 2018-07-15
     /// </summary>
-    public abstract class Attacker : MonoBehaviour {
-
+    public class Attacker : MonoBehaviour, IBodyComponent
+    {
         public enum AttackState { STARTED, INTERRUPTED, COMPLETED }
 
         public event AttackEventHandler attackStateChanged;
 
         public delegate void AttackEventHandler(Attack attack, AttackState state);
 
-#region FIELDS: SERIALIZED
+        // SERIALIZED FIELDS
 
         [SerializeField, FormerlySerializedAs("m_attackAbilities")]
         protected AttackAbility[] _attackAbilities;
 
-#endregion
+        [SerializeField]
+        private GameObjectBody m_Body = default;
 
-#region FIELDS: PRIVATE
+        // PRIVATE FIELDS
 
-        SortedDictionary<InputSignature, AttackAbilityUse> _availableAttacks =
+        private SortedDictionary<InputSignature, AttackAbilityUse> _availableAttacks =
             new SortedDictionary<InputSignature, AttackAbilityUse>(new InputSignatureComparer());
 
-        SortedDictionary<InputSignature, AttackAbilityUse> _availableAttacksBase =
+        private SortedDictionary<InputSignature, AttackAbilityUse> _availableAttacksBase =
             new SortedDictionary<InputSignature, AttackAbilityUse>(new InputSignatureComparer());
 
-        Attack _currentAttack;
+        private Attack _currentAttack;
 
-        Dictionary<int, InputSignature> _inputEzKeySigMap = new Dictionary<int, InputSignature>();
+        private Dictionary<int, InputSignature> _inputEzKeySigMap = new Dictionary<int, InputSignature>();
 
-        AttackAbilityUse _queuedAttack;
+        private AttackAbilityUse _queuedAttack;
 
-#endregion
+        // PROPERTIES
 
-#region PROPERTIES
+        public GameObjectBody Body => m_Body;
 
-        public Character Character { get; protected set; }
+        // INIT METHOD
 
-        public GraphicsController GraphicsController { get; protected set; }
+        public void InitBody(GameObjectBody body)
+        {
+            m_Body = body;
+        }
 
-        public abstract bool isFlippedX { get; }
-
-        public abstract bool isPlayerCharacter { get; }
-
-#endregion
-
-#region METHODS: MonoBehaviour
+        // MONOBEHAVIOUR METHODS
 
         protected virtual void Awake()
         {
-            InitProperties();
-
             InitAvailableAttacks();
         }
 
@@ -76,17 +68,9 @@ namespace KRG {
             CheckInputAndTryAttack();
         }
 
-#endregion
-
-#region METHODS: PROTECTED & PRIVATE
-
-        protected virtual void InitProperties()
-        {
-            GraphicsController = GetComponent<GraphicsController>();
-            Character = GraphicsController?.GetComponent<Character>();
-        }
-
-        void InitAvailableAttacks()
+        // OTHER METHODS
+        
+        private void InitAvailableAttacks()
         {
             for (int i = 0; i < _attackAbilities.Length; ++i)
             {
@@ -111,32 +95,41 @@ namespace KRG {
             }
         }
 
-        void CheckInputAndTryAttack() {
-            if (_queuedAttack != null) {
+        private void CheckInputAndTryAttack()
+        {
+            if (_queuedAttack != null)
+            {
                 return;
             }
             int tempComparerTestVariable = 999;
             InputSignature inputSig;
             AttackAbilityUse aaUse;
-            foreach (KeyValuePair<InputSignature, AttackAbilityUse> kvPair in _availableAttacks) {
+            foreach (KeyValuePair<InputSignature, AttackAbilityUse> kvPair in _availableAttacks)
+            {
                 inputSig = kvPair.Key;
                 //begin temp InputSignatureComparer test
                 G.U.Assert(inputSig.complexity <= tempComparerTestVariable);
                 tempComparerTestVariable = inputSig.complexity;
                 //end temp InputSignatureComparer test
-                if (IsInputSignatureExecuted(inputSig)) {
+                if (IsInputSignatureExecuted(inputSig))
+                {
                     aaUse = kvPair.Value;
                     //allow derived class to check conditions
-                    if (IsAttackAbilityUseAvailable(aaUse)) {
+                    if (IsAttackAbilityUseAvailable(aaUse))
+                    {
                         //if this new attack is allowed to interrupt the current one, try the attack right away
                         //NOTE: doesInterrupt defaults to true for base attacks (see InitAvailableAttacks -> aaUse)
                         //otherwise, queue the attack to be tried when the current attack ends
-                        if (aaUse.doesInterrupt) {
+                        if (aaUse.doesInterrupt)
+                        {
                             //try the attack; if successful, stop searching for attacks to try and just return
-                            if (_TryAttack(aaUse)) {
+                            if (_TryAttack(aaUse))
+                            {
                                 return;
                             }
-                        } else {
+                        }
+                        else
+                        {
                             _queuedAttack = aaUse;
                             return;
                         }
@@ -162,7 +155,7 @@ namespace KRG {
             return true;
         }
 
-        bool _TryAttack(AttackAbilityUse aaUse)
+        private bool _TryAttack(AttackAbilityUse aaUse)
         {
             Attack attack = aaUse.AttemptAttack();
             //if the attack attempt failed, return FALSE (otherwise, proceed)
@@ -182,7 +175,7 @@ namespace KRG {
             return true;
         }
 
-        void InterruptCurrentAttack()
+        private void InterruptCurrentAttack()
         {
             if (_currentAttack == null) return;
             //remove the end callback
@@ -193,13 +186,15 @@ namespace KRG {
             _currentAttack = null;
         }
 
-        void UpdateAvailableAttacks(Attack attack) {
+        private void UpdateAvailableAttacks(Attack attack)
+        {
             _availableAttacks.Clear();
             var strings = attack.attackAbility.attackStrings;
             AttackString aString;
             AttackAbility aa;
             AttackAbilityUse aaUse;
-            for (int i = 0; i < strings.Length; ++i) {
+            for (int i = 0; i < strings.Length; ++i)
+            {
                 //TODO:
                 //1.  Open and close string during specifically-defined frame/second intervals using
                 //    TimeTriggers/callbacks; for now, we just open immediately and close on destroy.
@@ -212,33 +207,36 @@ namespace KRG {
             }
         }
 
-        void _OnAttackCompleted() {
+        private void _OnAttackCompleted()
+        {
             if (attackStateChanged != null) attackStateChanged(_currentAttack, AttackState.COMPLETED);
             _currentAttack = null;
             //the current attack has ended, so try the queued attack; if successful, return (otherwise, proceed)
-            if (_queuedAttack != null) {
+            if (_queuedAttack != null)
+            {
                 var aaUse = _queuedAttack;
                 _queuedAttack = null;
-                if (_TryAttack(aaUse)) {
+                if (_TryAttack(aaUse))
+                {
                     return;
                 }
             }
             //we now have no current or queued attack, so revert back to our base dictionary of available attacks
             _availableAttacks.Clear();
-            foreach (var inputSig in _availableAttacksBase.Keys) {
+            foreach (var inputSig in _availableAttacksBase.Keys)
+            {
                 _availableAttacks.Add(inputSig, _availableAttacksBase[inputSig]);
             }
         }
 
-        protected virtual void OnAttack(Attack attack) {
+        protected virtual void OnAttack(Attack attack)
+        {
             //can override with character state, graphics controller, and/or other code
         }
 
-        protected virtual void OnDamageDealt(Attack attack, DamageTaker target) {
+        protected virtual void OnDamageDealt(Attack attack, DamageTaker target)
+        {
             //can override with character state, graphics controller, and/or other code
         }
-
-#endregion
-
     }
 }

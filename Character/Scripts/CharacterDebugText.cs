@@ -13,13 +13,13 @@ namespace KRG
             _text = this.Require<TextMeshPro>();
         }
 
-        public void Init(Character character)
+        public void Init(MonoBehaviour monoBehaviour)
         {
-            _characterInterface = character as ICharacterDebugText;
+            _characterInterface = monoBehaviour as ICharacterDebugText;
             if (_characterInterface == null)
             {
-                G.U.Warning("This character must implement the ICharacterDebugText interface to show debug info.",
-                    this, character);
+                G.U.Warn("This MonoBehaviour must implement the ICharacterDebugText interface to show debug info.",
+                    this, monoBehaviour);
                 gameObject.Dispose();
             }
         }

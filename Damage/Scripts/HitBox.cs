@@ -6,13 +6,11 @@ using UnityEngine.Serialization;
 namespace KRG {
 
     [RequireComponent(typeof(BoxCollider))]
-    public abstract class HitBox : MonoBehaviour {
-
-        [SerializeField]
+    public abstract class HitBox : MonoBehaviour
+    {
+        [FormerlySerializedAs("_damageTaker")]
         [FormerlySerializedAs("m_damageTaker")]
-        DamageTaker _damageTaker = default;
-
-        public DamageTaker damageTaker { get { return _damageTaker; } }
+        public DamageTaker DamageTaker = default;
 
         void Awake() {
             G.U.Assert(gameObject.layer != Layer.Default, "This GameObject must exist on a hit box Layer.");
@@ -27,9 +25,9 @@ namespace KRG {
                 rb.isKinematic = true;
             }
 
-            G.U.Require(_damageTaker, "Damage Taker");
+            G.U.Require(DamageTaker, "Damage Taker");
             //this hit box should already be placed on the "VisRect" GameObject of the thing taking damage
-            _damageTaker.centerTransform = transform;
+            DamageTaker.centerTransform = transform;
         }
 
         void OnDrawGizmos() { //runs in edit mode, so don't rely upon actions done in Awake

@@ -2,6 +2,8 @@
 {
     public enum CharacterType
     {
+        // MUST MATCH ORDER IN CharacterTag
+
         None = 0,
         PlayerCharacter = 1,
         NonPlayerCharacter = 2,

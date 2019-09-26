@@ -68,7 +68,7 @@ namespace KRG
         {
             if (this.itemData != null)
             {
-                G.U.Warning("m_ItemData already contains {0}. Overwriting with {1}.", this.itemData, itemData);
+                G.U.Warn("m_ItemData already contains {0}. Overwriting with {1}.", this.itemData, itemData);
             }
 
             this.itemData = itemData;

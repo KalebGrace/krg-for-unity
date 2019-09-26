@@ -34,7 +34,7 @@
         {
             if (_isInitialized)
             {
-                G.U.Warning("TimeManager is already initialized.");
+                G.U.Warn("TimeManager is already initialized.");
                 return;
             }
             _isInitialized = true;

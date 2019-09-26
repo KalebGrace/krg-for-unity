@@ -10,7 +10,7 @@ namespace KRG
         {
             if (me == null)
             {
-                G.U.Warning("The IEnd MonoBehaviour you wish to dispose of is null.");
+                G.U.Warn("The IEnd MonoBehaviour you wish to dispose of is null.");
                 return;
             }
             if (!me.end.wasInvoked)

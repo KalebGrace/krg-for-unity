@@ -5,13 +5,16 @@ using UnityEngine.Serialization;
 
 namespace KRG {
 
-    public abstract class DamageTaker : MonoBehaviour, IDamageable, IEnd, ISpawn {
+    public abstract class DamageTaker : MonoBehaviour, IBodyComponent, IDamageable, IEnd, ISpawn {
 
 #region fields
 
         [SerializeField]
         [FormerlySerializedAs("m_damageProfile")]
         DamageProfile _damageProfile;
+
+        [SerializeField]
+        GameObjectBody m_Body;
 
         event System.Action _endInvulnerabilityHandlers;
 
@@ -26,10 +29,6 @@ namespace KRG {
         //damage stuff
         TimeTrigger _invulnerabilityTimeTrigger;
         TimeTrigger _knockBackTimeTrigger;
-
-        //other stuff
-        GraphicsController _graphicsControllerKRG;
-        protected Transform _transform;
 
 #endregion
 
@@ -66,18 +65,16 @@ namespace KRG {
 
         public virtual float knockBackSpeed { get; private set; }
 
+        private GraphicController GraphicController => m_Body.Refs.GraphicController;
+
 #endregion
 
 
 
         protected virtual void Awake() {
-            _transform = transform;
-
             G.U.Require(_damageProfile, "Damage Profile");
 
             InitHP();
-
-            _graphicsControllerKRG = GetComponent<GraphicsController>();
 
             knockBackDirection = Direction.Unknown;
         }
@@ -92,6 +89,8 @@ namespace KRG {
         End my_end = new End();
 
         public End end { get { return my_end; } }
+
+        public GameObjectBody Body => m_Body;
 
         protected virtual void OnDestroy()
         {
@@ -154,7 +153,7 @@ namespace KRG {
         protected virtual void PlayDamageSFX() {
             string sfxFmodEvent = _damageProfile.sfxFmodEvent;
             if (!string.IsNullOrEmpty(sfxFmodEvent)) {
-                G.audio.PlaySFX(sfxFmodEvent, _transform.position);
+                G.audio.PlaySFX(sfxFmodEvent, transform.position);
             }
         }
 
@@ -231,18 +230,16 @@ namespace KRG {
         }
 
         protected virtual void BeginInvulnerabilityVFX() {
-            if (_graphicsControllerKRG != null) {
-                _graphicsControllerKRG.StartDamageColor(_damageProfile.invulnerabilityTime);
+            if (GraphicController != null) {
+                GraphicController.StartDamageColor(_damageProfile.invulnerabilityTime);
                 if (_damageProfile.invulnerabilityFlicker) {
-                    _graphicsControllerKRG.StartFlicker(20);
+                    GraphicController.StartFlicker(20f);
                 }
             }
         }
 
         protected virtual void EndInvulnerabilityVFX() {
-            if (_graphicsControllerKRG != null) {
-                _graphicsControllerKRG.StopFlicker();
-            }
+            GraphicController?.StopFlicker();
         }
 
         protected virtual void EndInvulnerability(TimeTrigger tt) {
@@ -325,15 +322,15 @@ namespace KRG {
 
 #endregion
 
-#region KnockedOut Methods
-
         protected virtual void OnKnockedOut(Vector3 attackPositionCenter) {
             var ld = _damageProfile.knockedOutLoot;
             if (ld != null) ld.Drop(this);
             gameObject.Dispose();
         }
 
-#endregion
-
+        public void InitBody(GameObjectBody body)
+        {
+            m_Body = body;
+        }
     }
 }

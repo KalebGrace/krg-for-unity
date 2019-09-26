@@ -11,7 +11,7 @@ namespace KRG
         {
             if (actionHigh != null)
             {
-                G.U.Warning("There is already a high priority action for this event.");
+                G.U.Warn("There is already a high priority action for this event.");
             }
             actionHigh += action;
         }
@@ -45,7 +45,7 @@ namespace KRG
         {
             if (actionHigh != null)
             {
-                G.U.Warning("There is already a high priority action for this event.");
+                G.U.Warn("There is already a high priority action for this event.");
             }
             actionHigh += action;
         }

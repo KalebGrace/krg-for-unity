@@ -23,7 +23,7 @@ namespace KRG
 
         private void OnTriggerEnter(Collider other)
         {
-            if (saveOnTriggerEnter && PlayerCharacter.IsPlayerCollider(other) && !G.save.IsCurrentCheckpoint(checkpointName))
+            if (saveOnTriggerEnter && G.obj.IsPlayerCharacter(other) && !G.save.IsCurrentCheckpoint(checkpointName))
             {
                 G.save.SaveCheckpoint(checkpointName);
             }

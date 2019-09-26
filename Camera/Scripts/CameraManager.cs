@@ -22,7 +22,7 @@ namespace KRG
         /// <param name="duration">Duration in seconds.</param>
         public virtual void Shake(float duration)
         {
-            G.U.Warning("Shake(...) is not implemented.");
+            G.U.Warn("Shake(...) is not implemented.");
         }
     }
 }

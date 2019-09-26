@@ -9,25 +9,53 @@ namespace KRG
     {
         /// <summary>
         /// U: The Utilities Class (G.U.cs).
-        /// This contains static methods that can be used both in the editor (i.e. edit mode) and during runtime;
+        /// This contains static methods and properties that can be used in edit mode as well as during runtime;
         /// a necessity for any functionality that is required before G and its Managers are instanced and fully set up.
         /// </summary>
         public static class U
         {
-            // KRG CODING STYLE REFERENCE
+            // CONSTANTS
 
-            /* ~~~~~~~~~
-             * CONSTANTS
-             * ~~~~~~~~~
-             */
+            private const string FORMAT_MAGIC_STRING = "{0";
 
-            const string FORMAT_MAGIC_STRING = "{0";
+            // EDIT MODE PLAYER
 
+            private static GameObjectBody s_EditModePlayerCharacter;
 
-            /* ~~~
-             * NEW : instantiate those prefabs
-             * ~~~
-             */
+            public static GameObjectBody EditModePlayerCharacter
+            {
+                get
+                {
+                    if (s_EditModePlayerCharacter == null)
+                    {
+                        foreach (var body in FindObjectsOfType<GameObjectBody>())
+                        {
+                            if (body.IsPlayerCharacter)
+                            {
+                                s_EditModePlayerCharacter = body;
+
+                                break;
+                            }
+                        }
+                    }
+
+                    return s_EditModePlayerCharacter;
+                }
+            }
+
+            // EDIT MODE ?
+
+            public static bool IsEditMode(Object obj) // Is Unity running in edit mode?
+            {
+                return !Application.IsPlaying(obj);
+            }
+
+            public static bool IsEditMode() // Same, but if no UnityEngine object.
+            {
+                return !Application.isPlaying;
+            }
+
+            // NEW
 
             /// <summary>
             /// Create a new instance of the specified prefab on the specified parent (use *null* for hierarchy root).
@@ -51,16 +79,7 @@ namespace KRG
                 return clone;
             }
 
-
-            /* ~~~
-             * ERR : log those errors
-             * ~~~
-             */
-
-            public static void Err(System.Exception ex)
-            {
-                Err(ex.ToString());
-            }
+            // ERR
 
             /// <summary>
             /// Log an error with the specified message and optional arguments.
@@ -84,11 +103,42 @@ namespace KRG
                 throw new System.Exception(message);
             }
 
+            public static void Err(System.Exception ex)
+            {
+                Err(ex.ToString());
+            }
 
-            /* ~~~
-             * TODO : organize this old code and remove redundancies
-             * ~~~
-             */
+            // WARN
+            
+            /// <summary>
+            /// Log a warning with the specified message and optional arguments.
+            /// </summary>
+            /// <param name="message">Message, or Format string (if containing "{0").</param>
+            /// <param name="args">Arguments, with first object as Context (UnityEngine.Object only).</param>
+            public static void Warn(string message, params object[] args)
+            {
+                if (message.Contains(FORMAT_MAGIC_STRING))
+                {
+                    message = string.Format(message, args);
+                }
+
+                message += "\n" + GetInfo(args);
+
+                if (args.Length > 0)
+                {
+                    Debug.LogWarning(message, args[0] as Object);
+                }
+            }
+
+            /// <summary>
+            /// Same as Warn(), but meant for unfinished programming tasks.
+            /// </summary>
+            public static void Todo(string message, params object[] args)
+            {
+                Warn("TODO: " + message, args);
+            }
+
+            // LOG
 
             static float _logLastTime;
 
@@ -150,6 +200,8 @@ namespace KRG
                 }
             }
 
+            // HELPER METHODS
+
             static void LogInner(LogType logType, string message)
             {
                 switch (logType)
@@ -206,7 +258,6 @@ namespace KRG
                 if (thing == default(T)) throw new RequireException(typeof(T));
                 return thing;
             }
-
 
             internal static void ErrorOrException(string s, bool throwException)
             {
@@ -285,6 +336,7 @@ namespace KRG
                 return true;
             }
 
+            // ASSERT
 
             /// <summary>
             /// Assert the specified condition.
@@ -317,6 +369,7 @@ namespace KRG
                 return condition;
             }
 
+            // GUARANTEE
 
             /// <summary>
             /// Guarantee that the specified Component type T exists on the specified source Component's GameObject.
@@ -342,6 +395,7 @@ namespace KRG
                 return source.GetComponent<T>() ?? source.AddComponent<T>();
             }
 
+            // IS NULL ?
 
             /// <summary>
             /// Determines if the specified object is null.
@@ -354,6 +408,7 @@ namespace KRG
                 return obj == null || obj.Equals(null);
             }
 
+            // PREVENT
 
             /// <summary>
             /// Prevent the specified condition.
@@ -377,6 +432,7 @@ namespace KRG
                 return Assert(!condition, message, objs);
             }
 
+            // REQUIRE
 
             /// <summary>
             /// REQUIRE NON-NULL OBJECT:
@@ -488,24 +544,7 @@ namespace KRG
                 return comps;
             }
 
-
-            /// <summary>
-            /// Log a warning with the specified message and optional objects.
-            /// </summary>
-            /// <param name="message">Message, or format (if containing "{0").</param>
-            /// <param name="objs">Objects.</param>
-            public static void Warning(string message, params object[] objs)
-            {
-                if (message.Contains(FORMAT_MAGIC_STRING))
-                {
-                    Debug.LogWarningFormat(message, objs);
-                }
-                else
-                {
-                    Debug.LogWarning(message + "\n" + GetInfo(objs));
-                }
-            }
-
+            // UNSUPPORTED
 
             /// <summary>
             /// Logs an error regarding an unsupported condition on the specified source.

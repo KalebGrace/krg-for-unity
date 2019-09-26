@@ -41,6 +41,8 @@ namespace KRG
         /// </summary>
         protected const float _activationProgress = 0.9f;
 
+        public event System.Action GameplaySceneStarted;
+
         /// <summary>
         /// The name of the scene that is intended to be active.
         /// NOTE 1: This may not necessarily be active at this moment.
@@ -205,6 +207,7 @@ namespace KRG
                 if (sceneName == _activeSceneName)
                 {
                     SendLevelStartAnalytics(sceneName);
+                    InvokeGameplaySceneStarted();
                     //call OnSceneActive
                     sc.OnSceneActive();
                     //call events
@@ -269,8 +272,10 @@ namespace KRG
             }
         }
 
-
-        // ANALYTICS
+        protected virtual void InvokeGameplaySceneStarted()
+        {
+            GameplaySceneStarted?.Invoke();
+        }
 
         protected virtual void SendLevelStartAnalytics(string sceneName)
         {

@@ -18,7 +18,7 @@ namespace KRG {
     /// 4.*-Attacker is abstract and must have a per-project derived class created (as mentioned in 2a);
     ///     the derived class itself must be added to a game object as a script/component.
     /// </summary>
-    [RequireComponent(typeof(GraphicsController))]
+    [RequireComponent(typeof(GraphicController))]
     public abstract class Attack : MonoBehaviour, IEnd {
 
         public BoxCollider hitbox;
@@ -39,10 +39,12 @@ namespace KRG {
 
 #region FIELDS: PRIVATE
 
+        private GraphicController m_GraphicController;
+
         Attacker _attacker;
         List<AttackTarget> _attackTargets = new List<AttackTarget>();
         BoxCollider _boxCollider;
-        GraphicsController _graphicsController;
+        GraphicController _graphicsController;
         bool _isFlippedX;
         bool _isInitialized;
         bool _isPlayerCharacterAttacker;
@@ -89,7 +91,7 @@ namespace KRG {
             //TODO: apply hurtbox where needed
             if (hurtbox) hurtbox.enabled = false;
 
-            _graphicsController = this.Require<GraphicsController>();
+            m_GraphicController = this.Require<GraphicController>();
 
             my_end.actions += ForceOnTriggerExit;
         }
@@ -106,7 +108,7 @@ namespace KRG {
                 }
                 else
                 {
-                    G.U.Warning("If this Attack exists on its own, " +
+                    G.U.Warn("If this Attack exists on its own, " +
                     "it should probably have a Standalone Attack Ability.");
                 }
             }
@@ -123,7 +125,7 @@ namespace KRG {
         void OnTriggerEnter(Collider other) {
             HitBox hitbox = other.GetComponent<HitBox>();
             if (hitbox == null) return;
-            DamageTaker target = hitbox.damageTaker;
+            DamageTaker target = hitbox.DamageTaker;
             if (target.end.wasInvoked) return;
             AttackTarget at = _attackTargets.Find(x => x.target == target);
             if (at == null) {
@@ -139,7 +141,7 @@ namespace KRG {
         void OnTriggerExit(Collider other) {
             HitBox hitbox = other.GetComponent<HitBox>();
             if (hitbox == null) return;
-            DamageTaker target = hitbox.damageTaker;
+            DamageTaker target = hitbox.DamageTaker;
             if (target.end.wasInvoked) return;
             AttackTarget at = _attackTargets.Find(x => x.target == target);
             G.U.Assert(at != null, string.Format(
@@ -180,8 +182,8 @@ namespace KRG {
             }
             _attackAbility = attackAbility;
             _attacker = attacker;
-            _isFlippedX = attacker.isFlippedX;
-            _isPlayerCharacterAttacker = attacker.isPlayerCharacter;
+            _isFlippedX = attacker.Body.IsFlippedX;
+            _isPlayerCharacterAttacker = attacker.Body.IsPlayerCharacter;
             InitInternal();
         }
 

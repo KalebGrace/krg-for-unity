@@ -13,7 +13,7 @@ namespace KRG
         */
 
         [SerializeField]
-        private bool m_StartsHidden;
+        private bool m_StartsHidden = default;
 
         private CanvasGroup canvasGroup;
 

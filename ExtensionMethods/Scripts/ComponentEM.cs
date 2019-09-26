@@ -8,7 +8,7 @@ namespace KRG
         {
             if (me == null)
             {
-                G.U.Warning("The Component you wish to dispose of is null.");
+                G.U.Warn("The Component you wish to dispose of is null.");
                 return;
             }
             Object.Destroy(me);

@@ -85,6 +85,12 @@ namespace KRG
         [Header("Object (KRG)")]
 
         [SerializeField]
+        [Tooltip("Is there to be only a single player character at any time in this game?")]
+        bool _isSinglePlayerGame = default;
+
+        public bool IsSinglePlayerGame => _isSinglePlayerGame;
+
+        [SerializeField]
         [Tooltip("Add prefabs here to have them automatically instantiated as child GameObjects of KRGLoader."
         + " As children of KRGLoader, they will persist across scenes for the lifetime of the application.")]
         GameObject[] _autoInstancedPrefabs = default;

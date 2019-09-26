@@ -79,7 +79,7 @@ namespace KRG {
         FlipMode _flipModeX;
         [SerializeField]
         [FormerlySerializedAs("m_graphicsController")]
-        GraphicsController _graphicsController;
+        GraphicController _graphicsController;
         [SerializeField]
         [FormerlySerializedAs("m_useInitialRotation")]
         bool _useInitialRotation = true;
@@ -131,7 +131,7 @@ namespace KRG {
             }
         }
 
-        public GraphicsController graphicsController {
+        public GraphicController graphicsController {
             get {
                 return _graphicsController;
             }

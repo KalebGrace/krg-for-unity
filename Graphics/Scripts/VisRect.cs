@@ -1,9 +1,7 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
-namespace KRG {
-
+namespace KRG
+{
     /// <summary>
     /// A VisRect GameObject should have a RectTransform and this VisRect script.
     /// Use position just like a normal Transform (e.g. old "Center" GameObject).
@@ -15,9 +13,20 @@ namespace KRG {
     /// NOTE: This was done with Unity 5.6.2f1. Different versions may work differently.
     /// </summary>
     [RequireComponent(typeof(RectTransform))]
-    public class VisRect : MonoBehaviour {
+    public class VisRect : MonoBehaviour, IBodyComponent
+    {
+        // SERIALIZED FIELDS
 
-        RectTransform _rt;
+        [SerializeField]
+        private GameObjectBody m_Body = default;
+
+        // PRIVATE FIELDS
+
+        private RectTransform _rt;
+
+        // PROPERTIES
+
+        public GameObjectBody Body => m_Body;
 
         // Basic VisRect transform world space position
 
@@ -35,9 +44,17 @@ namespace KRG {
 
         public Vector3 OffsetBottom => new Vector3(0, _rt.rect.yMin);
 
-        // Methods
+        // INIT METHOD
 
-        void Awake() {
+        public void InitBody(GameObjectBody body)
+        {
+            m_Body = body;
+        }
+
+        // MONOBEHAVIOUR METHODS
+
+        private void Awake()
+        {
             _rt = this.Require<RectTransform>();
         }
     }

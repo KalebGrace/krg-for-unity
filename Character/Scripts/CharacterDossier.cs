@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace KRG
 {
@@ -11,13 +9,36 @@ namespace KRG
     )]
     public sealed class CharacterDossier : ScriptableObject
     {
-        [Enum(typeof(CharacterIdentifier))]
-        public int CharacterId;
+        private const string CHARACTER_DOSSIER_SUFFIX = "_CharacterDossier";
+        private const string IDLE_ANIMATION_SUFFIX = "_Idle_RasterAnimation";
 
-        public string Name;
+        [Header("Game Object Data")]
 
-        public CharacterType Type;
+        [Enum(typeof(CharacterID))]
+        public int CharacterID;
+
+        public string FileName;
+
+        public string FullName;
+
+        public CharacterType CharacterType;
+
+        [Header("Character Data")]
 
         public CharacterData Data;
+
+        [Header("Graphic Data")]
+
+        public GraphicData GraphicData;
+
+        private void OnValidate()
+        {
+            FileName = name.Replace(CHARACTER_DOSSIER_SUFFIX, "");
+
+            if (string.IsNullOrEmpty(GraphicData.IdleRasterAnimationName))
+            {
+                GraphicData.IdleRasterAnimationName = FileName + IDLE_ANIMATION_SUFFIX;
+            }
+        }
     }
 }

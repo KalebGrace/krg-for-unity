@@ -51,7 +51,7 @@ namespace KRG
         {
             if (_isInitialized)
             {
-                G.U.Warning("AudioManager is already initialized.");
+                G.U.Warn("AudioManager is already initialized.");
                 return;
             }
             _isInitialized = true;
