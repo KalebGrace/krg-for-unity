@@ -18,7 +18,7 @@ namespace KRG
 
         // CHARACTER PROPERTIES
 
-        public CharacterDossier CharacterDossier { get; private set; }
+        public CharacterDossier CharacterDossier { get; set; }
 
         public CharacterType CharacterType => CharacterDossier?.CharacterType ?? CharacterType.None;
 
@@ -38,33 +38,32 @@ namespace KRG
 
         private void OnValidate()
         {
-            G.U.Log("GameObjectBody OnValidate for {0}.", name);
-            AutoAssignRefs();
+            Refs.AutoAssign(this);
         }
 
         private void Awake()
         {
-            G.U.Log("GameObjectBody Awake for {0}.", name);
-            if (!IsValid()) return;
-
-            G.obj.Register(this);
-
-            switch (GameObjectType)
+            if (G.obj.Register(this))
             {
-                case GameObjectType.None:
-                    break;
-                case GameObjectType.Character:
-                    InitCharacter();
-                    break;
-                default:
-                    G.U.Err("Unsupported GameObjectType {0}.", GameObjectType);
-                    break;
+                switch (GameObjectType)
+                {
+                    case GameObjectType.None:
+                        break;
+                    case GameObjectType.Character:
+                        InitCharacter();
+                        break;
+                    case GameObjectType.Attack:
+                        InitAttack();
+                        break;
+                    default:
+                        G.U.Err("Unsupported GameObjectType {0}.", GameObjectType);
+                        break;
+                }
             }
         }
 
         private void OnDestroy()
         {
-            G.U.Log("GameObjectBody OnDestroy for {0}.", name);
             G.obj.Deregister(this);
         }
 
@@ -72,50 +71,33 @@ namespace KRG
 
         public void Dispose()
         {
-            gameObject.Dispose();
+            // TODO: object pooling logic goes here, eventually
 
-            // TODO: object pooling logic goes here
-        }
-
-        private bool IsValid()
-        {
-            if (Application.IsPlaying(this))
-            {
-                if (IsPlayerCharacter && G.config.IsSinglePlayerGame && G.obj.PlayerCharacters.Count > 0)
-                {
-                    // this is a duplicate player character
-                    Dispose();
-                    return false;
-                }
-            }
-
-            return true;
+            gameObject.Dispose(); // destroys the entire body, thus calling OnDestroy()
         }
 
         private void InitCharacter()
         {
-            if (CharacterID == 0)
-            {
-                return;
-            }
-
-            CharacterDossier = G.obj.CharacterDossiers[CharacterID];
-
             if (IsCharacterError)
             {
                 G.U.Err("Character error for character ID {0}.", CharacterID);
                 return;
             }
 
-            string properTag = CharacterDossier.CharacterType.ToTag();
-            if (!gameObject.CompareTag(properTag))
+            if (G.U.IsEditMode(this))
             {
-                G.U.Err("Invalid tag {0}. Should be {1}.", gameObject.tag, properTag);
-            }
+                // TODO: should auto-assign these values, eventually
 
-            if (IsPlayerCharacter && gameObject.layer != Layer.PCBoundBox)
-            {
-                G.U.Err("Invalid layer {0}. Should be {1}.", gameObject.layer, Layer.PCBoundBox);
+                string properTag = CharacterDossier.CharacterType.ToTag();
+                if (!gameObject.CompareTag(properTag))
+                {
+                    G.U.Err("Invalid tag {0}. Should be {1}.", gameObject.tag, properTag);
+                }
+
+                if (IsPlayerCharacter && gameObject.layer != Layer.PCBoundBox)
+                {
+                    G.U.Err("Invalid layer {0}. Should be {1}.", gameObject.layer, Layer.PCBoundBox);
+                }
             }
 
 #if DEBUG_VISIBILITY
@@ -131,60 +113,9 @@ namespace KRG
 #endif
         }
 
-        private void AutoAssignRefs()
+        private void InitAttack()
         {
-            // automatically assign references, but only in edit mode
 
-            if (Application.isPlaying) return;
-
-            // assign Unity game object & component references
-
-            AssignRef(ref Refs.GraphicGameObject);
-
-            AssignRef(ref Refs.Animator);
-            AssignRef(ref Refs.Collider);
-            AssignRef(ref Refs.Rigidbody);
-
-            // get all IBodyComponents, including inactive ones, then assign references
-
-            IBodyComponent[] components = GetComponentsInChildren<IBodyComponent>(true);
-
-            foreach (IBodyComponent c in components)
-            {
-                if (c.Body == null)
-                {
-                    c.InitBody(this);
-                }
-
-                AssignRef(c, ref Refs.GraphicController);
-                AssignRef(c, ref Refs.VisRect);
-                AssignRef(c, ref Refs.Attacker);
-                AssignRef(c, ref Refs.DamageTaker);
-            }
-        }
-
-        private void AssignRef(ref GameObject bodyRef)
-        {
-            if (bodyRef == default)
-            {
-                bodyRef = gameObject;
-            }
-        }
-
-        private void AssignRef<T>(ref T bodyRef) where T : Component
-        {
-            if (bodyRef == default)
-            {
-                bodyRef = GetComponent<T>();
-            }
-        }
-
-        private static void AssignRef<T>(IBodyComponent c, ref T bodyRef) where T : IBodyComponent
-        {
-            if (bodyRef == default && c is T newRef)
-            {
-                bodyRef = newRef;
-            }
         }
     }
 }

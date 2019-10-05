@@ -12,22 +12,21 @@ using Sirenix.OdinInspector;
 using uGIF;
 #endif
 
-namespace KRG {
-
+namespace KRG
+{
     [CreateAssetMenu(
         fileName = "NewKRGRasterAnimation.asset",
         menuName = "KRG Scriptable Object/Raster Animation",
         order = 123
     )]
-    public class RasterAnimation : KRGAnimation {
+    public class RasterAnimation : AnimationData
+    {
+        [Header("Raster Data")]
 
-        /*
-        [HideInInspector]
-        [SerializeField]
-        int _serializedVersion = default;
-        */       
-
-		[Header("Raster Data")]
+#if KRG_X_ODIN
+        [PropertyOrder(-10)]
+#endif
+        public RasterAnimationData Data;
 
 #if KRG_X_ODIN
         [PropertyOrder(-10)]
@@ -129,21 +128,26 @@ namespace KRG {
 
         //WARNING: this function will only be called automatically if playing a GAME BUILD
         //...it will NOT be called if using the Unity editor
-        protected virtual void Awake() {
+        protected virtual void Awake()
+        {
             UpdateSerializedVersion();
             Validate();
-            if (_frameSequences != null) {
+            if (_frameSequences != null)
+            {
                 CheckForPlayableFrameSequences();
             }
         }
 
         //WARNING: this function will only be called automatically if using the UNITY EDITOR
         //...it will NOT be called if playing a game build
-        protected virtual void OnValidate() {
+        protected virtual void OnValidate()
+        {
             UpdateSerializedVersion();
             Validate();
-            if (_frameSequences != null) {
-                for (int i = 0; i < _frameSequences.Length; i++) {
+            if (_frameSequences != null)
+            {
+                for (int i = 0; i < _frameSequences.Length; i++)
+                {
                     _frameSequences[i].OnValidate();
                 }
                 CheckForPlayableFrameSequences();
@@ -169,93 +173,114 @@ namespace KRG {
         /// </summary>
         /// <returns><c>true</c>, if the raster animation is intended to loop, <c>false</c> otherwise.</returns>
         /// <param name="loopIndex">Loop index.</param>
-        public bool DoesLoop(int loopIndex) {
+        public bool DoesLoop(int loopIndex)
+        {
             return _loop && (!_loopCount.boolValue || loopIndex < _loopCount.intValue);
         }
 
-        public virtual string GetFrameSequenceName(int frameSequenceIndex) {
+        public virtual string GetFrameSequenceName(int frameSequenceIndex)
+        {
             FrameSequence fs = GetFrameSequence(frameSequenceIndex);
             return fs != null ? fs.name : "";
         }
 
-        public ReadOnlyCollection<int> GetFrameSequenceFrameList(int frameSequenceIndex) {
+        public ReadOnlyCollection<int> GetFrameSequenceFrameList(int frameSequenceIndex)
+        {
             FrameSequence fs = GetFrameSequence(frameSequenceIndex);
             return fs != null ? fs.frameList : null;
         }
 
-        public virtual int GetFrameSequenceFromFrame(int frameSequenceIndex) {
+        public virtual int GetFrameSequenceFromFrame(int frameSequenceIndex)
+        {
             FrameSequence fs = GetFrameSequence(frameSequenceIndex);
             return fs != null ? fs.fromFrame : 0;
         }
 
-        public virtual int GetFrameSequenceFromFrameMin(int frameSequenceIndex) {
+        public virtual int GetFrameSequenceFromFrameMin(int frameSequenceIndex)
+        {
             FrameSequence fs = GetFrameSequence(frameSequenceIndex);
             return fs != null ? fs.fromFrameMinValue + (fs.fromFrameMinInclusive ? 0 : 1) : 0;
         }
 
-        public virtual int GetFrameSequenceFromFrameMax(int frameSequenceIndex) {
+        public virtual int GetFrameSequenceFromFrameMax(int frameSequenceIndex)
+        {
             FrameSequence fs = GetFrameSequence(frameSequenceIndex);
             return fs != null ? fs.fromFrameMaxValue - (fs.fromFrameMaxInclusive ? 0 : 1) : 0;
         }
 
-        public virtual int GetFrameSequenceToFrame(int frameSequenceIndex) {
+        public virtual int GetFrameSequenceToFrame(int frameSequenceIndex)
+        {
             FrameSequence fs = GetFrameSequence(frameSequenceIndex);
             return fs != null ? fs.toFrame : 0;
         }
 
-        public virtual int GetFrameSequenceToFrameMin(int frameSequenceIndex) {
+        public virtual int GetFrameSequenceToFrameMin(int frameSequenceIndex)
+        {
             FrameSequence fs = GetFrameSequence(frameSequenceIndex);
             return fs != null ? fs.toFrameMinValue + (fs.toFrameMinInclusive ? 0 : 1) : 0;
         }
 
-        public virtual int GetFrameSequenceToFrameMax(int frameSequenceIndex) {
+        public virtual int GetFrameSequenceToFrameMax(int frameSequenceIndex)
+        {
             FrameSequence fs = GetFrameSequence(frameSequenceIndex);
             return fs != null ? fs.toFrameMaxValue - (fs.toFrameMaxInclusive ? 0 : 1) : 0;
         }
 
-        public virtual int GetFrameSequencePlayCount(int frameSequenceIndex) {
+        public virtual int GetFrameSequencePlayCount(int frameSequenceIndex)
+        {
             FrameSequence fs = GetFrameSequence(frameSequenceIndex);
             return fs != null ? fs.playCount : -1;
         }
 
-        public virtual int GetFrameSequencePlayCountMin(int frameSequenceIndex) {
+        public virtual int GetFrameSequencePlayCountMin(int frameSequenceIndex)
+        {
             FrameSequence fs = GetFrameSequence(frameSequenceIndex);
             return fs != null ? fs.playCountMinValue + (fs.playCountMinInclusive ? 0 : 1) : -1;
         }
 
-        public virtual int GetFrameSequencePlayCountMax(int frameSequenceIndex) {
+        public virtual int GetFrameSequencePlayCountMax(int frameSequenceIndex)
+        {
             FrameSequence fs = GetFrameSequence(frameSequenceIndex);
             return fs != null ? fs.playCountMaxValue - (fs.playCountMaxInclusive ? 0 : 1) : -1;
         }
 
-        public virtual bool GetFrameSequenceDoesCallCode(int frameSequenceIndex) {
+        public virtual bool GetFrameSequenceDoesCallCode(int frameSequenceIndex)
+        {
             FrameSequence fs = GetFrameSequence(frameSequenceIndex);
             return fs != null && fs.doesCallCode;
         }
 
 
 
-        protected virtual FrameSequence GetFrameSequence(int frameSequenceIndex) {
-            if (_frameSequences.Length > frameSequenceIndex) {
+        protected virtual FrameSequence GetFrameSequence(int frameSequenceIndex)
+        {
+            if (_frameSequences.Length > frameSequenceIndex)
+            {
                 return _frameSequences[frameSequenceIndex];
-            } else {
+            }
+            else
+            {
                 G.U.Err("The frameSequenceIndex is out of bounds.", this, frameSequenceIndex);
                 return null;
             }
         }
 
-        protected virtual void CheckForPlayableFrameSequences() {
-            if (_frameSequences.Length > frameSequenceCountMax) {
+        protected virtual void CheckForPlayableFrameSequences()
+        {
+            if (_frameSequences.Length > frameSequenceCountMax)
+            {
                 G.U.Err("Frame sequence count is higher than maximum.",
                     this, _frameSequences.Length, frameSequenceCountMax);
             }
             FrameSequence fs;
             int min, max;
-            for (int i = 0; i < _frameSequences.Length; i++) {
+            for (int i = 0; i < _frameSequences.Length; i++)
+            {
                 fs = _frameSequences[i];
                 min = fs.playCountMinValue;
                 max = fs.playCountMaxValue;
-                if (max > 1 || (max == 1 && fs.playCountMaxInclusive) || (min == 1 && fs.playCountMinInclusive)) {
+                if (max > 1 || (max == 1 && fs.playCountMaxInclusive) || (min == 1 && fs.playCountMinInclusive))
+                {
                     _hasPlayableFrameSequences = true;
                     return;
                 }
@@ -263,7 +288,8 @@ namespace KRG {
             _hasPlayableFrameSequences = false;
         }
 
-        protected virtual void UpdateSerializedVersion() {
+        protected virtual void UpdateSerializedVersion()
+        {
             /*
             switch (_serializedVersion) {
                 case 0:
@@ -274,7 +300,8 @@ namespace KRG {
             */
         }
 
-        protected virtual void Validate() {
+        protected virtual void Validate()
+        {
             //validate _loopCount
             _loopCount.intValue = Mathf.Max(_loopCount.intValue, 1);
             //validate _loopToSequence

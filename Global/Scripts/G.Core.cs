@@ -21,17 +21,9 @@ namespace KRG
         public static KRGConfig config => instance != null ? instance.LoadConfig() : null;
 
         /// <summary>
-        /// Gets a value indicating whether Unity is in edit mode.
-        /// This cannot be accessed from AppManager because that is only created at runtime.
-        /// </summary>
-        /// <value><c>true</c> if Unity is in edit mode; otherwise, <c>false</c>.</value>
-        [System.Obsolete("Use G.U.IsEditMode(this) instead.")]
-        public static bool isInEditMode => U.IsEditMode();
-
-        /// <summary>
         /// The version of G.
         /// </summary>
-        public const int version = 3;
+        public const int version = 4;
 
         // TRUE MONOBEHAVIOUR METHODS
 

@@ -2,7 +2,7 @@
 
 namespace KRG
 {
-    [ExecuteInEditMode]
+    [ExecuteAlways]
     public class EditorOnlyVisibility : MonoBehaviour
     {
         private BoxCollider m_BoxCollider;
@@ -25,7 +25,7 @@ namespace KRG
 
             if (m_Renderer != null)
             {
-                m_Renderer.enabled = G.isInEditMode;
+                m_Renderer.enabled = G.U.IsEditMode(this);
             }
         }
 

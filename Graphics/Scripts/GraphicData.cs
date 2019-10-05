@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 
 namespace KRG
 {
@@ -7,9 +8,10 @@ namespace KRG
     {
         public Material BaseSharedMaterial;
 
-        public string IdleRasterAnimationName;
+        public string IdleAnimationName;
 
-        [System.Obsolete]
-        public GraphicsData OldGraphicsData;
+        public List<StateAnimation> StateAnimations;
+
+        public bool HasStateAnimations => StateAnimations != null && StateAnimations.Count > 0;
     }
 }

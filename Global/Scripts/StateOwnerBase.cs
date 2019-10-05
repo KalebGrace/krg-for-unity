@@ -3,8 +3,9 @@
 namespace KRG
 {
     /// <summary>
-    /// This is a typical base class implementation of IStateOwner.
+    /// This is an ideal base class implementation of IStateOwner.
     /// You may either derive from this, or use your own implementation of IStateOwner.
+    /// NOTE: Only classes derived from this will be usable within GameObjectBody/GameObjectRefs.
     /// </summary>
     public abstract class StateOwnerBase : MonoBehaviour, IBodyComponent, IStateOwner
     {
@@ -22,5 +23,10 @@ namespace KRG
         {
             m_Body.Dispose();
         }
+
+        public abstract void AddStateHandler(ulong state, StateHandler handler);
+        public abstract void RemoveStateHandler(ulong state, StateHandler handler);
+
+        public abstract bool HasState(ulong state);
     }
 }

@@ -21,49 +21,85 @@ namespace KRG
 
         // PRIVATE FIELDS
 
+        private int m_AnimationFrameIndex;
+
+        private int m_AnimationFrameListIndex;
+
+        private int m_AnimationImageIndex;
+
+        private List<Texture2D> m_AnimationTextureList;
+
+        private float m_AnimationTimeElapsed;
+
+        private AttackAbility m_AttackerAttackAbility;
+
         private CanvasRenderer m_CanvasRenderer;
 
         private TimeTrigger m_FlickerTimeTrigger;
 
-        private int m_FrameIndex;
+        private Material m_Material;
 
-        private AssetBundle m_IdleAnimAssetBundle;
+        private RasterAnimationState m_RasterAnimationState;
 
-        private RasterAnimation m_IdleRasterAnimation;
-
-        private List<Texture2D> m_IdleTextureList;
+        // COMPOUND PROPERTIES
 
         private Color m_ImageColor = Color.white;
 
-        private int m_ImageIndex;
+        public Color ImageColor
+        {
+            get => m_ImageColor;
+            set
+            {
+                m_ImageColor = value;
+                RefreshGraphic();
+            }
+        }
 
-        private Material m_Material;
+        // STORAGE PROPERTIES
 
-        private float m_TimeElapsed;
+        public RasterAnimation CurrentRasterAnimation { get; private set; }
+
+        public RasterAnimationInfo RasterAnimationInfo { get; set; } // mainly for debug purposes
+
+        protected MeshSortingLayer MeshSortingLayer { get; private set; }
+
+        protected Renderer Renderer { get; private set; }
+
+        // STANDARD PROPERTIES
+
+        public bool IsRendered
+        {
+            get => Renderer?.enabled ?? false;
+            set
+            {
+                if (Renderer != null)
+                {
+                    Renderer.enabled = value;
+                }
+            }
+        }
 
         // SHORTCUT PROPERTIES
 
         public GameObjectBody Body => m_Body;
 
-        protected virtual float DeltaTime => Application.IsPlaying(this) ? TimeThread.deltaTime : Time.deltaTime;
+        protected virtual float DeltaTime => G.U.IsPlayMode(this) ? TimeThread.deltaTime : Time.deltaTime;
 
         protected virtual GameObject GraphicGameObject => m_Body.Refs.GraphicGameObject;
 
-        protected virtual bool IsTimePaused => Application.IsPlaying(this) ? TimeThread.isPaused : false;
+        protected virtual bool IsTimePaused => G.U.IsPlayMode(this) ? TimeThread.isPaused : false;
 
         protected virtual ITimeThread TimeThread => G.time.GetTimeThread(TimeThreadInstance.Gameplay);
 
+        private float AnimationFrameRate => DEFAULT_SPRITE_FPS;
+
+        private int AnimationImageCount => m_AnimationTextureList?.Count ?? 0;
+
         private Material BaseSharedMaterial => m_Body.CharacterDossier?.GraphicData.BaseSharedMaterial;
 
-        private float FrameRate => DEFAULT_SPRITE_FPS;
+        private GameObjectType GameObjectType => m_Body.GameObjectType;
 
-        private int ImageCount => m_IdleTextureList?.Count ?? 0;
-
-        // STORAGE PROPERTIES
-
-        public RasterAnimationInfo RasterAnimationInfo { get; set; } // mainly for debug purposes
-
-        protected MeshSortingLayer MeshSortingLayer { get; private set; }
+        private string IdleAnimationName => m_Body.CharacterDossier?.GraphicData.IdleAnimationName;
 
         // FLIP STUFF
 
@@ -73,10 +109,7 @@ namespace KRG
 
         public bool IsFlippedX
         {
-            get
-            {
-                return m_IsFlippedX;
-            }
+            get => m_IsFlippedX;
             set
             {
                 if (m_IsFlippedX != value)
@@ -100,25 +133,6 @@ namespace KRG
             IsFlippedX = !m_IsFlippedX;
         }
 
-        // RENDER PROPERTIES
-
-        protected Renderer Renderer { get; private set; }
-
-        public bool IsRendered
-        {
-            get
-            {
-                return Renderer?.enabled ?? false;
-            }
-            set
-            {
-                if (Renderer != null)
-                {
-                    Renderer.enabled = value;
-                }
-            }
-        }
-
         // INIT METHOD
 
         public void InitBody(GameObjectBody body)
@@ -130,7 +144,6 @@ namespace KRG
 
         protected virtual void Start()
         {
-            G.U.Log("GraphicController Start for {0}.", name);
             Renderer = GraphicGameObject.Require<Renderer>();
 
             MeshSortingLayer = G.U.Guarantee<MeshSortingLayer>(GraphicGameObject);
@@ -140,7 +153,7 @@ namespace KRG
                 Renderer.sharedMaterial = BaseSharedMaterial;
             }
 
-            if (Application.IsPlaying(this))
+            if (G.U.IsPlayMode(this))
             {
                 m_Material = Renderer.material; //instance material
             }
@@ -149,73 +162,139 @@ namespace KRG
                 m_Material = Renderer.sharedMaterial;
             }
 
-            string idleAnimName = m_Body.CharacterDossier?.GraphicData.IdleRasterAnimationName;
-
-            if (!string.IsNullOrEmpty(idleAnimName))
+            switch (GameObjectType)
             {
-                m_IdleAnimAssetBundle = G.obj.LoadCharacterAnimationAssetBundle(idleAnimName);
-                m_IdleRasterAnimation = m_IdleAnimAssetBundle.LoadAsset<RasterAnimation>(idleAnimName);
-                m_IdleTextureList = m_IdleRasterAnimation.FrameTextures;
+                case GameObjectType.None:
+                    break;
+                case GameObjectType.Character:
+                    InitCharacter();
+                    break;
+                case GameObjectType.Attack:
+                    InitAttack();
+                    break;
+                default:
+                    G.U.Err("Unsupported GameObjectType {0}.", GameObjectType);
+                    break;
             }
-
-            ShowImage(m_ImageIndex);
         }
 
         protected virtual void Update()
         {
-            if (IsTimePaused) return;
+            if (IsTimePaused || G.U.IsEditMode(this)) return;
 
-            float ts = m_TimeElapsed;
-            float td = DeltaTime;
-            float te = ts + td;
+            m_AnimationTimeElapsed += DeltaTime;
 
-            int fs = m_FrameIndex;
-            int fe = Mathf.FloorToInt(FrameRate * te);
+            int newFrameIndex = Mathf.FloorToInt(AnimationFrameRate * m_AnimationTimeElapsed);
 
-            while (fs < fe)
+            while (m_AnimationFrameIndex < newFrameIndex)
             {
-                m_FrameIndex = ++fs;
-                FrameUpdate();
+                ++m_AnimationFrameIndex;
+
+                if (AnimationImageCount > 0)
+                {
+                    AdvanceImageIndex();
+                }
             }
 
-            m_TimeElapsed = te;
-
-            if (Application.IsPlaying(this))
-            {
-                ApplyImageColor();
-            }
+            RefreshGraphic();
         }
 
         protected virtual void OnDestroy()
         {
-            G.U.Log("GraphicController OnDestroy for {0}.", name);
-            if (m_IdleAnimAssetBundle != null)
-            {
-                m_IdleAnimAssetBundle.Unload(true);
-            }
+            RemoveCharacterStateHandlers();
 
-            if (Application.IsPlaying(this))
+            if (G.U.IsPlayMode(this))
             {
                 DestroyImmediate(m_Material);
             }
         }
 
-        // PRIVATE IMAGE METHODS
+        // INITIALIZATION METHODS
 
-        private void FrameUpdate()
+        private void InitCharacter()
         {
-            if (ImageCount == 0) return;
+            AddCharacterStateHandlers();
 
-            m_ImageIndex = (m_ImageIndex + 1) % ImageCount;
-
-            ShowImage(m_ImageIndex);
+            if (!string.IsNullOrEmpty(IdleAnimationName))
+            {
+                SetAnimation(IdleAnimationName);
+            }
+            else
+            {
+                RefreshGraphic();
+            }
         }
 
-        private void ShowImage(int imageIndex)
+        private void InitAttack()
         {
-            if (ImageCount == 0) return;
+            Attack a = this.Require<Attack>();
+            a.attacker.Body.Refs.GraphicController.SetAttackerAttackAbility(a.attackAbility);
+        }
 
-            m_Material.mainTexture = m_IdleTextureList[imageIndex];
+        private void RefreshGraphic()
+        {
+            if (m_Material == null) return;
+
+            if (AnimationImageCount > m_AnimationImageIndex)
+            {
+                m_Material.mainTexture = m_AnimationTextureList[m_AnimationImageIndex];
+            }
+
+            m_Material.color = ImageColor;
+        }
+
+        // ANIMATION METHODS
+
+        public void SetAnimation(string animationName)
+        {
+            SetAnimation(G.obj.RasterAnimations[animationName]);
+        }
+
+        public void SetAnimation(RasterAnimation rasterAnimation)
+        {
+            m_AnimationFrameIndex = 0;
+            m_AnimationFrameListIndex = 0;
+            m_AnimationImageIndex = 0;
+            m_AnimationTextureList = rasterAnimation.FrameTextures;
+            m_AnimationTimeElapsed = 0;
+
+            CurrentRasterAnimation = rasterAnimation;
+
+            if (G.U.IsPlayMode(this))
+            {
+                m_RasterAnimationState = new RasterAnimationState(
+                    rasterAnimation, OnFrameSequenceStart, OnFrameSequenceStop);
+                m_RasterAnimationState.rasterAnimationInfo = RasterAnimationInfo;
+                m_AnimationImageIndex = m_RasterAnimationState.frameSequenceFromFrame - 1; // 1-based -> 0-based
+            }
+
+            RefreshGraphic();
+        }
+
+        public void SetAttackerAttackAbility(AttackAbility attackAbility)
+        {
+            m_AttackerAttackAbility = attackAbility;
+            SetAnimation(attackAbility.GetRandomAttackerRasterAnimation());
+        }
+
+        public void InitAttackAbility(AttackAbility attackAbility)
+        {
+            G.U.Todo("Load up the attack bundles, etc.");
+        }
+
+        public void PlayContextualAnimation(RasterAnimation ra, System.Action onCompleteCallback)
+        {
+            G.U.Todo("Play contextual animation.");
+        }
+
+        public void RegisterStateAnimation(ulong states, RasterAnimation ra)
+        {
+            G.U.Todo("Register state animation.");
+        }
+
+        public void StartAttack(Attack attack)
+        {
+            G.U.Todo("Start attack.");
         }
 
         // COLOR METHODS
@@ -223,19 +302,14 @@ namespace KRG
         public void StartDamageColor(float seconds)
         {
 #if NS_DG_TWEENING
-            m_ImageColor = new Color(1, 0.2f, 0.2f);
+            ImageColor = new Color(1, 0.2f, 0.2f);
             TimeThread.AddTween(DOTween
-                .To(() => m_ImageColor, x => m_ImageColor = x, Color.white, seconds)
+                .To(() => ImageColor, x => ImageColor = x, Color.white, seconds)
                 .SetEase(Ease.OutSine)
             );
 #else
             G.U.Err("This function requires DG.Tweening (DOTween).");
 #endif
-        }
-
-        private void ApplyImageColor()
-        {
-            Renderer.sharedMaterial.color = m_ImageColor;
         }
 
         // FLICKER METHODS
@@ -263,6 +337,121 @@ namespace KRG
         {
             IsRendered = !IsRendered;
             tt.Proceed();
+        }
+
+        // IMAGE INDEX / FRAME SEQUENCE METHODS
+
+        private void AdvanceImageIndex()
+        {
+            //m_AnimationImageIndex = (m_AnimationImageIndex + 1) % AnimationImageCount;
+
+            // GraphicController uses zero-based image index (m_AnimationImageIndex)
+            // RasterAnimation uses one-based frame number (frameNumber)
+
+            int frameNumber;
+
+            if (m_RasterAnimationState.frameSequenceHasFrameList)
+            {
+                if (!m_RasterAnimationState.AdvanceFrame(ref m_AnimationFrameListIndex, out frameNumber))
+                {
+                    OnAnimationStop();
+                    return;
+                }
+            }
+            else
+            {
+                frameNumber = m_AnimationImageIndex + 1;
+                if (!m_RasterAnimationState.AdvanceFrame(ref frameNumber))
+                {
+                    OnAnimationStop();
+                    return;
+                }
+            }
+
+            m_AnimationImageIndex = frameNumber - 1;
+        }
+
+        private void OnFrameSequenceStart(RasterAnimationState ras)
+        {
+
+        }
+
+        private void OnFrameSequenceStop(RasterAnimationState ras)
+        {
+
+        }
+
+        private void OnAnimationStop()
+        {
+            m_AttackerAttackAbility = null;
+            OnCharacterStateChange(0, false);
+        }
+
+        // CHARACTER STATE METHODS
+
+        private void AddCharacterStateHandlers()
+        {
+            if (G.U.IsEditMode(this)) return;
+
+            CharacterDossier cd = m_Body.CharacterDossier;
+
+            if (cd == null) return;
+
+            List<StateAnimation> stateAnimations = cd.GraphicData.StateAnimations;
+
+            for (int i = 0; i < stateAnimations.Count; ++i)
+            {
+                StateAnimation sa = stateAnimations[i];
+
+                Body.Refs.StateOwner.AddStateHandler(sa.state, OnCharacterStateChange);
+            }
+        }
+
+        private void RemoveCharacterStateHandlers()
+        {
+            if (G.U.IsEditMode(this)) return;
+
+            CharacterDossier cd = m_Body.CharacterDossier;
+
+            if (cd == null) return;
+
+            List<StateAnimation> stateAnimations = cd.GraphicData.StateAnimations;
+
+            for (int i = 0; i < stateAnimations.Count; ++i)
+            {
+                StateAnimation sa = stateAnimations[i];
+
+                Body.Refs.StateOwner.RemoveStateHandler(sa.state, OnCharacterStateChange);
+            }
+        }
+
+        private void OnCharacterStateChange(ulong state, bool value)
+        {
+            CharacterDossier cd = m_Body.CharacterDossier;
+
+            if (cd == null) return;
+
+            if (m_AttackerAttackAbility != null) return;
+
+            List<StateAnimation> stateAnimations = cd.GraphicData.StateAnimations;
+
+            string animationName = IdleAnimationName;
+
+            for (int i = 0; i < stateAnimations.Count; ++i)
+            {
+                StateAnimation sa = stateAnimations[i];
+
+                if (m_Body.Refs.StateOwner.HasState(sa.state) || (value && state == sa.state))
+                {
+                    animationName = sa.animationName;
+                    break;
+                }
+            }
+
+            if (animationName != CurrentRasterAnimation?.name)
+            {
+                SetAnimation(animationName);
+            }
         }
     }
 }

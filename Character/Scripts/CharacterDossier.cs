@@ -35,9 +35,23 @@ namespace KRG
         {
             FileName = name.Replace(CHARACTER_DOSSIER_SUFFIX, "");
 
-            if (string.IsNullOrEmpty(GraphicData.IdleRasterAnimationName))
+            if (string.IsNullOrEmpty(GraphicData.IdleAnimationName))
             {
-                GraphicData.IdleRasterAnimationName = FileName + IDLE_ANIMATION_SUFFIX;
+                GraphicData.IdleAnimationName = FileName + IDLE_ANIMATION_SUFFIX;
+            }
+
+            for (int i = 0; i < GraphicData.StateAnimations.Count; ++i)
+            {
+                StateAnimation sa = GraphicData.StateAnimations[i];
+
+                string aniName = sa.animationName;
+
+                if (!string.IsNullOrEmpty(aniName) && !aniName.Contains("_"))
+                {
+                    sa.animationName = string.Format("{0}_{1}_RasterAnimation", FileName, aniName);
+
+                    GraphicData.StateAnimations[i] = sa;
+                }
             }
         }
     }

@@ -43,16 +43,11 @@ namespace KRG {
 
         public ITimeThread timeThread { get; set; }
 
-#region MonoBehaviour methods, including uGIF overrides
-
         protected virtual void Reset() {
             mode = GifPlayerMode.Material;
-            //TODO: re-assess this
-            //behaviour = GifPlayerBehaviour.LoadProgressively;
         }
 
         protected virtual void OnValidate() {
-            //can be overriden to force specific selections
         }
 
         protected override void Awake() {
@@ -63,10 +58,6 @@ namespace KRG {
             if (_rasterAnimation != null) SetRasterAnimation(_rasterAnimation);
         }
 
-        /// <summary>
-        /// Update using RasterAnimation as applicable.
-        /// This is based on uGIF 1.2.
-        /// </summary>
         protected override void Update() {
             if (gif != null) {
                 if (isLoading) {
@@ -89,28 +80,7 @@ namespace KRG {
                         var ra = _rasterAnimation;
                         if (ra != null && ra.hasPlayableFrameSequences) {
                             //begin Frame Sequence code
-                            //NOTE: GifPlayer uses zero-based frame index (i); RasterAnimation uses one-based frame num.
-                            if (unloadAfterPlay) {
-                                G.U.Err("Unload After Play is not supported when using Frame Sequences.");
-                            }
-                            int frameNumber;
-                            if (_rasterAnimationState.frameSequenceHasFrameList) {
-                                if (!_rasterAnimationState.AdvanceFrame(ref _frameListIndex, out frameNumber)) {
-                                    this.Stop();
-                                    return;
-                                }
-                            } else {
-                                frameNumber = i + 1;
-                                if (!_rasterAnimationState.AdvanceFrame(ref frameNumber)) {
-                                    this.Stop();
-                                    return;
-                                }
-                            }
-                            //it's possible to advance to the same frame, so update only if it's different
-                            if (i != frameNumber - 1) {
-                                i = frameNumber - 1;
-                                UpdateImage();
-                            }
+                            // MOVED TO GRAPHIC CONTROLLER
                             //end Frame Sequence code
                         } else {
                             //begin relocated original code
@@ -153,10 +123,6 @@ namespace KRG {
                     break;
             }
         }
-
-#endregion
-
-#region KRG Public Methods
 
         /// <summary>
         /// Sets the play material. Needs to be called manually if creating a GifPlayer through code.
@@ -234,11 +200,6 @@ namespace KRG {
             _previewGif = null;
         }
 
-#endregion
-
-
-#region KRG Private Methods
-
         void LogRendererCloneWarning() {
             if (playMat != null && !enablePreview) {
                 G.U.Warn(
@@ -247,10 +208,6 @@ namespace KRG {
                 );
             }
         }
-
-#endregion
-
-#region uGIF Methods - New
 
         /// <summary>
         /// Loads the preview (first frame).
@@ -320,10 +277,6 @@ namespace KRG {
                 playMat.SetTexture(materialProperty, tex);
             }
         }
-
-#endregion
-
-#region uGIF Methods - Override
 
         /// <summary>
         /// Load the gif, and track that it has been loaded.
@@ -395,21 +348,10 @@ namespace KRG {
         public override void Stop() {
             isPlaying = false;
             isPaused = false; //TODO: see if adding this messes anything up
-            //the following commented-out code messes up the RasterAnimationInfo for the
-            //last frame of a non-looping animation, and probably should not be done anyway
-            /*
-            var ra = _rasterAnimation;
-            if (ra != null) _rasterAnimationState.Reset();
-            i = ra != null ? _rasterAnimationState.frameSequenceFromFrame - 1 : 0;
-            time = 0;
-            */
             if (onPlayEnd != null) {
                 onPlayEnd.Invoke();
             }
         }
-
-#endregion
-
     }
 #endif
 }

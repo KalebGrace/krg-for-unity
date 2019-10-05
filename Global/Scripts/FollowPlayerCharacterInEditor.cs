@@ -7,7 +7,7 @@ namespace KRG
     {
         private void Awake()
         {
-            if (Application.IsPlaying(this)) this.Dispose();
+            if (G.U.IsPlayMode(this)) this.Dispose();
         }
 
         private void Update()

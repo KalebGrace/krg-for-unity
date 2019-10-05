@@ -30,6 +30,8 @@ namespace KRG
 
         public List<GameObjectBody> PlayerCharacters { get; } = new List<GameObjectBody>();
 
+        public Dictionary<string, RasterAnimation> RasterAnimations { get; } = new Dictionary<string, RasterAnimation>();
+
         // MONOBEHAVIOUR METHODS
 
         public override void Awake()
@@ -51,9 +53,36 @@ namespace KRG
             G.app.GameplaySceneStarted -= OnGameplaySceneStarted;
         }
 
+        // EVENT HANDLERS
+
+        private void OnGameplaySceneStarted()
+        {
+            bool doneUnloading = false;
+
+            foreach (var cc in CharacterCounts.OrderBy(cc => cc.Value))
+            {
+                if (cc.Value == 0)
+                {
+                    UnloadCharacterAssetPack(cc.Key);
+                    UnloadCharacterDossier(cc.Key);
+                    _ = CharacterCounts.Remove(cc.Key);
+                }
+                else
+                {
+                    if (!doneUnloading)
+                    {
+                        Resources.UnloadUnusedAssets();
+                        doneUnloading = true;
+                    }
+
+                    LoadCharacterAssetPack(cc.Key);
+                }
+            }
+        }
+
         // PUBLIC METHODS
 
-        public void Register(GameObjectBody body)
+        public bool Register(GameObjectBody body)
         {
             switch (body.GameObjectType)
             {
@@ -61,7 +90,14 @@ namespace KRG
                     int id = body.CharacterID;
                     if (id == 0)
                     {
-                        return;
+                        return false;
+                    }
+                    LoadCharacterDossier(body);
+                    if (G.U.IsPlayMode(body) && G.config.IsSinglePlayerGame && body.IsPlayerCharacter && PlayerCharacters.Count > 0)
+                    {
+                        // a player character is already registered, so this is a duplicate
+                        body.Dispose();
+                        return false;
                     }
                     if (!CharacterCounts.ContainsKey(id))
                     {
@@ -69,7 +105,6 @@ namespace KRG
                     }
                     if (++CharacterCounts[id] == 1)
                     {
-                        LoadCharacterDossier(id);
                         CharacterIDAdded?.Invoke(id);
                     }
                     if (body.IsPlayerCharacter)
@@ -81,6 +116,7 @@ namespace KRG
                     G.U.Log("Registered {0} (character ID {1}).", body.name, id);
                     break;
             }
+            return true;
         }
 
         public void Deregister(GameObjectBody body)
@@ -99,16 +135,15 @@ namespace KRG
                         PlayerCharacterRemoved?.Invoke(body);
                         PlayerCharacters.Remove(body);
                     }
-                    if (G.U.IsEditMode() && !CharacterCounts.ContainsKey(id))
+                    if (G.U.IsEditMode() && !CharacterCounts.ContainsKey(id)) // verified
                     {
-                        G.U.Log("SPOOKED YA!");
                         return;
                     }
                     if (--CharacterCounts[id] == 0)
                     {
                         CharacterIDRemoved?.Invoke(id);
-                        UnloadCharacterDossier(id);
                     }
+                    // never unload the dossier until OnGameplaySceneStarted()
                     G.U.Log("Deregistered {0} (character ID {1}).", body.name, id);
                     break;
             }
@@ -158,7 +193,9 @@ namespace KRG
             return IsPlayerCharacter(collision.collider);
         }
 
-        public AssetBundle LoadAssetBundle(string bundleName)
+        // ASSET BUNDLES
+
+        private AssetBundle LoadAssetBundle(string bundleName)
         {
             AssetBundle assetBundle = AssetBundle.GetAllLoadedAssetBundles()
                    .Where(ab => ab.name == bundleName)
@@ -179,55 +216,47 @@ namespace KRG
             return assetBundle;
         }
 
-        public AssetBundle LoadCharacterAnimationAssetBundle(string animationName)
+        private void UnloadAssetBundle(string bundleName)
         {
-            string bundleName = animationName.Replace("_RasterAnimation", "").ToLower();
-
-            return LoadAssetBundle(bundleName);
+            AssetBundle.GetAllLoadedAssetBundles()
+                   .Where(ab => ab.name == bundleName)
+                   .SingleOrDefault()?.Unload(true);
         }
 
-        // PRIVATE METHODS
+        // CHARACTER ASSET BUNDLES
 
-        private void OnGameplaySceneStarted()
+        private void LoadCharacterDossier(GameObjectBody body)
         {
-            bool doneUnloading = false;
+            int id = body.CharacterID;
 
-            foreach (var cc in CharacterCounts.OrderBy(cc => cc.Value))
-            {
-                if (cc.Value == 0)
-                {
-                    UnloadCharacterAssetPack(cc.Key);
-                    _ = CharacterCounts.Remove(cc.Key);
-                }
-                else
-                {
-                    if (!doneUnloading)
-                    {
-                        Resources.UnloadUnusedAssets();
-                        doneUnloading = true;
-                    }
-
-                    LoadCharacterAssetPack(cc.Key);
-                }
-            }
-        }
-
-        // CHARACTER
-
-        private void LoadCharacterDossier(int characterID)
-        {
-            if (characterID == 0)
+            if (id == 0)
             {
                 return;
             }
 
-            string bundleName = "_c" + characterID.ToString("D5");
+            CharacterDossier cd;
+
+            if (CharacterDossiers.ContainsKey(id))
+            {
+                cd = CharacterDossiers[id];
+
+                if (cd != null)
+                {
+                    body.CharacterDossier = cd;
+
+                    return;
+                }
+
+                CharacterDossiers.Remove(id);
+            }
+
+            string bundleName = "_c" + id.ToString("D5");
 
             AssetBundle assetBundle = LoadAssetBundle(bundleName);
 
             if (assetBundle == null)
             {
-                G.U.Err("Failed to load AssetBundle for character ID {0}.", characterID);
+                G.U.Err("Failed to load AssetBundle for character ID {0}.", id);
                 return;
             }
 
@@ -239,7 +268,7 @@ namespace KRG
                 return;
             }
 
-            CharacterDossier cd = dossiers[0];
+            cd = dossiers[0];
 
             if (dossiers.Length > 1)
             {
@@ -247,28 +276,76 @@ namespace KRG
                     bundleName, cd.FileName);
             }
 
-            CharacterDossiers.Add(characterID, cd);
+            CharacterDossiers.Add(id, cd);
+
+            body.CharacterDossier = cd;
+
+            string idleAnimName = cd.GraphicData.IdleAnimationName;
+
+            if (!string.IsNullOrEmpty(idleAnimName))
+            {
+                RasterAnimation ra;
+
+                if (RasterAnimations.ContainsKey(idleAnimName))
+                {
+                    ra = RasterAnimations[idleAnimName];
+
+                    if (ra != null)
+                    {
+                        return;
+                    }
+
+                    RasterAnimations.Remove(idleAnimName);
+                }
+
+                ra = assetBundle.LoadAsset<RasterAnimation>(idleAnimName);
+
+                RasterAnimations.Add(idleAnimName, ra);
+            }
         }
 
         private void UnloadCharacterDossier(int characterID)
         {
+            CharacterDossier cd = CharacterDossiers[characterID];
+
+            string idleAnimName = cd.GraphicData.IdleAnimationName;
+
+            if (!string.IsNullOrEmpty(idleAnimName))
+            {
+                RasterAnimations.Remove(idleAnimName);
+            }
+
             CharacterDossiers.Remove(characterID);
 
             string bundleName = "_c" + characterID.ToString("D5");
 
-            AssetBundle.GetAllLoadedAssetBundles()
-                   .Where(ab => ab.name == bundleName)
-                   .SingleOrDefault()?.Unload(true);
+            UnloadAssetBundle(bundleName);
         }
 
         private void LoadCharacterAssetPack(int characterID)
         {
-            G.U.Todo("Load all animation/etc bundles for character ID {0}.", characterID);
+            CharacterDossier cd = CharacterDossiers[characterID];
+
+            AssetBundle ab = LoadAssetBundle(cd.FileName.ToLower());
+
+            foreach (StateAnimation sa in cd.GraphicData.StateAnimations)
+            {
+                RasterAnimation ra = ab.LoadAsset<RasterAnimation>(sa.animationName);
+
+                RasterAnimations.Add(sa.animationName, ra);
+            }
         }
 
         private void UnloadCharacterAssetPack(int characterID)
         {
-            G.U.Todo("Unload all animation/etc bundles for character ID {0}.", characterID);
+            CharacterDossier cd = CharacterDossiers[characterID];
+
+            foreach (StateAnimation sa in cd.GraphicData.StateAnimations)
+            {
+                RasterAnimations.Remove(sa.animationName);
+            }
+
+            UnloadAssetBundle(cd.FileName.ToLower());
         }
 
         // OLD SHIZ

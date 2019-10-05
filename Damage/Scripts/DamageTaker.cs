@@ -44,8 +44,7 @@ namespace KRG {
 
 #region properties
 
-        //to be set by HitBox only
-        public virtual Transform centerTransform { get; set; }
+        public virtual Transform centerTransform => m_Body.Refs.VisRect.transform;
 
         public virtual DamageProfile damageProfile {
             get {
@@ -77,11 +76,6 @@ namespace KRG {
             InitHP();
 
             knockBackDirection = Direction.Unknown;
-        }
-
-        protected virtual void Start() {
-            G.U.Assert(centerTransform != null,
-                "The centerTransform property is null. Did you forget to add a HitBox to the VisRect?", this);
         }
 
 

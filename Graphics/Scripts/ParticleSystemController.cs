@@ -1,13 +1,10 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.Serialization;
 
-namespace KRG {
-
-    //TODO: add ExecuteInEditMode or remove G.isInEditMode checks
-    public abstract class ParticleSystemController : MonoBehaviour {
-
+namespace KRG
+{
+    public abstract class ParticleSystemController : MonoBehaviour
+    {
         [Enum(typeof(TimeThreadInstance))]
         [SerializeField]
         [FormerlySerializedAs("m_timeThreadIndex")]
@@ -15,49 +12,49 @@ namespace KRG {
 
         [SerializeField]
         [FormerlySerializedAs("m_autoDispose")]
-        bool _autoDispose = true;
+        private bool _autoDispose = true;
 
         //TODO: do something with this or remove it
         [SerializeField]
-        SpriteMask _particleMask;
+        private SpriteMask _particleMask;
 
-        ParticleSystem _particleSystem;
+        private ParticleSystem _particleSystem;
 
-        protected virtual ITimeThread timeThread {
-            get {
-                return G.time.GetTimeThread(_timeThreadIndex, TimeThreadInstance.Gameplay);
-            }
-        }
+        protected virtual ITimeThread TimeThread => G.time.GetTimeThread(_timeThreadIndex, TimeThreadInstance.Gameplay);
 
-        void Awake() {
+        private void Awake()
+        {
             _particleSystem = GetComponentInChildren<ParticleSystem>();
             G.U.Require(_particleSystem, "Particle System", "this Component or its children");
         }
 
-        void Start() {
-            if (!G.isInEditMode) return;
-            timeThread.AddPauseHandler(OnPause);
-            timeThread.AddUnpauseHandler(OnUnpause);
+        private void Start()
+        {
+            TimeThread.AddPauseHandler(OnPause);
+            TimeThread.AddUnpauseHandler(OnUnpause);
         }
 
-        void Update() {
-            if (!G.isInEditMode) return;
-            if (_autoDispose && !_particleSystem.IsAlive()) {
+        private void Update()
+        {
+            if (_autoDispose && !_particleSystem.IsAlive())
+            {
                 gameObject.Dispose();
             }
         }
 
-        void OnDestroy() {
-            if (!G.isInEditMode) return;
-            timeThread.RemovePauseHandler(OnPause);
-            timeThread.RemoveUnpauseHandler(OnUnpause);
+        private void OnDestroy()
+        {
+            TimeThread.RemovePauseHandler(OnPause);
+            TimeThread.RemoveUnpauseHandler(OnUnpause);
         }
 
-        void OnPause() {
+        private void OnPause()
+        {
             _particleSystem.Pause(true);
         }
 
-        void OnUnpause() {
+        private void OnUnpause()
+        {
             _particleSystem.Play(true);
         }
     }

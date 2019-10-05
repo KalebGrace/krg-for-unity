@@ -18,7 +18,7 @@ namespace KRG
 
             private const string FORMAT_MAGIC_STRING = "{0";
 
-            // EDIT MODE PLAYER
+            // COMPOUND PROPERTIES
 
             private static GameObjectBody s_EditModePlayerCharacter;
 
@@ -43,7 +43,17 @@ namespace KRG
                 }
             }
 
-            // EDIT MODE ?
+            // PLAY MODE? EDIT MODE?
+
+            public static bool IsPlayMode(Object obj) // Is Unity running in play mode or built application?
+            {
+                return Application.IsPlaying(obj);
+            }
+
+            public static bool IsPlayMode() // Same, but if no UnityEngine object.
+            {
+                return Application.isPlaying;
+            }
 
             public static bool IsEditMode(Object obj) // Is Unity running in edit mode?
             {
@@ -372,18 +382,6 @@ namespace KRG
             // GUARANTEE
 
             /// <summary>
-            /// Guarantee that the specified Component type T exists on the specified source Component's GameObject.
-            /// If it doesn't exist, it will be created.
-            /// </summary>
-            /// <param name="source">Source.</param>
-            /// <typeparam name="T">The 1st type parameter.</typeparam>
-            public static T Guarantee<T>(Component source) where T : Component
-            {
-                //TODO: if called via ExecuteInEditMode, need call to UnityEditor.Undo.RecordObject
-                return source.GetComponent<T>() ?? source.gameObject.AddComponent<T>();
-            }
-
-            /// <summary>
             /// Guarantee that the specified Component type T exists on the specified source GameObject.
             /// If it doesn't exist, it will be created.
             /// </summary>
@@ -391,8 +389,19 @@ namespace KRG
             /// <typeparam name="T">The 1st type parameter.</typeparam>
             public static T Guarantee<T>(GameObject source) where T : Component
             {
-                //TODO: if called via ExecuteInEditMode, need call to UnityEditor.Undo.RecordObject
-                return source.GetComponent<T>() ?? source.AddComponent<T>();
+                // TODO: if called via ExecuteAlways, need call to UnityEditor.Undo.RecordObject
+                // NOTE: null-coalescing operator does not work properly for this
+                var c = source.GetComponent<T>();
+                if (c == null)
+                {
+                    c = source.AddComponent<T>();
+                }
+                return c;
+            }
+
+            public static T Guarantee<T>(Component source) where T : Component // Same, but for component source.
+            {
+                return Guarantee<T>(source.gameObject);
             }
 
             // IS NULL ?

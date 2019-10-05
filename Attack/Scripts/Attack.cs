@@ -1,10 +1,9 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Serialization;
 
-namespace KRG {
-
+namespace KRG
+{
     /// <summary>
     /// Attack: Attack
     /// 1.  Attack allows a game object, specifically in prefab form, to be used as an "attack".
@@ -19,12 +18,8 @@ namespace KRG {
     ///     the derived class itself must be added to a game object as a script/component.
     /// </summary>
     [RequireComponent(typeof(GraphicController))]
-    public abstract class Attack : MonoBehaviour, IEnd {
-
-        public BoxCollider hitbox;
-
-        public BoxCollider hurtbox;
-
+    public abstract class Attack : MonoBehaviour, IBodyComponent, IEnd
+    {
         [Header("Optional Standalone Attack Ability")]
 
         [SerializeField, FormerlySerializedAs("m_attackAbility")]
@@ -35,26 +30,20 @@ namespace KRG {
         [SerializeField]
         List<Transform> _flippableTransforms = default;
 
+        [Header("Body")]
 
-
-#region FIELDS: PRIVATE
-
-        private GraphicController m_GraphicController;
+        [SerializeField]
+        private GameObjectBody m_Body;
 
         Attacker _attacker;
         List<AttackTarget> _attackTargets = new List<AttackTarget>();
         BoxCollider _boxCollider;
-        GraphicController _graphicsController;
         bool _isFlippedX;
         bool _isInitialized;
         bool _isPlayerCharacterAttacker;
         ITimeThread _timeThread;
         Transform _transform;
         Vector2 _velocity;
-
-#endregion
-
-#region PROPERTIES: PUBLIC
 
         public virtual AttackAbility attackAbility { get { return _attackAbility; } }
 
@@ -64,9 +53,18 @@ namespace KRG {
 
         public virtual bool isPlayerCharacterAttacker { get { return _isPlayerCharacterAttacker; } }
 
-#endregion
+        public GameObjectBody Body => m_Body;
 
+        public GraphicController GraphicController => m_Body.Refs.GraphicController;
 
+        private Hitbox Hitbox => m_Body.Refs.Hitbox;
+
+        private Hurtbox Hurtbox => m_Body.Refs.Hurtbox;
+
+        public void InitBody(GameObjectBody body)
+        {
+            m_Body = body;
+        }
 
         protected virtual void Awake()
         {
@@ -74,12 +72,12 @@ namespace KRG {
 
             G.U.Assert(gameObject.layer != Layer.Default, "This GameObject must exist on an attack Layer.");
 
-            if (hitbox != null)
+            if (Hitbox != null)
             {
                 this.Forbid<BoxCollider>();
                 _boxCollider = gameObject.AddComponent<BoxCollider>();
-                _boxCollider.center = hitbox.center;
-                _boxCollider.size = hitbox.size;
+                _boxCollider.center = Hitbox.Center;
+                _boxCollider.size = Hitbox.Size;
                 _boxCollider.isTrigger = true;
             }
             else
@@ -89,9 +87,10 @@ namespace KRG {
             G.U.Assert(_boxCollider.isTrigger, "The BoxCollider Component must be a trigger.");
 
             //TODO: apply hurtbox where needed
-            if (hurtbox) hurtbox.enabled = false;
-
-            m_GraphicController = this.Require<GraphicController>();
+            if (Hurtbox != null)
+            {
+                Hurtbox.Enabled = false;
+            }
 
             my_end.actions += ForceOnTriggerExit;
         }
@@ -109,7 +108,7 @@ namespace KRG {
                 else
                 {
                     G.U.Warn("If this Attack exists on its own, " +
-                    "it should probably have a Standalone Attack Ability.");
+                        "it should probably have a Standalone Attack Ability.");
                 }
             }
         }
@@ -122,13 +121,15 @@ namespace KRG {
             }
         }
 
-        void OnTriggerEnter(Collider other) {
-            HitBox hitbox = other.GetComponent<HitBox>();
-            if (hitbox == null) return;
-            DamageTaker target = hitbox.DamageTaker;
+        void OnTriggerEnter(Collider other)
+        {
+            Hurtbox otherHurtbox = other.GetComponent<Hurtbox>();
+            if (otherHurtbox == null) return;
+            DamageTaker target = otherHurtbox.DamageTaker;
             if (target.end.wasInvoked) return;
             AttackTarget at = _attackTargets.Find(x => x.target == target);
-            if (at == null) {
+            if (at == null)
+            {
                 G.U.Assert(damageDealtHandler != null, "The damageDealtHandler must be set before collision occurs.");
                 at = new AttackTarget(_attackAbility, target, () => damageDealtHandler(this, target));
                 _attackTargets.Add(at);
@@ -138,10 +139,11 @@ namespace KRG {
             at.StartTakingDamage(apc, other.ClosestPoint(apc));
         }
 
-        void OnTriggerExit(Collider other) {
-            HitBox hitbox = other.GetComponent<HitBox>();
-            if (hitbox == null) return;
-            DamageTaker target = hitbox.DamageTaker;
+        void OnTriggerExit(Collider other)
+        {
+            Hurtbox otherHurtbox = other.GetComponent<Hurtbox>();
+            if (otherHurtbox == null) return;
+            DamageTaker target = otherHurtbox.DamageTaker;
             if (target.end.wasInvoked) return;
             AttackTarget at = _attackTargets.Find(x => x.target == target);
             G.U.Assert(at != null, string.Format(
@@ -150,15 +152,14 @@ namespace KRG {
             at.StopTakingDamage();
         }
 
-        void OnDrawGizmos() { //runs in edit mode, so don't rely upon actions done in Awake
+        void OnDrawGizmos()
+        { //runs in edit mode, so don't rely upon actions done in Awake
             Gizmos.color = Color.red;
             Vector3 p = transform.position;
             KRGGizmos.DrawCrosshairXY(p, 0.25f);
             var boxCollider = GetComponent<BoxCollider>();
             if (boxCollider != null) Gizmos.DrawWireCube(p + boxCollider.center, boxCollider.size);
         }
-
-
 
         End my_end = new End();
 
@@ -171,12 +172,10 @@ namespace KRG {
             ForceReleaseTargets();
         }
 
-
-
-#region METHODS: PUBLIC, PROTECTED, & PRIVATE
-
-        public void Init(AttackAbility attackAbility, Attacker attacker) {
-            if (_isInitialized) {
+        public void Init(AttackAbility attackAbility, Attacker attacker)
+        {
+            if (_isInitialized)
+            {
                 G.U.Err("Init has already been called.");
                 return;
             }
@@ -188,8 +187,10 @@ namespace KRG {
         }
 
         [System.Obsolete("Use Init(AttackAbility attackAbility, Attacker attacker) instead.")]
-        public void Init(AttackAbility attackAbility, bool isFlippedX, bool isPlayerCharacterAttacker) {
-            if (_isInitialized) {
+        public void Init(AttackAbility attackAbility, bool isFlippedX, bool isPlayerCharacterAttacker)
+        {
+            if (_isInitialized)
+            {
                 G.U.Err("Init has already been called.");
                 return;
             }
@@ -199,24 +200,29 @@ namespace KRG {
             InitInternal();
         }
 
-        protected virtual void InitInternal() {
+        protected virtual void InitInternal()
+        {
             _isInitialized = true;
 
             _timeThread = _attackAbility.timeThread;
 
-            if (_attackAbility.hasAttackLifetime) {
+            if (_attackAbility.hasAttackLifetime)
+            {
                 //TODO: dispose callback causes optional delay for related attacks
                 //E.G. SecS: stopping block makes the fire/shot m_attackRateSec restart at 1.5x:
                 //alarm[e_pc_alarm.fire_ready] = global.framerate / fire_rate * 1.5;
                 _timeThread.AddTrigger(_attackAbility.attackLifetime, Dispose);
             }
 
-            if (_isFlippedX) { //flip horizontal (x-axis)
+            if (_isFlippedX)
+            { //flip horizontal (x-axis)
                 _boxCollider.center = _boxCollider.center.Multiply(x: -1);
-                _graphicsController.FlipX();
-                if (_flippableTransforms != null) {
+                GraphicController.FlipX();
+                if (_flippableTransforms != null)
+                {
                     Transform tf;
-                    for (int i = 0; i < _flippableTransforms.Count; i++) {
+                    for (int i = 0; i < _flippableTransforms.Count; i++)
+                    {
                         tf = _flippableTransforms[i];
                         tf.localScale = tf.localScale.Multiply(x: -1);
                     }
@@ -247,15 +253,19 @@ namespace KRG {
             }
         }
 
-        protected virtual void PlayAttackSFX() {
+        protected virtual void PlayAttackSFX()
+        {
             string sfxFmodEvent = _attackAbility.sfxFmodEvent;
-            if (!string.IsNullOrEmpty(sfxFmodEvent)) {
+            if (!string.IsNullOrEmpty(sfxFmodEvent))
+            {
                 G.audio.PlaySFX(sfxFmodEvent, _transform.position);
             }
         }
 
-        void Dispose(TimeTrigger tt) {
-            if (this != null) { //this may be null if e.g. this is joined to an attacker that was destroyed
+        void Dispose(TimeTrigger tt)
+        {
+            if (this != null)
+            { //this may be null if e.g. this is joined to an attacker that was destroyed
                 gameObject.Dispose();
             }
         }
@@ -265,7 +275,8 @@ namespace KRG {
         /// This method is called before destroying to ensure OnTriggerExit is called.
         /// TODO: This sometimes does not work properly, and may be obsolete now that ForceReleaseTargets exists.
         /// </summary>
-        void ForceOnTriggerExit() {
+        void ForceOnTriggerExit()
+        {
             _transform.Translate(-1000, -1000, -1000);
         }
 
@@ -276,18 +287,18 @@ namespace KRG {
         /// in the same frame. Whatever the case, this method ensures that all targets are released from further damage.
         /// NOTE: This must be called from OnDestroy in order to work properly.
         /// </summary>
-        void ForceReleaseTargets() {
+        void ForceReleaseTargets()
+        {
             AttackTarget at;
-            for (int i = 0; i < _attackTargets.Count; i++) {
+            for (int i = 0; i < _attackTargets.Count; i++)
+            {
                 at = _attackTargets[i];
-                if (at != null && at.isInProgress && !at.target.end.wasInvoked) {
+                if (at != null && at.isInProgress && !at.target.end.wasInvoked)
+                {
                     at.StopTakingDamage();
                 }
             }
             _attackTargets.Clear();
         }
-
-#endregion
-
     }
 }

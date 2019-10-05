@@ -2,7 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace KRG {
+namespace KRG
+{
 
     /// <summary>
     /// AttackAbility: Attack Ability
@@ -22,12 +23,13 @@ namespace KRG {
         menuName = "KRG Scriptable Object/Attack Ability",
         order = 123
     )]
-    public class AttackAbility : ScriptableObject {
+    public class AttackAbility : ScriptableObject
+    {
 
         protected const float FLOAT_DEFAULT = 1.5f;
         protected const float FLOAT_MIN = 0.0001f;
 
-#region FIELDS: SERIALIZED
+        #region FIELDS: SERIALIZED
 
         //private serialized data version
         [HideInInspector]
@@ -44,12 +46,12 @@ namespace KRG {
 
         [SerializeField]
         [Tooltip("The attacker's animation(s) during the attack.")]
-        protected KRGAnimation[] _attackerAnimations;
+        protected AnimationData[] _attackerAnimations;
         //obsolete...
         [HideInInspector]
         [SerializeField]
         [System.Obsolete("Use _attackerAnimations instead.")]
-        protected KRGAnimation m_attackerAnimation;
+        protected AnimationData m_attackerAnimation;
 
         [SerializeField, Tooltip("This ability is locked until the attacker obtains this key item.")]
         [Enum(typeof(KeyItem))]
@@ -206,9 +208,9 @@ namespace KRG {
         [SerializeField]
         protected List<Effector> effectors = new List<Effector>();
 
-#endregion
+        #endregion
 
-#region FIELDS: PROTECTED
+        #region FIELDS: PROTECTED
 
         //minimum seconds between new attacks (calculated from _attackRate)
         protected float _attackRateSec;
@@ -219,14 +221,16 @@ namespace KRG {
         //applicable time thread interface (from _timeThreadIndex)
         protected ITimeThread _timeThread;
 
-#endregion
+        #endregion
 
-#region PROPERTIES
+        #region PROPERTIES
 
         public virtual float attackDelay { get { return _attackDelay; } }
 
-        public virtual int attackerAnimationCount {
-            get {
+        public virtual int attackerAnimationCount
+        {
+            get
+            {
                 return _attackerAnimations != null ? _attackerAnimations.Length : 0;
             }
         }
@@ -247,8 +251,10 @@ namespace KRG {
 
         public virtual float attackRate { get { return _attackRate; } }
 
-        public virtual float attackRateSec {
-            get {
+        public virtual float attackRateSec
+        {
+            get
+            {
 #if UNITY_EDITOR
                 SetAttackRateSec();
 #endif
@@ -274,8 +280,10 @@ namespace KRG {
 
         public virtual float hpDamageRate { get { return _hpDamageRate.floatValue; } }
 
-        public virtual float hpDamageRateSec {
-            get {
+        public virtual float hpDamageRateSec
+        {
+            get
+            {
 #if UNITY_EDITOR
                 SetHPDamageRateSec();
 #endif
@@ -301,8 +309,10 @@ namespace KRG {
 
         public virtual string sfxFmodEvent { get { return _sfxFmodEvent; } }
 
-        public virtual ITimeThread timeThread {
-            get {
+        public virtual ITimeThread timeThread
+        {
+            get
+            {
 #if UNITY_EDITOR
                 SetTimeThread();
 #else
@@ -316,19 +326,21 @@ namespace KRG {
 
         public virtual float travelSpeed { get { return _travelSpeed; } }
 
-#endregion
+        #endregion
 
-#region METHODS: MonoBehaviour
+        #region METHODS: MonoBehaviour
 
         //WARNING: this function will only be called automatically if playing a GAME BUILD
         //...it will NOT be called if using the Unity editor
-        protected virtual void Awake() {
+        protected virtual void Awake()
+        {
             UpdateSerializedVersion();
         }
 
         //WARNING: this function will only be called automatically if using the UNITY EDITOR
         //...it will NOT be called if playing a game build
-        protected virtual void OnValidate() {
+        protected virtual void OnValidate()
+        {
             UpdateSerializedVersion();
             _attackLimit = Mathf.Max(1, _attackLimit);
             _attackRate = Mathf.Max(FLOAT_MIN, _attackRate);
@@ -338,60 +350,79 @@ namespace KRG {
             _knockBackTime = Mathf.Max(0, _knockBackTime);
         }
 
-        protected virtual void OnEnable() {
+        protected virtual void OnEnable()
+        {
             SetAttackRateSec();
             SetHPDamageRateSec();
         }
 
-#endregion
+        #endregion
 
-#region METHODS: PUBLIC
+        #region METHODS: PUBLIC
 
         /// <summary>
         /// Gets the attacker animation.
         /// </summary>
         /// <returns>The attacker animation. Can be null.</returns>
         /// <param name="index">Index. (Use attackerAnimationCount to get count.)</param>
-        public virtual KRGAnimation GetAttackerAnimation(int index) {
+        public virtual AnimationData GetAttackerAnimation(int index)
+        {
             G.U.Assert(_attackerAnimations != null);
-            if (index < 0 || index >= _attackerAnimations.Length) {
+            if (index < 0 || index >= _attackerAnimations.Length)
+            {
                 G.U.Err("Invalid index {1} specified. "
                 + "Did you forget to add an attacker animation to the {0} attack ability?", this, index);
             }
             return _attackerAnimations[index];
         }
 
-#endregion
+        public virtual RasterAnimation GetRandomAttackerRasterAnimation()
+        {
+            int i = Random.Range(0, attackerAnimationCount);
+            return GetAttackerAnimation(i) as RasterAnimation;
+        }
 
-#region METHODS: PROTECTED
+        #endregion
 
-        protected virtual void SetTimeThread() {
+        #region METHODS: PROTECTED
+
+        protected virtual void SetTimeThread()
+        {
             _timeThread = G.time.GetTimeThread(_timeThreadIndex, TimeThreadInstance.Gameplay);
         }
 
-#endregion
+        #endregion
 
-#region METHODS: PRIVATE
+        #region METHODS: PRIVATE
 
-        void SetAttackRateSec() {
+        void SetAttackRateSec()
+        {
             _attackRateSec = 1f / _attackRate;
         }
 
-        void SetHPDamageRateSec() {
+        void SetHPDamageRateSec()
+        {
             _hpDamageRateSec = 1f / _hpDamageRate.floatValue;
         }
 
-        void UpdateSerializedVersion() {
-            if (_serializedVersion == 0) {
+        void UpdateSerializedVersion()
+        {
+            if (_serializedVersion == 0)
+            {
 #pragma warning disable 0618
-                if (m_attackerAnimation != null) {
-                    if (_attackerAnimations == null) {
-                        _attackerAnimations = new KRGAnimation[1];
+                if (m_attackerAnimation != null)
+                {
+                    if (_attackerAnimations == null)
+                    {
+                        _attackerAnimations = new AnimationData[1];
                     }
                     int ol = _attackerAnimations.Length; //original length
-                    if (_attackerAnimations[ol - 1] == null) {
+                    if (_attackerAnimations[ol - 1] == null)
+                    {
                         _attackerAnimations[ol - 1] = m_attackerAnimation;
-                    } else {
+                    }
+                    else
+                    {
                         System.Array.Resize(ref _attackerAnimations, ol + 1);
                         _attackerAnimations[ol] = m_attackerAnimation;
                     }
@@ -402,7 +433,7 @@ namespace KRG {
             }
         }
 
-#endregion
+        #endregion
 
     }
 }
