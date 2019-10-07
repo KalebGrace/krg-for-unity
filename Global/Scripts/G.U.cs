@@ -109,17 +109,14 @@ namespace KRG
                 {
                     Debug.LogError(message, args[0] as Object);
                 }
-
-                throw new System.Exception(message);
-            }
-
-            public static void Err(System.Exception ex)
-            {
-                Err(ex.ToString());
+                else
+                {
+                    Debug.LogError(message);
+                }
             }
 
             // WARN
-            
+
             /// <summary>
             /// Log a warning with the specified message and optional arguments.
             /// </summary>
@@ -137,6 +134,10 @@ namespace KRG
                 if (args.Length > 0)
                 {
                     Debug.LogWarning(message, args[0] as Object);
+                }
+                else
+                {
+                    Debug.LogWarning(message);
                 }
             }
 

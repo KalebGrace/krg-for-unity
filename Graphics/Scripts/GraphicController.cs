@@ -89,7 +89,7 @@ namespace KRG
 
         protected virtual bool IsTimePaused => G.U.IsPlayMode(this) ? TimeThread.isPaused : false;
 
-        protected virtual ITimeThread TimeThread => G.time.GetTimeThread(TimeThreadInstance.Gameplay);
+        protected virtual ITimeThread TimeThread => G.time.GetTimeThread(TimeThreadInstance.Field);
 
         private float AnimationFrameRate => DEFAULT_SPRITE_FPS;
 
@@ -277,24 +277,27 @@ namespace KRG
             SetAnimation(attackAbility.GetRandomAttackerRasterAnimation());
         }
 
-        public void InitAttackAbility(AttackAbility attackAbility)
-        {
-            G.U.Todo("Load up the attack bundles, etc.");
-        }
-
         public void PlayContextualAnimation(RasterAnimation ra, System.Action onCompleteCallback)
         {
             G.U.Todo("Play contextual animation.");
         }
 
-        public void RegisterStateAnimation(ulong states, RasterAnimation ra)
-        {
-            G.U.Todo("Register state animation.");
-        }
+        // MATERIAL METHODS
 
-        public void StartAttack(Attack attack)
+        public void SetSharedMaterial(Material sharedMaterial)
         {
-            G.U.Todo("Start attack.");
+            Renderer.sharedMaterial = sharedMaterial;
+
+            if (G.U.IsPlayMode(this))
+            {
+                m_Material = Renderer.material; //instance material
+            }
+            else
+            {
+                m_Material = Renderer.sharedMaterial;
+            }
+
+            RefreshGraphic();
         }
 
         // COLOR METHODS

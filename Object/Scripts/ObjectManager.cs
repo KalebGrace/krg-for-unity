@@ -36,8 +36,6 @@ namespace KRG
 
         public override void Awake()
         {
-            G.U.Todo("Need reset code or Reset method.");
-
             G.app.GameplaySceneStarted += OnGameplaySceneStarted;
 
             //instantiate KRGLoader child GameObjects from prefabs
@@ -80,7 +78,7 @@ namespace KRG
             }
         }
 
-        // PUBLIC METHODS
+        // MAIN PUBLIC METHODS
 
         public bool Register(GameObjectBody body)
         {
@@ -113,7 +111,7 @@ namespace KRG
                         PlayerCharacterAdded?.Invoke(body);
                         if (PlayerCharacters.Count == 1) PlayerCharacterExists?.Invoke(body);
                     }
-                    G.U.Log("Registered {0} (character ID {1}).", body.name, id);
+                    //G.U.Log("Registered {0} (character ID {1}).", body.name, id);
                     break;
             }
             return true;
@@ -144,7 +142,7 @@ namespace KRG
                         CharacterIDRemoved?.Invoke(id);
                     }
                     // never unload the dossier until OnGameplaySceneStarted()
-                    G.U.Log("Deregistered {0} (character ID {1}).", body.name, id);
+                    //G.U.Log("Deregistered {0} (character ID {1}).", body.name, id);
                     break;
             }
         }
@@ -250,7 +248,7 @@ namespace KRG
                 CharacterDossiers.Remove(id);
             }
 
-            string bundleName = "_c" + id.ToString("D5");
+            string bundleName = CharacterDossier.GetBundleName(id);
 
             AssetBundle assetBundle = LoadAssetBundle(bundleName);
 
@@ -282,25 +280,9 @@ namespace KRG
 
             string idleAnimName = cd.GraphicData.IdleAnimationName;
 
-            if (!string.IsNullOrEmpty(idleAnimName))
+            if (!string.IsNullOrWhiteSpace(idleAnimName))
             {
-                RasterAnimation ra;
-
-                if (RasterAnimations.ContainsKey(idleAnimName))
-                {
-                    ra = RasterAnimations[idleAnimName];
-
-                    if (ra != null)
-                    {
-                        return;
-                    }
-
-                    RasterAnimations.Remove(idleAnimName);
-                }
-
-                ra = assetBundle.LoadAsset<RasterAnimation>(idleAnimName);
-
-                RasterAnimations.Add(idleAnimName, ra);
+                AddDefaultAnimation(assetBundle, idleAnimName);
             }
         }
 
@@ -308,16 +290,21 @@ namespace KRG
         {
             CharacterDossier cd = CharacterDossiers[characterID];
 
-            string idleAnimName = cd.GraphicData.IdleAnimationName;
-
-            if (!string.IsNullOrEmpty(idleAnimName))
+            // remove all remaining raster animations for this character
+            // NOTE: this includes default animations such as Idle
+            string keyPrefix = cd.FileName + "_";
+            List<string> keysToRemove = RasterAnimations
+                .Where(pair => pair.Key.StartsWith(keyPrefix, System.StringComparison.Ordinal))
+                .Select(pair => pair.Key)
+                .ToList();
+            foreach (string key in keysToRemove)
             {
-                RasterAnimations.Remove(idleAnimName);
+                RasterAnimations.Remove(key);
             }
 
             CharacterDossiers.Remove(characterID);
 
-            string bundleName = "_c" + characterID.ToString("D5");
+            string bundleName = CharacterDossier.GetBundleName(characterID);
 
             UnloadAssetBundle(bundleName);
         }
@@ -346,6 +333,40 @@ namespace KRG
             }
 
             UnloadAssetBundle(cd.FileName.ToLower());
+        }
+
+        /// <summary>
+        /// Use this only if you need a default EDITOR animation other than Idle.
+        /// The animation must be in the same AssetBundle as the CharacterDossier.
+        /// </summary>
+        public void AddDefaultAnimation(int characterID, string animationName)
+        {
+            string bundleName = CharacterDossier.GetBundleName(characterID);
+
+            AssetBundle assetBundle = LoadAssetBundle(bundleName);
+
+            AddDefaultAnimation(assetBundle, animationName);
+        }
+
+        private void AddDefaultAnimation(AssetBundle assetBundle, string animationName)
+        {
+            RasterAnimation ra;
+
+            if (RasterAnimations.ContainsKey(animationName))
+            {
+                ra = RasterAnimations[animationName];
+
+                if (ra != null)
+                {
+                    return;
+                }
+
+                RasterAnimations.Remove(animationName);
+            }
+
+            ra = assetBundle.LoadAsset<RasterAnimation>(animationName);
+
+            RasterAnimations.Add(animationName, ra);
         }
 
         // OLD SHIZ

@@ -72,8 +72,6 @@ namespace KRG
         
         private void InitAvailableAttacks()
         {
-            GraphicController gc = Body.Refs.GraphicController;
-
             for (int i = 0; i < _attackAbilities.Length; ++i)
             {
                 var aa = _attackAbilities[i];
@@ -93,10 +91,6 @@ namespace KRG
                     _availableAttacks.Add(sig, aaUse);
                     _availableAttacksBase.Add(sig, aaUse);
                     if (sig.hasEzKey) _inputEzKeySigMap.Add(sig.ezKey, sig);
-                }
-                if (gc != null)
-                {
-                    gc.InitAttackAbility(aa);
                 }
             }
         }

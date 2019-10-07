@@ -9,8 +9,8 @@ namespace KRG
     )]
     public sealed class CharacterDossier : ScriptableObject
     {
-        private const string CHARACTER_DOSSIER_SUFFIX = "_CharacterDossier";
-        private const string IDLE_ANIMATION_SUFFIX = "_Idle_RasterAnimation";
+        public const string CHARACTER_DOSSIER_SUFFIX = "_CharacterDossier";
+        public const string IDLE_ANIMATION_SUFFIX = "_Idle_RasterAnimation";
 
         [Header("Game Object Data")]
 
@@ -35,7 +35,12 @@ namespace KRG
         {
             FileName = name.Replace(CHARACTER_DOSSIER_SUFFIX, "");
 
-            if (string.IsNullOrEmpty(GraphicData.IdleAnimationName))
+            if (string.IsNullOrWhiteSpace(FullName))
+            {
+                FullName = FileName;
+            }
+
+            if (string.IsNullOrWhiteSpace(GraphicData.IdleAnimationName))
             {
                 GraphicData.IdleAnimationName = FileName + IDLE_ANIMATION_SUFFIX;
             }
@@ -46,13 +51,18 @@ namespace KRG
 
                 string aniName = sa.animationName;
 
-                if (!string.IsNullOrEmpty(aniName) && !aniName.Contains("_"))
+                if (!string.IsNullOrWhiteSpace(aniName) && !aniName.Contains("_"))
                 {
                     sa.animationName = string.Format("{0}_{1}_RasterAnimation", FileName, aniName);
 
                     GraphicData.StateAnimations[i] = sa;
                 }
             }
+        }
+
+        public static string GetBundleName(int characterID)
+        {
+            return "_c" + characterID.ToString("D5");
         }
     }
 }
