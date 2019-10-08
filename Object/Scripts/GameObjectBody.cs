@@ -30,6 +30,10 @@ namespace KRG
         public bool IsEnemyOrBoss => CharacterType.IsEnemyOrBoss();
         public bool IsNPC => CharacterType.IsNPC();
 
+        // ATTACK PROPERTIES
+
+        public bool IsAttack => GameObjectType == GameObjectType.Attack;
+
         // GRAPHIC PROPERTIES
 
         public bool IsFlippedX => Refs.GraphicController?.IsFlippedX ?? false;

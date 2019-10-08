@@ -99,8 +99,6 @@ namespace KRG {
 
         public virtual RasterAnimation rasterAnimation { get { return _rasterAnimation; } }
 
-        public virtual RasterAnimationInfo rasterAnimationInfo { set { _rasterAnimationInfo = value; } }
-
 #endregion
 
 #region constructor

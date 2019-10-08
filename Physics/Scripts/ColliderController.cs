@@ -5,22 +5,44 @@ namespace KRG
     [RequireComponent(typeof(Collider))]
     public abstract class ColliderController : MonoBehaviour, IBodyComponent
     {
+        // SERIALIZED FIELDS
+
         [SerializeField]
         private GameObjectBody m_Body;
 
+        // COMPOUND PROPERTIES
+
         private Collider m_Collider;
 
-        public GameObjectBody Body => m_Body;
+        protected Collider Collider
+        {
+            get
+            {
+                if (m_Collider == null)
+                {
+                    m_Collider = this.Require<Collider>();
+                }
+                return m_Collider;
+            }
+        }
 
-        public Vector3 Center => ((BoxCollider)m_Collider).center;
-
-        public Vector3 Size => ((BoxCollider)m_Collider).size;
+        // STANDARD PROPERTIES
 
         public bool Enabled
         {
-            get => m_Collider.enabled;
-            set => m_Collider.enabled = value;
+            get => Collider.enabled;
+            set => Collider.enabled = value;
         }
+
+        // SHORTCUT PROPERTIES
+
+        public GameObjectBody Body => m_Body;
+
+        public Vector3 Center => ((BoxCollider)Collider).center;
+
+        public Vector3 Size => ((BoxCollider)Collider).size;
+
+        // METHODS
 
         public void InitBody(GameObjectBody body)
         {
@@ -30,8 +52,6 @@ namespace KRG
         private void Start()
         {
             G.U.Assert(gameObject.layer != Layer.Default, "This GameObject must exist on a hitbox/hurtbox Layer.");
-
-            m_Collider = this.Require<Collider>();
 
             // We always want to have a Rigidbody on this (hitbox/hurtbox) GameObject in order to exclude
             // its Collider from the parent (bounding box) GameObject's Rigidbody when doing SweepTestAll.

@@ -11,7 +11,5 @@ namespace KRG
         public string IdleAnimationName;
 
         public List<StateAnimation> StateAnimations;
-
-        public bool HasStateAnimations => StateAnimations != null && StateAnimations.Count > 0;
     }
 }

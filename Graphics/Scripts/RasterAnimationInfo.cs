@@ -1,15 +1,10 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using TMPro;
 using UnityEngine;
 
-#if KRG_X_TMPRO || NS_TMPRO_PAID || NS_TMPRO
-using TMPro;
-#endif
-
-namespace KRG {
-
-    public class RasterAnimationInfo : MonoBehaviour {
-
+namespace KRG
+{
+    public class RasterAnimationInfo : MonoBehaviour
+    {
         const string _infoFormat =
             "{0}\n" + //name
             "f: {1} ({2}) {3}\n" + //   from:    f:min (as if inclusive), f:random, f:max (as if inclusive)
@@ -18,11 +13,7 @@ namespace KRG {
             "{10}/{11}s {12}/{13}p\n" + //frame sequence current/count, play current/count, frame number/to
             "{14}/{15}t";
 
-#if KRG_X_TMPRO || NS_TMPRO_PAID || NS_TMPRO
         TextMeshPro _text;
-#else
-        TextMesh _text;
-#endif
 
         public string frameSequenceName { get; set; }
 
@@ -57,12 +48,9 @@ namespace KRG {
         public int frameNumber { get; set; }
 
 
-        void Awake() {
-#if KRG_X_TMPRO || NS_TMPRO_PAID || NS_TMPRO
+        void Awake()
+        {
             _text = GetComponent<TextMeshPro>();
-#else
-            _text = GetComponent<TextMesh>();
-#endif
 #if !DEBUG_VISIBILITY
             _text?.Dispose();
 #else
@@ -70,7 +58,8 @@ namespace KRG {
 #endif
         }
 
-        public void Clear() {
+        public void Clear()
+        {
 #if !DEBUG_VISIBILITY
             //do nothing
 #else
@@ -78,7 +67,8 @@ namespace KRG {
 #endif
         }
 
-        public void Refresh() {
+        public void Refresh()
+        {
 #if !DEBUG_VISIBILITY
             //do nothing
 #else

@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using UnityEngine;
 using UnityEngine.Serialization;
@@ -21,6 +20,12 @@ namespace KRG
     )]
     public class RasterAnimation : AnimationData
     {
+        // CONSTANTS
+
+        public const float DEFAULT_SPRITE_FPS = 20;
+
+        // SERIALIZED FIELDS
+
         [Header("Raster Data")]
 
 #if KRG_X_ODIN
@@ -52,14 +57,6 @@ namespace KRG
 #endif
         [SerializeField]
         protected Vector2Int m_Dimensions = default;
-
-#if KRG_X_ODIN
-        [PropertyOrder(-10)]
-#endif
-        [SerializeField]
-        [FormerlySerializedAs("_dimensions")]
-        [FormerlySerializedAs("m_dimensions")]
-        protected Vector2 m_OldDimensions = default;
 
 #if KRG_X_ODIN
         [PropertyOrder(-10)]
@@ -110,7 +107,9 @@ namespace KRG
 
 
 
-        public virtual Vector2 dimensions => m_Dimensions != Vector2Int.zero ? m_Dimensions : m_OldDimensions;
+        public virtual Vector2 Dimensions => m_Dimensions;
+
+        public virtual float FrameRate => m_SecondsPerFrame > 0 ? 1f / m_SecondsPerFrame : DEFAULT_SPRITE_FPS;
 
         public virtual int frameSequenceCount { get { return _frameSequences.Length; } }
 

@@ -74,8 +74,7 @@ namespace KRG
 
             if (Hitbox != null)
             {
-                this.Forbid<BoxCollider>();
-                _boxCollider = gameObject.AddComponent<BoxCollider>();
+                _boxCollider = G.U.Guarantee<BoxCollider>(this);
                 _boxCollider.center = Hitbox.Center;
                 _boxCollider.size = Hitbox.Size;
                 _boxCollider.isTrigger = true;

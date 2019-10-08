@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 #if NS_DG_TWEENING
 using DG.Tweening;
@@ -10,9 +11,10 @@ namespace KRG
     [ExecuteAlways]
     public class GraphicController : MonoBehaviour, IBodyComponent
     {
-        // CONSTANTS
+        // EVENTS
 
-        public const float DEFAULT_SPRITE_FPS = 20;
+        public event System.Action<string> FrameSequenceStarted;
+        public event System.Action<string> FrameSequenceStopped;
 
         // SERIALIZED FIELDS
 
@@ -41,6 +43,8 @@ namespace KRG
 
         private RasterAnimationState m_RasterAnimationState;
 
+        private RawImage m_RawImage;
+
         // COMPOUND PROPERTIES
 
         private Color m_ImageColor = Color.white;
@@ -58,8 +62,6 @@ namespace KRG
         // STORAGE PROPERTIES
 
         public RasterAnimation CurrentRasterAnimation { get; private set; }
-
-        public RasterAnimationInfo RasterAnimationInfo { get; set; } // mainly for debug purposes
 
         protected MeshSortingLayer MeshSortingLayer { get; private set; }
 
@@ -83,23 +85,25 @@ namespace KRG
 
         public GameObjectBody Body => m_Body;
 
-        protected virtual float DeltaTime => G.U.IsPlayMode(this) ? TimeThread.deltaTime : Time.deltaTime;
-
         protected virtual GameObject GraphicGameObject => m_Body.Refs.GraphicGameObject;
-
-        protected virtual bool IsTimePaused => G.U.IsPlayMode(this) ? TimeThread.isPaused : false;
 
         protected virtual ITimeThread TimeThread => G.time.GetTimeThread(TimeThreadInstance.Field);
 
-        private float AnimationFrameRate => DEFAULT_SPRITE_FPS;
+        private float AnimationFrameRate => CurrentRasterAnimation.FrameRate;
 
         private int AnimationImageCount => m_AnimationTextureList?.Count ?? 0;
 
         private Material BaseSharedMaterial => m_Body.CharacterDossier?.GraphicData.BaseSharedMaterial;
 
+        private CharacterDossier CharacterDossier => m_Body?.CharacterDossier; // no m_Body in StandaloneAnimation
+
+        private float DeltaTime => TimeThread.deltaTime;
+
         private GameObjectType GameObjectType => m_Body.GameObjectType;
 
         private string IdleAnimationName => m_Body.CharacterDossier?.GraphicData.IdleAnimationName;
+
+        private bool IsTimePaused => TimeThread.isPaused;
 
         // FLIP STUFF
 
@@ -144,6 +148,13 @@ namespace KRG
 
         protected virtual void Start()
         {
+            m_RawImage = GetComponent<RawImage>();
+
+            if (m_RawImage != null)
+            {
+                return;
+            }
+
             Renderer = GraphicGameObject.Require<Renderer>();
 
             MeshSortingLayer = G.U.Guarantee<MeshSortingLayer>(GraphicGameObject);
@@ -180,7 +191,7 @@ namespace KRG
 
         protected virtual void Update()
         {
-            if (IsTimePaused || G.U.IsEditMode(this)) return;
+            if (G.U.IsEditMode(this) || CurrentRasterAnimation == null || IsTimePaused) return;
 
             m_AnimationTimeElapsed += DeltaTime;
 
@@ -227,20 +238,27 @@ namespace KRG
 
         private void InitAttack()
         {
+            if (G.U.IsEditMode(this)) return;
+
             Attack a = this.Require<Attack>();
             a.attacker.Body.Refs.GraphicController.SetAttackerAttackAbility(a.attackAbility);
         }
 
         private void RefreshGraphic()
         {
-            if (m_Material == null) return;
+            int i = Mathf.Min(m_AnimationImageIndex, AnimationImageCount - 1);
+            Texture texture = m_AnimationTextureList[i];
 
-            if (AnimationImageCount > m_AnimationImageIndex)
+            if (m_RawImage != null)
             {
-                m_Material.mainTexture = m_AnimationTextureList[m_AnimationImageIndex];
+                m_RawImage.texture = texture;
+                m_RawImage.color = ImageColor;
             }
-
-            m_Material.color = ImageColor;
+            else if (m_Material != null)
+            {
+                m_Material.mainTexture = texture;
+                m_Material.color = ImageColor;
+            }
         }
 
         // ANIMATION METHODS
@@ -250,7 +268,7 @@ namespace KRG
             SetAnimation(G.obj.RasterAnimations[animationName]);
         }
 
-        public void SetAnimation(RasterAnimation rasterAnimation)
+        public virtual void SetAnimation(RasterAnimation rasterAnimation)
         {
             m_AnimationFrameIndex = 0;
             m_AnimationFrameListIndex = 0;
@@ -264,7 +282,6 @@ namespace KRG
             {
                 m_RasterAnimationState = new RasterAnimationState(
                     rasterAnimation, OnFrameSequenceStart, OnFrameSequenceStop);
-                m_RasterAnimationState.rasterAnimationInfo = RasterAnimationInfo;
                 m_AnimationImageIndex = m_RasterAnimationState.frameSequenceFromFrame - 1; // 1-based -> 0-based
             }
 
@@ -346,8 +363,6 @@ namespace KRG
 
         private void AdvanceImageIndex()
         {
-            //m_AnimationImageIndex = (m_AnimationImageIndex + 1) % AnimationImageCount;
-
             // GraphicController uses zero-based image index (m_AnimationImageIndex)
             // RasterAnimation uses one-based frame number (frameNumber)
 
@@ -376,12 +391,12 @@ namespace KRG
 
         private void OnFrameSequenceStart(RasterAnimationState ras)
         {
-
+            FrameSequenceStarted?.Invoke(ras.frameSequenceName);
         }
 
         private void OnFrameSequenceStop(RasterAnimationState ras)
         {
-
+            FrameSequenceStopped?.Invoke(ras.frameSequenceName);
         }
 
         private void OnAnimationStop()
@@ -396,11 +411,9 @@ namespace KRG
         {
             if (G.U.IsEditMode(this)) return;
 
-            CharacterDossier cd = m_Body.CharacterDossier;
+            if (CharacterDossier == null) return;
 
-            if (cd == null) return;
-
-            List<StateAnimation> stateAnimations = cd.GraphicData.StateAnimations;
+            List<StateAnimation> stateAnimations = CharacterDossier.GraphicData.StateAnimations;
 
             for (int i = 0; i < stateAnimations.Count; ++i)
             {
@@ -414,11 +427,9 @@ namespace KRG
         {
             if (G.U.IsEditMode(this)) return;
 
-            CharacterDossier cd = m_Body.CharacterDossier;
+            if (CharacterDossier == null) return;
 
-            if (cd == null) return;
-
-            List<StateAnimation> stateAnimations = cd.GraphicData.StateAnimations;
+            List<StateAnimation> stateAnimations = CharacterDossier.GraphicData.StateAnimations;
 
             for (int i = 0; i < stateAnimations.Count; ++i)
             {
@@ -430,13 +441,11 @@ namespace KRG
 
         private void OnCharacterStateChange(ulong state, bool value)
         {
-            CharacterDossier cd = m_Body.CharacterDossier;
-
-            if (cd == null) return;
-
             if (m_AttackerAttackAbility != null) return;
 
-            List<StateAnimation> stateAnimations = cd.GraphicData.StateAnimations;
+            if (CharacterDossier == null) return;
+
+            List<StateAnimation> stateAnimations = CharacterDossier.GraphicData.StateAnimations;
 
             string animationName = IdleAnimationName;
 
