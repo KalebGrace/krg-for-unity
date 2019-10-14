@@ -18,9 +18,8 @@ namespace KRG
         // EVENTS
 
         public event AnimationEndHandler AnimationEnded;
-        public event System.Action<bool> FlippedX;
-        public event System.Action<string> FrameSequenceStarted;
-        public event System.Action<string> FrameSequenceStopped;
+        public event RasterAnimationState.Handler FrameSequenceStarted;
+        public event RasterAnimationState.Handler FrameSequenceStopped;
 
         // SERIALIZED FIELDS
 
@@ -363,12 +362,12 @@ namespace KRG
 
         private void OnFrameSequenceStart(RasterAnimationState state)
         {
-            FrameSequenceStarted?.Invoke(state.frameSequenceName);
+            FrameSequenceStarted?.Invoke(state);
         }
 
         private void OnFrameSequenceStop(RasterAnimationState state)
         {
-            FrameSequenceStopped?.Invoke(state.frameSequenceName);
+            FrameSequenceStopped?.Invoke(state);
         }
 
         protected virtual void OnAnimationSet() { }
