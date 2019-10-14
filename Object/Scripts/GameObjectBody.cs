@@ -1,9 +1,10 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 namespace KRG
 {
     [ExecuteAlways]
-    public sealed class GameObjectBody : MonoBehaviour
+    public sealed class GameObjectBody : MonoBehaviour, ICharacterDebugText
     {
         // SERIALIZED FIELDS
 
@@ -12,9 +13,20 @@ namespace KRG
         [Enum(typeof(CharacterID))]
         public int CharacterID = default;
 
+        [SerializeField, Enum(typeof(FacingDirection))]
+        private int m_FacingDirection = default;
+        [SerializeField, HideInInspector]
+        private int m_FacingDirectionOrig = default; // only used OnValidate
+
         public GameObjectRefs Refs = default;
 
         public GameObjectData Data = default;
+
+        // RUNTIME EVENTS & DELEGATES
+
+        public event FacingDirectionHandler FacingDirectionChanged;
+
+        public delegate void FacingDirectionHandler(Direction oldDirection, Direction newDirection);
 
         // CHARACTER PROPERTIES
 
@@ -23,25 +35,45 @@ namespace KRG
         public CharacterType CharacterType => CharacterDossier?.CharacterType ?? CharacterType.None;
 
         public bool IsCharacter => GameObjectType == GameObjectType.Character;
-        public bool IsCharacterError => IsCharacter && CharacterDossier == null;
-        public bool IsPlayerCharacter => CharacterType.IsPlayerCharacter();
-        public bool IsBoss => CharacterType.IsBoss();
-        public bool IsEnemy => CharacterType.IsEnemy();
-        public bool IsEnemyOrBoss => CharacterType.IsEnemyOrBoss();
-        public bool IsNPC => CharacterType.IsNPC();
+        public bool IsPlayerCharacter => CharacterType == CharacterType.PlayerCharacter;
+        public bool IsNPC => CharacterType == CharacterType.NonPlayerCharacter;
+        public bool IsEnemyOrBoss => IsEnemy || IsBoss;
+        public bool IsEnemy => CharacterType == CharacterType.Enemy;
+        public bool IsBoss => CharacterType == CharacterType.Boss;
 
         // ATTACK PROPERTIES
 
         public bool IsAttack => GameObjectType == GameObjectType.Attack;
 
-        // GRAPHIC PROPERTIES
+        // GRAPHICAL & VISUAL PROPERTIES
 
-        public bool IsFlippedX => Refs.GraphicController?.IsFlippedX ?? false;
+        public Direction FacingDirection
+        {
+            get => (Direction)m_FacingDirection;
+            set
+            {
+                if (m_FacingDirection != (int)value)
+                {
+                    OnFacingDirectionChange((Direction)m_FacingDirection, value);
+                    m_FacingDirection = (int)value;
+                }
+            }
+        }
+
+        // DEBUG PROPERTIES
+
+        string ICharacterDebugText.Text { get; set; }
 
         // MONOBEHAVIOUR METHODS
 
         private void OnValidate()
         {
+            if (m_FacingDirectionOrig != m_FacingDirection)
+            {
+                OnFacingDirectionChange((Direction)m_FacingDirectionOrig, (Direction)m_FacingDirection);
+                m_FacingDirectionOrig = m_FacingDirection;
+            }
+
             Refs.AutoAssign(this);
         }
 
@@ -51,13 +83,13 @@ namespace KRG
             {
                 switch (GameObjectType)
                 {
-                    case GameObjectType.None:
-                        break;
                     case GameObjectType.Character:
                         InitCharacter();
                         break;
                     case GameObjectType.Attack:
                         InitAttack();
+                        break;
+                    case GameObjectType.None:
                         break;
                     default:
                         G.U.Err("Unsupported GameObjectType {0}.", GameObjectType);
@@ -82,7 +114,7 @@ namespace KRG
 
         private void InitCharacter()
         {
-            if (IsCharacterError)
+            if (IsCharacter && CharacterDossier == null)
             {
                 G.U.Err("Character error for character ID {0}.", CharacterID);
                 return;
@@ -90,8 +122,6 @@ namespace KRG
 
             if (G.U.IsEditMode(this))
             {
-                // TODO: should auto-assign these values, eventually
-
                 string properTag = CharacterDossier.CharacterType.ToTag();
                 if (!gameObject.CompareTag(properTag))
                 {
@@ -103,23 +133,37 @@ namespace KRG
                     G.U.Err("Invalid layer {0}. Should be {1}.", gameObject.layer, Layer.PCBoundBox);
                 }
             }
-
-#if DEBUG_VISIBILITY
-            G.U.Todo("revise this");
-            /*
-            Transform center = VisRect.transform;
-            Instantiate(G.config.characterDebugTextPrefab, center).Init(this);
-            if (Refs.GraphicController != null)
+            else
             {
-                Refs.GraphicController.RasterAnimationInfo = Instantiate(G.config.rasterAnimationInfoPrefab, center);
-            }
-            */
+#if DEBUG_VISIBILITY
+                Transform centerTransform = Refs.VisRect?.transform ?? transform;
+                Instantiate(G.config.characterDebugTextPrefab, centerTransform).Init(this);
 #endif
+            }
         }
 
-        private void InitAttack()
-        {
+        private void InitAttack() { }
 
+        private void OnFacingDirectionChange(Direction oldDirection, Direction newDirection)
+        {
+            if (G.U.IsPlayMode(this))
+            {
+                FacingDirectionChanged?.Invoke(oldDirection, newDirection);
+            }
+            else
+            {
+                // get all IFacingDirection components, including inactive ones, then call methods
+
+                IFacingDirection[] components = GetComponentsInChildren<IFacingDirection>(true);
+
+                foreach (IFacingDirection c in components)
+                {
+                    if (c.Body == this)
+                    {
+                        c.OnFacingDirectionChange(oldDirection, newDirection);
+                    }
+                }
+            }
         }
     }
 }

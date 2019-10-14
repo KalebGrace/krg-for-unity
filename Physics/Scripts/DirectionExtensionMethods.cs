@@ -2,9 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace KRG {
+namespace KRG
+{
 
-    public static class DirectionExtensionMethods {
+    public static class DirectionExtensionMethods
+    {
 
         /// <summary>
         /// This event can be used to return a new _compassTopCustom value.
@@ -15,15 +17,19 @@ namespace KRG {
 
         static Direction _compassTopCustom = Direction.North;
 
-        public static Direction GetAbsoluteDirection(this Direction direction) {
-            if (compassTopCustomUpdate != null) {
+        public static Direction GetAbsoluteDirection(this Direction direction)
+        {
+            if (compassTopCustomUpdate != null)
+            {
                 _compassTopCustom = compassTopCustomUpdate();
             }
             return direction.GetAbsoluteDirection(_compassTopCustom);
         }
 
-        public static Direction GetAbsoluteDirection(this Direction direction, Direction compassTop) {
-            switch (compassTop.GetDirectionType()) {
+        public static Direction GetAbsoluteDirection(this Direction direction, Direction compassTop)
+        {
+            switch (compassTop.GetDirectionType())
+            {
                 case DirectionType.Cardinal:
                     break;
                 default:
@@ -32,7 +38,8 @@ namespace KRG {
                     G.U.Err(s, compassTop.ToString(), compassTop.GetDirectionType());
                     return direction;
             }
-            switch (direction.GetDirectionType()) {
+            switch (direction.GetDirectionType())
+            {
                 case DirectionType.Cardinal:
                 case DirectionType.Ordinal:
                     return direction;
@@ -46,22 +53,32 @@ namespace KRG {
             }
         }
 
-        public static Direction GetCardinalDirection(this Direction direction) {
-            switch (direction.GetDirectionType()) {
+        public static Direction GetCardinalDirection(this Direction direction)
+        {
+            switch (direction.GetDirectionType())
+            {
                 case DirectionType.Cardinal:
                     return direction;
                 case DirectionType.Ordinal:
-                    if (direction == Direction.NorthWest || direction == Direction.SouthWest) {
+                    if (direction == Direction.NorthWest || direction == Direction.SouthWest)
+                    {
                         return Direction.West;
-                    } else {
+                    }
+                    else
+                    {
                         return Direction.East;
                     }
                 case DirectionType.Relative:
-                    if (direction == Direction.UpLeft || direction == Direction.DownLeft) {
+                    if (direction == Direction.UpLeft || direction == Direction.DownLeft)
+                    {
                         return Direction.Left;
-                    } else if (direction == Direction.UpRight || direction == Direction.DownRight) {
+                    }
+                    else if (direction == Direction.UpRight || direction == Direction.DownRight)
+                    {
                         return Direction.Right;
-                    } else {
+                    }
+                    else
+                    {
                         return direction;
                     }
                 default:
@@ -71,9 +88,11 @@ namespace KRG {
         }
 
         //by 45 degrees
-        public static Direction GetClockwiseDirection(this Direction direction) {
+        public static Direction GetClockwiseDirection(this Direction direction)
+        {
             int newDir;
-            switch (direction.GetDirectionType()) {
+            switch (direction.GetDirectionType())
+            {
                 case DirectionType.Cardinal:
                 case DirectionType.Ordinal:
                     newDir = (int)direction + 45;
@@ -88,9 +107,11 @@ namespace KRG {
         }
 
         //by 45 degrees
-        public static Direction GetCounterClockwiseDirection(this Direction direction) {
+        public static Direction GetCounterClockwiseDirection(this Direction direction)
+        {
             int newDir;
-            switch (direction.GetDirectionType()) {
+            switch (direction.GetDirectionType())
+            {
                 case DirectionType.Cardinal:
                 case DirectionType.Ordinal:
                     newDir = (int)direction - 45;
@@ -104,10 +125,13 @@ namespace KRG {
             }
         }
 
-        public static DirectionType GetDirectionType(this Direction direction) {
+        public static DirectionType GetDirectionType(this Direction direction)
+        {
             int dir = (int)direction;
-            if (dir >= 0) {
-                switch (dir % 90) {
+            if (dir >= 0)
+            {
+                switch (dir % 90)
+                {
                     case 0:
                         return DirectionType.Cardinal;
                     case 45:
@@ -115,39 +139,53 @@ namespace KRG {
                     default:
                         return DirectionType.Unknown;
                 }
-            } else if (dir >= -8) {
+            }
+            else if (dir >= -8)
+            {
                 return DirectionType.Relative;
-            } else if (dir >= -10) {
+            }
+            else if (dir >= -10)
+            {
                 return DirectionType.Altitude;
-            } else {
+            }
+            else
+            {
                 return DirectionType.Unknown;
             }
         }
 
-        public static Direction GetOppositeDirection(this Direction direction) {
-            int newDir;
-            switch (direction.GetDirectionType()) {
-                case DirectionType.Cardinal:
-                case DirectionType.Ordinal:
-                    newDir = (int)direction + 180;
-                    return (Direction)(newDir >= 360 ? newDir - 360 : newDir);
-                case DirectionType.Relative:
-                    newDir = (int)direction - 4;
-                    return (Direction)(newDir <= -9 ? newDir + 8 : newDir);
-                case DirectionType.Altitude:
-                    return direction == Direction.Above ? Direction.Below : Direction.Above;
-                default:
-                    G.U.Err("Currently unsupported.");
-                    return Direction.Unknown;
+        public static Direction GetOpposite(this Direction direction)
+        {
+            int d = (int)direction;
+            if (d >= 0) // Cardinal & Ordinal
+            {
+                return (Direction)((d + 180) % 360);
             }
+            if (d >= -8) // Relative
+            {
+                d -= 4;
+                return (Direction)(d >= -8 ? d : d + 8);
+            }
+            switch (direction)
+            {
+                case Direction.Above:
+                    return Direction.Below;
+                case Direction.Below:
+                    return Direction.Above;
+            }
+            G.U.Err("Unsupported opposite for direction {0}.", direction);
+            return Direction.Unknown;
         }
 
-        public static Direction GetRotationalCorrection(this Direction target, Direction culprit) {
+        public static Direction GetRotationalCorrection(this Direction target, Direction culprit)
+        {
             int newDir;
-            switch (target.GetDirectionType()) {
+            switch (target.GetDirectionType())
+            {
                 case DirectionType.Cardinal:
                 case DirectionType.Ordinal:
-                    switch (culprit.GetDirectionType()) {
+                    switch (culprit.GetDirectionType())
+                    {
                         case DirectionType.Cardinal:
                         case DirectionType.Ordinal:
                             newDir = (int)target - (int)culprit;
@@ -162,8 +200,10 @@ namespace KRG {
             }
         }
 
-        public static float GetRotationalFloat(this Direction direction) {
-            switch (direction.GetDirectionType()) {
+        public static float GetRotationalFloat(this Direction direction)
+        {
+            switch (direction.GetDirectionType())
+            {
                 case DirectionType.Cardinal:
                 case DirectionType.Ordinal:
                     return (int)direction;
@@ -173,8 +213,10 @@ namespace KRG {
             }
         }
 
-        public static Vector3 GetRotationalVector3(this Direction direction) {
-            switch (direction.GetDirectionType()) {
+        public static Vector3 GetRotationalVector3(this Direction direction)
+        {
+            switch (direction.GetDirectionType())
+            {
                 case DirectionType.Cardinal:
                 case DirectionType.Ordinal:
                     return new Vector3(0f, (int)direction, 0f);
@@ -182,6 +224,15 @@ namespace KRG {
                     G.U.Err("Currently unsupported.");
                     return Vector3.zero;
             }
+        }
+
+        public static bool IsOpposite(this Direction source, Direction target)
+        {
+            if (source == Direction.Unknown || target == Direction.Unknown)
+            {
+                return false;
+            }
+            return source.GetOpposite() == target;
         }
     }
 }

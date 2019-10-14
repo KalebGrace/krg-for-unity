@@ -203,6 +203,12 @@ namespace KRG
             {
                 string path = System.IO.Path.Combine(Application.streamingAssetsPath, bundleName);
 
+                if (!System.IO.File.Exists(path))
+                {
+                    G.U.Warn("AssetBundle {0} does not exist at path {1}.", bundleName, path);
+                    return null;
+                }
+
                 assetBundle = AssetBundle.LoadFromFile(path);
 
                 if (assetBundle == null)
@@ -309,17 +315,28 @@ namespace KRG
             UnloadAssetBundle(bundleName);
         }
 
-        private void LoadCharacterAssetPack(int characterID)
+        /// <summary>
+        /// This will be called automatically for each character
+        /// in a gameplay scene when the scene is started.
+        /// Call this manually ONLY in the case where
+        /// you need to spawn a character dynamically.
+        /// </summary>
+        public void LoadCharacterAssetPack(int characterID)
         {
             CharacterDossier cd = CharacterDossiers[characterID];
 
             AssetBundle ab = LoadAssetBundle(cd.FileName.ToLower());
 
+            if (ab == null) return;
+
             foreach (StateAnimation sa in cd.GraphicData.StateAnimations)
             {
-                RasterAnimation ra = ab.LoadAsset<RasterAnimation>(sa.animationName);
+                if (!RasterAnimations.ContainsKey(sa.animationName))
+                {
+                    RasterAnimation ra = ab.LoadAsset<RasterAnimation>(sa.animationName);
 
-                RasterAnimations.Add(sa.animationName, ra);
+                    RasterAnimations.Add(sa.animationName, ra);
+                }
             }
         }
 

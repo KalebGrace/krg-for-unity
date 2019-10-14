@@ -26,25 +26,16 @@ namespace KRG
 
         // SERIALIZED FIELDS
 
-        [Header("Raster Data")]
+        [Header("Custom Data")]
 
 #if KRG_X_ODIN
         [PropertyOrder(-10)]
 #endif
         public RasterAnimationData Data;
 
-#if KRG_X_ODIN
-        [PropertyOrder(-10)]
-#endif
-        [SerializeField]
-        [FormerlySerializedAs("m_gifBytes")]
-        TextAsset _gifBytes = default;
+        //--
 
-#if KRG_X_ODIN
-        [PropertyOrder(-10)]
-#endif
-        [SerializeField]
-        protected string m_GifName = default;
+        [Header("Essentials")]
 
 #if KRG_X_ODIN
         [PropertyOrder(-10)]
@@ -63,6 +54,23 @@ namespace KRG
 #endif
         [SerializeField]
         protected List<Texture2D> m_FrameTextures = new List<Texture2D>();
+
+        //--
+
+        [Header("GIF Import")]
+
+#if KRG_X_ODIN
+        [PropertyOrder(-10)]
+#endif
+        [SerializeField]
+        [FormerlySerializedAs("m_gifBytes")]
+        TextAsset _gifBytes = default;
+
+#if KRG_X_ODIN
+        [PropertyOrder(-10)]
+#endif
+        [SerializeField]
+        protected string m_GifName = default;
 
         //--
 
@@ -99,7 +107,7 @@ namespace KRG
 #endif
         [SerializeField]
         [FormerlySerializedAs("m_frameSequences")]
-        FrameSequence[] _frameSequences = default;
+        protected FrameSequence[] _frameSequences = default;
 
 
 
@@ -180,73 +188,73 @@ namespace KRG
         public virtual string GetFrameSequenceName(int frameSequenceIndex)
         {
             FrameSequence fs = GetFrameSequence(frameSequenceIndex);
-            return fs != null ? fs.name : "";
+            return fs != null ? fs.Name : "";
         }
 
         public ReadOnlyCollection<int> GetFrameSequenceFrameList(int frameSequenceIndex)
         {
             FrameSequence fs = GetFrameSequence(frameSequenceIndex);
-            return fs != null ? fs.frameList : null;
+            return fs != null ? fs.FrameList : null;
         }
 
         public virtual int GetFrameSequenceFromFrame(int frameSequenceIndex)
         {
             FrameSequence fs = GetFrameSequence(frameSequenceIndex);
-            return fs != null ? fs.fromFrame : 0;
+            return fs != null ? fs.FromFrame : 0;
         }
 
         public virtual int GetFrameSequenceFromFrameMin(int frameSequenceIndex)
         {
             FrameSequence fs = GetFrameSequence(frameSequenceIndex);
-            return fs != null ? fs.fromFrameMinValue + (fs.fromFrameMinInclusive ? 0 : 1) : 0;
+            return fs != null ? fs.FromFrameMinValue + (fs.FromFrameMinInclusive ? 0 : 1) : 0;
         }
 
         public virtual int GetFrameSequenceFromFrameMax(int frameSequenceIndex)
         {
             FrameSequence fs = GetFrameSequence(frameSequenceIndex);
-            return fs != null ? fs.fromFrameMaxValue - (fs.fromFrameMaxInclusive ? 0 : 1) : 0;
+            return fs != null ? fs.FromFrameMaxValue - (fs.FromFrameMaxInclusive ? 0 : 1) : 0;
         }
 
         public virtual int GetFrameSequenceToFrame(int frameSequenceIndex)
         {
             FrameSequence fs = GetFrameSequence(frameSequenceIndex);
-            return fs != null ? fs.toFrame : 0;
+            return fs != null ? fs.ToFrame : 0;
         }
 
         public virtual int GetFrameSequenceToFrameMin(int frameSequenceIndex)
         {
             FrameSequence fs = GetFrameSequence(frameSequenceIndex);
-            return fs != null ? fs.toFrameMinValue + (fs.toFrameMinInclusive ? 0 : 1) : 0;
+            return fs != null ? fs.ToFrameMinValue + (fs.ToFrameMinInclusive ? 0 : 1) : 0;
         }
 
         public virtual int GetFrameSequenceToFrameMax(int frameSequenceIndex)
         {
             FrameSequence fs = GetFrameSequence(frameSequenceIndex);
-            return fs != null ? fs.toFrameMaxValue - (fs.toFrameMaxInclusive ? 0 : 1) : 0;
+            return fs != null ? fs.ToFrameMaxValue - (fs.ToFrameMaxInclusive ? 0 : 1) : 0;
         }
 
         public virtual int GetFrameSequencePlayCount(int frameSequenceIndex)
         {
             FrameSequence fs = GetFrameSequence(frameSequenceIndex);
-            return fs != null ? fs.playCount : -1;
+            return fs != null ? fs.PlayCount : -1;
         }
 
         public virtual int GetFrameSequencePlayCountMin(int frameSequenceIndex)
         {
             FrameSequence fs = GetFrameSequence(frameSequenceIndex);
-            return fs != null ? fs.playCountMinValue + (fs.playCountMinInclusive ? 0 : 1) : -1;
+            return fs != null ? fs.PlayCountMinValue + (fs.PlayCountMinInclusive ? 0 : 1) : -1;
         }
 
         public virtual int GetFrameSequencePlayCountMax(int frameSequenceIndex)
         {
             FrameSequence fs = GetFrameSequence(frameSequenceIndex);
-            return fs != null ? fs.playCountMaxValue - (fs.playCountMaxInclusive ? 0 : 1) : -1;
+            return fs != null ? fs.PlayCountMaxValue - (fs.PlayCountMaxInclusive ? 0 : 1) : -1;
         }
 
-        public virtual bool GetFrameSequenceDoesCallCode(int frameSequenceIndex)
+        public virtual int GetFrameSequencePreAction(int frameSequenceIndex)
         {
             FrameSequence fs = GetFrameSequence(frameSequenceIndex);
-            return fs != null && fs.doesCallCode;
+            return fs?.PreSequenceAction ?? (int)FrameSequenceAction.None;
         }
 
 
@@ -276,9 +284,9 @@ namespace KRG
             for (int i = 0; i < _frameSequences.Length; i++)
             {
                 fs = _frameSequences[i];
-                min = fs.playCountMinValue;
-                max = fs.playCountMaxValue;
-                if (max > 1 || (max == 1 && fs.playCountMaxInclusive) || (min == 1 && fs.playCountMinInclusive))
+                min = fs.PlayCountMinValue;
+                max = fs.PlayCountMaxValue;
+                if (max > 1 || (max == 1 && fs.PlayCountMaxInclusive) || (min == 1 && fs.PlayCountMinInclusive))
                 {
                     _hasPlayableFrameSequences = true;
                     return;

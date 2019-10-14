@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 4319300455479031038}
   - component: {fileID: 7998673047247789058}
   - component: {fileID: 2004746792654287276}
+  - component: {fileID: 4156322773038683483}
   m_Layer: 0
   m_Name: GameObjectBasePrefab
   m_TagString: Untagged
@@ -50,8 +51,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   GameObjectType: 0
   CharacterID: 0
+  m_FacingDirection: 0
+  m_FacingDirectionOrig: 0
   Refs:
     Animator: {fileID: 0}
+    StateOwner: {fileID: 0}
     GraphicGameObject: {fileID: 6722352719591099782}
     GraphicController: {fileID: 4319300455479031038}
     VisRect: {fileID: 1602981788724092386}
@@ -80,6 +84,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c80d04beb8c4c481994daed6c063da4b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_StandaloneAnimation: {fileID: 0}
   m_Body: {fileID: 8036843623060470532}
 --- !u!65 &7998673047247789058
 BoxCollider:
@@ -110,6 +115,23 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!114 &4156322773038683483
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4894399774429479150}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 73e64a65c3f3c4b7f963111f49da9b34, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_FacingDirection: 0
+  m_FlipLocalPosition: 0
+  m_FlipLocalScale: 0
+  m_FlipCollider: 0
+  m_Body: {fileID: 8036843623060470532}
 --- !u!1 &6722352719591099782
 GameObject:
   m_ObjectHideFlags: 0
@@ -121,7 +143,8 @@ GameObject:
   - component: {fileID: 364865458212220561}
   - component: {fileID: 8254748638680798732}
   - component: {fileID: 4124051727414282914}
-  - component: {fileID: 955369824666967927}
+  - component: {fileID: 5555444749185012503}
+  - component: {fileID: 2260792902983552933}
   m_Layer: 12
   m_Name: QuadMeshSprite
   m_TagString: Untagged
@@ -188,7 +211,7 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
---- !u!114 &955369824666967927
+--- !u!114 &5555444749185012503
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -200,6 +223,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f8e4ed47150da4f2592f8bbbe610aa16, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &2260792902983552933
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6722352719591099782}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 73e64a65c3f3c4b7f963111f49da9b34, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_FacingDirection: 0
+  m_FlipLocalPosition: 0
+  m_FlipLocalScale: 0
+  m_FlipCollider: 0
+  m_Body: {fileID: 8036843623060470532}
 --- !u!1 &8769801547907108710
 GameObject:
   m_ObjectHideFlags: 0
@@ -210,6 +250,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5154097292144769540}
   - component: {fileID: 1602981788724092386}
+  - component: {fileID: 3306170681671098377}
   m_Layer: 0
   m_Name: VisRect
   m_TagString: Untagged
@@ -248,4 +289,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b21a4cf8ced10473ca910b565268f429, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_Body: {fileID: 8036843623060470532}
+--- !u!114 &3306170681671098377
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8769801547907108710}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 73e64a65c3f3c4b7f963111f49da9b34, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_FacingDirection: 0
+  m_FlipLocalPosition: 0
+  m_FlipLocalScale: 0
+  m_FlipCollider: 0
   m_Body: {fileID: 8036843623060470532}

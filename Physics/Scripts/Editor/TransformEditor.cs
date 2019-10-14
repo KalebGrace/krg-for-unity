@@ -1,13 +1,11 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEditor;
+﻿using UnityEditor;
 using UnityEngine;
 
-namespace KRG {
-
+namespace KRG
+{
     [CanEditMultipleObjects, CustomEditor(typeof(Transform))]
-    public class TransformEditor : TransformInspector {
-
+    public class TransformEditor : TransformInspector
+    {
         const string _resetAllControl = "ResetAll";
         const string _resetPositionControl = "ResetPosition";
         const string _resetRotationControl = "ResetRotation";
@@ -17,7 +15,8 @@ namespace KRG {
         GUIStyle _resetAllStyle;
         GUIStyle _resetSingleStyle;
 
-        public override void OnInspectorGUI() {
+        public override void OnInspectorGUI()
+        {
             EditorGUIUtility.wideMode = TransformInspector.WIDE_MODE;
 
             // align field to right of inspector
@@ -53,14 +52,16 @@ namespace KRG {
             EditorGUILayout.PropertyField(scaleProperty, scaleGUIContent);
             EditorGUILayout.EndHorizontal();
 
-            if (!ValidatePosition(((Transform)target).position)) {
+            if (!ValidatePosition(((Transform)target).position))
+            {
                 EditorGUILayout.HelpBox(positionWarningText, MessageType.Warning);
             }
 
             serializedObject.ApplyModifiedProperties();
         }
 
-        protected void ResetAll() {
+        protected void ResetAll()
+        {
             GUI.FocusControl(_resetAllControl);
             //perform the equivalent of Reset(), but without referencing each Transform
             positionProperty.vector3Value = Vector3.zero;
@@ -68,17 +69,20 @@ namespace KRG {
             scaleProperty.vector3Value = Vector3.one;
         }
 
-        protected void ResetPosition() {
+        protected void ResetPosition()
+        {
             GUI.FocusControl(_resetPositionControl);
             positionProperty.vector3Value = Vector3.zero;
         }
 
-        protected void ResetRotation() {
+        protected void ResetRotation()
+        {
             GUI.FocusControl(_resetRotationControl);
             rotationProperty.quaternionValue = Quaternion.identity;
         }
 
-        protected void ResetScale() {
+        protected void ResetScale()
+        {
             GUI.FocusControl(_resetScaleControl);
             scaleProperty.vector3Value = Vector3.one;
         }

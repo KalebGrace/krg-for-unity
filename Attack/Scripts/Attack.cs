@@ -25,20 +25,14 @@ namespace KRG
         [SerializeField, FormerlySerializedAs("m_attackAbility")]
         AttackAbility _attackAbility = default;
 
-        [Header("Transform")]
-
-        [SerializeField]
-        List<Transform> _flippableTransforms = default;
-
         [Header("Body")]
 
         [SerializeField]
-        private GameObjectBody m_Body;
+        private GameObjectBody m_Body = default;
 
         Attacker _attacker;
         List<AttackTarget> _attackTargets = new List<AttackTarget>();
         BoxCollider _boxCollider;
-        bool _isFlippedX;
         bool _isInitialized;
         bool _isPlayerCharacterAttacker;
         ITimeThread _timeThread;
@@ -171,6 +165,14 @@ namespace KRG
             ForceReleaseTargets();
         }
 
+        public virtual void OnAttackerAnimationEnd()
+        {
+            if (_attackAbility.isJoinedToAttacker)
+            {
+                gameObject.Dispose();
+            }
+        }
+
         public void Init(AttackAbility attackAbility, Attacker attacker)
         {
             if (_isInitialized)
@@ -180,22 +182,7 @@ namespace KRG
             }
             _attackAbility = attackAbility;
             _attacker = attacker;
-            _isFlippedX = attacker.Body.IsFlippedX;
             _isPlayerCharacterAttacker = attacker.Body.IsPlayerCharacter;
-            InitInternal();
-        }
-
-        [System.Obsolete("Use Init(AttackAbility attackAbility, Attacker attacker) instead.")]
-        public void Init(AttackAbility attackAbility, bool isFlippedX, bool isPlayerCharacterAttacker)
-        {
-            if (_isInitialized)
-            {
-                G.U.Err("Init has already been called.");
-                return;
-            }
-            _attackAbility = attackAbility;
-            _isFlippedX = isFlippedX;
-            _isPlayerCharacterAttacker = isPlayerCharacterAttacker;
             InitInternal();
         }
 
@@ -211,27 +198,19 @@ namespace KRG
                 //E.G. SecS: stopping block makes the fire/shot m_attackRateSec restart at 1.5x:
                 //alarm[e_pc_alarm.fire_ready] = global.framerate / fire_rate * 1.5;
                 _timeThread.AddTrigger(_attackAbility.attackLifetime, Dispose);
+                SetAttackerAnimation();
+            }
+            else
+            {
+                SetAttackerAnimation(Dispose);
             }
 
-            if (_isFlippedX)
-            { //flip horizontal (x-axis)
-                _boxCollider.center = _boxCollider.center.Multiply(x: -1);
-                GraphicController.FlipX();
-                if (_flippableTransforms != null)
-                {
-                    Transform tf;
-                    for (int i = 0; i < _flippableTransforms.Count; i++)
-                    {
-                        tf = _flippableTransforms[i];
-                        tf.localScale = tf.localScale.Multiply(x: -1);
-                    }
-                }
-            }
+            m_Body.FacingDirection = _attacker.Body.FacingDirection;
 
             float travelSpeed = _attackAbility.travelSpeed;
             if (!travelSpeed.Ap(0))
             {
-                float flipX = _isFlippedX ? -1 : 1;
+                float flipX = m_Body.FacingDirection == Direction.Left ? -1 : 1;
                 _velocity = new Vector2(travelSpeed * flipX, 0);
                 //TODO: support Y dimension
             }
@@ -252,6 +231,13 @@ namespace KRG
             }
         }
 
+        protected virtual void SetAttackerAnimation(GraphicController.AnimationEndHandler callback = null)
+        {
+            RasterAnimation attackerAnimation = _attackAbility.GetRandomAttackerRasterAnimation();
+            GraphicController attackerGraphicController = _attacker.Body.Refs.GraphicController;
+            attackerGraphicController.SetAnimation(AnimationContext.Attack, attackerAnimation, callback);
+        }
+
         protected virtual void PlayAttackSFX()
         {
             string sfxFmodEvent = _attackAbility.sfxFmodEvent;
@@ -261,7 +247,15 @@ namespace KRG
             }
         }
 
-        void Dispose(TimeTrigger tt)
+        private void Dispose(bool isCompleted)
+        {
+            if (this != null)
+            { //this may be null if e.g. this is joined to an attacker that was destroyed
+                gameObject.Dispose();
+            }
+        }
+
+        private void Dispose(TimeTrigger tt)
         {
             if (this != null)
             { //this may be null if e.g. this is joined to an attacker that was destroyed

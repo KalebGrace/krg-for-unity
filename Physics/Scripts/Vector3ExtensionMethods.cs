@@ -43,6 +43,14 @@ namespace KRG {
             return v3;
         }
 
+        public static Vector3 SetSign(this Vector3 v3, bool? x = null, bool? y = null, bool? z = null)
+        {
+            if (x.HasValue) v3.x = Mathf.Abs(v3.x) * (x.Value ? 1f : -1f);
+            if (y.HasValue) v3.y = Mathf.Abs(v3.y) * (y.Value ? 1f : -1f);
+            if (z.HasValue) v3.z = Mathf.Abs(v3.z) * (z.Value ? 1f : -1f);
+            return v3;
+        }
+
         public static Vector3 SetX(this Vector3 v3, float x) {
             v3.x = x;
             return v3;

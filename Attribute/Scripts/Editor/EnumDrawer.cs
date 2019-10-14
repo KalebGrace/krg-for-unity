@@ -1,20 +1,13 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEditor;
+﻿using UnityEditor;
 using UnityEngine;
 
-namespace KRG {
-
-    /// <summary>
-    /// Enum drawer.
-    /// Last Refactor: 0.05.002 / 2018-05-05
-    /// </summary>
+namespace KRG
+{
     //[CustomPropertyDrawer(typeof(EnumAttribute))]
-    public abstract class EnumDrawer : EnumGenericDrawer {
-
-#region public methods
-
-        public override void OnGUI(Rect position, SerializedProperty property, GUIContent label) {
+    public abstract class EnumDrawer : EnumGenericDrawer
+    {
+        public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
+        {
             EditorGUI.BeginProperty(position, label, property);
 
             Rect rect = new Rect(position.x, position.y, position.width, position.height);
@@ -22,7 +15,7 @@ namespace KRG {
             label.text = SwapLabelText(label.text);
 
             var attr = attribute as EnumAttribute;
-            string stringType = attr.enumType.ToString();
+            string stringType = attr.EnumType.ToString();
             SwapEnum(ref stringType);
 
             if (property.propertyType == SerializedPropertyType.Integer)
@@ -41,8 +34,5 @@ namespace KRG {
 
             EditorGUI.EndProperty();
         }
-
-#endregion
-
     }
 }

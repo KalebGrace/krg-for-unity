@@ -11,17 +11,30 @@ namespace KRG
     [ExecuteAlways]
     public class GraphicController : MonoBehaviour, IBodyComponent
     {
+        // DELEGATES
+
+        public delegate void AnimationEndHandler(bool isCompleted);
+
         // EVENTS
 
+        public event AnimationEndHandler AnimationEnded;
+        public event System.Action<bool> FlippedX;
         public event System.Action<string> FrameSequenceStarted;
         public event System.Action<string> FrameSequenceStopped;
 
         // SERIALIZED FIELDS
 
+        [SerializeField, Tooltip("Optional priority standalone animation.")]
+        private RasterAnimation m_StandaloneAnimation = default;
+
         [SerializeField]
         private GameObjectBody m_Body = default;
 
         // PRIVATE FIELDS
+
+        private AnimationEndHandler m_AnimationCallback;
+
+        private AnimationContext m_AnimationContext;
 
         private int m_AnimationFrameIndex;
 
@@ -33,8 +46,6 @@ namespace KRG
 
         private float m_AnimationTimeElapsed;
 
-        private AttackAbility m_AttackerAttackAbility;
-
         private CanvasRenderer m_CanvasRenderer;
 
         private TimeTrigger m_FlickerTimeTrigger;
@@ -44,6 +55,8 @@ namespace KRG
         private RasterAnimationState m_RasterAnimationState;
 
         private RawImage m_RawImage;
+
+        private Renderer m_Renderer;
 
         // COMPOUND PROPERTIES
 
@@ -61,22 +74,28 @@ namespace KRG
 
         // STORAGE PROPERTIES
 
-        public RasterAnimation CurrentRasterAnimation { get; private set; }
-
         protected MeshSortingLayer MeshSortingLayer { get; private set; }
 
-        protected Renderer Renderer { get; private set; }
+        protected RasterAnimation RasterAnimation { get; private set; }
 
         // STANDARD PROPERTIES
 
         public bool IsRendered
         {
-            get => Renderer?.enabled ?? false;
+            get
+            {
+                // NOTE: null-coalescing operator does not work properly for this
+                if (m_Renderer != null)
+                {
+                    return m_Renderer.enabled;
+                }
+                return false;
+            }
             set
             {
-                if (Renderer != null)
+                if (m_Renderer != null)
                 {
-                    Renderer.enabled = value;
+                    m_Renderer.enabled = value;
                 }
             }
         }
@@ -85,117 +104,44 @@ namespace KRG
 
         public GameObjectBody Body => m_Body;
 
-        protected virtual GameObject GraphicGameObject => m_Body.Refs.GraphicGameObject;
+        protected virtual GameObject GraphicGameObject => m_Body?.Refs.GraphicGameObject ?? gameObject;
+
+        protected virtual bool IsTimePaused => TimeThread.isPaused;
 
         protected virtual ITimeThread TimeThread => G.time.GetTimeThread(TimeThreadInstance.Field);
 
-        private float AnimationFrameRate => CurrentRasterAnimation.FrameRate;
-
         private int AnimationImageCount => m_AnimationTextureList?.Count ?? 0;
 
-        private Material BaseSharedMaterial => m_Body.CharacterDossier?.GraphicData.BaseSharedMaterial;
+        private Material BaseSharedMaterial => CharacterDossier?.GraphicData.BaseSharedMaterial;
 
-        private CharacterDossier CharacterDossier => m_Body?.CharacterDossier; // no m_Body in StandaloneAnimation
+        private CharacterDossier CharacterDossier => m_Body.CharacterDossier;
 
-        private float DeltaTime => TimeThread.deltaTime;
-
-        private GameObjectType GameObjectType => m_Body.GameObjectType;
-
-        private string IdleAnimationName => m_Body.CharacterDossier?.GraphicData.IdleAnimationName;
-
-        private bool IsTimePaused => TimeThread.isPaused;
-
-        // FLIP STUFF
-
-        private bool m_IsFlippedX;
-
-        public event System.Action<bool> FlippedX;
-
-        public bool IsFlippedX
-        {
-            get => m_IsFlippedX;
-            set
-            {
-                if (m_IsFlippedX != value)
-                {
-                    m_IsFlippedX = value;
-
-                    if (GraphicGameObject != null)
-                    {
-                        Transform tf = GraphicGameObject.transform;
-                        tf.localPosition = tf.localPosition.Multiply(x: -1);
-                        tf.localScale = tf.localScale.Multiply(x: -1);
-                    }
-
-                    FlippedX?.Invoke(value);
-                }
-            }
-        }
-
-        public void FlipX()
-        {
-            IsFlippedX = !m_IsFlippedX;
-        }
-
-        // INIT METHOD
-
-        public void InitBody(GameObjectBody body)
-        {
-            m_Body = body;
-        }
+        private string IdleAnimationName => CharacterDossier?.GraphicData.IdleAnimationName;
 
         // MONOBEHAVIOUR METHODS
 
         protected virtual void Start()
         {
-            m_RawImage = GetComponent<RawImage>();
+            InitRenderer();
+            InitMaterial();
+            InitRawImage();
+            InitMeshSort();
 
-            if (m_RawImage != null)
+            InitStandaloneAnimation();
+
+            if (m_Body != null && m_Body.IsCharacter)
             {
-                return;
-            }
-
-            Renderer = GraphicGameObject.Require<Renderer>();
-
-            MeshSortingLayer = G.U.Guarantee<MeshSortingLayer>(GraphicGameObject);
-
-            if (BaseSharedMaterial != null)
-            {
-                Renderer.sharedMaterial = BaseSharedMaterial;
-            }
-
-            if (G.U.IsPlayMode(this))
-            {
-                m_Material = Renderer.material; //instance material
-            }
-            else
-            {
-                m_Material = Renderer.sharedMaterial;
-            }
-
-            switch (GameObjectType)
-            {
-                case GameObjectType.None:
-                    break;
-                case GameObjectType.Character:
-                    InitCharacter();
-                    break;
-                case GameObjectType.Attack:
-                    InitAttack();
-                    break;
-                default:
-                    G.U.Err("Unsupported GameObjectType {0}.", GameObjectType);
-                    break;
+                InitCharacter();
             }
         }
 
         protected virtual void Update()
         {
-            if (G.U.IsEditMode(this) || CurrentRasterAnimation == null || IsTimePaused) return;
+            if (G.U.IsEditMode(this) || RasterAnimation == null || IsTimePaused) return;
 
-            m_AnimationTimeElapsed += DeltaTime;
+            m_AnimationTimeElapsed += TimeThread.deltaTime;
 
-            int newFrameIndex = Mathf.FloorToInt(AnimationFrameRate * m_AnimationTimeElapsed);
+            int newFrameIndex = Mathf.FloorToInt(RasterAnimation.FrameRate * m_AnimationTimeElapsed);
 
             while (m_AnimationFrameIndex < newFrameIndex)
             {
@@ -222,30 +168,56 @@ namespace KRG
 
         // INITIALIZATION METHODS
 
+        public void InitBody(GameObjectBody body)
+        {
+            m_Body = body;
+        }
+
+        private void InitRenderer()
+        {
+            m_Renderer = GraphicGameObject.GetComponent<Renderer>();
+            if (m_Renderer == null || BaseSharedMaterial == null) return;
+            m_Renderer.sharedMaterial = BaseSharedMaterial;
+        }
+
+        private void InitMaterial()
+        {
+            if (m_Renderer == null) return;
+            m_Material = G.U.IsEditMode(this) ? m_Renderer.sharedMaterial : m_Renderer.material; // instance
+        }
+
+        private void InitRawImage()
+        {
+            m_RawImage = GraphicGameObject.GetComponent<RawImage>();
+        }
+
+        private void InitMeshSort()
+        {
+            if (GraphicGameObject.GetComponent<MeshFilter>() == null) return;
+            MeshSortingLayer = G.U.Guarantee<MeshSortingLayer>(GraphicGameObject);
+        }
+
+        private void InitStandaloneAnimation()
+        {
+            if (m_StandaloneAnimation == null) return;
+            SetAnimation(AnimationContext.Priority, m_StandaloneAnimation);
+        }
+
         private void InitCharacter()
         {
+            if (m_AnimationContext == AnimationContext.None && !string.IsNullOrWhiteSpace(IdleAnimationName))
+            {
+                SetAnimation(AnimationContext.Idle, IdleAnimationName);
+            }
             AddCharacterStateHandlers();
-
-            if (!string.IsNullOrEmpty(IdleAnimationName))
-            {
-                SetAnimation(IdleAnimationName);
-            }
-            else
-            {
-                RefreshGraphic();
-            }
         }
 
-        private void InitAttack()
-        {
-            if (G.U.IsEditMode(this)) return;
-
-            Attack a = this.Require<Attack>();
-            a.attacker.Body.Refs.GraphicController.SetAttackerAttackAbility(a.attackAbility);
-        }
+        // MAIN METHODS
 
         private void RefreshGraphic()
         {
+            if (AnimationImageCount == 0) return;
+
             int i = Mathf.Min(m_AnimationImageIndex, AnimationImageCount - 1);
             Texture texture = m_AnimationTextureList[i];
 
@@ -261,22 +233,34 @@ namespace KRG
             }
         }
 
-        // ANIMATION METHODS
-
-        public void SetAnimation(string animationName)
+        public void SetAnimation(AnimationContext context, string animationName, AnimationEndHandler callback = null)
         {
-            SetAnimation(G.obj.RasterAnimations[animationName]);
+            if (G.obj.RasterAnimations.ContainsKey(animationName))
+            {
+                SetAnimation(context, G.obj.RasterAnimations[animationName], callback);
+            }
+            else
+            {
+                G.U.Err("Unable to find animation {0}.", animationName);
+            }
         }
 
-        public virtual void SetAnimation(RasterAnimation rasterAnimation)
+        public void SetAnimation(AnimationContext context, RasterAnimation rasterAnimation, AnimationEndHandler callback = null)
         {
+            // handle an interrupted animation
+            if (m_AnimationContext != AnimationContext.None)
+            {
+                OnAnimationEnd(false, false);
+            }
+
+            m_AnimationCallback = callback;
+            m_AnimationContext = context;
             m_AnimationFrameIndex = 0;
             m_AnimationFrameListIndex = 0;
             m_AnimationImageIndex = 0;
             m_AnimationTextureList = rasterAnimation.FrameTextures;
             m_AnimationTimeElapsed = 0;
-
-            CurrentRasterAnimation = rasterAnimation;
+            RasterAnimation = rasterAnimation;
 
             if (G.U.IsPlayMode(this))
             {
@@ -285,41 +269,31 @@ namespace KRG
                 m_AnimationImageIndex = m_RasterAnimationState.frameSequenceFromFrame - 1; // 1-based -> 0-based
             }
 
+            OnAnimationSet();
+
             RefreshGraphic();
         }
 
-        public void SetAttackerAttackAbility(AttackAbility attackAbility)
+        public void EndAnimation()
         {
-            m_AttackerAttackAbility = attackAbility;
-            SetAnimation(attackAbility.GetRandomAttackerRasterAnimation());
+            OnAnimationEnd(false);
         }
 
-        public void PlayContextualAnimation(RasterAnimation ra, System.Action onCompleteCallback)
+        private void FlipXInternal()
         {
-            G.U.Todo("Play contextual animation.");
+            Transform tf = GraphicGameObject.transform;
+            tf.localPosition = tf.localPosition.Multiply(x: -1);
+            tf.localScale = tf.localScale.Multiply(x: -1);
         }
-
-        // MATERIAL METHODS
 
         public void SetSharedMaterial(Material sharedMaterial)
         {
-            Renderer.sharedMaterial = sharedMaterial;
-
-            if (G.U.IsPlayMode(this))
-            {
-                m_Material = Renderer.material; //instance material
-            }
-            else
-            {
-                m_Material = Renderer.sharedMaterial;
-            }
-
+            m_Renderer.sharedMaterial = sharedMaterial;
+            m_Material = G.U.IsEditMode(this) ? m_Renderer.sharedMaterial : m_Renderer.material; // instance
             RefreshGraphic();
         }
 
-        // COLOR METHODS
-
-        public void StartDamageColor(float seconds)
+        public void SetDamageColor(float seconds)
         {
 #if NS_DG_TWEENING
             ImageColor = new Color(1, 0.2f, 0.2f);
@@ -332,9 +306,7 @@ namespace KRG
 #endif
         }
 
-        // FLICKER METHODS
-
-        public void StartFlicker(float flickerRate = 30f)
+        public void SetFlicker(float flickerRate = 20)
         {
             if (m_FlickerTimeTrigger != null)
             {
@@ -343,7 +315,13 @@ namespace KRG
             m_FlickerTimeTrigger = TimeThread.AddTrigger(1f / flickerRate, DoFlicker);
         }
 
-        public void StopFlicker()
+        private void DoFlicker(TimeTrigger tt)
+        {
+            IsRendered = !IsRendered;
+            tt.Proceed();
+        }
+
+        public void EndFlicker()
         {
             if (m_FlickerTimeTrigger != null)
             {
@@ -351,12 +329,6 @@ namespace KRG
                 m_FlickerTimeTrigger = null;
             }
             IsRendered = true;
-        }
-
-        private void DoFlicker(TimeTrigger tt)
-        {
-            IsRendered = !IsRendered;
-            tt.Proceed();
         }
 
         // IMAGE INDEX / FRAME SEQUENCE METHODS
@@ -372,7 +344,7 @@ namespace KRG
             {
                 if (!m_RasterAnimationState.AdvanceFrame(ref m_AnimationFrameListIndex, out frameNumber))
                 {
-                    OnAnimationStop();
+                    OnAnimationEnd(true);
                     return;
                 }
             }
@@ -381,7 +353,7 @@ namespace KRG
                 frameNumber = m_AnimationImageIndex + 1;
                 if (!m_RasterAnimationState.AdvanceFrame(ref frameNumber))
                 {
-                    OnAnimationStop();
+                    OnAnimationEnd(true);
                     return;
                 }
             }
@@ -389,20 +361,32 @@ namespace KRG
             m_AnimationImageIndex = frameNumber - 1;
         }
 
-        private void OnFrameSequenceStart(RasterAnimationState ras)
+        private void OnFrameSequenceStart(RasterAnimationState state)
         {
-            FrameSequenceStarted?.Invoke(ras.frameSequenceName);
+            FrameSequenceStarted?.Invoke(state.frameSequenceName);
         }
 
-        private void OnFrameSequenceStop(RasterAnimationState ras)
+        private void OnFrameSequenceStop(RasterAnimationState state)
         {
-            FrameSequenceStopped?.Invoke(ras.frameSequenceName);
+            FrameSequenceStopped?.Invoke(state.frameSequenceName);
         }
 
-        private void OnAnimationStop()
+        protected virtual void OnAnimationSet() { }
+
+        private void OnAnimationEnd(bool isCompleted, bool reassessState = true)
         {
-            m_AttackerAttackAbility = null;
-            OnCharacterStateChange(0, false);
+            m_AnimationContext = AnimationContext.None;
+
+            // invoke main callback and fire event as applicable
+            m_AnimationCallback?.Invoke(isCompleted);
+            m_AnimationCallback = null;
+            AnimationEnded?.Invoke(isCompleted);
+
+            // if no new animation set by callback/event, reassess state as applicable
+            if (m_AnimationContext == AnimationContext.None && reassessState)
+            {
+                OnCharacterStateChange(0, false);
+            }
         }
 
         // CHARACTER STATE METHODS
@@ -411,7 +395,7 @@ namespace KRG
         {
             if (G.U.IsEditMode(this)) return;
 
-            if (CharacterDossier == null) return;
+            if (m_Body == null || CharacterDossier == null) return;
 
             List<StateAnimation> stateAnimations = CharacterDossier.GraphicData.StateAnimations;
 
@@ -419,7 +403,7 @@ namespace KRG
             {
                 StateAnimation sa = stateAnimations[i];
 
-                Body.Refs.StateOwner.AddStateHandler(sa.state, OnCharacterStateChange);
+                m_Body.Refs.StateOwner.AddStateHandler(sa.state, OnCharacterStateChange);
             }
         }
 
@@ -427,7 +411,7 @@ namespace KRG
         {
             if (G.U.IsEditMode(this)) return;
 
-            if (CharacterDossier == null) return;
+            if (m_Body == null || CharacterDossier == null) return;
 
             List<StateAnimation> stateAnimations = CharacterDossier.GraphicData.StateAnimations;
 
@@ -435,18 +419,22 @@ namespace KRG
             {
                 StateAnimation sa = stateAnimations[i];
 
-                Body.Refs.StateOwner.RemoveStateHandler(sa.state, OnCharacterStateChange);
+                m_Body.Refs.StateOwner.RemoveStateHandler(sa.state, OnCharacterStateChange);
             }
         }
 
         private void OnCharacterStateChange(ulong state, bool value)
         {
-            if (m_AttackerAttackAbility != null) return;
+            OnCharacterStateChangeBegins(state, value);
 
-            if (CharacterDossier == null) return;
+            // ignore state change if currently playing a higher priority animation
+            if (m_AnimationContext > AnimationContext.CharacterState) return;
+
+            if (m_Body == null || CharacterDossier == null) return;
 
             List<StateAnimation> stateAnimations = CharacterDossier.GraphicData.StateAnimations;
 
+            AnimationContext context = AnimationContext.Idle;
             string animationName = IdleAnimationName;
 
             for (int i = 0; i < stateAnimations.Count; ++i)
@@ -455,15 +443,18 @@ namespace KRG
 
                 if (m_Body.Refs.StateOwner.HasState(sa.state) || (value && state == sa.state))
                 {
+                    context = AnimationContext.CharacterState;
                     animationName = sa.animationName;
                     break;
                 }
             }
 
-            if (animationName != CurrentRasterAnimation?.name)
+            if (animationName != RasterAnimation?.name)
             {
-                SetAnimation(animationName);
+                SetAnimation(context, animationName);
             }
         }
+
+        protected virtual void OnCharacterStateChangeBegins(ulong state, bool value) { }
     }
 }

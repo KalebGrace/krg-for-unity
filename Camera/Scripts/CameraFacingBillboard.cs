@@ -1,16 +1,14 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Serialization;
 
-namespace KRG {
-
+namespace KRG
+{
     /// <summary>
     /// Camera-facing billboard.
     /// Add this script to any GameObject to ensure it always faces a particular camera.
     /// Handlers must be added to rotYGetter and (optionally) posGetter for this to work.
     /// </summary>
-    public class CameraFacingBillboard : MonoBehaviour {
+    public class CameraFacingBillboard : MonoBehaviour, IBodyComponent {
 
 #region Static
 
@@ -73,73 +71,14 @@ namespace KRG {
 
 #endregion
 
-        //values listed below are simply DEFAULTS; check inspector for actual values
-        [SerializeField]
-        [FormerlySerializedAs("m_flipModeX")]
-        FlipMode _flipModeX;
-        [SerializeField]
-        [FormerlySerializedAs("m_graphicsController")]
-        GraphicController _graphicsController;
         [SerializeField]
         [FormerlySerializedAs("m_useInitialRotation")]
         bool _useInitialRotation = true;
 
-        Transform _graphicsControllerTransform;
+        [SerializeField]
+        private GameObjectBody m_Body = default;
+
         float _initialRotY;
-        Transform _transform;
-
-#region _isFlippedX Scope
-
-        bool _isFlippedX;
-
-        //_isFlippedX should only be referenced by the isFlippedX property
-
-        public bool isFlippedX {
-            get {
-                return _isFlippedX;
-            }
-            private set {
-                if (_isFlippedX != value) {
-                    _isFlippedX = value;
-                    switch (_flipModeX) {
-                        case FlipMode.FlipHere:
-                            _transform.localScale = _transform.localScale.Multiply(x: -1);
-                            break;
-                        case FlipMode.FlipOnGraphicsController:
-                            G.U.Require(_graphicsController, "GraphicsController");
-                            _graphicsController.FlipX();
-                            break;
-                        default:
-                            G.U.Unsupported(this, _flipModeX);
-                            break;
-                    }
-                }
-            }
-        }
-
-#endregion
-
-        public FlipMode flipModeX {
-            get {
-                return _flipModeX;
-            }
-            set {
-                if (_flipModeX != FlipMode.None && _flipModeX != value) {
-                    isFlippedX = false;
-                }
-                _flipModeX = value;
-            }
-        }
-
-        public GraphicController graphicsController {
-            get {
-                return _graphicsController;
-            }
-            set {
-                _graphicsController = value;
-                _graphicsControllerTransform = value != null ? value.transform : null;
-            }
-        }
 
         public bool useInitialRotation {
             get {
@@ -150,40 +89,31 @@ namespace KRG {
             }
         }
 
+        public GameObjectBody Body => m_Body;
+
+        public void InitBody(GameObjectBody body)
+        {
+            m_Body = body;
+        }
+
         void Start() {
-            _transform = transform;
-            _initialRotY = _transform.eulerAngles.y;
+            _initialRotY = transform.eulerAngles.y;
         }
 
         void LateUpdate() {
             UpdateFacing();
-            UpdateFlipX();
+            //UpdateFlipX();
         }
 
         void UpdateFacing() {
             float offsetRotY = _useInitialRotation ? _initialRotY : 0;
-            _transform.eulerAngles = _transform.eulerAngles.SetY((rotY + offsetRotY) % 360);
+            transform.eulerAngles = transform.eulerAngles.SetY((rotY + offsetRotY) % 360);
         }
-
+        
+        /*
         void UpdateFlipX() {
-            Vector3 myPos = Vector3.zero;
-            float myRotY = 0;
-            switch (_flipModeX) {
-                case FlipMode.None:
-                    //do nothing
-                    return;
-                case FlipMode.FlipHere:
-                    //we will assume that flipping here will want to use this transform
-                    myPos = _transform.position;
-                    myRotY = _transform.eulerAngles.y;
-                    break;
-                case FlipMode.FlipOnGraphicsController:
-                    //we will assume that flipping on GC will want to use the GC's transform
-                    G.U.Require(_graphicsControllerTransform, "GraphicsController.transform");
-                    myPos = _graphicsControllerTransform.position;
-                    myRotY = _graphicsControllerTransform.eulerAngles.y;
-                    break;
-            }
+            Vector3 myPos = transform.position;
+            float myRotY = transform.eulerAngles.y;
             float ry = (rotY - myRotY).Rotation().clamped_0_360x;
             if (ry < 45 || ry >= 315) {
                 //ry ≈ 0
@@ -206,5 +136,6 @@ namespace KRG {
                 }
             }
         }
+        */
     }
 }

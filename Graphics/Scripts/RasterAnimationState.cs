@@ -75,11 +75,6 @@ namespace KRG {
         /// </summary>
         int _frameSequencePlayIndex;
 
-        /// <summary>
-        /// Whether the current frame sequence does call code.
-        /// </summary>
-        bool _frameSequenceDoesCallCode;
-
 #endregion
 
 #region properties
@@ -98,6 +93,8 @@ namespace KRG {
         }
 
         public virtual RasterAnimation rasterAnimation { get { return _rasterAnimation; } }
+
+        public int FrameSequencePreAction { get; private set; }
 
 #endregion
 
@@ -258,7 +255,7 @@ namespace KRG {
             _frameSequenceToFrame = _rasterAnimation.GetFrameSequenceToFrame(frameSequenceIndex);
             _frameSequencePlayCount = playCount;
             _frameSequencePlayIndex = 0;
-            _frameSequenceDoesCallCode = _rasterAnimation.GetFrameSequenceDoesCallCode(frameSequenceIndex);
+            FrameSequencePreAction = _rasterAnimation.GetFrameSequencePreAction(frameSequenceIndex);
             RefreshRasterAnimationInfo(_frameSequenceFromFrame);
             InvokeFrameSequenceStartHandlers();
         }
@@ -284,11 +281,11 @@ namespace KRG {
         }
 
         void InvokeFrameSequenceStartHandlers() {
-            if (_frameSequenceDoesCallCode && _frameSequenceStartHandlers != null) _frameSequenceStartHandlers(this);
+            _frameSequenceStartHandlers?.Invoke(this);
         }
 
         void InvokeFrameSequenceStopHandlers() {
-            if (_frameSequenceDoesCallCode && _frameSequenceStopHandlers != null) _frameSequenceStopHandlers(this);
+            _frameSequenceStopHandlers?.Invoke(this);
         }
 
 #endregion

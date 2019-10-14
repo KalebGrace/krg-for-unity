@@ -100,6 +100,8 @@ namespace KRG
 
         public override void Awake()
         {
+            isQuitting = false;
+
             SceneManager.sceneLoaded += OnSceneLoaded;
             SceneManager.sceneUnloaded += OnSceneUnloaded;
         }

@@ -23,7 +23,7 @@ namespace KRG
         /// <summary>
         /// The version of G.
         /// </summary>
-        public const int version = 6;
+        public const int version = 7;
 
         // TRUE MONOBEHAVIOUR METHODS
 

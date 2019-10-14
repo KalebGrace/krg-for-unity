@@ -8,7 +8,7 @@ namespace KRG
         // SERIALIZED FIELDS
 
         [SerializeField]
-        private GameObjectBody m_Body;
+        private GameObjectBody m_Body = default;
 
         // COMPOUND PROPERTIES
 

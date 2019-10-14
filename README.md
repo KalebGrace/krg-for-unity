@@ -1,4 +1,4 @@
-# KRG #
+﻿# KRG #
 
 __Knowledgeably Reaching God__
 
@@ -19,6 +19,7 @@ KRG also provides support for many third-party libraries, such as TextMesh Pro.
 
 ## Optional Unity Install ##
 
+* NOTE: Now that Unity Hub has been released, new paths are needed. Here are the classic instructions:
 * Copy KRG\UnityInstall\81-C# Script-NewBehaviourScript.cs.txt to...
   * macOS: /Applications/Unity/Unity.app/Contents/Resources/ScriptTemplates
   * Windows: C:\Program Files\Unity\Editor\Data\Resources\ScriptTemplates
@@ -73,11 +74,17 @@ You can change KRG.SomeEnum to MyGame.SomeEnum simply by creating an EnumDrawer.
 
 Furthermore, you can customize this method to make "SomeEnum" become any enum you want!
 
+## Game Object Body System Overview ##
+
+(To be added.)
+
 ## Attack System Overview ##
 
 (To be added.)
 
 ## Damage System Overview ##
+
+(To be revised.)
 
 Do the following for any object you want to be damaged:
 
@@ -106,22 +113,8 @@ Rewired (by Guavaman Enterprises) is also supported, but currently uses no defin
 
 For the most part, established Unity and Microsoft C# conventions are used. Some exceptions and explicit definitions follow:
 
-* the term "member" includes both static & instance class-level fields, properties, methods, etc.
-  * https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/classes-and-structs/members
-* member usage and naming:
-  * fields (constants, static variables, & instance variables):
-    * fields are private/protected unless otherwise required (e.g. some Unity inspector stuff)
-      * if public/internal access is needed, a property/method will be utilized
-    * fields begin with a single underscore (e.g. `int _currentCount = 1;`)
-      * `s_` for static & `m_` (member) for instance ARE NOT USED, since static fields are technically members too
-* order of members:
-  * region: created and ordered as needed
-  * enum, delegate, event, const field, variable field, property, method^, class
-    * ^ordered by increasing param count, alphabetically
-  * static, (instance)
-  * public, protected, (private)
-  * abstract, virtual, override, readonly, (none)
-  * everything else ordered alphabetically!
+* Private fields: private object m_SomePrivateField;
+* Properties: public object SomeProperty => m_SomePrivateField;
 
 ## Documentation Standards ##
 

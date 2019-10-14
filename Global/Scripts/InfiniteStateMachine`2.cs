@@ -86,17 +86,7 @@ namespace KRG
             //add locks as applicable
             if (statesToLock != null)
             {
-                int lok;
-                for (int i = 0; i < statesToLock.Length; i++)
-                {
-                    lok = statesToLock[i];
-                    if (!G.U.Prevent(stateIndex == lok, "A state cannot lock itself.")) continue;
-                    //remove the locked state as applicable
-                    if (removeOnLock) Remove(lok);
-                    //now lock said state
-                    _lockSources.Add(stateIndex);
-                    _lockTargets.Add(lok);
-                }
+                _ = Lock(stateIndex, statesToLock, removeOnLock);
             }
             //remove (prior) lifetime trigger from the state, if it exists
             RemoveLifetimeTrigger(stateIndex);
@@ -164,6 +154,33 @@ namespace KRG
         protected void SetLifetimeInfinite(int stateIndex)
         {
             if (IsVerified(stateIndex)) RemoveLifetimeTrigger(stateIndex);
+        }
+
+        /// <summary>
+        /// Lock the specified states.
+        /// </summary>
+        /// <param name="lockingStateIndex">Index of the locking state.</param>
+        /// <param name="statesToLock">States to lock.</param>
+        /// <param name="removeOnLock">If set to <c>true</c> remove states on lock.</param>
+        /// <returns>True, if everything completed successfully.</returns>
+        protected bool Lock(
+            int lockingStateIndex,
+            int[] statesToLock,
+            bool removeOnLock
+        )
+        {
+            if (pendingAddition != lockingStateIndex && !Has(lockingStateIndex)) return false;
+            for (int i = 0; i < statesToLock.Length; ++i)
+            {
+                int lok = statesToLock[i];
+                if (!G.U.Prevent(lockingStateIndex == lok, "A state cannot lock itself.")) continue;
+                //remove the locked state as applicable
+                if (removeOnLock) Remove(lok);
+                //now lock said state
+                _lockSources.Add(lockingStateIndex);
+                _lockTargets.Add(lok);
+            }
+            return true;
         }
 
         // ABSTRACT METHODS

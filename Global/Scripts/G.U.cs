@@ -65,6 +65,20 @@ namespace KRG
                 return !Application.isPlaying;
             }
 
+            // IF
+
+            public static void If(bool condition, System.Action onTrue, System.Action onFalse)
+            {
+                if (condition)
+                {
+                    onTrue?.Invoke();
+                }
+                else
+                {
+                    onFalse?.Invoke();
+                }
+            }
+
             // NEW
 
             /// <summary>
@@ -391,8 +405,8 @@ namespace KRG
             public static T Guarantee<T>(GameObject source) where T : Component
             {
                 // TODO: if called via ExecuteAlways, need call to UnityEditor.Undo.RecordObject
-                // NOTE: null-coalescing operator does not work properly for this
                 var c = source.GetComponent<T>();
+                // NOTE: null-coalescing operator does not work properly for this
                 if (c == null)
                 {
                     c = source.AddComponent<T>();

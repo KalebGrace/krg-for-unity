@@ -5,28 +5,32 @@ namespace KRG
 {
     public class CharacterDebugText : MonoBehaviour
     {
-        ICharacterDebugText _characterInterface;
-        TextMeshPro _text;
+        private ICharacterDebugText m_Interface;
+        private TextMeshPro m_Text;
 
-        void Awake()
+        private void Awake()
         {
-            _text = this.Require<TextMeshPro>();
+            m_Text = this.Require<TextMeshPro>();
+        }
+
+        private void LateUpdate()
+        {
+            m_Text.text = m_Interface.Text;
         }
 
         public void Init(MonoBehaviour monoBehaviour)
         {
-            _characterInterface = monoBehaviour as ICharacterDebugText;
-            if (_characterInterface == null)
+            m_Interface = monoBehaviour as ICharacterDebugText;
+
+            if (m_Interface == null)
             {
-                G.U.Warn("This MonoBehaviour must implement the ICharacterDebugText interface to show debug info.",
-                    this, monoBehaviour);
+                string message = "This MonoBehaviour must implement the"
+                    + "ICharacterDebugText interface to show debug info.";
+
+                G.U.Warn(message, this, monoBehaviour);
+
                 gameObject.Dispose();
             }
-        }
-
-        void LateUpdate()
-        {
-            _text.text = _characterInterface.lateUpdateText;
         }
     }
 }

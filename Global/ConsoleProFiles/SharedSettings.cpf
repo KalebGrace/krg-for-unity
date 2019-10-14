@@ -25,6 +25,7 @@
                 "a": 1.0
             },
             "swallowStandard": true,
+            "standardCanSwallow": false,
             "overrideStandardColors": true,
             "overrideStandardIcon": true,
             "collapseIconBackground": false,
@@ -37,6 +38,7 @@
             "useIconTexture": false,
             "filterFormatVersion": 1,
             "iconColorize": false,
+            "useAndOpForSearchList": false,
             "searchList": [
                 {
                     "searchString": "<Any>",
@@ -130,6 +132,7 @@
                 "a": 1.0
             },
             "swallowStandard": true,
+            "standardCanSwallow": false,
             "overrideStandardColors": true,
             "overrideStandardIcon": true,
             "collapseIconBackground": false,
@@ -142,6 +145,7 @@
             "useIconTexture": false,
             "filterFormatVersion": 1,
             "iconColorize": false,
+            "useAndOpForSearchList": false,
             "searchList": [
                 {
                     "searchString": "<Any>",
@@ -270,6 +274,7 @@
                 "a": 1.0
             },
             "swallowStandard": true,
+            "standardCanSwallow": false,
             "overrideStandardColors": true,
             "overrideStandardIcon": true,
             "collapseIconBackground": false,
@@ -282,6 +287,7 @@
             "useIconTexture": false,
             "filterFormatVersion": 1,
             "iconColorize": false,
+            "useAndOpForSearchList": false,
             "searchList": [
                 {
                     "searchString": "<Any>",
@@ -410,6 +416,7 @@
                 "a": 1.0
             },
             "swallowStandard": true,
+            "standardCanSwallow": false,
             "overrideStandardColors": true,
             "overrideStandardIcon": true,
             "collapseIconBackground": false,
@@ -422,6 +429,7 @@
             "useIconTexture": false,
             "filterFormatVersion": 1,
             "iconColorize": false,
+            "useAndOpForSearchList": false,
             "searchList": [
                 {
                     "searchString": "<Any>",
@@ -550,6 +558,7 @@
                 "a": 1.0
             },
             "swallowStandard": true,
+            "standardCanSwallow": false,
             "overrideStandardColors": true,
             "overrideStandardIcon": true,
             "collapseIconBackground": false,
@@ -562,6 +571,7 @@
             "useIconTexture": false,
             "filterFormatVersion": 1,
             "iconColorize": false,
+            "useAndOpForSearchList": false,
             "searchList": [
                 {
                     "searchString": "<Any>",
@@ -683,6 +693,7 @@
                 "a": 1.0
             },
             "swallowStandard": true,
+            "standardCanSwallow": false,
             "overrideStandardColors": true,
             "overrideStandardIcon": true,
             "collapseIconBackground": false,
@@ -695,6 +706,7 @@
             "useIconTexture": false,
             "filterFormatVersion": 1,
             "iconColorize": false,
+            "useAndOpForSearchList": false,
             "searchList": [
                 {
                     "searchString": "<Any>",
@@ -903,6 +915,33 @@
             "isEnabled": true,
             "collapsed": true,
             "itemGUID": "c0f6e1d4-051b-447c-a471-d282713c1dce"
+        },
+        {
+            "searchString": "Could not extract GUID in text file",
+            "searchType": "Exact",
+            "removeSearchStringFromLog": false,
+            "logTypeList": [
+                {
+                    "logType": "Error",
+                    "name": "Untitled",
+                    "isEnabled": true,
+                    "collapsed": false,
+                    "itemGUID": "0b671884-cd88-4c5a-a5e0-d22ea64f09d6"
+                }
+            ],
+            "columnTypeList": [
+                {
+                    "columnType": "Log",
+                    "name": "Untitled",
+                    "isEnabled": true,
+                    "collapsed": false,
+                    "itemGUID": "575e6c27-8a72-4a87-807c-3025a870e8f3"
+                }
+            ],
+            "name": "Untitled",
+            "isEnabled": true,
+            "collapsed": true,
+            "itemGUID": "3b9fb263-d136-4f53-9d5c-b8f0f66c745b"
         }
     ],
     "sharedFilters": []

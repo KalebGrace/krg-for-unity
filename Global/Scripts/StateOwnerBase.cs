@@ -10,7 +10,7 @@ namespace KRG
     public abstract class StateOwnerBase : MonoBehaviour, IBodyComponent, IStateOwner
     {
         [SerializeField]
-        private GameObjectBody m_Body;
+        private GameObjectBody m_Body = default;
 
         public GameObjectBody Body => m_Body;
 

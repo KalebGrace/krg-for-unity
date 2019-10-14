@@ -1,20 +1,18 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Serialization;
 
-namespace KRG {
-
-    public abstract class DamageTaker : MonoBehaviour, IBodyComponent, IDamageable, IEnd, ISpawn {
-
-#region fields
+namespace KRG
+{
+    public abstract class DamageTaker : MonoBehaviour, IBodyComponent, IDamageable, IEnd, ISpawn
+    {
+        // fields
 
         [SerializeField]
         [FormerlySerializedAs("m_damageProfile")]
         DamageProfile _damageProfile;
 
         [SerializeField]
-        GameObjectBody m_Body;
+        private GameObjectBody m_Body = default;
 
         event System.Action _endInvulnerabilityHandlers;
 
@@ -30,9 +28,7 @@ namespace KRG {
         TimeTrigger _invulnerabilityTimeTrigger;
         TimeTrigger _knockBackTimeTrigger;
 
-#endregion
-
-#region properties: IDamagable implementation
+        // properties: IDamagable implementation
 
         public virtual float hp { get { return _hp; } }
 
@@ -40,17 +36,18 @@ namespace KRG {
 
         public virtual float hpMax { get { return _hpMaxNew; } }
 
-#endregion
-
-#region properties
+        // properties
 
         public virtual Transform centerTransform => m_Body.Refs.VisRect.transform;
 
-        public virtual DamageProfile damageProfile {
-            get {
+        public virtual DamageProfile damageProfile
+        {
+            get
+            {
                 return _damageProfile;
             }
-            set {
+            set
+            {
                 _damageProfile = value;
                 InitHP();
             }
@@ -66,11 +63,10 @@ namespace KRG {
 
         private GraphicController GraphicController => m_Body.Refs.GraphicController;
 
-#endregion
+        // MONOBEHAVIOUR METHODS
 
-
-
-        protected virtual void Awake() {
+        protected virtual void Awake()
+        {
             G.U.Require(_damageProfile, "Damage Profile");
 
             InitHP();
@@ -78,7 +74,12 @@ namespace KRG {
             knockBackDirection = Direction.Unknown;
         }
 
+        protected virtual void OnDestroy()
+        {
+            my_end.Invoke();
+        }
 
+        // END
 
         End my_end = new End();
 
@@ -86,20 +87,14 @@ namespace KRG {
 
         public GameObjectBody Body => m_Body;
 
-        protected virtual void OnDestroy()
-        {
-            my_end.Invoke();
-        }
-
-
-
-#region Primary Methods
+        // Primary Methods
 
         public bool Damage(
             AttackAbility attackAbility,
             Vector3 attackPositionCenter,
             Vector3 hitPositionCenter
-        ) {
+        )
+        {
             _damageAttackAbility = attackAbility;
             _damageAttackPositionCenter = attackPositionCenter;
             _damageHitPositionCenter = hitPositionCenter;
@@ -112,7 +107,8 @@ namespace KRG {
 
             CheckCustomPreKOC(attackAbility, attackPositionCenter, hitPositionCenter);
 
-            if (isKnockedOut) {
+            if (isKnockedOut)
+            {
                 OnKnockedOut(attackPositionCenter);
                 return true;
             }
@@ -125,12 +121,14 @@ namespace KRG {
             return true;
         }
 
-        protected virtual bool CanBeDamaged() {
+        protected virtual bool CanBeDamaged()
+        {
             //these could pop up at any time, so let's be safe
             return !my_end.wasInvoked && !isKnockedOut && !IsInvulnerableTo(_damageAttackAbility);
         }
 
-        protected virtual void DealDamage(AttackAbility attackAbility) {
+        protected virtual void DealDamage(AttackAbility attackAbility)
+        {
             _hp = Mathf.Clamp(_hp - attackAbility.hpDamage, hpMin, hpMax);
         }
 
@@ -138,15 +136,18 @@ namespace KRG {
             AttackAbility attackAbility,
             Vector3 attackPositionCenter,
             Vector3 hitPositionCenter
-        ) {
+        )
+        {
             G.damage.DisplayDamageValue(this, Mathf.RoundToInt(attackAbility.hpDamage));
             GameObject p = attackAbility.hitVFXPrefab;
             if (p != null) Instantiate(p, hitPositionCenter, Quaternion.identity);
         }
 
-        protected virtual void PlayDamageSFX() {
+        protected virtual void PlayDamageSFX()
+        {
             string sfxFmodEvent = _damageProfile.sfxFmodEvent;
-            if (!string.IsNullOrEmpty(sfxFmodEvent)) {
+            if (!string.IsNullOrEmpty(sfxFmodEvent))
+            {
                 G.audio.PlaySFX(sfxFmodEvent, transform.position);
             }
         }
@@ -154,14 +155,16 @@ namespace KRG {
         /// <summary>
         /// Sets the HP to the minimum. Does not check isKnockedOut or call OnKnockedOut, etc.
         /// </summary>
-        protected void SetHPEmpty() {
+        protected void SetHPEmpty()
+        {
             _hp = hpMin;
         }
 
         /// <summary>
         /// Sets the HP to the maximum defined by the damage profile (or whatever is defined in the hpMax property).
         /// </summary>
-        protected void SetHPFull() {
+        protected void SetHPFull()
+        {
             _hp = hpMax;
         }
 
@@ -180,63 +183,71 @@ namespace KRG {
         }
 
         //TODO: this was added as part of the ItemLoot system and needs revision
-        public void AddHP(float hp) {
+        public void AddHP(float hp)
+        {
             _hp = Mathf.Clamp(_hp + hp, hpMin, hpMax);
         }
 
-#endregion
-
-#region Custom Methods
+        // Custom Methods
 
         protected virtual void CheckCustomPreKOC(
             AttackAbility attackAbility,
             Vector3 attackPositionCenter,
             Vector3 hitPositionCenter
-        ) {
+        )
+        {
             //allow derived class to check conditions (before knock out check)
         }
 
-        protected virtual void CheckCustom(AttackAbility attackAbility, Vector3 attackPositionCenter) {
+        protected virtual void CheckCustom(AttackAbility attackAbility, Vector3 attackPositionCenter)
+        {
             //allow derived class to check conditions (only if not KO'ed)
         }
 
-#endregion
+        // INVULNERABILITY METHODS
 
-#region Invulnerability/Invulnerable Methods
-
-        public void AddEndInvulnerabilityHandler(System.Action handler) {
+        public void AddEndInvulnerabilityHandler(System.Action handler)
+        {
             _endInvulnerabilityHandlers += handler;
         }
 
-        public void RemoveEndInvulnerabilityHandler(System.Action handler) {
+        public void RemoveEndInvulnerabilityHandler(System.Action handler)
+        {
             _endInvulnerabilityHandlers -= handler;
         }
 
-        protected virtual void CheckInvulnerability(AttackAbility attackAbility) {
+        protected virtual void CheckInvulnerability(AttackAbility attackAbility)
+        {
             if (!attackAbility.causesInvulnerability || _damageProfile.invulnerabilityTime <= 0) return;
             BeginInvulnerability(attackAbility);
         }
 
-        protected virtual void BeginInvulnerability(AttackAbility attackAbility) {
+        protected virtual void BeginInvulnerability(AttackAbility attackAbility)
+        {
             _invulnerabilityTimeTrigger = _damageProfile.timeThread.AddTrigger(
                 _damageProfile.invulnerabilityTime, EndInvulnerability);
             BeginInvulnerabilityVFX();
         }
 
-        protected virtual void BeginInvulnerabilityVFX() {
-            if (GraphicController != null) {
-                GraphicController.StartDamageColor(_damageProfile.invulnerabilityTime);
-                if (_damageProfile.invulnerabilityFlicker) {
-                    GraphicController.StartFlicker(20f);
+        protected virtual void BeginInvulnerabilityVFX()
+        {
+            if (GraphicController != null)
+            {
+                GraphicController.SetDamageColor(_damageProfile.invulnerabilityTime);
+                if (_damageProfile.invulnerabilityFlicker)
+                {
+                    GraphicController.SetFlicker();
                 }
             }
         }
 
-        protected virtual void EndInvulnerabilityVFX() {
-            GraphicController?.StopFlicker();
+        protected virtual void EndInvulnerabilityVFX()
+        {
+            GraphicController?.EndFlicker();
         }
 
-        protected virtual void EndInvulnerability(TimeTrigger tt) {
+        protected virtual void EndInvulnerability(TimeTrigger tt)
+        {
             _invulnerabilityTimeTrigger = null;
             EndInvulnerabilityVFX();
             ObjectManager.InvokeEventActions(ref _endInvulnerabilityHandlers);
@@ -254,15 +265,15 @@ namespace KRG {
             return false;
         }
 
-#endregion
+        // KnockBack Methods
 
-#region KnockBack Methods
-
-        protected virtual void CheckKnockBack(AttackAbility attackAbility, Vector3 attackPositionCenter) {
+        protected virtual void CheckKnockBack(AttackAbility attackAbility, Vector3 attackPositionCenter)
+        {
             if (!attackAbility.causesKnockBack) return;
 
             float knockBackTime;
-            switch (attackAbility.knockBackTimeCalcMode) {
+            switch (attackAbility.knockBackTimeCalcMode)
+            {
                 case KnockBackCalcMode.Override:
                     knockBackTime = attackAbility.knockBackTime;
                     break;
@@ -277,7 +288,8 @@ namespace KRG {
             if (knockBackTime <= 0) return;
 
             float knockBackDistance;
-            switch (attackAbility.knockBackDistanceCalcMode) {
+            switch (attackAbility.knockBackDistanceCalcMode)
+            {
                 case KnockBackCalcMode.Override:
                     knockBackDistance = attackAbility.knockBackDistance;
                     break;
@@ -299,7 +311,8 @@ namespace KRG {
             Vector3 attackPositionCenter,
             float knockBackTime,
             float knockBackDistance
-        ) {
+        )
+        {
             //if already knocked back, stop that time trigger before starting the new one
             if (isKnockedBack) _knockBackTimeTrigger.Dispose();
 
@@ -310,13 +323,15 @@ namespace KRG {
 
         protected abstract void SetKnockBackDirection(Vector3 attackPositionCenter);
 
-        protected virtual void EndKnockBack(TimeTrigger tt) {
+        protected virtual void EndKnockBack(TimeTrigger tt)
+        {
             _knockBackTimeTrigger = null;
         }
 
-#endregion
+        // MISC
 
-        protected virtual void OnKnockedOut(Vector3 attackPositionCenter) {
+        protected virtual void OnKnockedOut(Vector3 attackPositionCenter)
+        {
             var ld = _damageProfile.knockedOutLoot;
             if (ld != null) ld.Drop(this);
             gameObject.Dispose();

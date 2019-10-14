@@ -16,6 +16,9 @@
 
         //User Layers:
         //...
+        public const int SpriteGfx = 12;
+        public const int SpriteGfxFar = 13;
+        //...
         public const int PCBoundBox = 20;
     }
 }

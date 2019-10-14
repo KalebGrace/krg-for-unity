@@ -4,69 +4,69 @@ namespace KRG
 {
     public struct EventAction
     {
-        event Action actionHigh;
-        event Action actionNormal;
+        private event Action ActionHigh;
+        private event Action ActionNormal;
 
         public void AddHigh(Action action)
         {
-            if (actionHigh != null)
+            if (ActionHigh != null)
             {
                 G.U.Warn("There is already a high priority action for this event.");
             }
-            actionHigh += action;
+            ActionHigh += action;
         }
 
-        public static EventAction operator + (EventAction eventAction, Action action)
+        public static EventAction operator +(EventAction eventAction, Action action)
         {
-            eventAction.actionNormal += action;
+            eventAction.ActionNormal += action;
             return eventAction;
         }
 
-        public static EventAction operator - (EventAction eventAction, Action action)
+        public static EventAction operator -(EventAction eventAction, Action action)
         {
-            eventAction.actionHigh -= action;
-            eventAction.actionNormal -= action;
+            eventAction.ActionHigh -= action;
+            eventAction.ActionNormal -= action;
             return eventAction;
         }
 
         public void Invoke()
         {
-            if (actionHigh != null) actionHigh();
-            if (actionNormal != null) actionNormal();
+            ActionHigh?.Invoke();
+            ActionNormal?.Invoke();
         }
     }
 
     public struct EventAction<T>
     {
-        event Action<T> actionHigh;
-        event Action<T> actionNormal;
+        private event Action<T> ActionHigh;
+        private event Action<T> ActionNormal;
 
         public void AddHigh(Action<T> action)
         {
-            if (actionHigh != null)
+            if (ActionHigh != null)
             {
                 G.U.Warn("There is already a high priority action for this event.");
             }
-            actionHigh += action;
+            ActionHigh += action;
         }
 
-        public static EventAction<T> operator + (EventAction<T> eventAction, Action<T> action)
+        public static EventAction<T> operator +(EventAction<T> eventAction, Action<T> action)
         {
-            eventAction.actionNormal += action;
+            eventAction.ActionNormal += action;
             return eventAction;
         }
 
-        public static EventAction<T> operator - (EventAction<T> eventAction, Action<T> action)
+        public static EventAction<T> operator -(EventAction<T> eventAction, Action<T> action)
         {
-            eventAction.actionHigh -= action;
-            eventAction.actionNormal -= action;
+            eventAction.ActionHigh -= action;
+            eventAction.ActionNormal -= action;
             return eventAction;
         }
 
         public void Invoke(T in1)
         {
-            if (actionHigh != null) actionHigh(in1);
-            if (actionNormal != null) actionNormal(in1);
+            ActionHigh?.Invoke(in1);
+            ActionNormal?.Invoke(in1);
         }
     }
 }

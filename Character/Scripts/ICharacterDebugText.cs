@@ -2,6 +2,6 @@
 {
     public interface ICharacterDebugText
     {
-        string lateUpdateText { get; }
+        string Text { get; set; }
     }
 }

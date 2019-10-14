@@ -1,28 +1,15 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System;
 using UnityEngine;
 
-namespace KRG {
+namespace KRG
+{
+    public class EnumAttribute : PropertyAttribute
+    {
+        public Type EnumType { get; private set; }
 
-    /// <summary>
-    /// Enum attribute.
-    /// Last Refactor: 0.05.002 / 2018-05-05
-    /// </summary>
-    public class EnumAttribute : PropertyAttribute {
-
-#region properties
-
-        public System.Type enumType { get; private set; }
-
-#endregion
-
-#region constructors
-
-        public EnumAttribute(System.Type enumType) {
-            this.enumType = enumType;
+        public EnumAttribute(Type enumType)
+        {
+            EnumType = enumType;
         }
-
-#endregion
-
     }
 }
