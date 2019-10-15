@@ -110,7 +110,7 @@ namespace KRG
         {
             if (!_timeThread.isPaused && _velocity != Vector2.zero)
             {
-                transform.Translate(_velocity * _timeThread.deltaTime);
+                transform.Translate(_velocity * _timeThread.deltaTime, Space.World);
             }
         }
 
@@ -145,13 +145,21 @@ namespace KRG
             at.StopTakingDamage();
         }
 
-        void OnDrawGizmos()
-        { //runs in edit mode, so don't rely upon actions done in Awake
+        private void OnDrawGizmos() // runs in edit mode, so don't rely upon actions done in Awake
+        {
             Gizmos.color = Color.red;
             Vector3 p = transform.position;
             KRGGizmos.DrawCrosshairXY(p, 0.25f);
             var boxCollider = GetComponent<BoxCollider>();
-            if (boxCollider != null) Gizmos.DrawWireCube(p + boxCollider.center, boxCollider.size);
+            if (boxCollider != null)
+            {
+                Vector3 bcCenter = boxCollider.center;
+                if (transform.localEulerAngles.y.Ap(180)) // hacky, but necessary
+                {
+                    bcCenter = bcCenter.Multiply(x: -1);
+                }
+                Gizmos.DrawWireCube(p + bcCenter, boxCollider.size);
+            }
         }
 
         End my_end = new End();

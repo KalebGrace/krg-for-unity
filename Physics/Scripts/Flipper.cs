@@ -15,6 +15,8 @@ namespace KRG
         [SerializeField]
         private bool m_FlipLocalPosition = default;
         [SerializeField]
+        private bool m_FlipLocalRotation = default;
+        [SerializeField]
         private bool m_FlipLocalScale = default;
         [SerializeField]
         private bool m_FlipCollider = default;
@@ -62,10 +64,16 @@ namespace KRG
 
         private void Flip()
         {
-            // TODO: support Y-axis & Z-axis
+            // TODO: support additional axes
             if (m_FlipLocalPosition)
             {
                 transform.localPosition = transform.localPosition.Multiply(x: -1);
+            }
+            if (m_FlipLocalRotation)
+            {
+                Vector3 v = transform.localEulerAngles;
+                v.y = (v.y + 180) % 360;
+                transform.localEulerAngles = v;
             }
             if (m_FlipLocalScale)
             {
