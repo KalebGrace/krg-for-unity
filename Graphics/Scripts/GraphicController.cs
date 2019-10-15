@@ -175,7 +175,7 @@ namespace KRG
         private void InitRenderer()
         {
             m_Renderer = GraphicGameObject.GetComponent<Renderer>();
-            if (m_Renderer == null || BaseSharedMaterial == null) return;
+            if (m_Renderer == null || m_Body == null || BaseSharedMaterial == null) return;
             m_Renderer.sharedMaterial = BaseSharedMaterial;
         }
 
@@ -213,7 +213,7 @@ namespace KRG
 
         // MAIN METHODS
 
-        private void RefreshGraphic()
+        public void RefreshGraphic()
         {
             if (AnimationImageCount == 0) return;
 
@@ -332,7 +332,7 @@ namespace KRG
 
         // IMAGE INDEX / FRAME SEQUENCE METHODS
 
-        private void AdvanceImageIndex()
+        public void AdvanceImageIndex()
         {
             // GraphicController uses zero-based image index (m_AnimationImageIndex)
             // RasterAnimation uses one-based frame number (frameNumber)
@@ -455,5 +455,26 @@ namespace KRG
         }
 
         protected virtual void OnCharacterStateChangeBegins(ulong state, bool value) { }
+
+        // EDITOR METHODS
+
+        /// <summary>
+        /// Intended only for specialized editor use, such as an animation preview.
+        /// </summary>
+        public void ClearMaterialTexture()
+        {
+            m_Material.mainTexture = null;
+        }
+
+        /// <summary>
+        /// Intended only for specialized editor use, such as an animation preview.
+        /// </summary>
+        public void ResetStandaloneAnimation()
+        {
+            if (m_StandaloneAnimation == null) return;
+            SetAnimation(m_AnimationContext, m_StandaloneAnimation);
+            m_RasterAnimationState = new RasterAnimationState(m_StandaloneAnimation);
+            m_AnimationImageIndex = m_RasterAnimationState.frameSequenceFromFrame - 1; // 1-based -> 0-based
+        }
     }
 }
