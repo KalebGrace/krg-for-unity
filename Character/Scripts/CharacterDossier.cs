@@ -14,12 +14,13 @@ namespace KRG
 
         [Header("Game Object Data")]
 
-        [Enum(typeof(CharacterID))]
-        public int CharacterID;
+        public string FullName;
 
+        [ReadOnly]
         public string FileName;
 
-        public string FullName;
+        [Enum(typeof(CharacterID))]
+        public int CharacterID;
 
         public CharacterType CharacterType;
 
