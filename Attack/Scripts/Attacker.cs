@@ -69,7 +69,7 @@ namespace KRG
         }
 
         // OTHER METHODS
-        
+
         private void InitAvailableAttacks()
         {
             for (int i = 0; i < _attackAbilities.Length; ++i)
@@ -170,18 +170,18 @@ namespace KRG
             attack.damageDealtHandler = OnDamageDealt;
             UpdateAvailableAttacks(attack);
             OnAttack(attack);
-            if (attackStateChanged != null) attackStateChanged(attack, AttackState.STARTED);
+            attackStateChanged?.Invoke(attack, AttackState.STARTED);
             //and since the attack attempt succeeded, return TRUE
             return true;
         }
 
-        private void InterruptCurrentAttack()
+        protected void InterruptCurrentAttack()
         {
             if (_currentAttack == null) return;
             //remove the end callback
             _currentAttack.end.actions -= _OnAttackCompleted;
             //fire the state changed event
-            if (attackStateChanged != null) attackStateChanged(_currentAttack, AttackState.INTERRUPTED);
+            attackStateChanged?.Invoke(_currentAttack, AttackState.INTERRUPTED);
             //set null
             _currentAttack = null;
         }
@@ -209,7 +209,7 @@ namespace KRG
 
         private void _OnAttackCompleted()
         {
-            if (attackStateChanged != null) attackStateChanged(_currentAttack, AttackState.COMPLETED);
+            attackStateChanged?.Invoke(_currentAttack, AttackState.COMPLETED);
             _currentAttack = null;
             //the current attack has ended, so try the queued attack; if successful, return (otherwise, proceed)
             if (_queuedAttack != null)
