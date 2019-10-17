@@ -105,19 +105,25 @@ namespace KRG {
             attaTF.position = akerTF.position;
             attaTF.rotation = akerTF.rotation;
 
-            //finish setting up attack
-            a.Init(_attackAbility, _attacker);
-
             //track attack
             _attacks.Add(a);
-            a.end.actions += () => _attacks.Remove(a);
+            a.Destroyed += RemoveAttack;
+
+            //finish setting up attack
+            a.Init(_attackAbility, _attacker);
 
             //return attack for external management
             return a;
         }
 
-        void ReadyAttack(TimeTrigger tt) {
+        private void ReadyAttack(TimeTrigger tt)
+        {
             _isAttackReady = true;
+        }
+
+        private void RemoveAttack(Attack a)
+        {
+            _attacks.Remove(a);
         }
 
 #endregion

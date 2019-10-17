@@ -17,11 +17,15 @@ namespace KRG
     /// </summary>
     public class Attacker : MonoBehaviour, IBodyComponent
     {
-        public enum AttackState { STARTED, INTERRUPTED, COMPLETED }
+        // DELEGATES
 
-        public event AttackEventHandler attackStateChanged;
+        public delegate void AttackStartHandler(Attack attack);
+        public delegate void AttackEndHandler(Attack attack, bool isCompleted);
 
-        public delegate void AttackEventHandler(Attack attack, AttackState state);
+        // EVENTS
+
+        public event AttackStartHandler AttackStarted;
+        public event AttackEndHandler AttackEnded;
 
         // SERIALIZED FIELDS
 
@@ -45,9 +49,13 @@ namespace KRG
 
         private AttackAbilityUse _queuedAttack;
 
-        // PROPERTIES
+        private bool m_IsAttackerAnimating;
+
+        // SHORTCUT PROPERTIES
 
         public GameObjectBody Body => m_Body;
+
+        private GraphicController GraphicController => m_Body.Refs.GraphicController;
 
         // INIT METHOD
 
@@ -68,7 +76,7 @@ namespace KRG
             CheckInputAndTryAttack();
         }
 
-        // OTHER METHODS
+        // MAIN METHODS
 
         private void InitAvailableAttacks()
         {
@@ -123,7 +131,7 @@ namespace KRG
                         if (aaUse.doesInterrupt)
                         {
                             //try the attack; if successful, stop searching for attacks to try and just return
-                            if (_TryAttack(aaUse))
+                            if (TryAttack(aaUse))
                             {
                                 return;
                             }
@@ -142,7 +150,7 @@ namespace KRG
         {
             var sig = _inputEzKeySigMap[ezKey];
             var aaUse = _availableAttacksBase[sig];
-            _TryAttack(aaUse);
+            TryAttack(aaUse);
         }
 
         protected virtual bool IsInputSignatureExecuted(InputSignature inputSig)
@@ -155,68 +163,61 @@ namespace KRG
             return true;
         }
 
-        private bool _TryAttack(AttackAbilityUse aaUse)
+        private bool TryAttack(AttackAbilityUse aaUse)
         {
             Attack attack = aaUse.AttemptAttack();
-            //if the attack attempt failed, return FALSE (otherwise, proceed)
+            //if the attack attempt failed, return FALSE...
             if (attack == null) return false;
-            //the attack attempt succeeded!
+            //...otherwise, the attack attempt succeeded!
 
             //first, interrupt the current attack (if applicable)
-            InterruptCurrentAttack();
+            EndCurrentAttack(false);
+
             //now, set up the NEW current attack
             _currentAttack = attack;
-            attack.end.actions += _OnAttackCompleted;
+            attack.Destroyed += OnAttackDestroy;
             attack.damageDealtHandler = OnDamageDealt;
             UpdateAvailableAttacks(attack);
-            OnAttack(attack);
-            attackStateChanged?.Invoke(attack, AttackState.STARTED);
+            //call optional derived functionality (high priority), then fire event as applicable
+            OnAttackStart(attack);
+            AttackStarted?.Invoke(attack);
+            //set attacker animation
+            m_IsAttackerAnimating = true;
+            RasterAnimation attackerAnimation = attack.attackAbility.GetRandomAttackerRasterAnimation();
+            GraphicController.SetAnimation(AnimationContext.Attack, attackerAnimation, OnAttackerAnimationEnd);
             //and since the attack attempt succeeded, return TRUE
             return true;
         }
 
-        protected void InterruptCurrentAttack()
+        protected void EndCurrentAttack(bool isCompleted)
         {
-            if (_currentAttack == null) return;
-            //remove the end callback
-            _currentAttack.end.actions -= _OnAttackCompleted;
-            //fire the state changed event
-            attackStateChanged?.Invoke(_currentAttack, AttackState.INTERRUPTED);
-            //set null
-            _currentAttack = null;
-        }
+            Attack attack = _currentAttack;
+            //if there is no current attack, return
+            if (attack == null) return;
 
-        private void UpdateAvailableAttacks(Attack attack)
-        {
-            _availableAttacks.Clear();
-            var strings = attack.attackAbility.attackStrings;
-            AttackString aString;
-            AttackAbility aa;
-            AttackAbilityUse aaUse;
-            for (int i = 0; i < strings.Length; ++i)
+            //unset attacker animation
+            if (m_IsAttackerAnimating)
             {
-                //TODO:
-                //1.  Open and close string during specifically-defined frame/second intervals using
-                //    TimeTriggers/callbacks; for now, we just open immediately and close on destroy.
-                //2.  Generate all possible AttackAbilityUse objects at init and
-                //    just add/remove them to/from _availableAttacks as needed.
-                aString = strings[i];
-                aa = aString.attackAbility;
-                aaUse = new AttackAbilityUse(aa, this, aString.doesInterrupt, attack);
-                _availableAttacks.Add(aa.inputSignature, aaUse);
+                m_IsAttackerAnimating = false;
+                GraphicController.EndAnimation(AnimationContext.Attack);
             }
-        }
-
-        private void _OnAttackCompleted()
-        {
-            attackStateChanged?.Invoke(_currentAttack, AttackState.COMPLETED);
+            //call optional derived functionality (high priority), then fire event as applicable
+            OnAttackEnd(attack, isCompleted);
+            AttackEnded?.Invoke(attack, isCompleted);
+            //shut down the current attack
+            attack.Destroyed -= OnAttackDestroy;
+            if (attack != null && attack.attackAbility.isJoinedToAttacker)
+            {
+                attack.Dispose(isCompleted);
+            }
             _currentAttack = null;
-            //the current attack has ended, so try the queued attack; if successful, return (otherwise, proceed)
+
+            //we now have no current attack, so try the queued attack; if successful, return (otherwise, proceed)
             if (_queuedAttack != null)
             {
                 var aaUse = _queuedAttack;
                 _queuedAttack = null;
-                if (_TryAttack(aaUse))
+                if (TryAttack(aaUse))
                 {
                     return;
                 }
@@ -229,14 +230,45 @@ namespace KRG
             }
         }
 
-        protected virtual void OnAttack(Attack attack)
+        private void UpdateAvailableAttacks(Attack attack)
         {
-            //can override with character state, graphics controller, and/or other code
+            _availableAttacks.Clear();
+            AttackString[] strings = attack.attackAbility.attackStrings;
+            for (int i = 0; i < strings.Length; ++i)
+            {
+                //TODO:
+                //1.  Open and close string during specifically-defined frame/second intervals using
+                //    TimeTriggers/callbacks; for now, we just open immediately and close on destroy.
+                //2.  Generate all possible AttackAbilityUse objects at init and
+                //    just add/remove them to/from _availableAttacks as needed.
+                AttackString aString = strings[i];
+                AttackAbility aa = aString.AttackAbility;
+                AttackAbilityUse aaUse = new AttackAbilityUse(aa, this, aString.DoesInterrupt, attack);
+                _availableAttacks.Add(aa.inputSignature, aaUse);
+            }
         }
 
-        protected virtual void OnDamageDealt(Attack attack, DamageTaker target)
+        private void OnAttackerAnimationEnd(bool isCompleted)
         {
-            //can override with character state, graphics controller, and/or other code
+            //check m_IsAttackerAnimating to avoid looping via GraphicController.EndAnimation/EndCurrentAttack
+            if (m_IsAttackerAnimating)
+            {
+                m_IsAttackerAnimating = false;
+                EndCurrentAttack(isCompleted);
+            }
         }
+
+        private void OnAttackDestroy(Attack attack)
+        {
+            G.U.Assert(attack == _currentAttack);
+            //the current attack has been destroyed by external forces, so end it
+            EndCurrentAttack(attack.IsCompleted);
+        }
+
+        protected virtual void OnAttackStart(Attack attack) { }
+
+        protected virtual void OnAttackEnd(Attack attack, bool isCompleted) { }
+
+        protected virtual void OnDamageDealt(Attack attack, DamageTaker target) { }
     }
 }

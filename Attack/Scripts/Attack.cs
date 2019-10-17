@@ -9,17 +9,18 @@ namespace KRG
     /// 1.  Attack allows a game object, specifically in prefab form, to be used as an "attack".
     /// 2.  Attack is to be added to a game object as a script/component*. The following must also be done:
     ///   a.  Attack must have a derived class specifically for this project (e.g. AttackMyGame).
-    ///   b.  GraphicsController must also have a derived class for this project (e.g. GraphicsControllerMyGame).
-    ///   c.  Any game object with the Attack component must exist on an "Attack" layer.
-    ///   d.  Any game object with the Attack component must have its box collider set as a trigger.
+    ///   b.  Any game object with the Attack component must exist on an "Attack" layer.
+    ///   c.  Any game object with the Attack component must have its box collider set as a trigger.
     /// 3.  Attack is a key component of the Attack system, and is used in conjunction with the following classes:
     ///     AttackAbility, AttackAbilityUse, Attacker, AttackString, AttackTarget, and KnockBackCalcMode.
     /// 4.*-Attacker is abstract and must have a per-project derived class created (as mentioned in 2a);
     ///     the derived class itself must be added to a game object as a script/component.
     /// </summary>
     [RequireComponent(typeof(GraphicController))]
-    public abstract class Attack : MonoBehaviour, IBodyComponent, IEnd
+    public abstract class Attack : MonoBehaviour, IBodyComponent
     {
+        public event System.Action<Attack> Destroyed;
+
         [Header("Optional Standalone Attack Ability")]
 
         [SerializeField, FormerlySerializedAs("m_attackAbility")]
@@ -34,7 +35,6 @@ namespace KRG
         List<AttackTarget> _attackTargets = new List<AttackTarget>();
         BoxCollider _boxCollider;
         bool _isInitialized;
-        bool _isPlayerCharacterAttacker;
         ITimeThread _timeThread;
         Transform _transform;
         Vector2 _velocity;
@@ -45,7 +45,9 @@ namespace KRG
 
         public virtual DamageDealtHandler damageDealtHandler { get; set; }
 
-        public virtual bool isPlayerCharacterAttacker { get { return _isPlayerCharacterAttacker; } }
+        public bool IsCompleted { get; private set; }
+
+        public bool IsDisposed { get; private set; }
 
         public GameObjectBody Body => m_Body;
 
@@ -84,8 +86,6 @@ namespace KRG
             {
                 Hurtbox.Enabled = false;
             }
-
-            my_end.actions += ForceOnTriggerExit;
         }
 
         protected virtual void Start()
@@ -162,23 +162,11 @@ namespace KRG
             }
         }
 
-        End my_end = new End();
-
-        public End end { get { return my_end; } }
-
         protected virtual void OnDestroy()
         {
-            my_end.Invoke();
-
+            ForceOnTriggerExit();
             ForceReleaseTargets();
-        }
-
-        public virtual void OnAttackerAnimationEnd()
-        {
-            if (_attackAbility.isJoinedToAttacker)
-            {
-                gameObject.Dispose();
-            }
+            Destroyed?.Invoke(this);
         }
 
         public void Init(AttackAbility attackAbility, Attacker attacker)
@@ -190,7 +178,6 @@ namespace KRG
             }
             _attackAbility = attackAbility;
             _attacker = attacker;
-            _isPlayerCharacterAttacker = attacker.Body.IsPlayerCharacter;
             InitInternal();
         }
 
@@ -202,15 +189,7 @@ namespace KRG
 
             if (_attackAbility.hasAttackLifetime)
             {
-                //TODO: dispose callback causes optional delay for related attacks
-                //E.G. SecS: stopping block makes the fire/shot m_attackRateSec restart at 1.5x:
-                //alarm[e_pc_alarm.fire_ready] = global.framerate / fire_rate * 1.5;
-                _timeThread.AddTrigger(_attackAbility.attackLifetime, Dispose);
-                SetAttackerAnimation();
-            }
-            else
-            {
-                SetAttackerAnimation(Dispose);
+                _timeThread.AddTrigger(_attackAbility.attackLifetime, OnLifetimeEnd);
             }
 
             m_Body.FacingDirection = _attacker.Body.FacingDirection;
@@ -239,13 +218,6 @@ namespace KRG
             }
         }
 
-        protected virtual void SetAttackerAnimation(GraphicController.AnimationEndHandler callback = null)
-        {
-            RasterAnimation attackerAnimation = _attackAbility.GetRandomAttackerRasterAnimation();
-            GraphicController attackerGraphicController = _attacker.Body.Refs.GraphicController;
-            attackerGraphicController.SetAnimation(AnimationContext.Attack, attackerAnimation, callback);
-        }
-
         protected virtual void PlayAttackSFX()
         {
             string sfxFmodEvent = _attackAbility.sfxFmodEvent;
@@ -255,19 +227,18 @@ namespace KRG
             }
         }
 
-        private void Dispose(bool isCompleted)
+        private void OnLifetimeEnd(TimeTrigger tt)
         {
-            if (this != null)
-            { //this may be null if e.g. this is joined to an attacker that was destroyed
-                gameObject.Dispose();
-            }
+            Dispose(true);
         }
 
-        private void Dispose(TimeTrigger tt)
+        public void Dispose(bool isCompleted)
         {
-            if (this != null)
-            { //this may be null if e.g. this is joined to an attacker that was destroyed
-                gameObject.Dispose();
+            if (this != null && !IsDisposed)
+            {
+                IsCompleted = isCompleted;
+                IsDisposed = true;
+                m_Body.Dispose();
             }
         }
 

@@ -1,42 +1,21 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.Serialization;
 
-namespace KRG {
-
-    /// <summary>
-    /// Attack string.
-    /// Last Refactor: 0.05.002 / 2018-05-05
-    /// </summary>
+namespace KRG
+{
     [System.Serializable]
-    public sealed class AttackString {
-
-#region public constants
-
-        public const int attackStringDepthLimit = 10;
-
-#endregion
-
-#region serialized fields
-
+    public sealed class AttackString
+    {
         [SerializeField]
         [FormerlySerializedAs("m_attackAbility")]
-        AttackAbility _attackAbility = default;
+        private AttackAbility _attackAbility = default;
 
         [SerializeField]
         [FormerlySerializedAs("m_doesInterrupt")]
-        bool _doesInterrupt = default;
+        private bool _doesInterrupt = default;
 
-#endregion
+        public AttackAbility AttackAbility => _attackAbility;
 
-#region properties
-
-        public AttackAbility attackAbility { get { return _attackAbility; } }
-
-        public bool doesInterrupt { get { return _doesInterrupt; } }
-
-#endregion
-
+        public bool DoesInterrupt => _doesInterrupt;
     }
 }
