@@ -273,9 +273,18 @@ namespace KRG
             RefreshGraphic();
         }
 
-        public void EndAnimation()
+        public void EndAnimation(AnimationContext context)
         {
-            OnAnimationEnd(false);
+            // handle an interrupted animation
+            if (m_AnimationContext == context)
+            {
+                OnAnimationEnd(false);
+            }
+            else
+            {
+                G.U.Err("Attempting to end animation context {0}, but current context is {1}.",
+                    context, m_AnimationContext);
+            }
         }
 
         private void FlipXInternal()
