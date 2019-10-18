@@ -36,7 +36,6 @@ namespace KRG
         BoxCollider _boxCollider;
         bool _isInitialized;
         ITimeThread _timeThread;
-        Transform _transform;
         Vector2 _velocity;
 
         public virtual AttackAbility attackAbility { get { return _attackAbility; } }
@@ -64,8 +63,6 @@ namespace KRG
 
         protected virtual void Awake()
         {
-            _transform = transform;
-
             G.U.Assert(gameObject.layer != Layer.Default, "This GameObject must exist on an attack Layer.");
 
             if (Hitbox != null)
@@ -127,9 +124,9 @@ namespace KRG
                 at = new AttackTarget(_attackAbility, target, () => damageDealtHandler(this, target));
                 _attackTargets.Add(at);
             }
-            //TODO: get specifically defined center rather than simply the base position
-            Vector3 apc = _transform.position;
-            at.StartTakingDamage(apc, other.ClosestPoint(apc));
+            Vector3 attackPositionCenter = m_Body.CenterTransform.position;
+            Vector3 hitPositionCenter = other.ClosestPoint(attackPositionCenter);
+            at.StartTakingDamage(attackPositionCenter, hitPositionCenter);
         }
 
         void OnTriggerExit(Collider other)
@@ -223,7 +220,7 @@ namespace KRG
             string sfxFmodEvent = _attackAbility.sfxFmodEvent;
             if (!string.IsNullOrEmpty(sfxFmodEvent))
             {
-                G.audio.PlaySFX(sfxFmodEvent, _transform.position);
+                G.audio.PlaySFX(sfxFmodEvent, transform.position);
             }
         }
 
@@ -249,7 +246,7 @@ namespace KRG
         /// </summary>
         void ForceOnTriggerExit()
         {
-            _transform.Translate(-1000, -1000, -1000);
+            transform.Translate(-1000, -1000, -1000);
         }
 
         /// <summary>

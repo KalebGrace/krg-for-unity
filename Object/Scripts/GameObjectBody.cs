@@ -47,6 +47,8 @@ namespace KRG
 
         // GRAPHICAL & VISUAL PROPERTIES
 
+        public Transform CenterTransform => Refs.VisRect?.transform ?? transform;
+
         public Direction FacingDirection
         {
             get => (Direction)m_FacingDirection;
