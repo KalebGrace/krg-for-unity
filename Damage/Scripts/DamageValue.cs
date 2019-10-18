@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 #if NS_DG_TWEENING
 using DG.Tweening;
@@ -9,10 +8,8 @@ using DG.Tweening;
 
 namespace KRG
 {
-
     public class DamageValue : MonoBehaviour
     {
-
 #pragma warning disable 0414
         [Enum(typeof(TimeThreadInstance))]
         [SerializeField]
@@ -28,7 +25,12 @@ namespace KRG
         [SerializeField]
         TMP_Text _text001 = default;
 
-#if NS_DG_TWEENING
+#if !NS_DG_TWEENING
+        public void Init(IEnd target, int damage)
+        {
+            G.U.Err("This class requires DG.Tweening (DOTween).");
+        }
+#else
         IEnd _target;
         List<Sequence> _tweens = new List<Sequence>();
 
@@ -133,6 +135,8 @@ namespace KRG
 
         void Dispose()
         {
+            if (this == null) return;
+
             gameObject.Dispose();
         }
 
@@ -165,6 +169,8 @@ namespace KRG
 
         void OnTargetDestroy()
         {
+            if (this == null) return;
+
             _target = null;
             transform.parent = null; //This needs to live on even if the target is destroyed.
 
@@ -176,10 +182,6 @@ namespace KRG
             {
                 cfb.enabled = true;
             }
-        }
-#else
-        public void Init(MonoBehaviour target, int damage) {
-            G.U.Err("This class requires DG.Tweening (DOTween).");
         }
 #endif
     }
