@@ -62,18 +62,8 @@ namespace KRG
         {
             G.U.Assert(gameObject.layer != Layer.Default, "This GameObject must exist on an attack Layer.");
 
-            if (Hitbox != null)
-            {
-                _boxCollider = G.U.Guarantee<BoxCollider>(this);
-                _boxCollider.center = Hitbox.Center;
-                _boxCollider.size = Hitbox.Size;
-                _boxCollider.isTrigger = true;
-            }
-            else
-            {
-                _boxCollider = this.Require<BoxCollider>();
-            }
-            G.U.Assert(_boxCollider.isTrigger, "The BoxCollider Component must be a trigger.");
+            Hitbox.TriggerEntered += OnHitboxTriggerEnter;
+            Hitbox.TriggerExited += OnHitboxTriggerExit;
 
             //TODO: apply hurtbox where needed
             if (Hurtbox != null)
@@ -108,7 +98,7 @@ namespace KRG
             }
         }
 
-        void OnTriggerEnter(Collider other)
+        private void OnHitboxTriggerEnter(Collider other)
         {
             Hurtbox otherHurtbox = other.GetComponent<Hurtbox>();
             if (otherHurtbox == null) return;
@@ -126,7 +116,7 @@ namespace KRG
             at.StartTakingDamage(attackPositionCenter, hitPositionCenter);
         }
 
-        void OnTriggerExit(Collider other)
+        private void OnHitboxTriggerExit(Collider other)
         {
             Hurtbox otherHurtbox = other.GetComponent<Hurtbox>();
             if (otherHurtbox == null) return;
@@ -160,6 +150,13 @@ namespace KRG
         {
             ForceOnTriggerExit();
             ForceReleaseTargets();
+
+            if (Hitbox != null)
+            {
+                Hitbox.TriggerExited -= OnHitboxTriggerExit;
+                Hitbox.TriggerEntered -= OnHitboxTriggerEnter;
+            }
+
             Destroyed?.Invoke(this);
         }
 
