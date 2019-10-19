@@ -60,8 +60,6 @@ namespace KRG
 
         protected virtual void Awake()
         {
-            G.U.Assert(gameObject.layer != Layer.Default, "This GameObject must exist on an attack Layer.");
-
             Hitbox.TriggerEntered += OnHitboxTriggerEnter;
             Hitbox.TriggerExited += OnHitboxTriggerExit;
 
@@ -134,15 +132,18 @@ namespace KRG
             Gizmos.color = Color.red;
             Vector3 p = transform.position;
             KRGGizmos.DrawCrosshairXY(p, 0.25f);
-            var boxCollider = GetComponent<BoxCollider>();
-            if (boxCollider != null)
+            if (Hitbox != null)
             {
-                Vector3 bcCenter = boxCollider.center;
+                if (!Hitbox.Enabled)
+                {
+                    Gizmos.color = new Color(1, 0.5f, 0);
+                }
+                Vector3 bcCenter = Hitbox.Center;
                 if (transform.localEulerAngles.y.Ap(180)) // hacky, but necessary
                 {
                     bcCenter = bcCenter.Multiply(x: -1);
                 }
-                Gizmos.DrawWireCube(p + bcCenter, boxCollider.size);
+                Gizmos.DrawWireCube(p + bcCenter, Hitbox.Size);
             }
         }
 
