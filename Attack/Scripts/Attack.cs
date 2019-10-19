@@ -16,7 +16,6 @@ namespace KRG
     /// 4.*-Attacker is abstract and must have a per-project derived class created (as mentioned in 2a);
     ///     the derived class itself must be added to a game object as a script/component.
     /// </summary>
-    [RequireComponent(typeof(GraphicController))]
     public abstract class Attack : MonoBehaviour, IBodyComponent
     {
         public event System.Action<Attack> Destroyed;
@@ -49,8 +48,6 @@ namespace KRG
         public bool IsDisposed { get; private set; }
 
         public GameObjectBody Body => m_Body;
-
-        public GraphicController GraphicController => m_Body.Refs.GraphicController;
 
         private Hitbox Hitbox => m_Body.Refs.Hitbox;
 
