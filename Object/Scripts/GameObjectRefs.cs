@@ -73,6 +73,11 @@ namespace KRG
                     c.InitBody(body);
                 }
 
+                if (c.Body != body)
+                {
+                    continue; // don't reference components assigned to other bodies
+                }
+
                 // assign IBodyComponent references as applicable
 
                 void AssignIBodyComponent<T>(ref T myRef) where T : IBodyComponent
