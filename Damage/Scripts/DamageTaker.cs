@@ -32,7 +32,7 @@ namespace KRG
 
         public virtual float hp { get { return _hp; } }
 
-        public virtual float hpMin { get { return _damageProfile.hpMin; } }
+        public virtual float hpMin { get { return _damageProfile.HPMin; } }
 
         public virtual float hpMax { get { return _hpMaxNew; } }
 
@@ -178,7 +178,7 @@ namespace KRG
         private void InitHP()
         {
             //TODO: this should all be reworked to keep track of persistent HP max increasing items
-            _hpMaxNew = _damageProfile.hpMax;
+            _hpMaxNew = _damageProfile.HPMax;
             SetHPFull();
         }
 

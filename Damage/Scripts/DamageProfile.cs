@@ -28,11 +28,13 @@ namespace KRG {
         [FormerlySerializedAs("m_sfxFmodEvent")]
         string _sfxFmodEvent = default;
 
-        //base HP (hit point) maximum
-        [Header("HP")]
+
+        [Header("Primary Stats")]
+
         [SerializeField]
-        [FormerlySerializedAs("m_hpMax")]
-        float _hpMax = 10;
+        [Order(10), Tooltip("Maximum Hit Points (base value, before upgrades)")]
+        protected int m_HPMax = 100;
+
 
         //distance (in UNITS) the object is knocked back when damaged
         [Header("Knock Back")]
@@ -67,15 +69,21 @@ namespace KRG {
         List<AttackAbility> _attackVulnerabilities = new List<AttackAbility>();
 
 
+        // DEPRECATED
+
+        [SerializeField, HideInInspector, FormerlySerializedAs("m_hpMax")]
+        private float _hpMax;
+
+
         //applicable time thread interface, from _timeThreadIndex
         protected ITimeThread _timeThread;
 
 
         public virtual List<AttackAbility> attackVulnerabilities => _attackVulnerabilities;
 
-        public virtual float hpMin { get { return 0; } }
+        public virtual int HPMin => 0;
 
-        public virtual float hpMax { get { return _hpMax; } }
+        public virtual int HPMax => m_HPMax;
 
         public virtual float knockBackDistance { get { return _knockBackDistance; } }
 
@@ -102,17 +110,24 @@ namespace KRG {
 
         public virtual int timeThreadIndex { get { return _timeThreadIndex; } }
 
+        // METHODS
 
-        protected virtual void OnEnable() {
-        }
+        protected virtual void OnEnable() { }
 
-        protected virtual void OnValidate() {
-            _hpMax = Mathf.Max(1, _hpMax);
+        protected virtual void OnValidate()
+        {
+            if (_hpMax > 0)
+            {
+                m_HPMax = (int)_hpMax;
+                _hpMax = 0;
+            }
+            m_HPMax = Mathf.Max(1, m_HPMax);
             _knockBackTime = Mathf.Max(0, _knockBackTime);
             _invulnerabilityTime = Mathf.Max(0, _invulnerabilityTime);
         }
 
-        protected virtual void SetTimeThread() {
+        protected virtual void SetTimeThread()
+        {
             _timeThread = G.time.GetTimeThread(_timeThreadIndex, TimeThreadInstance.Gameplay);
         }
     }
