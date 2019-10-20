@@ -10,20 +10,20 @@ namespace KRG
     partial class G
     {
         /// <summary>
+        /// The version of G.
+        /// </summary>
+        public const int version = 9;
+
+        /// <summary>
         /// The cached config (KRGConfig).
         /// </summary>
-        KRGConfig m_Config;
+        private KRGConfig m_Config;
 
         /// <summary>
         /// Gets the config (KRGConfig). Runtime only. Will return null if either the G instance or the config is null.
         /// </summary>
         /// <value>The config.</value>
         public static KRGConfig config => instance != null ? instance.LoadConfig() : null;
-
-        /// <summary>
-        /// The version of G.
-        /// </summary>
-        public const int version = 8;
 
         // TRUE MONOBEHAVIOUR METHODS
 
@@ -53,7 +53,7 @@ namespace KRG
 
         // KRG METHODS
 
-        KRGConfig LoadConfig()
+        private KRGConfig LoadConfig()
         {
             //cache the config if not done already
             if (m_Config == null)
