@@ -13,7 +13,7 @@ namespace KRG
     {
         // DELEGATES
 
-        public delegate void AnimationEndHandler(bool isCompleted);
+        public delegate void AnimationEndHandler(GraphicController graphicController, bool isCompleted);
 
         // EVENTS
 
@@ -386,9 +386,9 @@ namespace KRG
             m_AnimationContext = AnimationContext.None;
 
             // invoke main callback and fire event as applicable
-            m_AnimationCallback?.Invoke(isCompleted);
+            m_AnimationCallback?.Invoke(this, isCompleted);
             m_AnimationCallback = null;
-            AnimationEnded?.Invoke(isCompleted);
+            AnimationEnded?.Invoke(this, isCompleted);
 
             // if no new animation set by callback/event, reassess state as applicable
             if (m_AnimationContext == AnimationContext.None && reassessState)
@@ -431,10 +431,8 @@ namespace KRG
             }
         }
 
-        private void OnCharacterStateChange(ulong state, bool value)
+        protected virtual void OnCharacterStateChange(ulong state, bool value)
         {
-            OnCharacterStateChangeBegins(state, value);
-
             // ignore state change if currently playing a higher priority animation
             if (m_AnimationContext > AnimationContext.CharacterState) return;
 
@@ -462,8 +460,6 @@ namespace KRG
                 SetAnimation(context, animationName);
             }
         }
-
-        protected virtual void OnCharacterStateChangeBegins(ulong state, bool value) { }
 
         // EDITOR METHODS
 

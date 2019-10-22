@@ -248,7 +248,7 @@ namespace KRG
             }
         }
 
-        private void OnAttackerAnimationEnd(bool isCompleted)
+        private void OnAttackerAnimationEnd(GraphicController graphicController, bool isCompleted)
         {
             //check m_IsAttackerAnimating to avoid looping via GraphicController.EndAnimation/EndCurrentAttack
             if (m_IsAttackerAnimating)
