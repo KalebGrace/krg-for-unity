@@ -14,10 +14,6 @@ namespace KRG
         [FormerlySerializedAs("m_autoDispose")]
         private bool _autoDispose = true;
 
-        //TODO: do something with this or remove it
-        [SerializeField]
-        private SpriteMask _particleMask;
-
         private ParticleSystem _particleSystem;
 
         protected virtual ITimeThread TimeThread => G.time.GetTimeThread(_timeThreadIndex, TimeThreadInstance.Gameplay);
