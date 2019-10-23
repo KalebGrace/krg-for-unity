@@ -193,6 +193,46 @@ namespace KRG {
             return true;
         }
 
+        /// <summary>
+        /// Advances the frame sequence.
+        /// NOTE: This is all copied from AdvanceFrame(ref int frameListIndex, out int frameNumber)
+        /// </summary>
+        /// <returns><c>true</c>, if the animation should continue playing, <c>false</c> otherwise.</returns>
+        /// <param name="frameListIndex">Frame list index.</param>
+        /// <param name="frameNumber">Frame number (one-based).</param>
+        public virtual bool AdvanceFrameSequence(ref int frameListIndex, out int frameNumber)
+        {
+            frameNumber = 0;
+            if (!frameSequenceHasFrameList)
+            {
+                G.U.Err("AdvanceFrameSequence can only be used if the frame sequence has a frame list.");
+                return false;
+            }
+            if (_frameSequenceIndex < _rasterAnimation.frameSequenceCount - 1)
+            {
+                InvokeFrameSequenceStopHandlers();
+                SetFrameSequence(_frameSequenceIndex + 1);
+                frameListIndex = 0;
+                frameNumber = _frameSequenceFrameList[0];
+            }
+            else if (_rasterAnimation.DoesLoop(_loopIndex))
+            {
+                InvokeFrameSequenceStopHandlers();
+                ++_loopIndex;
+                SetFrameSequence(_rasterAnimation.loopToSequence);
+                frameListIndex = 0;
+                frameNumber = _frameSequenceFrameList[0];
+            }
+            else
+            {
+                InvokeFrameSequenceStopHandlers();
+                //the animation has finished playing
+                return false;
+            }
+            RefreshRasterAnimationInfo(frameNumber); //TODO: update parameters as needed
+            return true;
+        }
+
         public void Reset() {
             SetFrameSequence(0);
         }

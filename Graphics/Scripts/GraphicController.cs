@@ -369,6 +369,20 @@ namespace KRG
             m_AnimationImageIndex = frameNumber - 1;
         }
 
+        public void AdvanceFrameSequence()
+        {
+            // GraphicController uses zero-based image index (m_AnimationImageIndex)
+            // RasterAnimation uses one-based frame number (frameNumber)
+
+            if (!m_RasterAnimationState.AdvanceFrameSequence(ref m_AnimationFrameListIndex, out int frameNumber))
+            {
+                OnAnimationEnd(true);
+                return;
+            }
+
+            m_AnimationImageIndex = frameNumber - 1;
+        }
+
         private void OnFrameSequenceStart(RasterAnimationState state)
         {
             FrameSequenceStarted?.Invoke(state);
