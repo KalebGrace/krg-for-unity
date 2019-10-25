@@ -251,10 +251,10 @@ namespace KRG
             return fs != null ? fs.PlayCountMaxValue - (fs.PlayCountMaxInclusive ? 0 : 1) : -1;
         }
 
-        public virtual int GetFrameSequencePreAction(int frameSequenceIndex)
+        public virtual List<int> GetFrameSequencePreActions(int frameSequenceIndex)
         {
             FrameSequence fs = GetFrameSequence(frameSequenceIndex);
-            return fs?.PreSequenceAction ?? (int)FrameSequenceAction.None;
+            return fs?.PreSequenceActions;
         }
 
 

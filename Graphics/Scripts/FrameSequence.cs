@@ -9,7 +9,7 @@ namespace KRG
     [System.Serializable]
     public sealed class FrameSequence
     {
-        public const int VERSION = 2;
+        public const int VERSION = 3;
 
         class FrameCommand
         {
@@ -34,7 +34,7 @@ namespace KRG
 
         [SerializeField]
         [Enum(typeof(FrameSequenceAction))]
-        private int _preSequenceAction = default;
+        private List<int> _preSequenceActions = default;
 
         [SerializeField]
         [Tooltip("Commas seperate frames/groups. 1-3-1 means 1,2,3,2,1. 1-3x2-1 means 1-3,3-1 means 1,2,3,3,2,1.")]
@@ -88,6 +88,9 @@ namespace KRG
         [FormerlySerializedAs("m_doesCallCode")]
         private bool _doesCallCode = false;
 
+        [HideInInspector, SerializeField]
+        private int _preSequenceAction = default;
+
         // FIELDS: PRIVATE / ConvertFramesToFrameList
 
         private Queue<FrameCommand> _frameCommands = new Queue<FrameCommand>();
@@ -130,7 +133,7 @@ namespace KRG
 
         public int PlayCountMaxValue => _playCount.maxValue;
 
-        public int PreSequenceAction => _preSequenceAction;
+        public List<int> PreSequenceActions => _preSequenceActions;
 
         // METHODS: PUBLIC
 
@@ -167,6 +170,18 @@ namespace KRG
                         _name += " [DOES CALL CODE]";
                     }
                     _doesCallCode = false;
+                }
+                else if (_serializedVersion == 2)
+                {
+                    if (_preSequenceAction != 0)
+                    {
+                        if (_preSequenceActions == null)
+                        {
+                            _preSequenceActions = new List<int>(1);
+                        }
+                        _preSequenceActions.Add(_preSequenceAction);
+                    }
+                    _preSequenceAction = 0;
                 }
                 ++_serializedVersion;
             }

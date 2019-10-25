@@ -94,7 +94,7 @@ namespace KRG {
 
         public virtual RasterAnimation rasterAnimation { get { return _rasterAnimation; } }
 
-        public int FrameSequencePreAction { get; private set; }
+        public List<int> FrameSequencePreActions { get; private set; }
 
 #endregion
 
@@ -295,7 +295,7 @@ namespace KRG {
             _frameSequenceToFrame = _rasterAnimation.GetFrameSequenceToFrame(frameSequenceIndex);
             _frameSequencePlayCount = playCount;
             _frameSequencePlayIndex = 0;
-            FrameSequencePreAction = _rasterAnimation.GetFrameSequencePreAction(frameSequenceIndex);
+            FrameSequencePreActions = _rasterAnimation.GetFrameSequencePreActions(frameSequenceIndex);
             RefreshRasterAnimationInfo(_frameSequenceFromFrame);
             InvokeFrameSequenceStartHandlers();
         }
