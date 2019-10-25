@@ -17,13 +17,13 @@ namespace KRG
         /// <summary>
         /// The cached config (KRGConfig).
         /// </summary>
-        private KRGConfig m_Config;
+        private static KRGConfig m_Config;
 
         /// <summary>
-        /// Gets the config (KRGConfig). Runtime only. Will return null if either the G instance or the config is null.
+        /// Gets the config (KRGConfig).
         /// </summary>
         /// <value>The config.</value>
-        public static KRGConfig config => instance != null ? instance.LoadConfig() : null;
+        public static KRGConfig config => LoadConfig();
 
         // TRUE MONOBEHAVIOUR METHODS
 
@@ -53,7 +53,7 @@ namespace KRG
 
         // KRG METHODS
 
-        private KRGConfig LoadConfig()
+        private static KRGConfig LoadConfig()
         {
             //cache the config if not done already
             if (m_Config == null)
