@@ -1,14 +1,13 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEditor;
+﻿using UnityEditor;
 using UnityEngine;
 
-namespace KRG {
-
-    //[CustomPropertyDrawer(typeof(EnumGeneric))]
-    public abstract class EnumGenericDrawer : PropertyDrawer {
-
-        public override void OnGUI(Rect position, SerializedProperty property, GUIContent label) {
+namespace KRG
+{
+    [CustomPropertyDrawer(typeof(EnumGeneric))]
+    public class EnumGenericDrawer : PropertyDrawer
+    {
+        public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
+        {
             EditorGUI.BeginProperty(position, label, property);
 
             SerializedProperty stringTypeProp = property.FindPropertyRelative("_stringType");
@@ -19,7 +18,8 @@ namespace KRG {
             label.text = SwapLabelText(label.text);
 
             string stringType = stringTypeProp.stringValue;
-            if (SwapEnum(ref stringType)) {
+            if (SwapEnum(ref stringType))
+            {
                 stringTypeProp.stringValue = stringType;
             }
 
@@ -32,15 +32,20 @@ namespace KRG {
 
         /// <summary>
         /// Swaps the enum type used to draw this EnumGeneric instance. Will retain the underlying int value.
-        /// Example override functionality may be as follows:
-        /// stringType = stringType.Replace("KRG.", "MyGame."); return true;
         /// </summary>
         /// <returns><c>true</c>, if enum was swapped, <c>false</c> otherwise.</returns>
-        /// <param name="stringType">A string representation of the enum type.</param>
-        protected abstract bool SwapEnum(ref string stringType);
+        /// <param name="enumType">A string representation of the enum type, complete with namespace.</param>
+        protected virtual bool SwapEnum(ref string enumType)
+        {
+            string ans = G.config.ApplicationNamespace;
+            enumType = enumType.Replace("KRG.", ans + ".");
+            return true;
+        }
 
-        protected virtual string SwapLabelText(string text) {
-            switch (text) {
+        protected virtual string SwapLabelText(string text)
+        {
+            switch (text)
+            {
                 case "Time Thread Index":
                     return "Time Thread";
                 default:
