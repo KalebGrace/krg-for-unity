@@ -28,6 +28,14 @@ namespace KRG
         */
 
 
+        [Header("Global (KRG)")]
+
+        [SerializeField]
+        string _applicationNamespace = "MyGame";
+
+        public string ApplicationNamespace => _applicationNamespace;
+
+
         [Header("Damage (KRG)")]
 
         [SerializeField]
