@@ -61,7 +61,9 @@ namespace KRG
 
         public virtual float knockBackSpeed { get; private set; }
 
-        private GraphicController GraphicController => m_Body.Refs.GraphicController;
+        protected virtual GraphicController GraphicController => m_Body.Refs.GraphicController;
+
+        protected virtual Rigidbody Rigidbody => m_Body.Refs.Rigidbody;
 
         // MONOBEHAVIOUR METHODS
 
@@ -269,7 +271,9 @@ namespace KRG
 
         protected virtual void CheckKnockBack(AttackAbility attackAbility, Vector3 attackPositionCenter)
         {
-            if (!attackAbility.causesKnockBack) return;
+            if (!attackAbility.causesKnockBack || _damageProfile.IsImmuneToKnockBack) return;
+
+            AddKnockBackForce(attackAbility, attackPositionCenter);
 
             float knockBackTime;
             switch (attackAbility.knockBackTimeCalcMode)
@@ -304,6 +308,25 @@ namespace KRG
             if (knockBackDistance.Ap(0)) return;
 
             BeginKnockBack(attackAbility, attackPositionCenter, knockBackTime, knockBackDistance);
+        }
+
+        protected virtual void AddKnockBackForce(AttackAbility attackAbility, Vector3 attackPositionCenter)
+        {
+            Vector3 force = attackAbility.KnockBackForceImpulse;
+            if (force == Vector3.zero)
+            {
+                return;
+            }
+            if (Rigidbody == null)
+            {
+                G.U.Warn("{0} requires a rigidbody in order to add knock back force.", m_Body.name);
+                return;
+            }
+            if (m_Body.CenterTransform.position.x < attackPositionCenter.x)
+            {
+                force.x *= -1f;
+            }
+            Rigidbody.AddForce(force, ForceMode.Impulse);
         }
 
         protected virtual void BeginKnockBack(

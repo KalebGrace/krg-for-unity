@@ -168,6 +168,11 @@ namespace KRG
         [Header("Knock Back (if enabled)")]
 
         [SerializeField]
+        [Tooltip("The instant force impulse added to the target's rigidbody when knocked back. " +
+            "The X value should typically be positive. Horizontal flipping will be applied automatically.")]
+        protected Vector3 _knockBackForceImpulse = default;
+
+        [SerializeField]
         [Tooltip("How to apply the following Knock Back Distance"
         + " against the corresponding value in the target's Damage Profile.")]
         protected KnockBackCalcMode _knockBackDistanceCalcMode = KnockBackCalcMode.Multiply;
@@ -300,6 +305,8 @@ namespace KRG
         public virtual float knockBackDistance { get { return _knockBackDistance; } }
 
         public virtual KnockBackCalcMode knockBackDistanceCalcMode { get { return _knockBackDistanceCalcMode; } }
+
+        public virtual Vector3 KnockBackForceImpulse => _knockBackForceImpulse;
 
         public virtual float knockBackTime { get { return _knockBackTime; } }
 

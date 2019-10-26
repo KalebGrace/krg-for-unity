@@ -35,9 +35,13 @@ namespace KRG {
         [Order(10), Tooltip("Maximum Hit Points (base value, before upgrades)")]
         protected int m_HPMax = 100;
 
+        [Header("Knock Back")]
+
+        [SerializeField]
+        [Tooltip("Is this object immune to knock back?")]
+        bool m_IsImmuneToKnockBack = default;
 
         //distance (in UNITS) the object is knocked back when damaged
-        [Header("Knock Back")]
         [SerializeField]
         [FormerlySerializedAs("m_knockBackDistance")]
         float _knockBackDistance = default;
@@ -84,6 +88,8 @@ namespace KRG {
         public virtual int HPMin => 0;
 
         public virtual int HPMax => m_HPMax;
+
+        public virtual bool IsImmuneToKnockBack => m_IsImmuneToKnockBack;
 
         public virtual float knockBackDistance { get { return _knockBackDistance; } }
 
