@@ -1,5 +1,5 @@
-﻿using UnityEditor;
-using System.IO;
+﻿using System.IO;
+using UnityEditor;
 
 namespace KRG
 {
@@ -19,8 +19,10 @@ namespace KRG
 
             BuildPipeline.BuildAssetBundles(assetBundleDirectory, BuildAssetBundleOptions.None, bt);
 
-            G.U.Log("Asset bundles built. If you don't see your bundle, make sure the assets"
-                + " are properly assigned to it in the bottom of the inspector.");
+            G.U.Log("Asset bundles built for active target. See {0}", assetBundleDirectory);
+
+            // If you don't see your bundle, make sure the assets
+            // are properly assigned to it in the bottom of the inspector.
         }
     }
 }
