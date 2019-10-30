@@ -17,8 +17,7 @@ namespace KRG
                 switch (hookID)
                 {
                     case ID.FungusSayOnEnterDisplayText:
-                        var e = FungusSayOnEnterDisplayText;
-                        if (e != null) e(ref s);
+                        FungusSayOnEnterDisplayText?.Invoke(ref s);
                         break;
                     default:
                         G.U.Unsupported(null, hookID);
