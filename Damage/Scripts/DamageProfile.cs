@@ -1,45 +1,41 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Serialization;
 
-namespace KRG {
-
+namespace KRG
+{
     [CreateAssetMenu(
         fileName = "NewKRGDamageProfile.asset",
         menuName = "KRG Scriptable Object/Damage Profile",
         order = 123
     )]
-    public class DamageProfile : ScriptableObject {
-
-        //values listed below are simply DEFAULTS; check inspector for actual values
-
-        //applicable time thread index
-        [Enum(typeof(TimeThreadInstance))]
-        [SerializeField]
-        [FormerlySerializedAs("m_timeThreadIndex")]
-        protected int _timeThreadIndex = (int)TimeThreadInstance.UseDefault;
-
-        //sound effect FMOD event string
-#if NS_FMOD
-        [FMODUnity.EventRef]
-#endif
-        [SerializeField]
-        [FormerlySerializedAs("m_sfxFmodEvent")]
-        string _sfxFmodEvent = default;
-
-
+    public class DamageProfile : ScriptableObject
+    {
         [Header("Primary Stats")]
 
         [SerializeField]
-        [Order(10), Tooltip("Maximum Hit Points (base value, before upgrades)")]
+        [Order(-100), Tooltip("Maximum Hit Points (base value, before upgrades)")]
         protected int m_HPMax = 100;
+
+        [Header("Time & Sound")]
+
+        [SerializeField, FormerlySerializedAs("m_timeThreadIndex")]
+        [Order(-90), Tooltip("Applicable time thread index")]
+        [Enum(typeof(TimeThreadInstance))]
+        protected int _timeThreadIndex = (int)TimeThreadInstance.UseDefault;
+
+        [SerializeField, FormerlySerializedAs("m_sfxFmodEvent")]
+        [Order(-90), Tooltip("Sound effect FMOD event string")]
+#if NS_FMOD
+        [FMODUnity.EventRef]
+#endif
+        private string _sfxFmodEvent = default;
 
         [Header("Knock Back")]
 
         [SerializeField]
-        [Tooltip("Is this object immune to knock back?")]
-        bool m_IsImmuneToKnockBack = default;
+        [Order(-80), Tooltip("Is this object immune to knock back?")]
+        private bool m_IsImmuneToKnockBack = default;
 
         //distance (in UNITS) the object is knocked back when damaged
         [SerializeField]
@@ -51,8 +47,9 @@ namespace KRG {
         [FormerlySerializedAs("m_knockBackTime")]
         float _knockBackTime = default;
 
-        //time (in SECONDS) the object is in an invulnerable state when damaged (overlaps knock back time)
         [Header("Invulnerability")]
+
+        //time (in SECONDS) the object is in an invulnerable state when damaged (overlaps knock back time)
         [SerializeField]
         [FormerlySerializedAs("m_invulnerabilityTime")]
         float _invulnerabilityTime = default;
@@ -103,8 +100,10 @@ namespace KRG {
 
         public virtual string sfxFmodEvent { get { return _sfxFmodEvent; } }
 
-        public virtual ITimeThread timeThread {
-            get {
+        public virtual ITimeThread timeThread
+        {
+            get
+            {
 #if UNITY_EDITOR
                 SetTimeThread();
 #else
