@@ -83,7 +83,7 @@ namespace KRG
 
         // END
 
-        End my_end = new End();
+        protected End my_end = new End();
 
         public End end { get { return my_end; } }
 
