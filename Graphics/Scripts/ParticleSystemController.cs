@@ -14,14 +14,14 @@ namespace KRG
         [FormerlySerializedAs("m_autoDispose")]
         private bool _autoDispose = true;
 
-        private ParticleSystem _particleSystem;
+        public ParticleSystem ParticleSystem { get; private set; }
 
         protected virtual ITimeThread TimeThread => G.time.GetTimeThread(_timeThreadIndex, TimeThreadInstance.Gameplay);
 
         private void Awake()
         {
-            _particleSystem = GetComponentInChildren<ParticleSystem>();
-            G.U.Require(_particleSystem, "Particle System", "this Component or its children");
+            ParticleSystem = GetComponentInChildren<ParticleSystem>();
+            G.U.Require(ParticleSystem, "Particle System", "this Component or its children");
         }
 
         private void Start()
@@ -32,7 +32,7 @@ namespace KRG
 
         private void Update()
         {
-            if (_autoDispose && !_particleSystem.IsAlive())
+            if (_autoDispose && !ParticleSystem.IsAlive())
             {
                 gameObject.Dispose();
             }
@@ -46,12 +46,12 @@ namespace KRG
 
         private void OnPause()
         {
-            _particleSystem.Pause(true);
+            ParticleSystem.Pause(true);
         }
 
         private void OnUnpause()
         {
-            _particleSystem.Play(true);
+            ParticleSystem.Play(true);
         }
     }
 }

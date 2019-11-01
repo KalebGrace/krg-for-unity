@@ -3,7 +3,7 @@ using UnityEngine.Serialization;
 
 namespace KRG
 {
-    public abstract class DamageTaker : MonoBehaviour, IBodyComponent, IDamageable, IEnd, ISpawn
+    public abstract class DamageTaker : MonoBehaviour, IBodyComponent, IEnd, ISpawn
     {
         // fields
 

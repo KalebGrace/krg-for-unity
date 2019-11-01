@@ -38,13 +38,13 @@ namespace KRG {
         protected TimeTrigger _displayTimeTrigger;
         protected SpriteRenderer _hpBarFillSR;
         protected Transform _hpBarFillTF;
-        protected IDamageable _target;
+        protected DamageTaker _target;
 
 #endregion
 
 #region PROPERTIES
 
-        public virtual IDamageable target { get { return _target; } }
+        public virtual DamageTaker target { get { return _target; } }
 
         protected virtual ITimeThread timeThread {
             get {
@@ -118,10 +118,16 @@ namespace KRG {
         /// <summary>
         /// Initialize the HPBar.
         /// </summary>
-        public void Init(IDamageable target) {
+        public void Init(DamageTaker target) {
             _target = target;
             Hide();
         }
+
+#endregion
+
+#region METHODS: PROTECTED
+
+        protected virtual void OnDisplay() { }
 
 #endregion
 
@@ -138,6 +144,7 @@ namespace KRG {
                 G.U.Assert(duration >= _displayDurationMin);
                 _displayTimeTrigger = timeThread.AddTrigger(duration, Hide);
             }
+            OnDisplay();
         }
 
         void Hide(TimeTrigger tt) {

@@ -45,9 +45,8 @@ namespace KRG
         /// </summary>
         /// <param name="target">Target.</param>
         /// <param name="visRect">Optional VisRect, used for precise automatic positioning.</param>
-        /// <typeparam name="T">The 1st type parameter.</typeparam>
         /// <returns>HP Bar.</returns>
-        public HPBar GetHPBar<T>(T target, VisRect visRect = null) where T : MonoBehaviour, IDamageable
+        public HPBar GetHPBar(DamageTaker target, VisRect visRect = null)
         {
             if (visRect == null)
             {
@@ -66,7 +65,7 @@ namespace KRG
         /// <param name="anchor">Anchor (parent Transform).</param>
         /// <param name="offset">Positional offset. When in doubt, use Vector3.up.</param>
         /// <returns>HP Bar.</returns>
-        public HPBar GetHPBar(IDamageable target, Transform anchor, Vector3 offset)
+        public HPBar GetHPBar(DamageTaker target, Transform anchor, Vector3 offset)
         {
             var hpBar = anchor.GetComponentInChildren<HPBar>(true);
             if (hpBar == null)
