@@ -68,9 +68,7 @@ namespace KRG
 #if NS_FMOD
             if (_musicInstance.isValid())
             {
-                ParameterInstance isGamePaused;
-                _musicInstance.getParameter(_pIsGamePaused, out isGamePaused);
-                isGamePaused.setValue(1);
+                _musicInstance.setParameterByName(_pIsGamePaused, 1);
             }
 #endif
         }
@@ -80,9 +78,7 @@ namespace KRG
 #if NS_FMOD
             if (_musicInstance.isValid())
             {
-                ParameterInstance isGamePaused;
-                _musicInstance.getParameter(_pIsGamePaused, out isGamePaused);
-                isGamePaused.setValue(0);
+                _musicInstance.setParameterByName(_pIsGamePaused, 0);
             }
 #endif
         }
@@ -137,7 +133,7 @@ namespace KRG
 #if NS_FMOD
             //TODO: determine if there's ever a time when we would want to use STOP_MODE.ALLOWFADEOUT
             //if so, it probably would not work with our tweening fade out procedure
-            _musicStopInstance.stop(STOP_MODE.IMMEDIATE);
+            _musicStopInstance.stop(FMOD.Studio.STOP_MODE.IMMEDIATE);
             _musicStopInstance.release();
 #endif
         }
