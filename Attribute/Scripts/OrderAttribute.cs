@@ -6,7 +6,7 @@
         public OrderAttribute(int order) : base(order) { }
     }
 #else
-    public class OrderAttribute : PropertyAttribute
+    public class OrderAttribute : UnityEngine.PropertyAttribute
     {
         public OrderAttribute(int order) { }
     }

@@ -66,9 +66,7 @@ namespace KRG
         [Tooltip("The applicable time thread index.")]
         protected int _timeThreadIndex = (int)TimeThreadInstance.UseDefault;
 
-#if NS_FMOD
-        [FMODUnity.EventRef]
-#endif
+        [AudioEvent]
         [SerializeField]
         [Tooltip("The sound effect FMOD event string.")]
         protected string _sfxFmodEvent;

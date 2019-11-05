@@ -13,9 +13,7 @@ namespace KRG
         public TextMeshProUGUI itemDisplayNameText;
         public TextMeshProUGUI itemInstructionText;
 
-#if NS_FMOD
-        [FMODUnity.EventRef]
-#endif
+        [AudioEvent]
         public string sfxFmodEventOnShow;
 
         private ITimeThread ttApplication;

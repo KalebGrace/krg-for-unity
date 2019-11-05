@@ -7,9 +7,7 @@ namespace KRG
     public class AudioOnCollide : MonoBehaviour
     {
         //sound effect FMOD event string
-#if NS_FMOD
-        [FMODUnity.EventRef]
-#endif
+        [AudioEvent]
         [SerializeField]
         string _sfxFmodEvent = default;
 

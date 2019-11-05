@@ -26,9 +26,7 @@ namespace KRG
 
         [SerializeField, FormerlySerializedAs("m_sfxFmodEvent")]
         [Order(-90), Tooltip("Sound effect FMOD event string")]
-#if NS_FMOD
-        [FMODUnity.EventRef]
-#endif
+        [AudioEvent]
         private string _sfxFmodEvent = default;
 
         [Header("Knock Back")]
