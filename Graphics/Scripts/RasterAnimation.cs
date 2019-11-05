@@ -257,6 +257,18 @@ namespace KRG
             return fs?.PreSequenceActions;
         }
 
+        public virtual AudioPlayStyle GetFrameSequenceAudioPlayStyle(int frameSequenceIndex)
+        {
+            FrameSequence fs = GetFrameSequence(frameSequenceIndex);
+            return fs?.AudioPlayStyle ?? AudioPlayStyle.None;
+        }
+
+        public virtual string GetFrameSequenceAudioEvent(int frameSequenceIndex)
+        {
+            FrameSequence fs = GetFrameSequence(frameSequenceIndex);
+            return fs?.AudioEvent;
+        }
+
 
 
         protected virtual FrameSequence GetFrameSequence(int frameSequenceIndex)

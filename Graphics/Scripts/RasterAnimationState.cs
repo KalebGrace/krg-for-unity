@@ -16,14 +16,24 @@ namespace KRG {
 #region fields
 
         /// <summary>
-        /// Occurs when a frame sequence starts, if it has "Does Call Code" set to true.
+        /// Occurs when a frame sequence starts.
         /// </summary>
         event Handler _frameSequenceStartHandlers;
 
         /// <summary>
-        /// Occurs when a frame sequence stops, if it has "Does Call Code" set to true.
+        /// Occurs when a frame sequence stops.
         /// </summary>
         event Handler _frameSequenceStopHandlers;
+
+        /// <summary>
+        /// Occurs when a frame sequence starts or after the play index is incremented.
+        /// </summary>
+        event Handler _frameLoopStartHandlers;
+
+        /// <summary>
+        /// Occurs when a frame sequence stops or before the play index is incremented.
+        /// </summary>
+        event Handler _frameLoopStopHandlers;
 
         /// <summary>
         /// The raster animation scriptable object.
@@ -66,7 +76,7 @@ namespace KRG {
         int _frameSequenceToFrame;
 
         /// <summary>
-        /// The current frame sequence's Play Count (may be a cached random value).
+        /// The current frame sequence's play count (may be a cached random value).
         /// </summary>
         int _frameSequencePlayCount;
 
@@ -96,6 +106,10 @@ namespace KRG {
 
         public List<int> FrameSequencePreActions { get; private set; }
 
+        public AudioPlayStyle FrameSequenceAudioPlayStyle { get; private set; }
+
+        public string FrameSequenceAudioEvent { get; private set; }
+
 #endregion
 
 #region constructor
@@ -109,12 +123,16 @@ namespace KRG {
         public RasterAnimationState(
             RasterAnimation rasterAnimation,
             Handler frameSequenceStartHandler = null,
-            Handler frameSequenceStopHandler = null
+            Handler frameSequenceStopHandler = null,
+            Handler frameLoopStartHandler = null,
+            Handler frameLoopStopHandler = null
         ) {
             _rasterAnimation = rasterAnimation;
             G.U.Require(_rasterAnimation, "Raster Animation", "this Raster Animation State");
             _frameSequenceStartHandlers = frameSequenceStartHandler;
             _frameSequenceStopHandlers = frameSequenceStopHandler;
+            _frameLoopStartHandlers = frameLoopStartHandler;
+            _frameLoopStopHandlers = frameLoopStopHandler;
             Reset();
         }
 
@@ -137,9 +155,11 @@ namespace KRG {
             if (frameListIndex < _frameSequenceFrameList.Count - 1) {
                 frameNumber = _frameSequenceFrameList[++frameListIndex];
             } else if (_frameSequencePlayIndex < _frameSequencePlayCount - 1) {
+                _frameLoopStopHandlers?.Invoke(this);
                 ++_frameSequencePlayIndex;
                 frameListIndex = 0;
                 frameNumber = _frameSequenceFrameList[0];
+                _frameLoopStartHandlers?.Invoke(this);
             } else if (_frameSequenceIndex < _rasterAnimation.frameSequenceCount - 1) {
                 InvokeFrameSequenceStopHandlers();
                 SetFrameSequence(_frameSequenceIndex + 1);
@@ -161,7 +181,7 @@ namespace KRG {
         }
 
         /// <summary>
-        /// Advances the frame number. Currently this only supports moving forward by a single frame.
+        /// DEPRECATED - Advances the frame number. Currently this only supports moving forward by a single frame.
         /// </summary>
         /// <returns><c>true</c>, if the animation should continue playing, <c>false</c> otherwise.</returns>
         /// <param name="frameNumber">Frame number (one-based).</param>
@@ -171,17 +191,19 @@ namespace KRG {
                 return false;
             }
             if (frameNumber < _frameSequenceToFrame) {
-                frameNumber++;
+                ++frameNumber;
             } else if (_frameSequencePlayIndex < _frameSequencePlayCount - 1) {
-                _frameSequencePlayIndex++;
+                _frameLoopStopHandlers?.Invoke(this);
+                ++_frameSequencePlayIndex;
                 frameNumber = _frameSequenceFromFrame;
+                _frameLoopStartHandlers?.Invoke(this);
             } else if (_frameSequenceIndex < _rasterAnimation.frameSequenceCount - 1) {
                 InvokeFrameSequenceStopHandlers();
                 SetFrameSequence(_frameSequenceIndex + 1);
                 frameNumber = _frameSequenceFromFrame;
             } else if (_rasterAnimation.DoesLoop(_loopIndex)) {
                 InvokeFrameSequenceStopHandlers();
-                _loopIndex++;
+                ++_loopIndex;
                 SetFrameSequence(_rasterAnimation.loopToSequence);
                 frameNumber = _frameSequenceFromFrame;
             } else {
@@ -296,6 +318,8 @@ namespace KRG {
             _frameSequencePlayCount = playCount;
             _frameSequencePlayIndex = 0;
             FrameSequencePreActions = _rasterAnimation.GetFrameSequencePreActions(frameSequenceIndex);
+            FrameSequenceAudioPlayStyle = _rasterAnimation.GetFrameSequenceAudioPlayStyle(frameSequenceIndex);
+            FrameSequenceAudioEvent = _rasterAnimation.GetFrameSequenceAudioEvent(frameSequenceIndex);
             RefreshRasterAnimationInfo(_frameSequenceFromFrame);
             InvokeFrameSequenceStartHandlers();
         }
@@ -320,11 +344,15 @@ namespace KRG {
             _frameSequenceStopHandlers -= frameSequenceStopHandler;
         }
 
-        void InvokeFrameSequenceStartHandlers() {
+        private void InvokeFrameSequenceStartHandlers()
+        {
             _frameSequenceStartHandlers?.Invoke(this);
+            _frameLoopStartHandlers?.Invoke(this);
         }
 
-        void InvokeFrameSequenceStopHandlers() {
+        private void InvokeFrameSequenceStopHandlers()
+        {
+            _frameLoopStopHandlers?.Invoke(this);
             _frameSequenceStopHandlers?.Invoke(this);
         }
 

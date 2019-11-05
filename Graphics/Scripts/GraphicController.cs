@@ -20,6 +20,8 @@ namespace KRG
         public event AnimationEndHandler AnimationEnded;
         public event RasterAnimationState.Handler FrameSequenceStarted;
         public event RasterAnimationState.Handler FrameSequenceStopped;
+        public event RasterAnimationState.Handler FrameLoopStarted;
+        public event RasterAnimationState.Handler FrameLoopStopped;
 
         // SERIALIZED FIELDS
 
@@ -264,7 +266,12 @@ namespace KRG
             if (G.U.IsPlayMode(this))
             {
                 m_RasterAnimationState = new RasterAnimationState(
-                    rasterAnimation, OnFrameSequenceStart, OnFrameSequenceStop);
+                    rasterAnimation,
+                    OnFrameSequenceStart,
+                    OnFrameSequenceStop,
+                    OnFrameLoopStart,
+                    OnFrameLoopStop
+                    );
                 m_AnimationImageIndex = m_RasterAnimationState.frameSequenceFromFrame - 1; // 1-based -> 0-based
             }
 
@@ -391,6 +398,16 @@ namespace KRG
         private void OnFrameSequenceStop(RasterAnimationState state)
         {
             FrameSequenceStopped?.Invoke(state);
+        }
+
+        private void OnFrameLoopStart(RasterAnimationState state)
+        {
+            FrameLoopStarted?.Invoke(state);
+        }
+
+        private void OnFrameLoopStop(RasterAnimationState state)
+        {
+            FrameLoopStopped?.Invoke(state);
         }
 
         protected virtual void OnAnimationSet() { }

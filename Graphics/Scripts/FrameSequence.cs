@@ -33,6 +33,7 @@ namespace KRG
         private string _name = default;
 
         [SerializeField]
+        [Tooltip("Actions to perform before the sequence starts.")]
         [Enum(typeof(FrameSequenceAction))]
         private List<int> _preSequenceActions = default;
 
@@ -59,6 +60,15 @@ namespace KRG
         [Tooltip("Count of playthroughs, or \"loops\", of this sequence.")]
         [FormerlySerializedAs("m_playCount")]
         private RangeInt _playCount = new RangeInt();
+
+        [SerializeField]
+        [Tooltip("Audio play style, as applicable.")]
+        private AudioPlayStyle _audioPlayStyle = default;
+
+        [SerializeField]
+        [Tooltip("Audio event to play upon running this sequence.")]
+        [AudioEvent]
+        private string _audioEvent = default;
 
         // SOON TO BE DEPRECATED SERIALIZED FIELDS
 
@@ -134,6 +144,10 @@ namespace KRG
         public int PlayCountMaxValue => _playCount.maxValue;
 
         public List<int> PreSequenceActions => _preSequenceActions;
+
+        public AudioPlayStyle AudioPlayStyle => _audioPlayStyle;
+
+        public string AudioEvent => _audioEvent;
 
         // METHODS: PUBLIC
 
