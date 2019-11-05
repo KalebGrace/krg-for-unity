@@ -64,8 +64,6 @@ namespace KRG
 
         public CharacterDebugText characterDebugTextPrefab { get; private set; }
 
-        public RasterAnimationInfo rasterAnimationInfoPrefab { get; private set; }
-
         public bool doTweenUseInitSettings { get { return _doTweenUseInitSettings; } }
 
         public bool doTweenRecycleAllByDefault { get { return _doTweenRecycleAllByDefault; } }
@@ -119,7 +117,6 @@ namespace KRG
         void Awake()
         {
             characterDebugTextPrefab = Resources.Load<CharacterDebugText>("Character/CharacterDebugText");
-            rasterAnimationInfoPrefab = Resources.Load<RasterAnimationInfo>("Graphics/RasterAnimationInfo");
 
             UpdateSerializedVersion();
         }

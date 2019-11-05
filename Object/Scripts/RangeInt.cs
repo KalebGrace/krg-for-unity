@@ -75,5 +75,19 @@ namespace KRG {
                 _maxInclusive = true;
             }
         }
+
+        public void Inclusivize()
+        {
+            if (!minInclusive)
+            {
+                minInclusive = true;
+                ++minValue;
+            }
+            if (!maxInclusive)
+            {
+                maxInclusive = true;
+                --maxValue;
+            }
+        }
     }
 }

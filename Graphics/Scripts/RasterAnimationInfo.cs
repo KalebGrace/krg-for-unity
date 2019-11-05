@@ -3,6 +3,7 @@ using UnityEngine;
 
 namespace KRG
 {
+    [System.Obsolete]
     public class RasterAnimationInfo : MonoBehaviour
     {
         const string _infoFormat =

@@ -197,42 +197,6 @@ namespace KRG
             return fs != null ? fs.FrameList : null;
         }
 
-        public virtual int GetFrameSequenceFromFrame(int frameSequenceIndex)
-        {
-            FrameSequence fs = GetFrameSequence(frameSequenceIndex);
-            return fs != null ? fs.FromFrame : 0;
-        }
-
-        public virtual int GetFrameSequenceFromFrameMin(int frameSequenceIndex)
-        {
-            FrameSequence fs = GetFrameSequence(frameSequenceIndex);
-            return fs != null ? fs.FromFrameMinValue + (fs.FromFrameMinInclusive ? 0 : 1) : 0;
-        }
-
-        public virtual int GetFrameSequenceFromFrameMax(int frameSequenceIndex)
-        {
-            FrameSequence fs = GetFrameSequence(frameSequenceIndex);
-            return fs != null ? fs.FromFrameMaxValue - (fs.FromFrameMaxInclusive ? 0 : 1) : 0;
-        }
-
-        public virtual int GetFrameSequenceToFrame(int frameSequenceIndex)
-        {
-            FrameSequence fs = GetFrameSequence(frameSequenceIndex);
-            return fs != null ? fs.ToFrame : 0;
-        }
-
-        public virtual int GetFrameSequenceToFrameMin(int frameSequenceIndex)
-        {
-            FrameSequence fs = GetFrameSequence(frameSequenceIndex);
-            return fs != null ? fs.ToFrameMinValue + (fs.ToFrameMinInclusive ? 0 : 1) : 0;
-        }
-
-        public virtual int GetFrameSequenceToFrameMax(int frameSequenceIndex)
-        {
-            FrameSequence fs = GetFrameSequence(frameSequenceIndex);
-            return fs != null ? fs.ToFrameMaxValue - (fs.ToFrameMaxInclusive ? 0 : 1) : 0;
-        }
-
         public virtual int GetFrameSequencePlayCount(int frameSequenceIndex)
         {
             FrameSequence fs = GetFrameSequence(frameSequenceIndex);

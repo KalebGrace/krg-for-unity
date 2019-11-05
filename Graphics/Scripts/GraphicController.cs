@@ -20,8 +20,8 @@ namespace KRG
         public event AnimationEndHandler AnimationEnded;
         public event RasterAnimationState.Handler FrameSequenceStarted;
         public event RasterAnimationState.Handler FrameSequenceStopped;
-        public event RasterAnimationState.Handler FrameLoopStarted;
-        public event RasterAnimationState.Handler FrameLoopStopped;
+        public event RasterAnimationState.Handler FrameSequencePlayLoopStarted;
+        public event RasterAnimationState.Handler FrameSequencePlayLoopStopped;
 
         // SERIALIZED FIELDS
 
@@ -269,8 +269,8 @@ namespace KRG
                     rasterAnimation,
                     OnFrameSequenceStart,
                     OnFrameSequenceStop,
-                    OnFrameLoopStart,
-                    OnFrameLoopStop
+                    OnFrameSequencePlayLoopStart,
+                    OnFrameSequencePlayLoopStop
                     );
                 m_AnimationImageIndex = m_RasterAnimationState.frameSequenceFromFrame - 1; // 1-based -> 0-based
             }
@@ -353,24 +353,10 @@ namespace KRG
             // GraphicController uses zero-based image index (m_AnimationImageIndex)
             // RasterAnimation uses one-based frame number (frameNumber)
 
-            int frameNumber;
-
-            if (m_RasterAnimationState.frameSequenceHasFrameList)
+            if (!m_RasterAnimationState.AdvanceFrame(ref m_AnimationFrameListIndex, out int frameNumber))
             {
-                if (!m_RasterAnimationState.AdvanceFrame(ref m_AnimationFrameListIndex, out frameNumber))
-                {
-                    OnAnimationEnd(true);
-                    return;
-                }
-            }
-            else
-            {
-                frameNumber = m_AnimationImageIndex + 1;
-                if (!m_RasterAnimationState.AdvanceFrame(ref frameNumber))
-                {
-                    OnAnimationEnd(true);
-                    return;
-                }
+                OnAnimationEnd(true);
+                return;
             }
 
             m_AnimationImageIndex = frameNumber - 1;
@@ -400,14 +386,14 @@ namespace KRG
             FrameSequenceStopped?.Invoke(state);
         }
 
-        private void OnFrameLoopStart(RasterAnimationState state)
+        private void OnFrameSequencePlayLoopStart(RasterAnimationState state)
         {
-            FrameLoopStarted?.Invoke(state);
+            FrameSequencePlayLoopStarted?.Invoke(state);
         }
 
-        private void OnFrameLoopStop(RasterAnimationState state)
+        private void OnFrameSequencePlayLoopStop(RasterAnimationState state)
         {
-            FrameLoopStopped?.Invoke(state);
+            FrameSequencePlayLoopStopped?.Invoke(state);
         }
 
         protected virtual void OnAnimationSet() { }
