@@ -1,18 +1,12 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-namespace KRG {
+namespace KRG
+{
+    public class AttackTarget
+    {
+        // private constants
 
-    /// <summary>
-    /// Attack target.
-    /// Last Refactor: 0.05.002 / 2018-05-05
-    /// </summary>
-    public class AttackTarget {
-
-#region private constants
-
-        const string _infiniteLoopError = "To prevent an infinite loop, "
+        private const string _infiniteLoopError = "To prevent an infinite loop, "
                                           + "damage has ceased for the remainder of this collision. "
                                           + "Consider doing one or more of the following: "
                                           + "1. Set AttackAbility Hp Damage Rate to true. "
@@ -20,25 +14,23 @@ namespace KRG {
                                           + "3. Set AttackAbility Causes Invulnerability to true, "
                                           + "and DamageProfile Invulnerability Time to a positive value.";
 
-#endregion
+        // private fields
 
-#region private fields
+        private readonly AttackAbility _attackAbility;
+        private Vector3 _attackPositionCenter;
+        private System.Action _damageDealtCallback;
+        private TimeTrigger _damageTimeTrigger;
+        private int _hitCount;
+        private Vector3 _hitPositionCenter;
+        private bool _isDelayedDueToInvulnerability;
+        private bool _isDelayedDueToTimeThreadPause;
 
-        readonly AttackAbility _attackAbility;
-        Vector3 _attackPositionCenter;
-        System.Action _damageDealtCallback;
-        TimeTrigger _damageTimeTrigger;
-        int _hitCount;
-        Vector3 _hitPositionCenter;
-        bool _isDelayedDueToInvulnerability;
-        bool _isDelayedDueToTimeThreadPause;
+        // properties
 
-#endregion
-
-#region properties
-
-        bool isHitLimitReached {
-            get {
+        private bool isHitLimitReached
+        {
+            get
+            {
                 //has the "hit" count reached the maximum number of "hits" (i.e. damage method calls)?
                 return _attackAbility.hasMaxHitsPerTarget && _hitCount >= _attackAbility.maxHitsPerTarget;
             }
@@ -48,17 +40,17 @@ namespace KRG {
 
         public DamageTaker target { get; private set; }
 
-#endregion
+        // methods 1 - Public Methods
 
-#region methods 1 - Public Methods
-
-        public AttackTarget(AttackAbility attackAbility, DamageTaker target, System.Action damageDealtCallback) {
+        public AttackTarget(AttackAbility attackAbility, DamageTaker target, System.Action damageDealtCallback)
+        {
             _attackAbility = attackAbility;
             this.target = target;
             _damageDealtCallback = damageDealtCallback;
         }
 
-        public void StartTakingDamage(Vector3 attackPositionCenter, Vector3 hitPositionCenter) {
+        public void StartTakingDamage(Vector3 attackPositionCenter, Vector3 hitPositionCenter)
+        {
             G.U.Assert(!isInProgress,
                 "StartTakingDamage was called, but this AttackTarget has already started taking damage.");
             isInProgress = true;
@@ -67,7 +59,8 @@ namespace KRG {
             if (!isHitLimitReached) CheckForDelay(StartTakingDamageForReal);
         }
 
-        public void StopTakingDamage() {
+        public void StopTakingDamage()
+        {
             G.U.Assert(isInProgress,
                 "StopTakingDamage was called, but this AttackTarget has already stopped taking damage.");
             isInProgress = false;
@@ -75,98 +68,121 @@ namespace KRG {
             if (!isHitLimitReached) CheckForDelayCallbackRemoval(StopTakingDamageForReal);
         }
 
-#endregion
+        // methods 2 - Check For, And Handle, Delays
 
-#region methods 2 - Check For, And Handle, Delays
-
-        void CheckForDelay(System.Action onNoDelay) {
-            if (target.IsInvulnerableTo(_attackAbility)) {
+        private void CheckForDelay(System.Action onNoDelay)
+        {
+            if (target.IsInvulnerableTo(_attackAbility))
+            {
                 _isDelayedDueToInvulnerability = true;
                 target.AddEndInvulnerabilityHandler(DelayCallback);
-            } else if (_attackAbility.timeThread.isPaused) {
+            }
+            else if (_attackAbility.timeThread.isPaused)
+            {
                 _isDelayedDueToTimeThreadPause = true;
                 _attackAbility.timeThread.AddUnpauseHandler(DelayCallback);
-            } else {
+            }
+            else
+            {
                 onNoDelay();
             }
         }
 
-        void CheckForDelayCallbackRemoval(System.Action onNoRemoval) {
-            if (_isDelayedDueToInvulnerability) {
+        private void CheckForDelayCallbackRemoval(System.Action onNoRemoval)
+        {
+            if (_isDelayedDueToInvulnerability)
+            {
                 _isDelayedDueToInvulnerability = false;
                 target.RemoveEndInvulnerabilityHandler(DelayCallback);
-            } else if (_isDelayedDueToTimeThreadPause) {
+            }
+            else if (_isDelayedDueToTimeThreadPause)
+            {
                 _isDelayedDueToTimeThreadPause = false;
                 _attackAbility.timeThread.RemoveUnpauseHandler(DelayCallback);
-            } else {
+            }
+            else
+            {
                 onNoRemoval();
             }
         }
 
-        void DelayCallback() {
+        private void DelayCallback()
+        {
             CheckForDelayCallbackRemoval(DelayCallbackRemovalError);
             CheckForDelay(StartTakingDamageForReal); //check for any possible additional delays
         }
 
-        void DelayCallbackRemovalError() {
+        private void DelayCallbackRemovalError()
+        {
             G.U.Err("DelayCallback was made with no delay flags set to true.");
         }
 
-#endregion
+        // methods 3 - Start & Stop Damage For Real
 
-#region methods 3 - Start & Stop Damage For Real
-
-        void StartTakingDamageForReal() {
-            if (_damageTimeTrigger != null) {
+        private void StartTakingDamageForReal()
+        {
+            if (_damageTimeTrigger != null)
+            {
                 _attackAbility.timeThread.LinkTrigger(_damageTimeTrigger);
-            } else {
+            }
+            else
+            {
                 Damage();
-                if (!target.end.wasInvoked && !target.isKnockedOut && !isHitLimitReached) {
-                    if (_attackAbility.hasHPDamageRate) {
+                if (!target.end.wasInvoked && !target.isKnockedOut && !isHitLimitReached)
+                {
+                    if (_attackAbility.hasHPDamageRate)
+                    {
                         _damageTimeTrigger = _attackAbility.timeThread.AddTrigger(
                             _attackAbility.hpDamageRateSec, Damage);
                         _damageTimeTrigger.doesMultiFire = true;
-                    } else {
+                    }
+                    else
+                    {
                         CheckForDelay(DamageInfiniteLoopCheck);
                     }
                 }
             }
         }
 
-        void StopTakingDamageForReal() {
-            if (_damageTimeTrigger != null) {
+        private void StopTakingDamageForReal()
+        {
+            if (_damageTimeTrigger != null)
+            {
                 G.U.Assert(_attackAbility.timeThread.UnlinkTrigger(_damageTimeTrigger));
             }
         }
 
-#endregion
+        // methods 4 - The Actual Damage
 
-#region methods 4 - The Actual Damage
-
-        void Damage() {
+        private void Damage()
+        {
             bool isHit = target.Damage(_attackAbility, _attackPositionCenter, _hitPositionCenter);
-            if (isHit) {
+            if (isHit)
+            {
                 _hitCount++;
                 _damageDealtCallback();
             }
         }
 
-        void Damage(TimeTrigger tt) {
+        private void Damage(TimeTrigger tt)
+        {
             Damage();
-            if (!target.end.wasInvoked && !target.isKnockedOut && !isHitLimitReached) {
+            if (!target.end.wasInvoked && !target.isKnockedOut && !isHitLimitReached)
+            {
                 tt.Proceed();
             }
         }
 
-        void DamageInfiniteLoopCheck() {
-            if (_attackAbility.hasMaxHitsPerTarget) {
+        private void DamageInfiniteLoopCheck()
+        {
+            if (_attackAbility.hasMaxHitsPerTarget)
+            {
                 StartTakingDamageForReal();
-            } else {
+            }
+            else
+            {
                 G.U.Err(_infiniteLoopError);
             }
         }
-
-#endregion
-
     }
 }
