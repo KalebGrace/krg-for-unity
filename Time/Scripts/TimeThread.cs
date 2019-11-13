@@ -427,25 +427,34 @@ namespace KRG {
 
 #if NS_DG_TWEENING
 
-#region Methods: Tween
+        // TWEEN METHODS
 
-        public void AddTween(Tween t) {
+        public void AddTween(Tween t)
+        {
             _tweens.Add(t.SetUpdate(UpdateType.Fixed));
         }
 
-        public void RemoveTween(Tween t) {
+        public void RemoveTween(Tween t)
+        {
             _tweens.Remove(t);
         }
 
-        public void Tween(ref Tween t_ref, Tween t) {
-            if (t_ref != null) t_ref.Kill();
+        public void Tween(ref Tween t_ref, Tween t)
+        {
+            Untween(ref t_ref);
             t_ref = t;
             AddTween(t);
         }
 
-#endregion
+        public void Untween(ref Tween t_ref)
+        {
+            if (t_ref == null) return;
+            RemoveTween(t_ref);
+            t_ref.Kill();
+            t_ref = null;
+        }
 
 #endif
-        
+
     }
 }

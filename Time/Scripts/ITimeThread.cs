@@ -87,6 +87,8 @@ namespace KRG {
 
         void Tween(ref Tween t_ref, Tween t);
 
+        void Untween(ref Tween t_ref);
+
 #endregion
 
 #endif

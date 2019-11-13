@@ -5,6 +5,19 @@ namespace KRG
 {
     public abstract class DamageTaker : MonoBehaviour, IBodyComponent, IEnd, ISpawn
     {
+        // STATIC EVENTS
+
+        public static event Handler DamageDealt;
+
+        // DELEGATES
+
+        public delegate void Handler(
+            DamageTaker damageTaker,
+            AttackAbility attackAbility,
+            Vector3 attackPositionCenter,
+            Vector3 hitPositionCenter
+        );
+
         // fields
 
         [SerializeField]
@@ -104,6 +117,7 @@ namespace KRG
             if (!CanBeDamaged()) return false;
 
             DealDamage(attackAbility);
+            DamageDealt?.Invoke(this, attackAbility, attackPositionCenter, hitPositionCenter);
             DisplayDamageVFX(attackAbility, attackPositionCenter, hitPositionCenter);
             PlayDamageSFX();
 

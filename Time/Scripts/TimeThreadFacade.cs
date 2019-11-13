@@ -51,6 +51,8 @@ namespace KRG {
 
         public void Tween(ref Tween t_ref, Tween t) { }
 
+        public void Untween(ref Tween t_ref) { }
+
 #endif
 
         public float deltaTime { get { return 0; } }

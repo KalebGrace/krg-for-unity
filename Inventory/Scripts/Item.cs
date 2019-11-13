@@ -4,6 +4,10 @@ namespace KRG
 {
     public class Item : MonoBehaviour
     {
+        // STATIC EVENTS
+
+        public static event System.Action<Item, Collider> ItemCollected;
+
         //TODO: later
         /*
          * MAKE SURE that an item has a (non-serialized) property called "owner" that it defaults to if auto-collected.
@@ -58,7 +62,11 @@ namespace KRG
 
         protected virtual void OnTriggerEnter(Collider other)
         {
-            if (OnCollect(other)) gameObject.Dispose();
+            if (OnCollect(other))
+            {
+                ItemCollected?.Invoke(this, other);
+                gameObject.Dispose();
+            }
         }
 
 
