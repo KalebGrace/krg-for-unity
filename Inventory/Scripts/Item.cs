@@ -65,6 +65,10 @@ namespace KRG
             if (OnCollect(other))
             {
                 ItemCollected?.Invoke(this, other);
+                if (!string.IsNullOrWhiteSpace(itemData.sfxFmodEventOnCollect))
+                {
+                    G.audio.PlaySFX(itemData.sfxFmodEventOnCollect, transform.position);
+                }
                 gameObject.Dispose();
             }
         }

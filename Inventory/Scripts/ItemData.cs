@@ -40,6 +40,10 @@ namespace KRG
         [SerializeField, Tooltip("Show item title card upon acquiring. Only applies to key items.")]
         protected bool showCardOnAcquire = default;
 
+        [SerializeField, Tooltip("Play this sound effect upon collecting this item.")]
+        [AudioEvent]
+        public string sfxFmodEventOnCollect = default;
+
 
         [Header("Effectors")]
 
