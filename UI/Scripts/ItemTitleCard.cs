@@ -8,17 +8,23 @@ namespace KRG
         private const int PAUSE_KEY = 100;
         private const int WAIT_TIME = 3;
 
-        public GameplayHudElement gameplayHudElement;
-
         public TextMeshProUGUI itemDisplayNameText;
         public TextMeshProUGUI itemInstructionText;
 
         [AudioEvent]
         public string sfxFmodEventOnShow;
 
+        private CanvasGroup canvasGroup;
+
         private ITimeThread ttApplication;
         private ITimeThread ttGameplay;
         private ITimeThread ttField;
+
+        private void Awake()
+        {
+            canvasGroup = GetComponent<CanvasGroup>();
+            Hide();
+        }
 
         private void Start()
         {
@@ -38,7 +44,7 @@ namespace KRG
             itemDisplayNameText.text = id.DisplayName;
             itemInstructionText.text = id.Instruction;
 
-            gameplayHudElement.Show();
+            Show();
 
             ttGameplay.QueuePause(PAUSE_KEY);
             ttField.QueuePause(PAUSE_KEY);
@@ -53,13 +59,23 @@ namespace KRG
 
         private void OnWaitDone(TimeTrigger tt)
         {
-            ttField.QueueUnpause(PAUSE_KEY, gameplayHudElement.Hide);
+            ttField.QueueUnpause(PAUSE_KEY, Hide);
             ttGameplay.QueueUnpause(PAUSE_KEY);
         }
 
         private void OnDestroy()
         {
             G.inv.KeyItemAcquired -= OnItemAcquired;
+        }
+
+        private void Hide()
+        {
+            canvasGroup.alpha = 0;
+        }
+
+        private void Show()
+        {
+            canvasGroup.alpha = 1;
         }
     }
 }
