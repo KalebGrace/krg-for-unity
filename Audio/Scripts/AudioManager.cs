@@ -141,6 +141,7 @@ namespace KRG
         public void PlaySFX(string fmodEvent, Vector3? position = null)
         {
 #if NS_FMOD
+            if (string.IsNullOrWhiteSpace(fmodEvent)) return;
             var eventInstance = RuntimeManager.CreateInstance(fmodEvent);
             if (position.HasValue) eventInstance.set3DAttributes(position.Value.To3DAttributes());
             eventInstance.start();
