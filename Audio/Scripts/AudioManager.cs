@@ -20,6 +20,8 @@ namespace KRG
 
         const string _pIsGamePaused = "isGamePaused";
 
+        public event System.Action<string> MusicPlayed;
+
         bool _isInitialized;
         
 #if NS_DG_TWEENING
@@ -86,9 +88,7 @@ namespace KRG
         public void PlayMusic(string fmodEvent, float outgoingMusicFadeOutSeconds = musicFadeOutSecondsDefault)
         {
 #if NS_FMOD && !(UNITY_EDITOR && EDITOR_MUSIC_OFF)
-            if (_musicFmodEvent == fmodEvent) {
-                return;
-            }
+            if (_musicFmodEvent == fmodEvent) return;
             StopMusic(outgoingMusicFadeOutSeconds);
             //TODO: if music was stopped, fade in new music to make a proper crossfade,
             //and consider using ease settings to make it an equal-power crossfade
@@ -96,6 +96,7 @@ namespace KRG
             _musicInstance = RuntimeManager.CreateInstance(fmodEvent);
             _musicInstance.start();
 #endif
+            MusicPlayed?.Invoke(fmodEvent);
         }
 
         public void StopMusic(float fadeOutSeconds = 0)
