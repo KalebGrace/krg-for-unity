@@ -12,7 +12,7 @@ namespace KRG
         /// <summary>
         /// The version of G.
         /// </summary>
-        public const int version = 11;
+        public const int version = 12;
 
         /// <summary>
         /// The cached config (KRGConfig).
