@@ -32,6 +32,13 @@ namespace KRG
         public event System.Action AutoMapSaveDataProvided;
 
 
+        // fields : STATS
+
+        public float? StatHPMax;
+        public float? StatHP;
+        public float? StatSP;
+
+
         // MONOBEHAVIOUR-LIKE METHODS
 
         public override void Awake()

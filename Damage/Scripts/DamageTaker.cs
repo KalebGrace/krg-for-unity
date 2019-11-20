@@ -33,9 +33,10 @@ namespace KRG
         protected Vector3 _damageAttackPositionCenter;
         protected Vector3 _damageHitPositionCenter;
 
-        //current & maximum HP (hit points)
-        float _hp;
-        float _hpMaxNew;
+        // ENEMY / BOSS current and maximum HP (hit points)
+
+        protected float m_HP;
+        protected float m_HPMax;
 
         //damage stuff
         TimeTrigger _invulnerabilityTimeTrigger;
@@ -43,11 +44,39 @@ namespace KRG
 
         // properties: IDamagable implementation
 
-        public virtual float hp { get { return _hp; } }
+        public virtual float HP
+        {
+            get => IsPlayerCharacter ? (G.inv.StatHP ?? HPMax) : m_HP;
+            set
+            {
+                if (IsPlayerCharacter)
+                {
+                    G.inv.StatHP = value;
+                }
+                else
+                {
+                    m_HP = value;
+                }
+            }
+        }
 
-        public virtual float hpMin { get { return _damageProfile.HPMin; } }
+        public virtual float HPMin => _damageProfile.HPMin;
 
-        public virtual float hpMax { get { return _hpMaxNew; } }
+        public virtual float HPMax
+        {
+            get => IsPlayerCharacter ? (G.inv.StatHPMax ?? _damageProfile.HPMax) : m_HPMax;
+            set
+            {
+                if (IsPlayerCharacter)
+                {
+                    G.inv.StatHPMax = value;
+                }
+                else
+                {
+                    m_HPMax = value;
+                }
+            }
+        }
 
         // properties
 
@@ -66,9 +95,11 @@ namespace KRG
             }
         }
 
-        public virtual bool isKnockedBack { get { return _knockBackTimeTrigger != null; } }
+        public virtual bool IsKnockedBack => _knockBackTimeTrigger != null;
 
-        public virtual bool isKnockedOut { get { return _hp.Ap(hpMin); } }
+        public virtual bool IsKnockedOut => HP.Ap(HPMin);
+
+        public virtual bool IsPlayerCharacter => m_Body.IsPlayerCharacter;
 
         public virtual Direction knockBackDirection { get; set; }
 
@@ -123,7 +154,7 @@ namespace KRG
 
             CheckCustomPreKOC(attackAbility, attackPositionCenter, hitPositionCenter);
 
-            if (isKnockedOut)
+            if (IsKnockedOut)
             {
                 OnKnockedOut(attackPositionCenter);
                 return true;
@@ -140,12 +171,12 @@ namespace KRG
         protected virtual bool CanBeDamaged()
         {
             //these could pop up at any time, so let's be safe
-            return !my_end.wasInvoked && !isKnockedOut && !IsInvulnerableTo(_damageAttackAbility);
+            return !my_end.wasInvoked && !IsKnockedOut && !IsInvulnerableTo(_damageAttackAbility);
         }
 
         protected virtual void DealDamage(AttackAbility attackAbility)
         {
-            _hp = Mathf.Clamp(_hp - attackAbility.hpDamage, hpMin, hpMax);
+            HP = Mathf.Clamp(HP - attackAbility.hpDamage, HPMin, HPMax);
         }
 
         protected virtual void DisplayDamageVFX(
@@ -173,35 +204,46 @@ namespace KRG
         /// </summary>
         protected void SetHPEmpty()
         {
-            _hp = hpMin;
+            HP = HPMin;
         }
 
         /// <summary>
-        /// Sets the HP to the maximum defined by the damage profile (or whatever is defined in the hpMax property).
+        /// Sets the HP to the maximum defined by the damage profile (or whatever is defined in the HPMax property).
         /// </summary>
         protected void SetHPFull()
         {
-            _hp = hpMax;
+            HP = HPMax;
         }
 
         public void SetNewHpMax(float newHpMax)
         {
-            //TODO: this should all be reworked to keep track of persistent HP max increasing items
-            _hpMaxNew = newHpMax;
-            _hp = Mathf.Min(_hp, newHpMax);
+            HPMax = newHpMax;
+            HP = Mathf.Min(HP, newHpMax);
         }
 
         private void InitHP()
         {
-            //TODO: this should all be reworked to keep track of persistent HP max increasing items
-            _hpMaxNew = _damageProfile.HPMax;
-            SetHPFull();
+            if (m_Body.IsPlayerCharacter)
+            {
+                if (!G.inv.StatHPMax.HasValue)
+                {
+                    G.inv.StatHPMax = _damageProfile.HPMax;
+                }
+                if (!G.inv.StatHP.HasValue)
+                {
+                    G.inv.StatHP = G.inv.StatHPMax;
+                }
+            }
+            else
+            {
+                HP = HPMax = _damageProfile.HPMax;
+            }
         }
 
         //TODO: this was added as part of the ItemLoot system and needs revision
         public void AddHP(float hp)
         {
-            _hp = Mathf.Clamp(_hp + hp, hpMin, hpMax);
+            HP = Mathf.Clamp(HP + hp, HPMin, HPMax);
         }
 
         // Custom Methods
@@ -351,7 +393,7 @@ namespace KRG
         )
         {
             //if already knocked back, stop that time trigger before starting the new one
-            if (isKnockedBack) _knockBackTimeTrigger.Dispose();
+            if (IsKnockedBack) _knockBackTimeTrigger.Dispose();
 
             knockBackSpeed = knockBackDistance / knockBackTime;
             _knockBackTimeTrigger = _damageProfile.timeThread.AddTrigger(knockBackTime, EndKnockBack);

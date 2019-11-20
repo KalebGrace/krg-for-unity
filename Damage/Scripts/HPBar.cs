@@ -72,7 +72,7 @@ namespace KRG {
         }
 
         protected virtual void Update() {
-            float value = _target.hpMax > 0 ? _target.hp / _target.hpMax : 0;
+            float value = _target.HPMax > 0 ? _target.HP / _target.HPMax : 0;
             //size
             _hpBarFillTF.localScale = _hpBarFillTF.localScale.SetX(value);
             _hpBarFillTF.localPosition = _hpBarFillTF.localPosition.SetX((value - 1f) / 2f);
