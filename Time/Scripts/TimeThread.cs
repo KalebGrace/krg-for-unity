@@ -429,11 +429,13 @@ namespace KRG {
 
         // TWEEN METHODS
 
+        [System.Obsolete]
         public void AddTween(Tween t)
         {
             _tweens.Add(t.SetUpdate(UpdateType.Fixed));
         }
 
+        [System.Obsolete]
         public void RemoveTween(Tween t)
         {
             _tweens.Remove(t);
@@ -443,13 +445,13 @@ namespace KRG {
         {
             Untween(ref t_ref);
             t_ref = t;
-            AddTween(t);
+            _tweens.Add(t.SetUpdate(UpdateType.Fixed));
         }
 
         public void Untween(ref Tween t_ref)
         {
             if (t_ref == null) return;
-            RemoveTween(t_ref);
+            _tweens.Remove(t_ref);
             t_ref.Kill();
             t_ref = null;
         }
