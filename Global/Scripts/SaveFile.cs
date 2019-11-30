@@ -13,9 +13,10 @@ namespace KRG
         public SaveContext saveContext;
         public int saveSlotIndex;
         public int gameplaySceneId;
-        public int checkpointId; //for loading position
-        public Vector3 position; //for logging only
-        public int[] acquiredItems; //TODO: change to ItemStack[] items LATER; ItemStack: context (e.g. ItemContext.Acquired), keyItemId, count
+        public int checkpointId; // for loading position
+        public Vector3 position; // for logging only
+        public Dictionary<int, float> items;
+        public int[] acquiredItems; // DEPRECATED
         public AutoMapSaveData[] autoMaps;
         public Dictionary<int, int> switchStates;
         //etc...
@@ -26,7 +27,8 @@ namespace KRG
             {
                 version = 1,
                 saveContext = sc,
-                switchStates = new Dictionary<int, int>() //TODO: does this serialize right?
+                items = new Dictionary<int, float>(),
+                switchStates = new Dictionary<int, int>()
             };
         }
 

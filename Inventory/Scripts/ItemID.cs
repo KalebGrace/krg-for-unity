@@ -1,7 +1,6 @@
 ﻿namespace KRG
 {
-    [System.Obsolete]
-    public enum KeyItem
+    public enum ItemID
     {
         // 0 ~ 99 reserved for KRG
         None = 0,

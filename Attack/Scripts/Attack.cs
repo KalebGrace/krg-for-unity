@@ -16,6 +16,7 @@ namespace KRG
     /// 4.*-Attacker is abstract and must have a per-project derived class created (as mentioned in 2a);
     ///     the derived class itself must be added to a game object as a script/component.
     /// </summary>
+    [System.Obsolete]
     public abstract class Attack : MonoBehaviour, IBodyComponent
     {
         public event System.Action<Attack> Destroyed;

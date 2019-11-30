@@ -23,6 +23,7 @@ namespace KRG
         menuName = "KRG Scriptable Object/Attack Ability",
         order = 123
     )]
+    [System.Obsolete]
     public class AttackAbility : ScriptableObject
     {
 

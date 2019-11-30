@@ -3,6 +3,7 @@ using UnityEngine.Serialization;
 
 namespace KRG
 {
+    [System.Obsolete]
     [System.Serializable]
     public sealed class AttackString
     {

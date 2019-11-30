@@ -31,7 +31,7 @@ namespace KRG {
 
         public void QueueTimeRate(TimeRate timeRate, float timeScale = 1, int pauseKey = -1) { }
 
-        public TimeTrigger AddTrigger(float iv, TimeTriggerHandler handler, bool disallowFacade = false) {
+        public TimeTrigger AddTrigger(float iv, TimeTriggerHandler handler, bool alwaysWait = false) {
             return null;
         }
 
@@ -41,7 +41,7 @@ namespace KRG {
 
         public bool UnlinkTrigger(TimeTrigger tt) { return false; }
 
-        public void trigger(ref TimeTrigger tt, float iv, TimeTriggerHandler handler, bool disallowFacade = false) { }
+        public void trigger(ref TimeTrigger tt, float iv, TimeTriggerHandler handler, bool alwaysWait = false) { }
 
 #if NS_DG_TWEENING
 

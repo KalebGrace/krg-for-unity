@@ -1,10 +1,11 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 namespace KRG {
 
     public class TimeTrigger : System.IComparable<TimeTrigger> {
+
+        public static readonly float MinimumInterval = Mathf.Epsilon;
 		
         //If true, this will fire multiple times if trigger is pulled more than once over delta.
         public virtual bool doesMultiFire { get; set; }
@@ -44,8 +45,9 @@ namespace KRG {
         /// </summary>
         /// <param name="th">Linked TimeTHREAD.</param>
         /// <param name="iv">Time INTERVAL (in seconds).</param>
-        public TimeTrigger(TimeThread th, float iv) {
-            G.U.Assert(iv > 0);
+        public TimeTrigger(TimeThread th, float iv)
+        {
+            iv = Mathf.Max(MinimumInterval, iv);
             timeRemaining = iv;
             timeThread = th;
             totalInterval = iv;

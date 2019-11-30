@@ -65,7 +65,7 @@ namespace KRG {
 
 #region Methods: Trigger
 
-        TimeTrigger AddTrigger(float iv, TimeTriggerHandler handler, bool disallowFacade = false);
+        TimeTrigger AddTrigger(float iv, TimeTriggerHandler handler, bool alwaysWait = false);
 
         void LinkTrigger(TimeTrigger tt);
 
@@ -73,7 +73,7 @@ namespace KRG {
 
         bool UnlinkTrigger(TimeTrigger tt);
 
-        void trigger(ref TimeTrigger tt, float iv, TimeTriggerHandler handler, bool disallowFacade = false);
+        void trigger(ref TimeTrigger tt, float iv, TimeTriggerHandler handler, bool alwaysWait = false);
 
 #endregion
 

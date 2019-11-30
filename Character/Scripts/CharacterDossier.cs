@@ -1,16 +1,21 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 
 namespace KRG
 {
     [CreateAssetMenu(
         fileName = "SomeOne_CharacterDossier.asset",
-        menuName = "KRG Scriptable Object/CharacterDossier",
-        order = 304
+        menuName = "KRG Scriptable Object/Character Dossier",
+        order = 2
     )]
     public sealed class CharacterDossier : ScriptableObject
     {
+        // CONSTANTS
+
         public const string CHARACTER_DOSSIER_SUFFIX = "_CharacterDossier";
         public const string IDLE_ANIMATION_SUFFIX = "_Idle_RasterAnimation";
+
+        // SERIALIZED FIELDS
 
         [Header("Game Object Data")]
 
@@ -28,9 +33,17 @@ namespace KRG
 
         public CharacterData Data;
 
+        public StateDataSerializable InitialStateData;
+
         [Header("Graphic Data")]
 
         public GraphicData GraphicData;
+
+        [Header("Ability Data")]
+
+        public List<Ability> Abilities;
+
+        // MONOBEHAVIOUR METHODS
 
         private void OnValidate()
         {
@@ -60,6 +73,8 @@ namespace KRG
                 }
             }
         }
+
+        // STATIC METHODS
 
         public static string GetBundleName(int characterID)
         {

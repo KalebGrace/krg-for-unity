@@ -15,6 +15,7 @@ namespace KRG
     /// 3.  Attacker is a key component of the Attack system, and is used in conjunction with the following classes:
     ///     Attack, AttackAbility, AttackAbilityUse, AttackString, AttackTarget, and KnockBackCalcMode.
     /// </summary>
+    [System.Obsolete]
     public class Attacker : MonoBehaviour, IBodyComponent
     {
         // DELEGATES
@@ -184,7 +185,7 @@ namespace KRG
             //set attacker animation
             m_IsAttackerAnimating = true;
             RasterAnimation attackerAnimation = attack.attackAbility.GetRandomAttackerRasterAnimation();
-            GraphicController.SetAnimation(AnimationContext.Attack, attackerAnimation, OnAttackerAnimationEnd);
+            GraphicController.SetAnimation(AnimationContext.Ability, attackerAnimation, OnAttackerAnimationEnd);
             //and since the attack attempt succeeded, return TRUE
             return true;
         }
@@ -199,7 +200,7 @@ namespace KRG
             if (m_IsAttackerAnimating)
             {
                 m_IsAttackerAnimating = false;
-                GraphicController.EndAnimation(AnimationContext.Attack);
+                GraphicController.EndAnimation(AnimationContext.Ability);
             }
             //call optional derived functionality (high priority), then fire event as applicable
             OnAttackEnd(attack, isCompleted);

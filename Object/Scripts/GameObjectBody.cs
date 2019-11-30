@@ -28,6 +28,10 @@ namespace KRG
 
         public delegate void FacingDirectionHandler(Direction oldDirection, Direction newDirection);
 
+        // STATE PROPERTIES
+
+        public StateData StateData { get; set; }
+
         // CHARACTER PROPERTIES
 
         public CharacterDossier CharacterDossier { get; set; }
@@ -41,7 +45,9 @@ namespace KRG
         public bool IsEnemy => CharacterType == CharacterType.Enemy;
         public bool IsBoss => CharacterType == CharacterType.Boss;
 
-        // ATTACK PROPERTIES
+        // ABILITY PROPERTIES
+
+        public AbilityOwner AbilityOwner { get; set; }
 
         public bool IsAttack => GameObjectType == GameObjectType.Attack;
 
@@ -105,7 +111,7 @@ namespace KRG
             G.obj.Deregister(this);
         }
 
-        // BODY METHODS
+        // PUBLIC BODY METHODS
 
         public void Dispose()
         {
@@ -114,9 +120,11 @@ namespace KRG
             gameObject.Dispose(); // destroys the entire body, thus calling OnDestroy()
         }
 
+        // PRIVATE BODY METHODS
+
         private void InitCharacter()
         {
-            if (IsCharacter && CharacterDossier == null)
+            if (CharacterDossier == null)
             {
                 G.U.Err("Character error for character ID {0}.", CharacterID);
                 return;
@@ -141,6 +149,10 @@ namespace KRG
                 Transform centerTransform = Refs.VisRect?.transform ?? transform;
                 Instantiate(G.config.characterDebugTextPrefab, centerTransform).Init(this);
 #endif
+                StateData = CharacterDossier.InitialStateData.Deserialize();
+
+                AbilityOwner = gameObject.AddComponent<AbilityOwner>();
+                AbilityOwner.InitBody(this);
             }
         }
 

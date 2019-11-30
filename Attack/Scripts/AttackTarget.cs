@@ -2,6 +2,7 @@ using UnityEngine;
 
 namespace KRG
 {
+    [System.Obsolete]
     public class AttackTarget
     {
         // private constants

@@ -56,5 +56,7 @@ namespace KRG
 
 
         public abstract bool IsExecuted(Attacker attacker);
+
+        public abstract bool IsInputExecuted(AbilityOwner abilityOwner);
     }
 }

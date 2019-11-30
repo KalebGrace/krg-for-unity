@@ -326,25 +326,25 @@ namespace KRG {
         /// <returns>The TimeTrigger that was added.</returns>
         /// <param name="iv">Time INTERVAL (in seconds).</param>
         /// <param name="handler">HANDLER to be called at the end of the interval.</param>
-        /// <param name="disallowFacade">If set to <c>true</c> disallow use of a time trigger facade.</param>
-        public TimeTrigger AddTrigger(float iv, TimeTriggerHandler handler, bool disallowFacade = false) {
-            if (iv > 0) {
+        /// <param name="alwaysWait">If set to <c>true</c> there will be a wait even with a zero interval.</param>
+        public TimeTrigger AddTrigger(float iv, TimeTriggerHandler handler, bool alwaysWait = false)
+        {
+            if (iv < 0)
+            {
+                G.U.Err("The trigger's interval must be greater than or equal to zero.");
+                return null;
+            }
+            if (iv > 0 || alwaysWait)
+            {
                 TimeTrigger tt = new TimeTrigger(this, iv);
                 _triggersNew.Add(tt);
                 tt.AddHandler(handler);
                 return tt;
-            } else if (disallowFacade) {
-                G.U.Err("The trigger's interval must be greater than zero.");
-                return null;
-            } else if (iv.Ap(0)) {
-                //if there is no measurable interval, call the handler immediately with a time trigger facade
-                TimeTriggerFacade ttfc = new TimeTriggerFacade(this);
-                handler(ttfc);
-                return ttfc;
-            } else {
-                G.U.Err("The trigger's interval must be greater than or equal to zero.");
-                return null;
             }
+            // zero interval; call the handler immediately with a time trigger facade
+            TimeTriggerFacade ttfc = new TimeTriggerFacade(this);
+            handler(ttfc);
+            return ttfc;
         }
 
         /// <summary>
@@ -393,10 +393,11 @@ namespace KRG {
         /// <param name="tt">The TimeTrigger reference to be operated upon.</param>
         /// <param name="iv">Time INTERVAL (in seconds).</param>
         /// <param name="handler">HANDLER to be called at the end of the interval.</param>
-        /// <param name="disallowFacade">If set to <c>true</c> disallow use of a time trigger facade.</param>
-        public void trigger(ref TimeTrigger tt, float iv, TimeTriggerHandler handler, bool disallowFacade = false) {
-            if (tt != null) tt.Dispose();
-            tt = AddTrigger(iv, handler, disallowFacade);
+        /// <param name="alwaysWait">If set to <c>true</c> there will be a wait even with a zero interval.</param>
+        public void trigger(ref TimeTrigger tt, float iv, TimeTriggerHandler handler, bool alwaysWait = false)
+        {
+            tt?.Dispose();
+            tt = AddTrigger(iv, handler, alwaysWait);
         }
 
 #endregion

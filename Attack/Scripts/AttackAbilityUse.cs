@@ -15,6 +15,7 @@ namespace KRG {
     /// 4.  AttackAbilityUse is sealed and currently has no extensibility.
     /// Last Refactor: 1.00.003 / 2018-07-15
     /// </summary>
+    [System.Obsolete]
     public sealed class AttackAbilityUse {
 
 #region FIELDS

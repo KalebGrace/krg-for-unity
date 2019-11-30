@@ -2,6 +2,7 @@ using UnityEngine;
 
 namespace KRG
 {
+    [System.Obsolete]
     public class DamageManager : Manager
     {
         public override float priority { get { return 80; } }

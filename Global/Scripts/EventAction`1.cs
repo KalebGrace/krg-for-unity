@@ -2,12 +2,12 @@
 
 namespace KRG
 {
-    public struct EventAction
+    public struct EventAction<T>
     {
-        private event Action ActionHigh;
-        private event Action ActionNormal;
+        private event Action<T> ActionHigh;
+        private event Action<T> ActionNormal;
 
-        public void AddHigh(Action action)
+        public void AddHigh(Action<T> action)
         {
             if (ActionHigh != null)
             {
@@ -16,23 +16,23 @@ namespace KRG
             ActionHigh += action;
         }
 
-        public static EventAction operator +(EventAction eventAction, Action action)
+        public static EventAction<T> operator +(EventAction<T> eventAction, Action<T> action)
         {
             eventAction.ActionNormal += action;
             return eventAction;
         }
 
-        public static EventAction operator -(EventAction eventAction, Action action)
+        public static EventAction<T> operator -(EventAction<T> eventAction, Action<T> action)
         {
             eventAction.ActionHigh -= action;
             eventAction.ActionNormal -= action;
             return eventAction;
         }
 
-        public void Invoke()
+        public void Invoke(T arg)
         {
-            ActionHigh?.Invoke();
-            ActionNormal?.Invoke();
+            ActionHigh?.Invoke(arg);
+            ActionNormal?.Invoke(arg);
         }
     }
 }

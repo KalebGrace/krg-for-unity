@@ -6,11 +6,14 @@ namespace KRG
     [Serializable]
     public struct Effector
     {
-        //4D Value Type
+        // FIELDS
+
         [Enum(typeof(EffectorCondition))]
         public int condition;
         [Enum(typeof(EffectorSubject))]
         public int subject;
+        [Enum(typeof(StatID))]
+        public int StatID;
         [Enum(typeof(EffectorProperty))]
         public int property;
         [Enum(typeof(EffectorOperation))]
@@ -18,11 +21,13 @@ namespace KRG
         //
         public double value;
 
-        //shortcut constructor
+        // SHORTCUT CONSTRUCTOR
+
         public Effector(float? v = null, float d = 0, bool min = false, bool max = false)
         {
             condition = 0;
             subject = 0;
+            StatID = 0;
             property = 0;
 
             if (max)
@@ -52,6 +57,8 @@ namespace KRG
             }
         }
 
+        // METHODS
+
         public bool Operate(ref float pv, float min, float max)
         {
             if (min > max)
@@ -65,10 +72,10 @@ namespace KRG
             switch ((EffectorOperation)operation)
             {
                 case EffectorOperation.None:
-                    //do nothing
+                    // do nothing
                     return true;
                 case EffectorOperation.SetTo:
-                    //keep ev as is
+                    // keep ev as is
                     break;
                 case EffectorOperation.Add:
                     ev += pv;
@@ -97,7 +104,11 @@ namespace KRG
 
     public enum EffectorCondition
     {
+        // 0 ~ 99 reserved for KRG
         None = 0,
+        OnTargetEnter = 1,
+        OnTargetStay = 2,
+        OnTargetExit = 3,
     }
 
     public enum EffectorSubject
@@ -108,6 +119,7 @@ namespace KRG
         PlayerCharacter = 1000,
     }
 
+    [Obsolete]
     public enum EffectorProperty
     {
         None = 0,
@@ -122,13 +134,13 @@ namespace KRG
         None = 0,
         //
         SetTo = 100,
-        //add, or subtract (if value is negative)
+        // add, or subtract (if value is negative)
         Add = 200,
-        //multiply, or divide (via decimal value)
+        // multiply, or divide (via decimal value)
         MultiplyBy = 300,
-        //percentage of the maximum value (0~100)
+        // percentage of the maximum value (0~100)
         SetToXPercentOfMax = 400,
-        //add specified percent
+        // add specified percent
         AddXPercentOfMax = 500,
     }
 }

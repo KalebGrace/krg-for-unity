@@ -3,6 +3,7 @@ using UnityEngine.Serialization;
 
 namespace KRG
 {
+    [System.Obsolete]
     public abstract class DamageTaker : MonoBehaviour, IBodyComponent, IEnd, ISpawn
     {
         // STATIC EVENTS
@@ -46,12 +47,22 @@ namespace KRG
 
         public virtual float HP
         {
-            get => IsPlayerCharacter ? (G.inv.StatHP ?? HPMax) : m_HP;
+            get
+            {
+                if (IsPlayerCharacter)
+                {
+                    return G.inv.HasStatVal((int)StatID.HP) ? G.inv.GetStatVal((int)StatID.HP) : HPMax;
+                }
+                else
+                {
+                    return m_HP;
+                }
+            }
             set
             {
                 if (IsPlayerCharacter)
                 {
-                    G.inv.StatHP = value;
+                    G.inv.SetStatVal((int)StatID.HP, value);
                 }
                 else
                 {
@@ -64,12 +75,22 @@ namespace KRG
 
         public virtual float HPMax
         {
-            get => IsPlayerCharacter ? (G.inv.StatHPMax ?? _damageProfile.HPMax) : m_HPMax;
+            get
+            {
+                if (IsPlayerCharacter)
+                {
+                    return G.inv.HasStatVal((int)StatID.HPMax) ? G.inv.GetStatVal((int)StatID.HPMax) : _damageProfile.HPMax;
+                }
+                else
+                {
+                    return m_HPMax;
+                }
+            }
             set
             {
                 if (IsPlayerCharacter)
                 {
-                    G.inv.StatHPMax = value;
+                    G.inv.SetStatVal((int)StatID.HPMax, value);
                 }
                 else
                 {
@@ -225,13 +246,13 @@ namespace KRG
         {
             if (m_Body.IsPlayerCharacter)
             {
-                if (!G.inv.StatHPMax.HasValue)
+                if (!G.inv.HasStatVal((int)StatID.HPMax))
                 {
-                    G.inv.StatHPMax = _damageProfile.HPMax;
+                    G.inv.SetStatVal((int)StatID.HPMax, _damageProfile.HPMax);
                 }
-                if (!G.inv.StatHP.HasValue)
+                if (!G.inv.HasStatVal((int)StatID.HP))
                 {
-                    G.inv.StatHP = G.inv.StatHPMax;
+                    G.inv.SetStatVal((int)StatID.HP, G.inv.GetStatVal((int)StatID.HPMax));
                 }
             }
             else

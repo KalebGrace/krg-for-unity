@@ -7,10 +7,10 @@ namespace KRG
     {
         public override float priority => 130;
 
+        public StateData? StateData { get; set; }
+
 
         // fields, delegates, events : ITEMS
-
-        readonly List<int> m_AcquiredItems = new List<int>();
 
         readonly Dictionary<int, ItemAcquiredHandler> m_ItemAcquiredHandlers
            = new Dictionary<int, ItemAcquiredHandler>();
@@ -32,13 +32,6 @@ namespace KRG
         public event System.Action AutoMapSaveDataProvided;
 
 
-        // fields : STATS
-
-        public float? StatHPMax;
-        public float? StatHP;
-        public float? StatSP;
-
-
         // MONOBEHAVIOUR-LIKE METHODS
 
         public override void Awake()
@@ -46,8 +39,6 @@ namespace KRG
             G.save.Subscribe(this);
 
             BuildItemDataDictionary();
-
-            ResetContents();
         }
 
         public void OnDestroy()
@@ -62,7 +53,7 @@ namespace KRG
         {
             if (!Has(item))
             {
-                m_AcquiredItems.Add(item);
+                StateData.Value.Items.Add(item, 1);
 
                 if (m_ItemAcquiredHandlers.ContainsKey(item))
                 {
@@ -89,14 +80,12 @@ namespace KRG
 
         public bool Has(int item)
         {
-            return m_AcquiredItems.Contains(item);
-        }
+            if (StateData.Value.Items.ContainsKey(item))
+            {
+                return StateData.Value.Items[item] >= 1;
+            }
 
-        public void ResetContents()
-        {
-            m_AcquiredItems.Clear();
-
-            m_AutoMaps.Clear();
+            return false;
         }
 
         /// <summary>
@@ -164,12 +153,31 @@ namespace KRG
             m_AutoMaps[saveData.gameplaySceneId] = saveData;
         }
 
+        [System.Obsolete]
+        public float GetStatVal(int statID)
+        {
+            return StateData.Value.Stats.ContainsKey(statID) ? StateData.Value.Stats[statID] : 0;
+        }
+
+        [System.Obsolete]
+        public bool HasStatVal(int statID)
+        {
+            return StateData.Value.Stats.ContainsKey(statID);
+        }
+
+        [System.Obsolete]
+        public void SetStatVal(int statID, float value)
+        {
+            StateData.Value.Stats[statID] = value;
+        }
+
 
         // ISAVE METHODS
 
         public virtual void OnSaving(ref SaveFile sf)
         {
-            sf.acquiredItems = m_AcquiredItems.ToArray();
+            sf.items = StateData.Value.Items;
+            sf.acquiredItems = null;
 
             AutoMapSaveDataRequested?.Invoke();
 
@@ -178,19 +186,32 @@ namespace KRG
 
         public virtual void OnLoading(SaveFile sf)
         {
-            ResetContents();
+            Dictionary<int, float> itemDict = StateData.Value.Items;
+            itemDict.Clear();
+            if (sf.acquiredItems != null && sf.acquiredItems.Length > 0)
+            {
+                for (int i = 0; i < sf.acquiredItems.Length; ++i)
+                {
+                    int itemID = sf.acquiredItems[i];
+                    itemDict.Add(itemID, 1);
+                }
+            }
+            else if (sf.items != null)
+            {
+                foreach (KeyValuePair<int, float> pair in sf.items)
+                {
+                    itemDict.Add(pair.Key, pair.Value);
+                }
+            }
 
-            if (sf.acquiredItems != null) m_AcquiredItems.AddRange(sf.acquiredItems);
-
+            m_AutoMaps.Clear();
             if (sf.autoMaps != null)
             {
                 for (int i = 0; i < sf.autoMaps.Length; ++i)
                 {
                     AutoMapSaveData map = sf.autoMaps[i];
-
                     m_AutoMaps.Add(map.gameplaySceneId, map);
                 }
-
                 AutoMapSaveDataProvided?.Invoke();
             }
         }

@@ -4,13 +4,13 @@ namespace KRG
 {
     public class RequireException : Exception
     {
-        readonly Type type;
+        private readonly Type type;
 
         public RequireException(Type type)
         {
             this.type = type;
         }
 
-        public override string Message { get { return string.Format("{0} ~ {1}", type, base.Message); } }
+        public override string Message => string.Format("{0} ~ {1}", type, base.Message);
     }
 }
