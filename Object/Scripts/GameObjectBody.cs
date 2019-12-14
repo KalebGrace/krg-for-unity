@@ -87,22 +87,28 @@ namespace KRG
 
         private void Awake()
         {
-            if (G.obj.Register(this))
+            bool isRegistered = G.obj.Register(this);
+
+            if (!isRegistered) return;
+
+            switch (GameObjectType)
             {
-                switch (GameObjectType)
-                {
-                    case GameObjectType.Character:
-                        InitCharacter();
-                        break;
-                    case GameObjectType.Attack:
-                        InitAttack();
-                        break;
-                    case GameObjectType.None:
-                        break;
-                    default:
-                        G.U.Err("Unsupported GameObjectType {0}.", GameObjectType);
-                        break;
-                }
+                case GameObjectType.Character:
+                    InitCharacter();
+                    break;
+                case GameObjectType.Attack:
+                    InitAttack();
+                    break;
+                case GameObjectType.None:
+                    break;
+                default:
+                    G.U.Err("Unsupported GameObjectType {0}.", GameObjectType);
+                    break;
+            }
+
+            if (Refs.StateDataOverride != null)
+            {
+                StateData = Refs.StateDataOverride.StateData.Deserialize();
             }
         }
 
@@ -151,6 +157,8 @@ namespace KRG
 #endif
                 StateData = CharacterDossier.InitialStateData.Deserialize();
 
+                // TODO: get fucking rid of this shit; handle it like the rest
+                // just fucking do it
                 AbilityOwner = gameObject.AddComponent<AbilityOwner>();
                 AbilityOwner.InitBody(this);
             }

@@ -22,13 +22,13 @@ namespace KRG
 
         public Rigidbody Rigidbody;
 
+        public Destructible Destructible;
+
         public Hitbox Hitbox;
 
         public Hurtbox Hurtbox;
 
-        public Attacker Attacker;
-
-        public DamageTaker DamageTaker;
+        public StateDataOverride StateDataOverride;
 
         public void AutoAssign(GameObjectBody body)
         {
@@ -91,10 +91,10 @@ namespace KRG
                 AssignIBodyComponent(ref StateOwner);
                 AssignIBodyComponent(ref GraphicController);
                 AssignIBodyComponent(ref VisRect);
+                AssignIBodyComponent(ref Destructible);
                 AssignIBodyComponent(ref Hitbox);
                 AssignIBodyComponent(ref Hurtbox);
-                AssignIBodyComponent(ref Attacker);
-                AssignIBodyComponent(ref DamageTaker);
+                AssignIBodyComponent(ref StateDataOverride);
             }
         }
     }

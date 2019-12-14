@@ -2,6 +2,6 @@
 {
     public sealed class Hurtbox : ColliderController
     {
-        public DamageTaker DamageTaker => Body.Refs.DamageTaker;
+        public DamageTaker DamageTaker => null;
     }
 }

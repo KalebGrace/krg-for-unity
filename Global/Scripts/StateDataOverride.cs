@@ -1,16 +1,13 @@
-﻿namespace KRG
+﻿using UnityEngine;
+
+namespace KRG
 {
-    public interface IBodyComponent
+    public sealed class StateDataOverride : MonoBehaviour, IBodyComponent
     {
-        GameObjectBody Body { get; }
-
-        void InitBody(GameObjectBody body);
-
-        // COPYPASTA THE FOLLOWING:
-        /*
-        
         [SerializeField]
         private GameObjectBody m_Body = default;
+
+        public StateDataSerializable StateData;
 
         public GameObjectBody Body => m_Body;
 
@@ -18,7 +15,5 @@
         {
             m_Body = body;
         }
-
-        */
     }
 }

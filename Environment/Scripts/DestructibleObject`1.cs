@@ -5,6 +5,7 @@ using UnityEngine.Serialization;
 
 namespace KRG {
 
+    [System.Obsolete]
     public abstract class DestructibleObject<TPart> : MonoBehaviour, IExplodable where TPart : IExplodable {
 
         [SerializeField]

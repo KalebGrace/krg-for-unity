@@ -12,6 +12,8 @@ namespace KRG
     {
         // SERIALIZED FIELDS
 
+        // TODO: make sure all of these are hooked up!!!
+
         [Header("Identifiers")]
 
         [Enum(typeof(AbilityID))]
@@ -27,6 +29,7 @@ namespace KRG
 
         public List<RasterAnimation> OwnerAnimations;
 
+        // TODO: fix this
         public List<int> OwnerStatesLocked;
 
         [Header("Object Definition")]
@@ -104,3 +107,95 @@ namespace KRG
         }
     }
 }
+
+
+/*
+        [Header("Status Effects")]
+
+        [SerializeField]
+        [Tooltip("Does this attack cause invulnerability on the damage taker when hit?")]
+        protected bool _causesInvulnerability = true;
+
+        [SerializeField]
+        [Tooltip("Does this attack cause knock back on the damage taker when hit?")]
+        protected bool _causesKnockBack = true;
+
+        //
+        //
+        [Header("Knock Back (if enabled)")]
+
+        [SerializeField]
+        [Tooltip("The instant force impulse added to the target's rigidbody when knocked back. " +
+            "The X value should typically be positive. Horizontal flipping will be applied automatically.")]
+        protected Vector3 _knockBackForceImpulse = default;
+
+        [SerializeField]
+        [Tooltip("How to apply the following Knock Back Distance"
+        + " against the corresponding value in the target's Damage Profile.")]
+        protected KnockBackCalcMode _knockBackDistanceCalcMode = KnockBackCalcMode.Multiply;
+
+        [SerializeField]
+        [Tooltip("Distance (in UNITS) the target is knocked back when damaged.")]
+        protected float _knockBackDistance = 1;
+
+        [SerializeField]
+        [Tooltip("How to apply the following Knock Back Time"
+        + " against the corresponding value in the target's Damage Profile.")]
+        protected KnockBackCalcMode _knockBackTimeCalcMode = KnockBackCalcMode.Multiply;
+
+        [SerializeField]
+        [Tooltip("Time (in SECONDS) the target is in a knock back state when damaged (overlaps invulnerability time).")]
+        protected float _knockBackTime = 1;
+
+        //
+        //
+        [Header("Attacker Movement")]
+
+        [SerializeField]
+        [Tooltip("Distance (in UNITS) the attacker moves horizontally during an attack.")]
+        protected float _attackerMoveDistance;
+
+        [SerializeField]
+        [Tooltip("Time (in SECONDS) the attacker takes at the start of the attack to move said distance.")]
+        protected float _attackerMoveTime;
+
+        [SerializeField]
+        [Tooltip("Does attacker movement require directional input?")]
+        protected bool _attackerMoveRequiresInput;
+
+
+
+        protected virtual void OnValidate()
+        {
+            _hpDamageRate.floatValue = Mathf.Max(0.0001f, _hpDamageRate.floatValue);
+            _maxHitsPerTarget.intValue = Mathf.Max(1, _maxHitsPerTarget.intValue);
+            _knockBackTime = Mathf.Max(0, _knockBackTime);
+        }
+
+
+
+    
+        [Header("HP Damage & DPS")]
+        
+        //seconds between dealing HP Damage (calculated from _hpDamageRate)
+        protected float _hpDamageRateSec;
+
+        [SerializeField]
+        [Tooltip("Times HP Damage will be dealt per second during a hit."
+        + " Setting this to \"false\" makes the attack always deal damage whenever able (e.g. not invulnerable)."
+        + " Setting this to \"true\" and specifing an HP Damage Rate can be used to deal very specific DPS:"
+        + " E.G. 10 HP Damage * 10 HP Damage Rate = 100 Damage Per Second."
+        + " NOTE: This requires setting \"Causes Invulnerability\" to false,"
+        + " or dealing damage to someone without it.")]
+        [BoolObjectDisable(false, "Whenever Able")]
+        protected BoolFloat _hpDamageRate = new BoolFloat(false, 60);
+
+        [SerializeField]
+        [Tooltip("Maximum number of \"hits\" (i.e. damage method calls) made by an attack per target."
+        + " Setting this to \"false\" makes the attack have no limit"
+        + " to the number of damage method calls it can make.")]
+        [BoolObjectDisable(false, "No Limit")]
+        protected BoolInt _maxHitsPerTarget = new BoolInt(true, 1);
+
+
+ */

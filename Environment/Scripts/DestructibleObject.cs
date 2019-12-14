@@ -4,6 +4,7 @@ using UnityEngine;
 
 namespace KRG {
 
+    [System.Obsolete]
     public class DestructibleObject : DestructibleObject<DestructibleObjectPart> {
         
     }
