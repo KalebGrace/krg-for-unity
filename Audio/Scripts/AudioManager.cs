@@ -13,12 +13,20 @@ namespace KRG
 {
     public class AudioManager : Manager, IOnDestroy
     {
-        public override float priority { get { return 60; } }
+        public override float priority => 60;
+
+#if !NS_FMOD
+        public struct EventInstance
+        {
+            public bool hasHandle() => false;
+            public bool isValid() => false;
+        }
+#endif
 
         //TODO: put this in the config, then make "-1" trigger the default
-        public const float musicFadeOutSecondsDefault = 2;
+        public const float MUSIC_FADE_OUT_SECONDS = 2;
 
-        private const string _pIsGamePaused = "isGamePaused";
+        private const string P_IS_GAME_PAUSED = "isGamePaused";
 
         public event System.Action<string> MusicPlayed;
 
@@ -28,48 +36,58 @@ namespace KRG
         private Tween _musicStopTween;
 #endif
 
-#if NS_FMOD
         private string _musicFmodEvent;
 
         private EventInstance _musicInstance;
 
         private EventInstance _musicStopInstance;
-#endif
 
-        private float m_MasterVolume = 1;
-        private float m_MusicVolume = 1;
+        private PersistentData<float> m_MasterVolume = new PersistentData<float>(Persist.PlayerPrefs, "audio.master_volume", 1);
+        private PersistentData<float> m_MusicVolume = new PersistentData<float>(Persist.PlayerPrefs, "audio.music_volume", 1);
+        private PersistentData<float> m_SFXVolume = new PersistentData<float>(Persist.PlayerPrefs, "audio.sfx_volume", 1);
+
         private float m_MusicStopVolume = 1;
 
+        // PUBLIC PROPERTIES
+
         /// <summary>
-        /// Set the master volume from 0 (0%) to 1 (100%).
+        /// Set the master volume from 0 (0%) to 1 (100%), or higher.
         /// </summary>
         public float MasterVolume
         {
-            get => m_MasterVolume;
+            get => m_MasterVolume.Value;
             set
             {
-                m_MasterVolume = value;
+                m_MasterVolume.Value = value;
                 UpdateMusicVolume();
                 UpdateMusicStopVolume();
             }
         }
 
         /// <summary>
-        /// Set the music volume from 0 (0%) to 1 (100%).
+        /// Set the music volume from 0 (0%) to 1 (100%), or higher.
         /// </summary>
         public float MusicVolume
         {
-            get => m_MusicVolume;
+            get => m_MusicVolume.Value;
             set
             {
-                m_MusicVolume = value;
+                m_MusicVolume.Value = value;
                 UpdateMusicVolume();
             }
         }
 
         /// <summary>
-        /// Set the music stop volume from 0 (0%) to 1 (100%).
+        /// Set the sound effect volume from 0 (0%) to 1 (100%), or higher.
         /// </summary>
+        public float SFXVolume
+        {
+            get => m_SFXVolume.Value;
+            set => m_SFXVolume.Value = value;
+        }
+
+        // PRIVATE PROPERTIES
+
         private float MusicStopVolume
         {
             get => m_MusicStopVolume;
@@ -80,10 +98,7 @@ namespace KRG
             }
         }
 
-        /// <summary>
-        /// Set the sound effect volume from 0 (0%) to 1 (100%).
-        /// </summary>
-        public float SFXVolume { get; set; } = 1;
+        // METHODS
 
         public override void Awake()
         {
@@ -93,7 +108,7 @@ namespace KRG
                 return;
             }
             _isInitialized = true;
-            LoadVolumesFromDisk();
+            // nothing, for now
         }
 
         public virtual void OnDestroy()
@@ -103,25 +118,25 @@ namespace KRG
 
         public void PauseGame()
         {
-#if NS_FMOD
             if (_musicInstance.isValid())
             {
-                _musicInstance.setParameterByName(_pIsGamePaused, 1);
-            }
+#if NS_FMOD
+                _musicInstance.setParameterByName(P_IS_GAME_PAUSED, 1);
 #endif
+            }
         }
 
         public void UnpauseGame()
         {
-#if NS_FMOD
             if (_musicInstance.isValid())
             {
-                _musicInstance.setParameterByName(_pIsGamePaused, 0);
-            }
+#if NS_FMOD
+                _musicInstance.setParameterByName(P_IS_GAME_PAUSED, 0);
 #endif
+            }
         }
 
-        public void PlayMusic(string fmodEvent, float outgoingMusicFadeOutSeconds = musicFadeOutSecondsDefault)
+        public void PlayMusic(string fmodEvent, float outgoingMusicFadeOutSeconds = MUSIC_FADE_OUT_SECONDS)
         {
 #if NS_FMOD && !(UNITY_EDITOR && EDITOR_MUSIC_OFF)
             if (_musicFmodEvent == fmodEvent) return;
@@ -141,10 +156,7 @@ namespace KRG
 #if NS_FMOD && !(UNITY_EDITOR && EDITOR_MUSIC_OFF)
             if (!_musicInstance.hasHandle()) return;
 #if NS_DG_TWEENING
-            if (_musicStopTween != null)
-            {
-                _musicStopTween.Complete();
-            }
+            _musicStopTween?.Complete();
 #endif
             _musicStopInstance = _musicInstance;
             _musicInstance.clearHandle();
@@ -181,56 +193,49 @@ namespace KRG
 #endif
         }
 
-        public void PlaySFX(string fmodEvent, Vector3? position = null)
+        public EventInstance PlaySFX(string fmodEvent, Vector3? position = null)
         {
 #if NS_FMOD
-            if (string.IsNullOrWhiteSpace(fmodEvent)) return;
+            if (string.IsNullOrWhiteSpace(fmodEvent)) return new EventInstance();
             EventInstance eventInstance = RuntimeManager.CreateInstance(fmodEvent);
             if (position.HasValue) eventInstance.set3DAttributes(position.Value.To3DAttributes());
             UpdateSFXVolume(eventInstance, fmodEvent);
             eventInstance.start();
             //TODO: is this released automatically when it's done playing, or do I need to do this?
+            return eventInstance;
+#else
+            return new EventInstance();
 #endif
-        }
-
-        protected virtual void LoadVolumesFromDisk()
-        {
-            //TODO: have a standard loading feature
-        }
-
-        public virtual void SaveVolumesToDisk()
-        {
-            //TODO: have a standard saving feature
         }
 
         private void UpdateMusicVolume()
         {
-#if NS_FMOD
             if (_musicInstance.hasHandle())
             {
+#if NS_FMOD
                 _musicInstance.setVolume(MasterVolume * MusicVolume);
-            }
 #endif
+            }
         }
 
         private void UpdateMusicStopVolume()
         {
-#if NS_FMOD
             if (_musicStopInstance.hasHandle())
             {
+#if NS_FMOD
                 _musicStopInstance.setVolume(MasterVolume * MusicVolume * MusicStopVolume);
-            }
 #endif
+            }
         }
 
-#if NS_FMOD
         protected virtual void UpdateSFXVolume(EventInstance eventInstance, string fmodEvent)
         {
             if (eventInstance.hasHandle())
             {
+#if NS_FMOD
                 eventInstance.setVolume(MasterVolume * SFXVolume);
+#endif
             }
         }
-#endif
     }
 }

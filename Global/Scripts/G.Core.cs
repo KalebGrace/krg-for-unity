@@ -12,12 +12,22 @@ namespace KRG
         /// <summary>
         /// The version of G.
         /// </summary>
-        public const int version = 12;
+        public const int version = 13;
+
+        /// <summary>
+        /// Fires during G's Awake method.
+        /// </summary>
+        private static event System.Action Awoken;
 
         /// <summary>
         /// The cached config (KRGConfig).
         /// </summary>
         private static KRGConfig m_Config;
+
+        /// <summary>
+        /// Is G Awake?
+        /// </summary>
+        private static bool m_IsAwake;
 
         /// <summary>
         /// Gets the config (KRGConfig).
@@ -35,6 +45,10 @@ namespace KRG
             if (isDuplicateInstance) return;
             //ensure the config is cached (and if not found, log an error)
             LoadConfig();
+            //get woke
+            m_IsAwake = true;
+            Awoken?.Invoke();
+            Awoken = null;
             //initialize and awaken the managers
             InitManagers();
         }
@@ -68,6 +82,18 @@ namespace KRG
             }
             //return the cached config
             return m_Config;
+        }
+
+        public static void DoPlayerPrefsAction(System.Action action)
+        {
+            if (m_IsAwake)
+            {
+                action();
+            }
+            else
+            {
+                Awoken += action;
+            }
         }
     }
 }
