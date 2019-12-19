@@ -95,7 +95,7 @@ namespace KRG
                 switch (command)
                 {
                     case SwitchCommand.None:
-                        //do nothing
+                        // do nothing
                         break;
                     case SwitchCommand.Enable:
                         SetSubjectEnabled(subject, context, true);

@@ -1,10 +1,9 @@
-﻿using System.Collections.Generic;
-using TMPro;
-using UnityEngine;
-
-#if NS_DG_TWEENING
+﻿#if NS_DG_TWEENING
 using DG.Tweening;
 #endif
+using System.Collections.Generic;
+using TMPro;
+using UnityEngine;
 
 namespace KRG
 {
@@ -13,39 +12,31 @@ namespace KRG
 #pragma warning disable 0414
         [Enum(typeof(TimeThreadInstance))]
         [SerializeField]
-        int _timeThreadIndex = (int)TimeThreadInstance.UseDefault;
+        private int _timeThreadIndex = (int)TimeThreadInstance.UseDefault;
 #pragma warning restore 0414
 
         [SerializeField]
-        TMP_Text _text100 = default;
+        private TMP_Text _text100 = default;
 
         [SerializeField]
-        TMP_Text _text010 = default;
+        private TMP_Text _text010 = default;
 
         [SerializeField]
-        TMP_Text _text001 = default;
+        private TMP_Text _text001 = default;
 
 #if !NS_DG_TWEENING
-        public void Init(IEnd target, int damage)
+        public void Init<T>(IDestroyedEvent<T> target, int damage)
         {
             G.U.Err("This class requires DG.Tweening (DOTween).");
         }
 #else
-        IEnd _target;
-        List<Sequence> _tweens = new List<Sequence>();
+        private List<Sequence> _tweens = new List<Sequence>();
 
-        ITimeThread timeThread
-        {
-            get
-            {
-                return G.time.GetTimeThread(_timeThreadIndex, TimeThreadInstance.Gameplay);
-            }
-        }
+        private ITimeThread timeThread => G.time.GetTimeThread(_timeThreadIndex, TimeThreadInstance.Gameplay);
 
-        public void Init(IEnd target, int damage)
+        public void Init<T>(IDestroyedEvent<T> target, int damage)
         {
-            _target = target;
-            _target.end.actions += OnTargetDestroy;
+            target.Destroyed += _ => OnTargetDestroy();
 
             string d = damage.ToString();
             int l = d.Length;
@@ -97,7 +88,7 @@ namespace KRG
             }
         }
 
-        void Animate(TMP_Text textMesh, float heightMult)
+        private void Animate(TMP_Text textMesh, float heightMult)
         {
             Sequence s = DOTween.Sequence();
             Transform textTf = textMesh.transform;
@@ -133,20 +124,15 @@ namespace KRG
             timeThread.AddTween(s);
         }
 
-        void Dispose()
+        private void Dispose()
         {
             if (this == null) return;
 
             gameObject.Dispose();
         }
 
-        void OnDestroy()
+        private void OnDestroy()
         {
-            if (_target != null)
-            {
-                _target.end.actions -= OnTargetDestroy;
-            }
-
             //some of the following may be null if the scene is changing or the app is quitting
             if (_text100 != null && _text100.gameObject.activeSelf)
             {
@@ -167,11 +153,10 @@ namespace KRG
             }
         }
 
-        void OnTargetDestroy()
+        private void OnTargetDestroy()
         {
             if (this == null) return;
 
-            _target = null;
             transform.parent = null; //This needs to live on even if the target is destroyed.
 
             //this becomes disabled after reparenting, so we must re-enable it

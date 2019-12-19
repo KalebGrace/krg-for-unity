@@ -1,23 +1,63 @@
-﻿using UnityEngine;
-using UnityEngine.UI;
-
-#if NS_DG_TWEENING
+﻿#if NS_DG_TWEENING
 using DG.Tweening;
 #endif
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.UI;
 
 namespace KRG
 {
     public class UIManager : Manager
     {
-        public override float priority { get { return 100; } }
+        public override float priority => 100;
+
+        // FIELDS
 
         protected GameObject _colorOverlay;
 #if NS_DG_TWEENING
         protected Tweener _colorOverlayTweener;
 #endif
-        public override void Awake()
+
+        private Stack<string> m_Screens = new Stack<string>();
+
+        // MONOBEHAVIOUR-LIKE METHODS
+
+        public override void Awake() { }
+
+        // SCREEN MANAGEMENT METHODS
+
+        public void OpenScreen(string sceneName)
         {
+            if (m_Screens.Count > 0)
+            {
+                G.app.GetSceneController(m_Screens.Peek()).enabled = false;
+            }
+            G.app.LoadScene(sceneName, false);
+            m_Screens.Push(sceneName);
         }
+
+        public void CloseScreen(string sceneName)
+        {
+            if (!m_Screens.Contains(sceneName))
+            {
+                G.U.Err("Can't find the {0} screen.", sceneName);
+                return;
+            }
+            while (m_Screens.Count > 0)
+            {
+                // pop all screens stacked on the specified sceneName
+                // and stop once the specified sceneName has been popped
+                string sn = m_Screens.Pop();
+                G.app.UnloadScene(sn);
+                if (sn == sceneName) break;
+            }
+            if (m_Screens.Count > 0)
+            {
+                G.app.GetSceneController(m_Screens.Peek()).enabled = true;
+            }
+        }
+
+        // COLOR OVERLAY METHODS
 
         /// <summary>
         /// Adds a color overlay to the active scene. This creates both a high sort order Canvas, and a child Image.

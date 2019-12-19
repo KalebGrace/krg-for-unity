@@ -4,11 +4,9 @@ namespace KRG
 {
     public class DamageManager : Manager
     {
-        public override float priority { get { return 80; } }
+        public override float priority => 80;
 
-        public override void Awake()
-        {
-        }
+        public override void Awake() { }
 
         /// <summary>
         /// Displays the damage value for the target.
@@ -19,7 +17,7 @@ namespace KRG
         /// <param name="target">Target.</param>
         /// <param name="damage">Damage.</param>
         /// <typeparam name="T">The 1st type parameter.</typeparam>
-        public void DisplayDamageValue<T>(T target, int damage) where T : MonoBehaviour, IEnd
+        public void DisplayDamageValue(DamageTaker target, int damage)
         {
             DisplayDamageValue(target, target.transform, damage);
         }
@@ -33,7 +31,7 @@ namespace KRG
         /// <param name="target">Target.</param>
         /// <param name="anchor">Anchor (parent Transform).</param>
         /// <param name="damage">Damage.</param>
-        public void DisplayDamageValue(IEnd target, Transform anchor, int damage)
+        public void DisplayDamageValue<T>(IDestroyedEvent<T> target, Transform anchor, int damage)
         {
             G.U.New(config.damageValuePrefab, anchor).Init(target, damage);
         }

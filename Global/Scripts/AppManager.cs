@@ -152,6 +152,31 @@ namespace KRG
         }
 
         /// <summary>
+        /// Gets a scene controller.
+        /// </summary>
+        /// <param name="sceneName">Scene name.</param>
+        public virtual SceneController GetSceneController(string sceneName)
+        {
+            for (int i = 0; i < _sceneControllers.Count; ++i)
+            {
+                SceneController sc = _sceneControllers[i];
+                // if the scene was unloaded or the scene controller was destroyed for any reason, remove it and continue
+                if (sc == null)
+                {
+                    _sceneControllers.RemoveAt(i--);
+                    continue;
+                }
+                // if this is the desired scene...
+                if (sceneName == sc.sceneName)
+                {
+                    return sc;
+                }
+            }
+            G.U.Err("No scene controller found for the {0} scene.", sceneName);
+            return null;
+        }
+
+        /// <summary>
         /// Removes a scene activation listener.
         /// </summary>
         /// <param name="sceneName">Scene name.</param>
@@ -193,26 +218,24 @@ namespace KRG
         /// </summary>
         protected void CallOnSceneActive()
         {
-            SceneController sc;
-            string sceneName;
-            for (int i = 0; i < _sceneControllers.Count; i++)
+            for (int i = 0; i < _sceneControllers.Count; ++i)
             {
-                sc = _sceneControllers[i];
-                //if the scene was unloaded or the scene controller was destroyed for any reason, remove it and continue
+                SceneController sc = _sceneControllers[i];
+                // if the scene was unloaded or the scene controller was destroyed for any reason, remove it and continue
                 if (sc == null)
                 {
                     _sceneControllers.RemoveAt(i--);
                     continue;
                 }
-                sceneName = sc.sceneName;
-                //if this is the active scene...
+                string sceneName = sc.sceneName;
+                // if this is the active scene...
                 if (sceneName == _activeSceneName)
                 {
                     SendLevelStartAnalytics(sceneName);
                     InvokeGameplaySceneStarted();
-                    //call OnSceneActive
+                    // call OnSceneActive
                     sc.OnSceneActive();
-                    //call events
+                    // call events
                     if (_sceneActivationEvents.ContainsKey(sceneName))
                     {
                         _sceneActivationEvents[sceneName]?.Invoke();
@@ -229,7 +252,7 @@ namespace KRG
         /// <returns>The asynchronous loading operation.</returns>
         /// <param name="sceneName">Scene name.</param>
         /// <param name="makeActive">If set to <c>true</c> make the scene active.</param>
-        protected AsyncOperation LoadScene(string sceneName, bool makeActive = true)
+        public AsyncOperation LoadScene(string sceneName, bool makeActive = true)
         {
             if (makeActive) _activeSceneName = sceneName;
             return SceneManager.LoadSceneAsync(sceneName, LoadSceneMode.Additive);
@@ -255,7 +278,7 @@ namespace KRG
         /// </summary>
         /// <returns>The asynchronous unloading operation.</returns>
         /// <param name="sceneName">Scene name.</param>
-        protected AsyncOperation UnloadScene(string sceneName)
+        public AsyncOperation UnloadScene(string sceneName)
         {
             return SceneManager.UnloadSceneAsync(sceneName);
         }

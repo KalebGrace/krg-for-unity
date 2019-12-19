@@ -8,6 +8,7 @@
 
         // COPYPASTA THE FOLLOWING:
         /*
+        
         [SerializeField]
         private GameObjectBody m_Body = default;
 
@@ -17,6 +18,7 @@
         {
             m_Body = body;
         }
+
         */
     }
 }

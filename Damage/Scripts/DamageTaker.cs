@@ -3,11 +3,15 @@ using UnityEngine.Serialization;
 
 namespace KRG
 {
-    public abstract class DamageTaker : MonoBehaviour, IBodyComponent, IEnd, ISpawn
+    public abstract class DamageTaker : MonoBehaviour, IBodyComponent, IDestroyedEvent<DamageTaker>, ISpawn
     {
         // STATIC EVENTS
 
         public static event Handler DamageDealt;
+
+        // INSTANCE EVENTS
+
+        public event System.Action<DamageTaker> Destroyed;
 
         // DELEGATES
 
@@ -78,7 +82,9 @@ namespace KRG
             }
         }
 
-        // properties
+        // PROPERTIES
+
+        public GameObjectBody Body => m_Body;
 
         public virtual Transform centerTransform => m_Body.Refs.VisRect.transform;
 
@@ -122,16 +128,8 @@ namespace KRG
 
         protected virtual void OnDestroy()
         {
-            my_end.Invoke();
+            Destroyed?.Invoke(this);
         }
-
-        // END
-
-        protected End my_end = new End();
-
-        public End end { get { return my_end; } }
-
-        public GameObjectBody Body => m_Body;
 
         // Primary Methods
 
@@ -171,7 +169,7 @@ namespace KRG
         protected virtual bool CanBeDamaged()
         {
             //these could pop up at any time, so let's be safe
-            return !my_end.wasInvoked && !IsKnockedOut && !IsInvulnerableTo(_damageAttackAbility);
+            return this != null && !IsKnockedOut && !IsInvulnerableTo(_damageAttackAbility);
         }
 
         protected virtual void DealDamage(AttackAbility attackAbility)

@@ -51,7 +51,7 @@ namespace KRG
         // PUBLIC PROPERTIES
 
         /// <summary>
-        /// Set the master volume from 0 (0%) to 1 (100%), or higher.
+        /// Get or set the master volume from 0 (0%) to 1 (100%), or higher.
         /// </summary>
         public float MasterVolume
         {
@@ -65,7 +65,7 @@ namespace KRG
         }
 
         /// <summary>
-        /// Set the music volume from 0 (0%) to 1 (100%), or higher.
+        /// Get or set the music volume from 0 (0%) to 1 (100%), or higher.
         /// </summary>
         public float MusicVolume
         {
@@ -78,7 +78,7 @@ namespace KRG
         }
 
         /// <summary>
-        /// Set the sound effect volume from 0 (0%) to 1 (100%), or higher.
+        /// Get or set the sound effect volume from 0 (0%) to 1 (100%), or higher.
         /// </summary>
         public float SFXVolume
         {
@@ -108,7 +108,7 @@ namespace KRG
                 return;
             }
             _isInitialized = true;
-            // nothing, for now
+            // do nothing, for now
         }
 
         public virtual void OnDestroy()

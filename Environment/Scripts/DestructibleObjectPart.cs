@@ -1,36 +1,27 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿#if NS_DG_TWEENING
+using DG.Tweening;
+#endif
 using UnityEngine;
 using UnityEngine.Serialization;
 
-#if NS_DG_TWEENING
-using DG.Tweening;
-#endif
-
-namespace KRG {
-
-    public class DestructibleObjectPart : MonoBehaviour, IDestructibleObjectData, IEnd, IExplodable {
+namespace KRG
+{
+    public class DestructibleObjectPart : MonoBehaviour, IDestroyedEvent<DestructibleObjectPart>, IDestructibleObjectData, IExplodable
+    {
+        public event System.Action<DestructibleObjectPart> Destroyed;
 
         [SerializeField]
         [FormerlySerializedAs("m_data")]
         protected DestructibleObjectData _data;
 
-        Collider _collider;
-        Renderer _renderer;
-        Rigidbody _rigidbody;
+        private Collider _collider;
+        private Renderer _renderer;
+        private Rigidbody _rigidbody;
 
-#region IDestructibleObjectData implementation
+        DestructibleObjectData IDestructibleObjectData.data { get => _data; set => _data = value; }
 
-        DestructibleObjectData IDestructibleObjectData.data {
-            get { return _data; }
-            set { _data = value; }
-        }
-
-#endregion
-
-
-
-        void Awake() {
+        private void Awake()
+        {
             _collider = this.Require<Collider>();
             _renderer = this.Require<Renderer>();
             _rigidbody = this.Require<Rigidbody>();
@@ -40,33 +31,28 @@ namespace KRG {
             _renderer.enabled = false;
         }
 
-        void FixedUpdate() {
-        //TODO: remove this code when all bugs are fixed
+        private void FixedUpdate()
+        {
+            //TODO: remove this code when all bugs are fixed
             if (float.IsNaN(transform.position.x) ||
                 float.IsNaN(transform.position.y) ||
                 float.IsNaN(transform.position.z) ||
                 float.IsInfinity(transform.position.x) ||
                 float.IsInfinity(transform.position.y) ||
-                float.IsInfinity(transform.position.z)) {
+                float.IsInfinity(transform.position.z))
+            {
                 G.U.Log("Invalid position for DestructibleObjectPart.");
                 Destroy(gameObject);
             }
         }
 
-
-
-        End my_end = new End();
-
-        public End end { get { return my_end; } }
-
-        void OnDestroy()
+        private void OnDestroy()
         {
-            my_end.Invoke();
+            Destroyed?.Invoke(this);
         }
 
-
-
-        public void Explode(Vector3 explosionPosition) {
+        public void Explode(Vector3 explosionPosition)
+        {
             G.U.Require(_data, "Data");
 
             _rigidbody.isKinematic = false;
@@ -77,7 +63,8 @@ namespace KRG {
             _rigidbody.AddExplosionForce(_data.explosionForce, explosionPosition, _data.explosionRadius);
 
 #if NS_DG_TWEENING
-            if (_data.doesFade) {
+            if (_data.doesFade)
+            {
                 _renderer.material.DOColor(new Color(0, 0, 0, 0), _data.lifetime);
             }
 #endif
@@ -90,9 +77,10 @@ namespace KRG {
             _data.timeThread.AddTrigger(_data.lifetime, Dispose);
         }
 
-        void Dispose(TimeTrigger tt) {
+        private void Dispose(TimeTrigger tt)
+        {
             //this may already be ended at the end of a scene
-            if (!my_end.wasInvoked) gameObject.Dispose();
+            if (this != null) gameObject.Dispose();
         }
     }
 }

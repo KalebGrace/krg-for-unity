@@ -62,7 +62,7 @@ namespace KRG
         public void Clear()
         {
 #if !DEBUG_VISIBILITY
-            //do nothing
+            // do nothing
 #else
             _text.text = "N/A";
 #endif
@@ -71,7 +71,7 @@ namespace KRG
         public void Refresh()
         {
 #if !DEBUG_VISIBILITY
-            //do nothing
+            // do nothing
 #else
             _text.text = string.Format(
                 _infoFormat,

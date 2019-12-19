@@ -128,7 +128,7 @@ namespace KRG
             else
             {
                 Damage();
-                if (!target.end.wasInvoked && !target.IsKnockedOut && !isHitLimitReached)
+                if (target != null && !target.IsKnockedOut && !isHitLimitReached)
                 {
                     if (_attackAbility.hasHPDamageRate)
                     {
@@ -167,7 +167,7 @@ namespace KRG
         private void Damage(TimeTrigger tt)
         {
             Damage();
-            if (!target.end.wasInvoked && !target.IsKnockedOut && !isHitLimitReached)
+            if (target != null && !target.IsKnockedOut && !isHitLimitReached)
             {
                 tt.Proceed();
             }

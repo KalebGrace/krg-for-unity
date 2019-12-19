@@ -101,7 +101,7 @@ namespace KRG
             Hurtbox otherHurtbox = other.GetComponent<Hurtbox>();
             if (otherHurtbox == null) return;
             DamageTaker target = otherHurtbox.DamageTaker;
-            if (target.end.wasInvoked) return;
+            if (target == null) return;
             AttackTarget at = _attackTargets.Find(x => x.target == target);
             if (at == null)
             {
@@ -119,7 +119,7 @@ namespace KRG
             Hurtbox otherHurtbox = other.GetComponent<Hurtbox>();
             if (otherHurtbox == null) return;
             DamageTaker target = otherHurtbox.DamageTaker;
-            if (target.end.wasInvoked) return;
+            if (target == null) return;
             AttackTarget at = _attackTargets.Find(x => x.target == target);
             G.U.Assert(at != null, string.Format(
                 "Target \"{0}\" exited the trigger of Attack \"{1}\", but was not found in m_attackTargets.",
@@ -257,7 +257,7 @@ namespace KRG
             for (int i = 0; i < _attackTargets.Count; i++)
             {
                 at = _attackTargets[i];
-                if (at != null && at.isInProgress && !at.target.end.wasInvoked)
+                if (at != null && at.isInProgress && at.target != null)
                 {
                     at.StopTakingDamage();
                 }

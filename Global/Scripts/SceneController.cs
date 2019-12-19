@@ -32,6 +32,6 @@ namespace KRG
         /// Raises the scene active event.
         /// NOTE: G.app.GoToNextState() will be locked this frame.
         /// </summary>
-        public abstract void OnSceneActive();
+        public virtual void OnSceneActive() { }
     }
 }

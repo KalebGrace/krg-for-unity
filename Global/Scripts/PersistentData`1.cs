@@ -11,12 +11,17 @@ namespace KRG
 
         // CONSTRUCTOR / DESTRUCTOR
 
-        public PersistentData(Persist persist, string key, T value)
+        public PersistentData(Persist persist, string key, T value, ValueChangedHandler valueChangedHandler = null)
         {
             Persist = persist;
             Key = key;
             Type = typeof(T);
             Value = value;
+
+            if (valueChangedHandler != null)
+            {
+                ValueChanged += valueChangedHandler;
+            }
 
             switch (Persist)
             {
@@ -33,12 +38,7 @@ namespace KRG
         {
             Disposed?.Invoke(this);
 
-            switch (Persist)
-            {
-                case Persist.PlayerPrefs:
-                    ValueChanged -= WriteToPlayerPrefs;
-                    break;
-            }
+            ValueChanged = null;
         }
 
         // PERSIST
@@ -98,6 +98,9 @@ namespace KRG
                 case int i:
                     PlayerPrefs.SetInt(Key, i);
                     break;
+                case bool b:
+                    PlayerPrefs.SetInt(Key, b ? 1 : 0);
+                    break;
                 case string s:
                     PlayerPrefs.SetString(Key, s);
                     break;
@@ -119,6 +122,9 @@ namespace KRG
                     break;
                 case int i:
                     m_Value = PlayerPrefs.GetInt(Key, i);
+                    break;
+                case bool b:
+                    m_Value = PlayerPrefs.GetInt(Key, b ? 1 : 0) > 0;
                     break;
                 case string s:
                     m_Value = PlayerPrefs.GetString(Key, s);

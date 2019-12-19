@@ -65,10 +65,10 @@ namespace KRG
             switch ((EffectorOperation)operation)
             {
                 case EffectorOperation.None:
-                    //do nothing
+                    // do nothing
                     return true;
                 case EffectorOperation.SetTo:
-                    //keep ev as is
+                    // keep ev as is
                     break;
                 case EffectorOperation.Add:
                     ev += pv;
