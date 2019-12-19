@@ -6,6 +6,7 @@
         NewScene = 10,
         PlayerPrefs = 20,
         PlayerPrefs_Slot = 21,
+        PlayerPrefs_Overwrite = 22,
         EasySave3 = 30,
         EasySave3_Slot = 31,
         //

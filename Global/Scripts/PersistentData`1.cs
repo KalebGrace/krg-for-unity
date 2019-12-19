@@ -11,7 +11,11 @@ namespace KRG
 
         // CONSTRUCTOR / DESTRUCTOR
 
-        public PersistentData(Persist persist, string key, T value, ValueChangedHandler valueChangedHandler = null)
+        public PersistentData(
+            Persist persist,
+            string key,
+            T value,
+            ValueChangedHandler valueChangedHandler = null)
         {
             Persist = persist;
             Key = key;
@@ -27,6 +31,10 @@ namespace KRG
             {
                 case Persist.PlayerPrefs:
                     G.DoPlayerPrefsAction(ReadFromPlayerPrefs);
+                    ValueChanged += WriteToPlayerPrefs;
+                    break;
+                case Persist.PlayerPrefs_Overwrite:
+                    G.DoPlayerPrefsAction(WriteToPlayerPrefs);
                     ValueChanged += WriteToPlayerPrefs;
                     break;
             }

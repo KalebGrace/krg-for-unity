@@ -42,9 +42,12 @@ namespace KRG
 
         private EventInstance _musicStopInstance;
 
-        private PersistentData<float> m_MasterVolume = new PersistentData<float>(Persist.PlayerPrefs, "audio.master_volume", 1);
-        private PersistentData<float> m_MusicVolume = new PersistentData<float>(Persist.PlayerPrefs, "audio.music_volume", 1);
-        private PersistentData<float> m_SFXVolume = new PersistentData<float>(Persist.PlayerPrefs, "audio.sfx_volume", 1);
+        private PersistentData<float> m_MasterVolume = new PersistentData<float>(
+            Persist.PlayerPrefs, "audio.master_volume", 1);
+        private PersistentData<float> m_MusicVolume = new PersistentData<float>(
+            Persist.PlayerPrefs, "audio.music_volume", 1);
+        private PersistentData<float> m_SFXVolume = new PersistentData<float>(
+            Persist.PlayerPrefs, "audio.sfx_volume", 1);
 
         private float m_MusicStopVolume = 1;
 
