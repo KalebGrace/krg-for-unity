@@ -216,7 +216,7 @@ namespace KRG
             if (_musicInstance.hasHandle())
             {
 #if NS_FMOD
-                _musicInstance.setVolume(MasterVolume * MusicVolume);
+                _musicInstance.setVolume(MasterVolume * G.config.MusicVolumeScale * MusicVolume);
 #endif
             }
         }
@@ -226,7 +226,7 @@ namespace KRG
             if (_musicStopInstance.hasHandle())
             {
 #if NS_FMOD
-                _musicStopInstance.setVolume(MasterVolume * MusicVolume * MusicStopVolume);
+                _musicStopInstance.setVolume(MasterVolume * G.config.MusicVolumeScale * MusicVolume * MusicStopVolume);
 #endif
             }
         }

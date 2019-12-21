@@ -36,6 +36,14 @@ namespace KRG
         public string ApplicationNamespace => _applicationNamespace;
 
 
+        [Header("Audio (KRG)")]
+
+        [SerializeField]
+        float _musicVolumeScale = 1;
+
+        public float MusicVolumeScale => _musicVolumeScale;
+
+
         [Header("Damage (KRG)")]
 
         [SerializeField]
