@@ -125,7 +125,7 @@ namespace KRG
             if (G.U.IsEditMode(this))
             {
                 string properTag = CharacterDossier.CharacterType.ToTag();
-                if (!gameObject.CompareTag(properTag))
+                if (!gameObject.CompareTag(properTag) && !gameObject.CompareTag(CharacterTag.Animation.ToString()))
                 {
                     G.U.Err("Invalid tag {0}. Should be {1}.", gameObject.tag, properTag);
                 }

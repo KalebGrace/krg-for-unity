@@ -119,6 +119,8 @@ namespace KRG
 
         private string IdleAnimationName => CharacterDossier?.GraphicData.IdleAnimationName;
 
+        private bool IsStandaloneCharacterAnimation => m_Body.gameObject.CompareTag(CharacterTag.Animation.ToString());
+
         // MONOBEHAVIOUR METHODS
 
         protected virtual void Start()
@@ -420,7 +422,7 @@ namespace KRG
         {
             if (G.U.IsEditMode(this)) return;
 
-            if (m_Body == null || CharacterDossier == null) return;
+            if (m_Body == null || CharacterDossier == null || IsStandaloneCharacterAnimation) return;
 
             List<StateAnimation> stateAnimations = CharacterDossier.GraphicData.StateAnimations;
 
@@ -436,7 +438,7 @@ namespace KRG
         {
             if (G.U.IsEditMode(this)) return;
 
-            if (m_Body == null || CharacterDossier == null) return;
+            if (m_Body == null || CharacterDossier == null || IsStandaloneCharacterAnimation) return;
 
             List<StateAnimation> stateAnimations = CharacterDossier.GraphicData.StateAnimations;
 

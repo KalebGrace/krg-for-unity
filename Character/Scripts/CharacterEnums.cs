@@ -29,6 +29,7 @@
         NPC = 2,
         Enemy = 3,
         Boss = 4,
+        Animation = 5,
     }
     public enum CharacterType
     {
@@ -39,6 +40,7 @@
         NonPlayerCharacter = 2,
         Enemy = 3,
         Boss = 4,
+        // N/A
     }
 
     public static class CharacterEnums
