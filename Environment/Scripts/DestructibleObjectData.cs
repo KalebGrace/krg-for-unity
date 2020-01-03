@@ -1,19 +1,15 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.Serialization;
 
-namespace KRG {
-
+namespace KRG
+{
     [CreateAssetMenu(
         fileName = "NewKRGDestructibleObjectData.asset",
         menuName = "KRG Scriptable Object/Destructible Object Data",
         order = 123
     )]
-    public class DestructibleObjectData : ScriptableObject {
-
-        //values listed below are simply DEFAULTS; check inspector for actual values
-
+    public class DestructibleObjectData : ScriptableObject
+    {
         //applicable time thread index
         [Enum(typeof(TimeThreadInstance))]
         [SerializeField]
@@ -46,8 +42,10 @@ namespace KRG {
         protected ITimeThread _timeThread;
 
 
-        public virtual ITimeThread timeThread {
-            get {
+        public virtual ITimeThread timeThread
+        {
+            get
+            {
 #if UNITY_EDITOR
                 SetTimeThread();
 #else
@@ -58,20 +56,21 @@ namespace KRG {
         }
 
 
-        public virtual bool doesFade { get { return _doesFade; } }
+        public virtual bool DoesFade => _doesFade;
 
-        public virtual float explosionForce { get { return _explosionForce; } }
+        public virtual float ExplosionForce => _explosionForce;
 
-        public virtual float explosionRadius { get { return _explosionRadius; } }
+        public virtual float ExplosionRadius => _explosionRadius;
 
-        public virtual float lifetime { get { return _lifetime; } }
+        public virtual float Lifetime => _lifetime;
 
-        public virtual PhysicMaterial physicMaterial { get { return _physicMaterial; } }
+        public virtual PhysicMaterial PhysicMaterial => _physicMaterial;
 
-        public virtual int timeThreadIndex { get { return _timeThreadIndex; } }
+        public virtual int TimeThreadIndex => _timeThreadIndex;
 
 
-        protected virtual void SetTimeThread() {
+        protected virtual void SetTimeThread()
+        {
             _timeThread = G.time.GetTimeThread(_timeThreadIndex, TimeThreadInstance.Gameplay);
         }
     }
