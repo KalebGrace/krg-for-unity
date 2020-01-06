@@ -1,9 +1,9 @@
 ﻿namespace KRG
 {
-    public class TimeManager : Manager, IFixedUpdate
+    public class TimeManager : Manager, IFixedUpdate, IUpdate
     {
-        public override float priority { get { return 40; } }
-        
+        public override float priority => 40;
+
         const string _timeThreadInstanceInfo =
             "Furthermore, the following must be adhered to: " +
             "Every enum entry must have a unique integer value. " +
@@ -66,6 +66,8 @@
                 _threads[i].FixedUpdate();
             }
         }
+
+        public virtual void Update() { }
 
         public ITimeThread GetTimeThread(int timeThreadIndex, System.Enum defaultTimeThreadInstance)
         {

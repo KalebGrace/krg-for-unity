@@ -44,6 +44,9 @@ namespace KRG
         readonly SortedList<float, IFixedUpdate> m_ManagerEventsFixedUpdate
         = new SortedList<float, IFixedUpdate>();
 
+        readonly SortedList<float, IUpdate> m_ManagerEventsUpdate
+        = new SortedList<float, IUpdate>();
+
         readonly SortedList<float, ILateUpdate> m_ManagerEventsLateUpdate
         = new SortedList<float, ILateUpdate>();
 
@@ -82,6 +85,8 @@ namespace KRG
 
                 if (m is IFixedUpdate fx) m_ManagerEventsFixedUpdate.Add(fx.priority, fx);
 
+                if (m is IUpdate up) m_ManagerEventsUpdate.Add(up.priority, up);
+
                 if (m is ILateUpdate lu) m_ManagerEventsLateUpdate.Add(lu.priority, lu);
 
                 if (m is IOnApplicationQuit aq) m_ManagerEventsOnApplicationQuit.Add(aq.priority, aq);
@@ -103,6 +108,11 @@ namespace KRG
         void FixedUpdate()
         {
             foreach (var m in m_ManagerEventsFixedUpdate.Values) m.FixedUpdate();
+        }
+
+        void Update()
+        {
+            foreach (var m in m_ManagerEventsUpdate.Values) m.Update();
         }
 
         void LateUpdate()
