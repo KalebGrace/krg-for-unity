@@ -92,11 +92,15 @@ namespace KRG
             return m_AcquiredItems.Contains(item);
         }
 
-        public void ResetContents()
+        public virtual void ResetContents()
         {
             m_AcquiredItems.Clear();
 
             m_AutoMaps.Clear();
+
+            StatHPMax = null;
+            StatHP = null;
+            StatSP = null;
         }
 
         /// <summary>
