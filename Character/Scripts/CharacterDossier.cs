@@ -41,10 +41,7 @@ namespace KRG
                 FullName = FileName;
             }
 
-            if (string.IsNullOrWhiteSpace(GraphicData.IdleAnimationName))
-            {
-                GraphicData.IdleAnimationName = FileName + IDLE_ANIMATION_SUFFIX;
-            }
+            DefaultIdleAnimationName();
 
             for (int i = 0; i < GraphicData.StateAnimations.Count; ++i)
             {
@@ -58,6 +55,14 @@ namespace KRG
 
                     GraphicData.StateAnimations[i] = sa;
                 }
+            }
+        }
+
+        public void DefaultIdleAnimationName()
+        {
+            if (string.IsNullOrWhiteSpace(GraphicData.IdleAnimationName))
+            {
+                GraphicData.IdleAnimationName = FileName + IDLE_ANIMATION_SUFFIX;
             }
         }
 
