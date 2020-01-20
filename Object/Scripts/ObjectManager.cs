@@ -20,6 +20,8 @@ namespace KRG
 
         private event GameObjectBodyHandler PlayerCharacterExists;
 
+        private string m_Variant = "";
+
         // PUBLIC PROPERTIES
 
         public Dictionary<int, int> CharacterCounts { get; } = new Dictionary<int, int>();
@@ -36,9 +38,12 @@ namespace KRG
 
         public override void Awake()
         {
+            // eject old bundles/assets from memory
+            AssetBundle.UnloadAllAssetBundles(true);
+
             G.app.GameplaySceneStarted += OnGameplaySceneStarted;
 
-            //instantiate KRGLoader child GameObjects from prefabs
+            // instantiate KRGLoader child GameObjects from prefabs
             GameObject[] ps = config.autoInstancedPrefabs;
             for (int i = 0; i < ps.Length; i++)
             {
@@ -191,10 +196,22 @@ namespace KRG
             return IsPlayerCharacter(collision.collider);
         }
 
+        public void SetVariant(string variant)
+        {
+            AssetBundle.UnloadAllAssetBundles(true);
+            m_Variant = variant;
+            OnGameplaySceneStarted();
+        }
+
         // ASSET BUNDLES
 
         private AssetBundle LoadAssetBundle(string bundleName)
         {
+            if (m_Variant != "")
+            {
+                bundleName += "." + m_Variant;
+            }
+
             AssetBundle assetBundle = AssetBundle.GetAllLoadedAssetBundles()
                    .Where(ab => ab.name == bundleName)
                    .SingleOrDefault();
