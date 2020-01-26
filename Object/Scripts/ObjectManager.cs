@@ -38,7 +38,7 @@ namespace KRG
 
         public override void Awake()
         {
-            // eject old bundles/assets from memory
+            // eject any editor bundles/assets from memory
             AssetBundle.UnloadAllAssetBundles(true);
 
             G.app.GameplaySceneStarted += OnGameplaySceneStarted;
@@ -198,9 +198,7 @@ namespace KRG
 
         public void SetVariant(string variant)
         {
-            AssetBundle.UnloadAllAssetBundles(true);
             m_Variant = variant;
-            OnGameplaySceneStarted();
         }
 
         // ASSET BUNDLES
