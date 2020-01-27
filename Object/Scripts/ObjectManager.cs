@@ -20,7 +20,7 @@ namespace KRG
 
         private event GameObjectBodyHandler PlayerCharacterExists;
 
-        private string m_Variant = "";
+        private string m_AssetBundleVariant = "sd";
 
         // PUBLIC PROPERTIES
 
@@ -196,18 +196,18 @@ namespace KRG
             return IsPlayerCharacter(collision.collider);
         }
 
-        public void SetVariant(string variant)
+        public void SetAssetBundleVariant(string variant)
         {
-            m_Variant = variant;
+            m_AssetBundleVariant = variant;
         }
 
         // ASSET BUNDLES
 
         private AssetBundle LoadAssetBundle(string bundleName)
         {
-            if (m_Variant != "")
+            if (!string.IsNullOrWhiteSpace(m_AssetBundleVariant))
             {
-                bundleName += "." + m_Variant;
+                bundleName += "." + m_AssetBundleVariant;
             }
 
             AssetBundle assetBundle = AssetBundle.GetAllLoadedAssetBundles()
