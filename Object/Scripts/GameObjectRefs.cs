@@ -82,7 +82,7 @@ namespace KRG
 
                 void AssignIBodyComponent<T>(ref T myRef) where T : IBodyComponent
                 {
-                    if (myRef == default && c is T newRef)
+                    if (myRef == null && c is T newRef)
                     {
                         myRef = newRef;
                     }
