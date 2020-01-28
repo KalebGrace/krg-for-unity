@@ -242,6 +242,11 @@ namespace KRG
         public void AddHP(float hp)
         {
             HP = Mathf.Clamp(HP + hp, HPMin, HPMax);
+
+            if (IsKnockedOut)
+            {
+                OnKnockedOut(m_Body.CenterTransform.position);
+            }
         }
 
         // Custom Methods
