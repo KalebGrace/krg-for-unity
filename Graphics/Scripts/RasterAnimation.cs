@@ -109,11 +109,7 @@ namespace KRG
         [FormerlySerializedAs("m_frameSequences")]
         protected FrameSequence[] _frameSequences = default;
 
-
-
-        bool _hasPlayableFrameSequences;
-
-
+        // PROPERTIES
 
         public virtual Vector2 Dimensions => m_Dimensions;
 
@@ -127,27 +123,25 @@ namespace KRG
 
         public virtual TextAsset gifBytes { get { return _gifBytes; } }
 
-        public virtual bool hasPlayableFrameSequences { get { return _hasPlayableFrameSequences; } }
+        public virtual bool hasPlayableFrameSequences { get; private set; }
 
         public virtual int loopToSequence { get { return _loopToSequence; } }
 
+        // MONOBEHAVIOUR METHODS
 
-
-        //WARNING: this function will only be called automatically if playing a GAME BUILD
-        //...it will NOT be called if using the Unity editor
         protected virtual void Awake()
         {
-            UpdateSerializedVersion();
-            Validate();
-            if (_frameSequences != null)
-            {
-                CheckForPlayableFrameSequences();
-            }
+            Init();
         }
 
-        //WARNING: this function will only be called automatically if using the UNITY EDITOR
-        //...it will NOT be called if playing a game build
         protected virtual void OnValidate()
+        {
+            Init();
+        }
+
+        // PRIVATE METHODS
+
+        private void Init()
         {
             UpdateSerializedVersion();
             Validate();
@@ -161,7 +155,7 @@ namespace KRG
             }
         }
 
-
+        // OTHER METHODS
 
         public bool IsGifReplacedWithFrameTextures => !string.IsNullOrEmpty(m_GifName);
 
@@ -264,11 +258,11 @@ namespace KRG
                 max = fs.PlayCountMaxValue;
                 if (max > 1 || (max == 1 && fs.PlayCountMaxInclusive) || (min == 1 && fs.PlayCountMinInclusive))
                 {
-                    _hasPlayableFrameSequences = true;
+                    hasPlayableFrameSequences = true;
                     return;
                 }
             }
-            _hasPlayableFrameSequences = false;
+            hasPlayableFrameSequences = false;
         }
 
         protected virtual void UpdateSerializedVersion()
