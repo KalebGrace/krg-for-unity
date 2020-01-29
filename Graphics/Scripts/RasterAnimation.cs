@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using UnityEngine;
 using UnityEngine.Serialization;
@@ -102,6 +102,9 @@ namespace KRG
 
         [Header("Frame Sequences")]
 
+        [Order(15), SerializeField, TextArea(6, 24)]
+        protected string m_FrameParagraph = default;
+
 #if KRG_X_ODIN
         [PropertyOrder(20)]
 #endif
@@ -144,7 +147,16 @@ namespace KRG
         private void Init()
         {
             UpdateSerializedVersion();
-            Validate();
+
+            // validate _loopCount
+            _loopCount.intValue = Mathf.Max(_loopCount.intValue, 1);
+
+            // validate _loopToSequence
+            int max = (_frameSequences == null || _frameSequences.Length == 0) ? 0 : _frameSequences.Length - 1;
+            _loopToSequence = Mathf.Clamp(_loopToSequence, 0, max);
+
+            ParseFrameParagraph();
+
             if (_frameSequences != null)
             {
                 for (int i = 0; i < _frameSequences.Length; i++)
@@ -277,13 +289,34 @@ namespace KRG
             */
         }
 
-        protected virtual void Validate()
+        private void ParseFrameParagraph()
         {
-            //validate _loopCount
-            _loopCount.intValue = Mathf.Max(_loopCount.intValue, 1);
-            //validate _loopToSequence
-            int max = (_frameSequences == null || _frameSequences.Length == 0) ? 0 : _frameSequences.Length - 1;
-            _loopToSequence = Mathf.Clamp(_loopToSequence, 0, max);
+            if (string.IsNullOrEmpty(m_FrameParagraph)) return;
+
+            m_FrameParagraph = m_FrameParagraph.Trim();
+
+            if (m_FrameParagraph == "") return;
+
+            if (_frameSequences == null)
+            {
+                _frameSequences = new FrameSequence[0];
+            }
+
+            char[] sep = { '\r', '\n' };
+            string[] lines = m_FrameParagraph.Split(sep, 24);
+            FrameSequence[] newArray = new FrameSequence[_frameSequences.Length + lines.Length];
+
+            _frameSequences.CopyTo(newArray, _frameSequences.Length);
+
+            for (int i = 0; i < lines.Length; ++i)
+            {
+                FrameSequence fs = new FrameSequence();
+                fs.Name = lines[i];
+                newArray[i + _frameSequences.Length] = fs;
+            }
+
+            _frameSequences = newArray;
+            m_FrameParagraph = "";
         }
     }
 }

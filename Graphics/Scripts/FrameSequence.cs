@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Text;
 using UnityEngine;
@@ -9,7 +9,9 @@ namespace KRG
     [System.Serializable]
     public sealed class FrameSequence
     {
-        public const int VERSION = 4;
+        public const int VERSION = 5;
+
+        public const int NUMBER_MAX_LENGTH = 3;
 
         class FrameCommand
         {
@@ -35,7 +37,7 @@ namespace KRG
         [Enum(typeof(FrameSequenceAction))]
         private List<int> _preSequenceActions = default;
 
-        [SerializeField]
+        [SerializeField, Delayed]
         [Tooltip("Commas seperate frames/groups. 1-3-1 means 1,2,3,2,1. 1-3x2-1 means 1-3,3-1 means 1,2,3,3,2,1.")]
         private string _frames = default;
 
@@ -102,7 +104,7 @@ namespace KRG
 
         // SHORTCUT PROPERTIES
 
-        public string Name => _name;
+        public string Name { get => _name; set => _name = value; }
 
         public ReadOnlyCollection<int> FrameList => _frameList.AsReadOnly();
 
@@ -126,6 +128,11 @@ namespace KRG
 
         public void OnValidate()
         {
+            if (_name != null)
+            {
+                _name = _name.Trim();
+            }
+
             // initialization
             if (_playCount.minValue == 0 && _playCount.maxValue == 0)
             {
@@ -244,7 +251,14 @@ namespace KRG
                     case '7':
                     case '8':
                     case '9':
-                        _number.Append(c);
+                        if (_number.Length < NUMBER_MAX_LENGTH)
+                        {
+                            _number.Append(c);
+                        }
+                        else
+                        {
+                            Error("A number exceeds the max length: " + _number + "...");
+                        }
                         break;
                     case 'x':
                         FlushNumberToFrameCommands();
@@ -341,7 +355,7 @@ namespace KRG
             }
         }
 
-        private static bool IsBinaryOperator(FrameCommand prev, Queue<FrameCommand> q, out FrameCommand next)
+        private bool IsBinaryOperator(FrameCommand prev, Queue<FrameCommand> q, out FrameCommand next)
         {
             next = null;
             if (q.Count == 0)
@@ -393,10 +407,10 @@ namespace KRG
             while (c.times-- > 0) _frameList.Add(c.number);
         }
 
-        private static void Error(string message)
+        private void Error(string message)
         {
             // TODO: display this information in the inspector
-            G.U.Err("Error in FrameSequence. {0}", message);
+            G.U.Err("Error in FrameSequence {0} with frames {1}. \r\n{2}", _name, _frames, message);
         }
 
         private static string ListToString(List<int> list)
