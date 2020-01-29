@@ -1,21 +1,27 @@
-﻿using UnityEngine;
+using UnityEngine;
 using UnityEngine.Tilemaps;
 
 namespace KRG
 {
     public class AutoMap : MonoBehaviour
     {
+        // SERIALIZED FIELDS
+
         public Vector3 offset = default;
 
-        public Visibility visibility;
+        public Visibility visibility = default;
 
         public Camera miniMapCamera = default;
 
         public Camera pauseMapCamera = default;
 
+        // PROPERTIES
+
         public Grid grid { get; private set; }
 
         public Tilemap tilemap { get; private set; }
+
+        // PRIVATE FIELDS
 
         private Vector3 anchor;
 
@@ -23,11 +29,15 @@ namespace KRG
 
         private AutoMapSaveData saveData;
 
+        // ENUMS
+
         public enum Visibility
         {
             None = 0,
             Revealed = 1,
         }
+
+        // MONOBEHAVIOUR METHODS
 
         private void Awake()
         {
@@ -79,6 +89,8 @@ namespace KRG
             G.inv.AutoMapSaveDataProvided -= OnAutoMapSaveDataProvided;
             OnAutoMapSaveDataRequested();
         }
+
+        // CUSTOM METHODS
 
         public void Discover(Vector3Int cp)
         {
