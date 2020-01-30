@@ -8,6 +8,8 @@ namespace KRG
     {
         public Material BaseSharedMaterial;
 
+        public Texture2D EditorSprite;
+
         public string IdleAnimationName;
 
         public List<StateAnimation> StateAnimations;

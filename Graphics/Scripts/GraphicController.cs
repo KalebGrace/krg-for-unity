@@ -28,6 +28,9 @@ namespace KRG
         [SerializeField, Tooltip("Optional priority standalone animation.")]
         private RasterAnimation m_StandaloneAnimation = default;
 
+        [SerializeField, Tooltip("Override the default character sprite *within the Unity editor only*.")]
+        private Texture2D m_EditorSpriteOverride = default;
+
         [SerializeField]
         private GameObjectBody m_Body = default;
 
@@ -117,6 +120,8 @@ namespace KRG
 
         private CharacterDossier CharacterDossier => m_Body.CharacterDossier;
 
+        private Texture2D EditorSprite => CharacterDossier?.GraphicData.EditorSprite;
+
         private string IdleAnimationName => CharacterDossier?.GraphicData.IdleAnimationName;
 
         private bool IsStandaloneCharacterAnimation => m_Body.gameObject.CompareTag(CharacterTag.Animation.ToString());
@@ -161,10 +166,10 @@ namespace KRG
 
         protected virtual void OnDestroy()
         {
-            RemoveCharacterStateHandlers();
-
             if (G.U.IsPlayMode(this))
             {
+                RemoveCharacterStateHandlers();
+
                 DestroyImmediate(m_Material);
             }
         }
@@ -208,11 +213,24 @@ namespace KRG
 
         private void InitCharacter()
         {
-            if (m_AnimationContext == AnimationContext.None && !string.IsNullOrWhiteSpace(IdleAnimationName))
+            // for interim backwards compatibility, allow old functionality if no editor sprite is provided
+            bool hasEditorSprite = EditorSprite || m_EditorSpriteOverride;
+
+            if (G.U.IsPlayMode(this) || !hasEditorSprite)
             {
-                SetAnimation(AnimationContext.Idle, IdleAnimationName);
+                if (m_AnimationContext == AnimationContext.None && !string.IsNullOrWhiteSpace(IdleAnimationName))
+                {
+                    SetAnimation(AnimationContext.Idle, IdleAnimationName);
+                }
+                if (G.U.IsPlayMode(this))
+                {
+                    AddCharacterStateHandlers();
+                }
             }
-            AddCharacterStateHandlers();
+            else
+            {
+                SetTexture(m_EditorSpriteOverride != null ? m_EditorSpriteOverride : EditorSprite);
+            }
         }
 
         // MAIN METHODS
@@ -222,8 +240,12 @@ namespace KRG
             if (AnimationImageCount == 0) return;
 
             int i = Mathf.Min(m_AnimationImageIndex, AnimationImageCount - 1);
-            Texture texture = m_AnimationTextureList[i];
 
+            SetTexture(m_AnimationTextureList[i]);
+        }
+
+        private void SetTexture(Texture texture)
+        {
             if (m_RawImage != null)
             {
                 m_RawImage.texture = texture;
