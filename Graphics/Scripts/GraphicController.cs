@@ -108,6 +108,22 @@ namespace KRG
 
         public GameObjectBody Body => m_Body;
 
+        public Texture2D EditorSprite
+        {
+            get
+            {
+                if (m_EditorSpriteOverride != null)
+                {
+                    return m_EditorSpriteOverride;
+                }
+                else if (CharacterDossier != null)
+                {
+                    return CharacterDossier.GraphicData.EditorSprite;
+                }
+                return null;
+            }
+        }
+
         protected virtual GameObject GraphicGameObject => m_Body?.Refs.GraphicGameObject ?? gameObject;
 
         protected virtual bool IsTimePaused => TimeThread.isPaused;
@@ -119,8 +135,6 @@ namespace KRG
         private Material BaseSharedMaterial => CharacterDossier?.GraphicData.BaseSharedMaterial;
 
         private CharacterDossier CharacterDossier => m_Body.CharacterDossier;
-
-        private Texture2D EditorSprite => CharacterDossier?.GraphicData.EditorSprite;
 
         private string IdleAnimationName => CharacterDossier?.GraphicData.IdleAnimationName;
 
@@ -214,9 +228,7 @@ namespace KRG
         private void InitCharacter()
         {
             // for interim backwards compatibility, allow old functionality if no editor sprite is provided
-            bool hasEditorSprite = EditorSprite || m_EditorSpriteOverride;
-
-            if (G.U.IsPlayMode(this) || !hasEditorSprite)
+            if (G.U.IsPlayMode(this) || EditorSprite == null)
             {
                 if (m_AnimationContext == AnimationContext.None && !string.IsNullOrWhiteSpace(IdleAnimationName))
                 {
@@ -229,7 +241,7 @@ namespace KRG
             }
             else
             {
-                SetTexture(m_EditorSpriteOverride != null ? m_EditorSpriteOverride : EditorSprite);
+                SetTexture(EditorSprite);
             }
         }
 
