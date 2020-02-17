@@ -192,13 +192,16 @@ namespace KRG
         //
         [Header("Attacker Movement")]
 
-        [SerializeField]
-        [Tooltip("Distance (in UNITS) the attacker moves horizontally during an attack.")]
+        [SerializeField, HideInInspector, System.Obsolete]
         protected float _attackerMoveDistance;
 
         [SerializeField]
         [Tooltip("Time (in SECONDS) the attacker takes at the start of the attack to move said distance.")]
         protected float _attackerMoveTime;
+
+        public float AttackerMoveSpeed;
+
+        public AnimationCurve AttackerMoveSpeedCurve;
 
         [SerializeField]
         [Tooltip("Does attacker movement require directional input?")]
@@ -237,8 +240,6 @@ namespace KRG
                 return _attackerAnimations != null ? _attackerAnimations.Length : 0;
             }
         }
-
-        public virtual float attackerMoveDistance { get { return _attackerMoveDistance; } }
 
         public virtual bool attackerMoveRequiresInput { get { return _attackerMoveRequiresInput; } }
 
@@ -410,11 +411,11 @@ namespace KRG
             _hpDamageRateSec = 1f / _hpDamageRate.floatValue;
         }
 
+#pragma warning disable 0618
         void UpdateSerializedVersion()
         {
             if (_serializedVersion == 0)
             {
-#pragma warning disable 0618
                 if (m_attackerAnimation != null)
                 {
                     if (_attackerAnimations == null)
@@ -433,10 +434,19 @@ namespace KRG
                     }
                     m_attackerAnimation = null;
                 }
-#pragma warning restore 0618
                 _serializedVersion = 1;
             }
+            if (_serializedVersion == 1)
+            {
+                if (!_attackerMoveDistance.Ap(0))
+                {
+                    AttackerMoveSpeed = _attackerMoveDistance / _attackerMoveTime;
+                    _attackerMoveDistance = 0;
+                }
+                _serializedVersion = 2;
+            }
         }
+#pragma warning restore 0618
 
         #endregion
 
