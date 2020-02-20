@@ -50,11 +50,13 @@ namespace KRG
 
         private float m_AnimationTimeElapsed;
 
-        private CanvasRenderer m_CanvasRenderer;
-
         private TimeTrigger m_FlickerTimeTrigger;
 
         private Material m_Material;
+
+        private ParticleSystem m_ParticleSystemRoot;
+
+        private System.Action m_ParticleSystemStopCallback;
 
         private RasterAnimationState m_RasterAnimationState;
 
@@ -151,10 +153,20 @@ namespace KRG
 
             InitStandaloneAnimation();
 
-            if (m_Body != null && m_Body.IsCharacter)
+            if (m_Body != null)
             {
-                InitCharacter();
+                switch (m_Body.GameObjectType)
+                {
+                    case GameObjectType.Character:
+                        InitCharacter();
+                        break;
+                    case GameObjectType.VFX:
+                        InitVFX();
+                        break;
+                }
             }
+
+            AddPauseAndUnpauseHandlers();
         }
 
         protected virtual void Update()
@@ -178,12 +190,20 @@ namespace KRG
             RefreshGraphic();
         }
 
+        protected virtual void OnParticleSystemStopped()
+        {
+            m_ParticleSystemStopCallback?.Invoke();
+            m_ParticleSystemStopCallback = null;
+        }
+
         protected virtual void OnDestroy()
         {
+            RemovePauseAndUnpauseHandlers();
+
+            RemoveCharacterStateHandlers();
+
             if (G.U.IsPlayMode(this))
             {
-                RemoveCharacterStateHandlers();
-
                 DestroyImmediate(m_Material);
             }
         }
@@ -243,6 +263,12 @@ namespace KRG
             {
                 SetTexture(EditorSprite);
             }
+        }
+
+        private void InitVFX()
+        {
+            // the root system must be on this game object in order to invoke OnParticleSystemStopped
+            m_ParticleSystemRoot = GetComponent<ParticleSystem>();
         }
 
         // MAIN METHODS
@@ -328,13 +354,6 @@ namespace KRG
                 G.U.Err("Attempting to end animation context {0}, but current context is {1}.",
                     context, m_AnimationContext);
             }
-        }
-
-        private void FlipXInternal()
-        {
-            Transform tf = GraphicGameObject.transform;
-            tf.localPosition = tf.localPosition.Multiply(x: -1);
-            tf.localScale = tf.localScale.Multiply(x: -1);
         }
 
         public void SetSharedMaterial(Material sharedMaterial)
@@ -511,6 +530,57 @@ namespace KRG
             if (animationName != RasterAnimation?.name)
             {
                 SetAnimation(context, animationName);
+            }
+        }
+
+        // VFX CONTROL METHODS
+
+        public void StopVFX(System.Action callback)
+        {
+            if (m_ParticleSystemRoot != null)
+            {
+                ParticleSystem.MainModule main = m_ParticleSystemRoot.main;
+                main.stopAction = ParticleSystemStopAction.Callback;
+                m_ParticleSystemStopCallback = callback;
+                m_ParticleSystemRoot.Stop(true, ParticleSystemStopBehavior.StopEmitting);
+            }
+            else
+            {
+                callback?.Invoke();
+            }
+        }
+
+        // PAUSE / UNPAUSE METHODS
+
+        private void AddPauseAndUnpauseHandlers()
+        {
+            if (G.U.IsEditMode(this)) return;
+
+            TimeThread.AddPauseHandler(OnPause);
+            TimeThread.AddUnpauseHandler(OnUnpause);
+        }
+
+        private void RemovePauseAndUnpauseHandlers()
+        {
+            if (G.U.IsEditMode(this)) return;
+
+            TimeThread.RemoveUnpauseHandler(OnUnpause);
+            TimeThread.RemovePauseHandler(OnPause);
+        }
+
+        private void OnPause()
+        {
+            if (m_ParticleSystemRoot != null)
+            {
+                m_ParticleSystemRoot.Pause(true);
+            }
+        }
+
+        private void OnUnpause()
+        {
+            if (m_ParticleSystemRoot != null)
+            {
+                m_ParticleSystemRoot.Play(true);
             }
         }
 

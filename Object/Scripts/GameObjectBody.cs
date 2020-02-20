@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using UnityEngine;
 
 namespace KRG
@@ -91,6 +91,12 @@ namespace KRG
                     case GameObjectType.Attack:
                         InitAttack();
                         break;
+                    case GameObjectType.Item:
+                        InitItem();
+                        break;
+                    case GameObjectType.VFX:
+                        InitVFX();
+                        break;
                     case GameObjectType.None:
                         break;
                     default:
@@ -111,7 +117,14 @@ namespace KRG
         {
             // TODO: object pooling logic goes here, eventually
 
-            gameObject.Dispose(); // destroys the entire body, thus calling OnDestroy()
+            if (GameObjectType == GameObjectType.VFX)
+            {
+                Refs.GraphicController.StopVFX(() => gameObject.Dispose());
+            }
+            else
+            {
+                gameObject.Dispose(); // destroys the entire body, thus calling OnDestroy()
+            }
         }
 
         private void InitCharacter()
@@ -145,6 +158,10 @@ namespace KRG
         }
 
         private void InitAttack() { }
+
+        private void InitItem() { }
+
+        private void InitVFX() { }
 
         private void OnFacingDirectionChange(Direction oldDirection, Direction newDirection)
         {

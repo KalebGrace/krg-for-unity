@@ -1,8 +1,9 @@
-﻿using UnityEngine;
+using UnityEngine;
 using UnityEngine.Serialization;
 
 namespace KRG
 {
+    // DEPRECATED (use VFXBasePrefab instead)
     public abstract class ParticleSystemController : MonoBehaviour
     {
         [Enum(typeof(TimeThreadInstance))]
@@ -11,6 +12,7 @@ namespace KRG
         protected int _timeThreadIndex = (int)TimeThreadInstance.UseDefault;
 
         [SerializeField]
+        [Tooltip("When the ParticleSystem is no longer alive, dispose of this GameObject.")]
         [FormerlySerializedAs("m_autoDispose")]
         private bool _autoDispose = true;
 
