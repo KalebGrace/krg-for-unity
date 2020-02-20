@@ -4,6 +4,7 @@ using UnityEngine.Serialization;
 namespace KRG
 {
     // DEPRECATED (use VFXBasePrefab instead)
+    [System.Obsolete]
     public abstract class ParticleSystemController : MonoBehaviour
     {
         [Enum(typeof(TimeThreadInstance))]

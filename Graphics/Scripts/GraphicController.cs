@@ -64,6 +64,10 @@ namespace KRG
 
         private Renderer m_Renderer;
 
+        private TrailRenderer m_TrailRenderer;
+
+        private float m_TrailRendererOrigTime;
+
         // COMPOUND PROPERTIES
 
         private Color m_ImageColor = Color.white;
@@ -269,6 +273,8 @@ namespace KRG
         {
             // the root system must be on this game object in order to invoke OnParticleSystemStopped
             m_ParticleSystemRoot = GetComponent<ParticleSystem>();
+            m_TrailRenderer = GetComponentInChildren<TrailRenderer>();
+            m_TrailRendererOrigTime = m_TrailRenderer != null ? m_TrailRenderer.time : 0;
         }
 
         // MAIN METHODS
@@ -537,6 +543,10 @@ namespace KRG
 
         public void StopVFX(System.Action callback)
         {
+            if (m_TrailRenderer != null)
+            {
+                m_TrailRenderer.emitting = false;
+            }
             if (m_ParticleSystemRoot != null)
             {
                 ParticleSystem.MainModule main = m_ParticleSystemRoot.main;
@@ -570,6 +580,10 @@ namespace KRG
 
         private void OnPause()
         {
+            if (m_TrailRenderer != null)
+            {
+                m_TrailRenderer.time = float.MaxValue;
+            }
             if (m_ParticleSystemRoot != null)
             {
                 m_ParticleSystemRoot.Pause(true);
@@ -578,6 +592,10 @@ namespace KRG
 
         private void OnUnpause()
         {
+            if (m_TrailRenderer != null)
+            {
+                m_TrailRenderer.time = m_TrailRendererOrigTime;
+            }
             if (m_ParticleSystemRoot != null)
             {
                 m_ParticleSystemRoot.Play(true);
