@@ -10,11 +10,15 @@ namespace KRG
             "it will auto-assign the current parent, and then reparent to the root, as applicable.")]
         public Transform TransformToFollow = default;
 
-        [Tooltip("Automatically dispose of this body/object when the transform to follow becomes null.")]
+        [Tooltip("Automatically dispose of this body/object when the transform to follow becomes null (or is never set).")]
         public bool AutoDispose = default;
 
         [SerializeField]
         private GameObjectBody m_Body = default;
+
+        // PRIVATE FIELDS
+
+        private Vector3 m_Offset;
 
         // PROPERTIES
 
@@ -31,14 +35,12 @@ namespace KRG
 
         private void OnEnable()
         {
-            if (TransformToFollow == null)
+            Transform me = m_Body != null ? m_Body.transform : transform;
+            m_Offset = me.localPosition;
+            if (TransformToFollow == null && me.parent != null)
             {
-                Transform me = m_Body != null ? m_Body.transform : transform;
-                if (me.parent != null)
-                {
-                    TransformToFollow = me.parent;
-                    me.SetParent(null);
-                }
+                TransformToFollow = me.parent;
+                me.SetParent(null);
             }
         }
 
@@ -47,7 +49,7 @@ namespace KRG
             if (TransformToFollow != null)
             {
                 Transform me = m_Body != null ? m_Body.transform : transform;
-                me.position = TransformToFollow.position;
+                me.position = TransformToFollow.position + m_Offset;
             }
             else if (AutoDispose)
             {
