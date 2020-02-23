@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace KRG
@@ -13,8 +13,8 @@ namespace KRG
         public SaveContext saveContext;
         public int saveSlotIndex;
         public int gameplaySceneId;
-        public int checkpointId; //for loading position
-        public Vector3 position; //for logging only
+        public int checkpointId; //for loading position upon loading this save
+        public Vector3 position; //for resetting position during gameplay only
         public int[] acquiredItems; //TODO: change to ItemStack[] items LATER; ItemStack: context (e.g. ItemContext.Acquired), keyItemId, count
         public AutoMapSaveData[] autoMaps;
         public Dictionary<int, int> switchStates;

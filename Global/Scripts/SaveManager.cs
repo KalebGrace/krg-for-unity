@@ -1,11 +1,11 @@
 ﻿using System.Collections.Generic;
+using UnityEngine;
 
 namespace KRG
 {
     public class SaveManager : Manager
     {
         public override float priority => 5;
-
 
         // SAVE FILE
 
@@ -35,7 +35,6 @@ namespace KRG
             }
         }
 
-
         // MONOBEHAVIOUR-LIKE METHODS
 
         public override void Awake()
@@ -44,7 +43,6 @@ namespace KRG
             m_CurrentCheckpoint = ES3.Load(DefaultGameplaySaveKey, SaveFile.New(SaveContext.ContinueCheckpoint));
 #endif
         }
-
 
         // PUBLIC METHODS
 
@@ -70,6 +68,11 @@ namespace KRG
                 SavingCompleted -= iSaveComplete.OnSavingCompleted;
                 LoadingCompleted -= iSaveComplete.OnLoadingCompleted;
             }
+        }
+
+        public Vector3 GetCurrentCheckpointPosition()
+        {
+            return m_CurrentCheckpoint.position;
         }
 
         public bool IsCurrentCheckpoint(LetterName checkpointName)
@@ -129,7 +132,6 @@ namespace KRG
             G.app.ResetGameplaySceneId(); //TODO: fix this
             m_CurrentCheckpoint = SaveFile.New(SaveContext.ContinueCheckpoint);
         }
-
 
         // SWITCH STATES
 
