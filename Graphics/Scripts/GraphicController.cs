@@ -64,6 +64,8 @@ namespace KRG
 
         private Renderer m_Renderer;
 
+        private List<MonoBehaviour> m_RenderLocks;
+
         private TrailRenderer m_TrailRenderer;
 
         private float m_TrailRendererOrigTime;
@@ -90,11 +92,13 @@ namespace KRG
 
         // STANDARD PROPERTIES
 
+        /// <summary>
+        /// Should not be set publicly. Use LockRender/UnlockRender instead.
+        /// </summary>
         public bool IsRendered
         {
             get
             {
-                // NOTE: null-coalescing operator does not work properly for this
                 if (m_Renderer != null)
                 {
                     return m_Renderer.enabled;
@@ -382,6 +386,8 @@ namespace KRG
 #endif
         }
 
+        // RENDER METHODS
+
         public void SetFlicker(float flickerRate = 20)
         {
             if (m_FlickerTimeTrigger != null)
@@ -405,6 +411,27 @@ namespace KRG
                 m_FlickerTimeTrigger = null;
             }
             IsRendered = true;
+        }
+
+        public void LockRender(MonoBehaviour monoBehaviour)
+        {
+            if (monoBehaviour == null)
+            {
+                G.U.Warn("Null argument. A locking MonoBehaviour must be supplied.");
+                return;
+            }
+            if (m_RenderLocks == null)
+            {
+                m_RenderLocks = new List<MonoBehaviour>();
+            }
+            m_RenderLocks.Add(monoBehaviour);
+            IsRendered = false;
+        }
+
+        public void UnlockRender(MonoBehaviour monoBehaviour)
+        {
+            m_RenderLocks.Remove(monoBehaviour);
+            IsRendered = m_RenderLocks.Count == 0;
         }
 
         // IMAGE INDEX / FRAME SEQUENCE METHODS
