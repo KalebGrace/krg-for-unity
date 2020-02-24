@@ -62,12 +62,6 @@ namespace KRG
         {
             Hitbox.TriggerEntered += OnHitboxTriggerEnter;
             Hitbox.TriggerExited += OnHitboxTriggerExit;
-
-            //TODO: apply hurtbox where needed
-            if (Hurtbox != null)
-            {
-                Hurtbox.Enabled = false;
-            }
         }
 
         protected virtual void Start()
@@ -152,6 +146,13 @@ namespace KRG
             ForceOnTriggerExit();
             ForceReleaseTargets();
 
+            // revert the hurtbox replacement done in InitInternal
+            Hurtbox attackerHurtbox = _attacker.Body.Refs.Hurtbox;
+            if (attackerHurtbox != null && attackerHurtbox.gameObject.activeSelf)
+            {
+                attackerHurtbox.Enabled = true;
+            }
+
             if (Hitbox != null)
             {
                 Hitbox.TriggerExited -= OnHitboxTriggerExit;
@@ -185,6 +186,17 @@ namespace KRG
             }
 
             m_Body.FacingDirection = _attacker.Body.FacingDirection;
+
+            // if the attack has a hurtbox, use it as a temporary replacement for the attacker's hurtbox
+            if (Hurtbox != null && Hurtbox.gameObject.activeSelf)
+            {
+                Hurtbox attackerHurtbox = _attacker.Body.Refs.Hurtbox;
+                if (attackerHurtbox != null && attackerHurtbox.gameObject.activeSelf)
+                {
+                    attackerHurtbox.Enabled = false;
+                }
+                Hurtbox.DamageTakerOverride = _attacker.Body.Refs.DamageTaker;
+            }
 
             float travelSpeed = _attackAbility.travelSpeed;
             if (!travelSpeed.Ap(0))
