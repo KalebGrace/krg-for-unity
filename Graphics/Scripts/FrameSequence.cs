@@ -9,9 +9,14 @@ namespace KRG
     [System.Serializable]
     public sealed class FrameSequence
     {
+        // CONSTANTS
+
         public const int VERSION = 5;
 
+        public const int INFINITE_PLAY_COUNT = 100;
         public const int NUMBER_MAX_LENGTH = 3;
+
+        // SUB-CLASSES
 
         class FrameCommand
         {
@@ -57,7 +62,9 @@ namespace KRG
         private List<int> _frameList = new List<int>();
 
         [SerializeField]
-        [Tooltip("Count of playthroughs, or \"loops\", of this sequence.")]
+        [Tooltip("Count of playthroughs, or \"loops\", of this sequence."
+            + " Anything with a value of 100 or higher will be considered an infinite loop"
+            + " and will play indefinitely until code tells it otherwise.")]
         [FormerlySerializedAs("m_playCount")]
         private RangeInt _playCount = new RangeInt();
 

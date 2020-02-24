@@ -18,10 +18,10 @@ namespace KRG
         // EVENTS
 
         public event AnimationEndHandler AnimationEnded;
-        public event RasterAnimationState.Handler FrameSequenceStarted;
-        public event RasterAnimationState.Handler FrameSequenceStopped;
-        public event RasterAnimationState.Handler FrameSequencePlayLoopStarted;
-        public event RasterAnimationState.Handler FrameSequencePlayLoopStopped;
+        public event RasterAnimationHandler FrameSequenceStarted;
+        public event RasterAnimationHandler FrameSequenceStopped;
+        public event RasterAnimationHandler FrameSequencePlayLoopStarted;
+        public event RasterAnimationHandler FrameSequencePlayLoopStopped;
 
         // SERIALIZED FIELDS
 
@@ -337,13 +337,14 @@ namespace KRG
 
             if (G.U.IsPlayMode(this))
             {
-                m_RasterAnimationState = new RasterAnimationState(
-                    rasterAnimation,
-                    OnFrameSequenceStart,
-                    OnFrameSequenceStop,
-                    OnFrameSequencePlayLoopStart,
-                    OnFrameSequencePlayLoopStop
-                    );
+                RasterAnimationOptions options = new RasterAnimationOptions
+                {
+                    FrameSequenceStartHandler = OnFrameSequenceStart,
+                    FrameSequenceStopHandler = OnFrameSequenceStop,
+                    FrameSequencePlayLoopStartHandler = OnFrameSequencePlayLoopStart,
+                    FrameSequencePlayLoopStopHandler = OnFrameSequencePlayLoopStop
+                };
+                m_RasterAnimationState = new RasterAnimationState(rasterAnimation, options);
                 m_AnimationImageIndex = m_RasterAnimationState.frameSequenceFromFrame - 1; // 1-based -> 0-based
             }
 
@@ -642,11 +643,11 @@ namespace KRG
         /// <summary>
         /// Intended only for specialized editor use, such as an animation preview.
         /// </summary>
-        public void ResetStandaloneAnimation()
+        public void ResetStandaloneAnimation(RasterAnimationOptions options)
         {
             if (m_StandaloneAnimation == null) return;
             SetAnimation(m_AnimationContext, m_StandaloneAnimation);
-            m_RasterAnimationState = new RasterAnimationState(m_StandaloneAnimation);
+            m_RasterAnimationState = new RasterAnimationState(m_StandaloneAnimation, options);
             m_AnimationImageIndex = m_RasterAnimationState.frameSequenceFromFrame - 1; // 1-based -> 0-based
         }
     }

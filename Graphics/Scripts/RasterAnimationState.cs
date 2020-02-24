@@ -5,31 +5,27 @@ namespace KRG
 {
     public class RasterAnimationState
     {
-        // DELEGATES
-
-        public delegate void Handler(RasterAnimationState ras);
-
         // EVENTS
 
         /// <summary>
         /// Occurs when a frame sequence starts.
         /// </summary>
-        public event Handler FrameSequenceStarted;
+        public event RasterAnimationHandler FrameSequenceStarted;
 
         /// <summary>
         /// Occurs when a frame sequence stops.
         /// </summary>
-        public event Handler FrameSequenceStopped;
+        public event RasterAnimationHandler FrameSequenceStopped;
 
         /// <summary>
         /// Occurs when a frame sequence starts or after the play index is incremented.
         /// </summary>
-        public event Handler FrameSequencePlayLoopStarted;
+        public event RasterAnimationHandler FrameSequencePlayLoopStarted;
 
         /// <summary>
         /// Occurs when a frame sequence stops or before the play index is incremented.
         /// </summary>
-        public event Handler FrameSequencePlayLoopStopped;
+        public event RasterAnimationHandler FrameSequencePlayLoopStopped;
 
         // FIELDS
 
@@ -68,6 +64,8 @@ namespace KRG
         /// </summary>
         private int _frameSequencePlayIndex;
 
+        private RasterAnimationOptions m_Options;
+
         // PROPERTIES
 
         public virtual int frameSequenceIndex => _frameSequenceIndex;
@@ -86,28 +84,15 @@ namespace KRG
 
         // CONSTRUCTOR
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="KRG.RasterAnimationState"/> class.
-        /// </summary>
-        /// <param name="rasterAnimation">The raster animation.</param>
-        /// <param name="frameSequenceStartHandler">An optional frame sequence start handler.</param>
-        /// <param name="frameSequenceStopHandler">An optional frame sequence stop handler.</param>
-        /// <param name="frameSequencePlayLoopStartHandler">An optional frame sequence play loop start handler.</param>
-        /// <param name="frameSequencePlayLoopStopHandler">An optional frame sequence play loop stop handler.</param>
-        public RasterAnimationState(
-            RasterAnimation rasterAnimation,
-            Handler frameSequenceStartHandler = null,
-            Handler frameSequenceStopHandler = null,
-            Handler frameSequencePlayLoopStartHandler = null,
-            Handler frameSequencePlayLoopStopHandler = null
-        )
+        public RasterAnimationState(RasterAnimation rasterAnimation, RasterAnimationOptions options)
         {
             _rasterAnimation = rasterAnimation;
             G.U.Require(_rasterAnimation, "Raster Animation", "this Raster Animation State");
-            FrameSequenceStarted = frameSequenceStartHandler;
-            FrameSequenceStopped = frameSequenceStopHandler;
-            FrameSequencePlayLoopStarted = frameSequencePlayLoopStartHandler;
-            FrameSequencePlayLoopStopped = frameSequencePlayLoopStopHandler;
+            m_Options = options;
+            FrameSequenceStarted = options.FrameSequenceStartHandler;
+            FrameSequenceStopped = options.FrameSequenceStopHandler;
+            FrameSequencePlayLoopStarted = options.FrameSequencePlayLoopStartHandler;
+            FrameSequencePlayLoopStopped = options.FrameSequencePlayLoopStopHandler;
             Reset();
         }
 
@@ -229,6 +214,10 @@ namespace KRG
                     G.U.Err("Stuck in an infinite loop.", this, _rasterAnimation);
                     return;
                 }
+            }
+            if (playCount >= FrameSequence.INFINITE_PLAY_COUNT)
+            {
+                playCount = m_Options.IgnoreInfiniteLoops ? 1 : int.MaxValue;
             }
             _frameSequenceIndex = frameSequenceIndex;
             _frameSequenceName = _rasterAnimation.GetFrameSequenceName(frameSequenceIndex);
