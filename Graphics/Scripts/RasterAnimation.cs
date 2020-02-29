@@ -3,10 +3,6 @@ using System.Collections.ObjectModel;
 using UnityEngine;
 using UnityEngine.Serialization;
 
-#if KRG_X_ODIN
-using Sirenix.OdinInspector;
-#endif
-
 #if NS_UGIF
 using uGIF;
 #endif
@@ -28,30 +24,22 @@ namespace KRG
 
         [Header("Custom Data")]
 
-#if KRG_X_ODIN
-        [PropertyOrder(-10)]
-#endif
+        [OrderAttribute(-10)]
         public RasterAnimationData Data;
 
         //--
 
         [Header("Essentials")]
 
-#if KRG_X_ODIN
-        [PropertyOrder(-10)]
-#endif
+        [OrderAttribute(-10)]
         [SerializeField]
         protected float m_SecondsPerFrame = default;
 
-#if KRG_X_ODIN
-        [PropertyOrder(-10)]
-#endif
+        [OrderAttribute(-10)]
         [SerializeField]
         protected Vector2Int m_Dimensions = default;
 
-#if KRG_X_ODIN
-        [PropertyOrder(-10)]
-#endif
+        [OrderAttribute(-10)]
         [SerializeField]
         protected List<Texture2D> m_FrameTextures = new List<Texture2D>();
 
@@ -59,16 +47,12 @@ namespace KRG
 
         [Header("GIF Import")]
 
-#if KRG_X_ODIN
-        [PropertyOrder(-10)]
-#endif
+        [OrderAttribute(-10)]
         [SerializeField]
         [FormerlySerializedAs("m_gifBytes")]
         TextAsset _gifBytes = default;
 
-#if KRG_X_ODIN
-        [PropertyOrder(-10)]
-#endif
+        [OrderAttribute(-10)]
         [SerializeField]
         protected string m_GifName = default;
 
@@ -76,24 +60,18 @@ namespace KRG
 
         [Header("Looping")]
 
-#if KRG_X_ODIN
-        [PropertyOrder(10)]
-#endif
+        [OrderAttribute(10)]
         [SerializeField]
         [FormerlySerializedAs("m_loop")]
         bool _loop = true;
 
-#if KRG_X_ODIN
-        [PropertyOrder(10)]
-#endif
+        [OrderAttribute(10)]
         [SerializeField]
         [Tooltip("Checked: How many ADDITIONAL times to play this animation. Unchecked: Loop indefinitely.")]
         [BoolObjectDisable(false, "Infinite Loop")]
         BoolInt _loopCount = new BoolInt(false, 1);
 
-#if KRG_X_ODIN
-        [PropertyOrder(10)]
-#endif
+        [OrderAttribute(10)]
         [SerializeField]
         [Tooltip("Index of the frame sequence from which to start any loops.")]
         int _loopToSequence = default;
@@ -105,9 +83,7 @@ namespace KRG
         [Order(15), SerializeField, TextArea(6, 24)]
         protected string m_FrameParagraph = default;
 
-#if KRG_X_ODIN
-        [PropertyOrder(20)]
-#endif
+        [OrderAttribute(20)]
         [SerializeField]
         [FormerlySerializedAs("m_frameSequences")]
         protected FrameSequence[] _frameSequences = default;
