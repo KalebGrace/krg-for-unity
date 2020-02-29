@@ -411,11 +411,11 @@ namespace KRG
             _hpDamageRateSec = 1f / _hpDamageRate.floatValue;
         }
 
-#pragma warning disable 0618
         void UpdateSerializedVersion()
         {
             if (_serializedVersion == 0)
             {
+#pragma warning disable CS0618 // Type or member is obsolete
                 if (m_attackerAnimation != null)
                 {
                     if (_attackerAnimations == null)
@@ -434,19 +434,21 @@ namespace KRG
                     }
                     m_attackerAnimation = null;
                 }
+#pragma warning restore CS0618 // Type or member is obsolete
                 _serializedVersion = 1;
             }
             if (_serializedVersion == 1)
             {
+#pragma warning disable CS0612 // Type or member is obsolete
                 if (!_attackerMoveDistance.Ap(0))
                 {
                     AttackerMoveSpeed = _attackerMoveDistance / _attackerMoveTime;
                     _attackerMoveDistance = 0;
                 }
+#pragma warning restore CS0612 // Type or member is obsolete
                 _serializedVersion = 2;
             }
         }
-#pragma warning restore 0618
 
         #endregion
 
