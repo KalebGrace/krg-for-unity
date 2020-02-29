@@ -650,5 +650,13 @@ namespace KRG
             m_RasterAnimationState = new RasterAnimationState(m_StandaloneAnimation, options);
             m_AnimationImageIndex = m_RasterAnimationState.frameSequenceFromFrame - 1; // 1-based -> 0-based
         }
+
+        /// <summary>
+        /// Intended only for specialized editor use, such as save processing.
+        /// </summary>
+        public void UnloadRendererMaterials()
+        {
+            m_Renderer.sharedMaterials = new Material[1] { null };
+        }
     }
 }
