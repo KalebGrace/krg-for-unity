@@ -26,7 +26,7 @@ namespace KRG
             {
                 version = 1,
                 saveContext = sc,
-                switchStates = new Dictionary<int, int>() //TODO: does this serialize right?
+                switchStates = new Dictionary<int, int>()
             };
         }
 
