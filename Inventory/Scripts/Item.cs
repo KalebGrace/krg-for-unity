@@ -43,6 +43,8 @@ namespace KRG
             }
         }
 
+        protected virtual void Awake() { }
+
         protected virtual void Start()
         {
             if (itemData.IsKeyItem && G.inv.Has(itemData.KeyItemIndex))
@@ -78,11 +80,6 @@ namespace KRG
 
         public virtual void Init(ItemData itemData, ISpawn spawner)
         {
-            if (this.itemData != null)
-            {
-                G.U.Warn("m_ItemData already contains {0}. Overwriting with {1}.", this.itemData, itemData);
-            }
-
             this.itemData = itemData;
             this.spawner = spawner;
         }
