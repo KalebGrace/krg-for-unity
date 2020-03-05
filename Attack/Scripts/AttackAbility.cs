@@ -54,7 +54,7 @@ namespace KRG
         protected AnimationData m_attackerAnimation;
 
         [SerializeField, Tooltip("This ability is locked until the attacker obtains this key item.")]
-        [Enum(typeof(KeyItem))]
+        [Enum(typeof(ItemID))]
         protected int m_KeyItem = default;
 
         [SerializeField]
@@ -299,7 +299,7 @@ namespace KRG
 
         public virtual bool isJoinedToAttacker { get { return _isJoinedToAttacker; } }
 
-        public virtual bool isKeyItemRequired { get { return m_KeyItem != 0; } }
+        public virtual bool IsKeyItemRequired => m_KeyItem != 0;
 
         public virtual float knockBackDistance { get { return _knockBackDistance; } }
 

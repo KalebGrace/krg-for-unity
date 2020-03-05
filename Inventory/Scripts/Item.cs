@@ -2,7 +2,7 @@
 
 namespace KRG
 {
-    public class Item : MonoBehaviour
+    public class Item : MonoBehaviour, ICollider
     {
         // STATIC EVENTS
 
@@ -47,7 +47,7 @@ namespace KRG
 
         protected virtual void Start()
         {
-            if (itemData.IsKeyItem && G.inv.Has(itemData.KeyItemIndex))
+            if (itemData.IsKeyItem && G.inv.HasKeyItem(itemData.KeyItemID))
             {
                 // player already has this key item
                 gameObject.Dispose();
@@ -62,9 +62,13 @@ namespace KRG
             if (animatingBody != null) EndAnimateBody();
         }
 
-        protected virtual void OnTriggerEnter(Collider other)
+        private void OnTriggerEnter(Collider other)
         {
-            if (OnCollect(other))
+            OnTriggerEnter(this, other);
+        }
+        public virtual void OnTriggerEnter(MonoBehaviour source, Collider other)
+        {
+            if (source.GetComponent<Collider>().isTrigger && OnCollect(other))
             {
                 ItemCollected?.Invoke(this, other);
                 if (!string.IsNullOrWhiteSpace(itemData.sfxFmodEventOnCollect))
@@ -74,6 +78,12 @@ namespace KRG
                 gameObject.Dispose();
             }
         }
+
+        private void OnTriggerExit(Collider other)
+        {
+            OnTriggerExit(this, other);
+        }
+        public virtual void OnTriggerExit(MonoBehaviour source, Collider other) { }
 
 
         // custom methods

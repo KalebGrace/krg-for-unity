@@ -42,6 +42,7 @@ namespace KRG
 #if KRG_X_EASY_SAVE_3
             m_CurrentCheckpoint = ES3.Load(DefaultGameplaySaveKey, SaveFile.New(SaveContext.ContinueCheckpoint));
 #endif
+            m_CurrentCheckpoint.Validate();
         }
 
         // PUBLIC METHODS

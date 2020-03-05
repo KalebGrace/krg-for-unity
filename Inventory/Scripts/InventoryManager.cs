@@ -8,19 +8,23 @@ namespace KRG
         public override float priority => 130;
 
 
-        // fields, delegates, events : ITEMS
+        // fields, delegates, events : ITEMS & STATS
 
-        readonly List<int> m_AcquiredItems = new List<int>();
-
-        readonly Dictionary<int, ItemAcquiredHandler> m_ItemAcquiredHandlers
+        readonly Dictionary<int, ItemAcquiredHandler> m_KeyItemAcquiredHandlers
            = new Dictionary<int, ItemAcquiredHandler>();
 
         readonly Dictionary<int, ItemData> m_ItemDataDictionary
            = new Dictionary<int, ItemData>();
 
-        public delegate void ItemAcquiredHandler(int acquiredItem);
+        private Dictionary<int, float> m_Items
+          = new Dictionary<int, float>();
 
-        public event ItemAcquiredHandler KeyItemAcquired;
+        private Dictionary<int, float> m_Stats
+          = new Dictionary<int, float>();
+
+        public delegate void ItemAcquiredHandler(int itemID, bool isNewlyAcquired);
+
+        public event ItemAcquiredHandler ItemAcquired;
 
 
         // fields & events : AUTOMAPS
@@ -32,13 +36,6 @@ namespace KRG
         public event System.Action AutoMapSaveDataProvided;
 
 
-        // fields : STATS
-
-        public float? StatHPMax;
-        public float? StatHP;
-        public float? StatSP;
-
-
         // MONOBEHAVIOUR-LIKE METHODS
 
         public override void Awake()
@@ -46,8 +43,6 @@ namespace KRG
             G.save.Subscribe(this);
 
             BuildItemDataDictionary();
-
-            ResetContents();
         }
 
         public void OnDestroy()
@@ -56,83 +51,174 @@ namespace KRG
         }
 
 
-        // PUBLIC METHODS
+        // MAIN METHODS (PUBLIC)
 
-        public void Acquire(int item)
+        public void AddItemQty(ItemID itemID, float quantity, float defaultQuantity = 0)
         {
-            if (!Has(item))
-            {
-                m_AcquiredItems.Add(item);
+            AddItemQty((int)itemID, quantity, defaultQuantity);
+        }
 
-                if (m_ItemAcquiredHandlers.ContainsKey(item))
+        public float GetItemQty(ItemID itemID, float defaultQuantity = 0)
+        {
+            return GetItemQty((int)itemID, defaultQuantity);
+        }
+
+        public bool HasItemQty(ItemID itemID)
+        {
+            return HasItemQty((int)itemID);
+        }
+
+        public void SetItemQty(ItemID itemID, float quantity)
+        {
+            SetItemQty((int)itemID, quantity);
+        }
+
+        public bool HasKeyItem(ItemID itemID)
+        {
+            return HasKeyItem((int)itemID);
+        }
+
+        public void AddStatVal(StatID statID, float value, float defaultValue = 0)
+        {
+            AddStatVal((int)statID, value, defaultValue);
+        }
+
+        public float GetStatVal(StatID statID, float defaultValue = 0)
+        {
+            return GetStatVal((int)statID, defaultValue);
+        }
+
+        public bool HasStatVal(StatID statID)
+        {
+            return HasStatVal((int)statID);
+        }
+
+        public void SetStatVal(StatID statID, float value)
+        {
+            SetStatVal((int)statID, value);
+        }
+
+
+        // MAIN METHODS (PROTECTED)
+
+        protected void AddItemQty(int itemID, float quantity, float defaultQuantity = 0)
+        {
+            float oldQuantity = GetItemQty(itemID, defaultQuantity);
+            float newQuantity = quantity + oldQuantity;
+            ChangeItemQty(itemID, oldQuantity, newQuantity);
+        }
+
+        protected float GetItemQty(int itemID, float defaultQuantity = 0)
+        {
+            return m_Items.ContainsKey(itemID) ? m_Items[itemID] : defaultQuantity;
+        }
+
+        protected bool HasItemQty(int itemID)
+        {
+            return m_Items.ContainsKey(itemID);
+        }
+
+        protected void SetItemQty(int itemID, float quantity)
+        {
+            float oldQuantity = GetItemQty(itemID);
+            float newQuantity = quantity;
+            ChangeItemQty(itemID, oldQuantity, newQuantity);
+        }
+
+        public bool HasKeyItem(int itemID)
+        {
+            return m_Items.ContainsKey(itemID) && m_Items[itemID] >= 1;
+        }
+
+        private void ChangeItemQty(int itemID, float oldQuantity, float newQuantity)
+        {
+            ItemData itemData = GetItemData(itemID);
+
+            bool hasKeyItem = itemData != null && itemData.IsKeyItem && newQuantity >= 1;
+
+            if (hasKeyItem)
+            {
+                newQuantity = 1;
+            }
+
+            m_Items[itemID] = newQuantity;
+
+            if (newQuantity > oldQuantity)
+            {
+                ItemAcquired?.Invoke(itemID, true);
+
+                if (hasKeyItem)
                 {
-                    m_ItemAcquiredHandlers[item]?.Invoke(item);
-                    m_ItemAcquiredHandlers.Remove(item);
+                    if (m_KeyItemAcquiredHandlers.ContainsKey(itemID))
+                    {
+                        m_KeyItemAcquiredHandlers[itemID]?.Invoke(itemID, true);
+                        m_KeyItemAcquiredHandlers.Remove(itemID);
+                    }
+
+                    G.save.SaveCheckpoint();
                 }
-
-                KeyItemAcquired?.Invoke(item);
-
-                G.save.SaveCheckpoint();
-            }
-            else
-            {
-                G.U.Warn("Already has key item {0}.", item);
             }
         }
 
-        public ItemData GetItemData(int item)
+        protected void AddStatVal(int statID, float value, float defaultValue = 0)
         {
-            G.U.Assert(m_ItemDataDictionary.ContainsKey(item), "Set item {0} ref in KRGConfig.", item);
-
-            return m_ItemDataDictionary[item];
+            float oldValue = GetItemQty(statID, defaultValue);
+            m_Stats[statID] = value + oldValue;
         }
 
-        public bool Has(int item)
+        protected float GetStatVal(int statID, float defaultValue = 0)
         {
-            return m_AcquiredItems.Contains(item);
+            return m_Stats.ContainsKey(statID) ? m_Stats[statID] : defaultValue;
         }
 
-        public virtual void ResetContents()
+        protected bool HasStatVal(int statID)
         {
-            m_AcquiredItems.Clear();
+            return m_Stats.ContainsKey(statID);
+        }
 
-            m_AutoMaps.Clear();
+        protected void SetStatVal(int statID, float value)
+        {
+            m_Items[statID] = value;
+        }
 
-            StatHPMax = null;
-            StatHP = null;
-            StatSP = null;
+
+        // MAIN METHODS 3
+
+        public ItemData GetItemData(int itemID)
+        {
+            return m_ItemDataDictionary.ContainsKey(itemID) ? m_ItemDataDictionary[itemID] : null;
         }
 
         /// <summary>
         /// Adds the handler to be invoked upon acquiring the key item with this index.
         /// If the key item is already acquired, it will invoke the handler immediately.
         /// </summary>
-        /// <param name="item">Key item index.</param>
+        /// <param name="itemID">Key item ID.</param>
         /// <param name="handler">Handler.</param>
-        public void AddItemAcquiredHandler(int item, ItemAcquiredHandler handler)
+        public void AddKeyItemAcquiredHandler(int itemID, ItemAcquiredHandler handler)
         {
-            if (!Has(item))
+            if (HasKeyItem(itemID))
             {
-                if (m_ItemAcquiredHandlers.ContainsKey(item))
-                {
-                    m_ItemAcquiredHandlers[item] += handler;
-                }
-                else
-                {
-                    m_ItemAcquiredHandlers.Add(item, handler);
-                }
+                handler?.Invoke(itemID, false);
             }
             else
             {
-                handler?.Invoke(item);
+                if (m_KeyItemAcquiredHandlers.ContainsKey(itemID))
+                {
+                    m_KeyItemAcquiredHandlers[itemID] += handler;
+                }
+                else
+                {
+                    m_KeyItemAcquiredHandlers.Add(itemID, handler);
+                }
             }
         }
 
-        public void RemoveItemAcquiredHandler(int item, ItemAcquiredHandler handler)
+        public void RemoveKeyItemAcquiredHandler(int itemID, ItemAcquiredHandler handler)
         {
-            if (m_ItemAcquiredHandlers.ContainsKey(item))
+            if (m_KeyItemAcquiredHandlers.ContainsKey(itemID))
             {
-                m_ItemAcquiredHandlers[item] -= handler;
+                m_KeyItemAcquiredHandlers[itemID] -= handler;
             }
         }
 
@@ -173,7 +259,8 @@ namespace KRG
 
         public virtual void OnSaving(ref SaveFile sf)
         {
-            sf.acquiredItems = m_AcquiredItems.ToArray();
+            sf.items = m_Items;
+            sf.stats = m_Stats;
 
             AutoMapSaveDataRequested?.Invoke();
 
@@ -182,19 +269,17 @@ namespace KRG
 
         public virtual void OnLoading(SaveFile sf)
         {
-            ResetContents();
+            m_Items = sf.items;
+            m_Stats = sf.stats;
 
-            if (sf.acquiredItems != null) m_AcquiredItems.AddRange(sf.acquiredItems);
-
+            m_AutoMaps.Clear();
             if (sf.autoMaps != null)
             {
                 for (int i = 0; i < sf.autoMaps.Length; ++i)
                 {
                     AutoMapSaveData map = sf.autoMaps[i];
-
                     m_AutoMaps.Add(map.gameplaySceneId, map);
                 }
-
                 AutoMapSaveDataProvided?.Invoke();
             }
         }
@@ -210,7 +295,7 @@ namespace KRG
             {
                 ItemData id = refs[i];
 
-                m_ItemDataDictionary.Add(id.KeyItemIndex, id);
+                m_ItemDataDictionary.Add(id.KeyItemID, id);
             }
         }
     }

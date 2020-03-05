@@ -32,14 +32,16 @@ namespace KRG
             ttGameplay = G.time.GetTimeThread(TimeThreadInstance.Gameplay);
             ttField = G.time.GetTimeThread(TimeThreadInstance.Field);
 
-            G.inv.KeyItemAcquired += OnItemAcquired;
+            G.inv.ItemAcquired += OnItemAcquired;
         }
 
-        private void OnItemAcquired(int acquiredItem)
+        private void OnItemAcquired(int itemID, bool isNewlyAcquired)
         {
-            ItemData id = G.inv.GetItemData(acquiredItem);
+            if (!isNewlyAcquired) return;
 
-            if (!id.ShowCardOnAcquire) return;
+            ItemData id = G.inv.GetItemData(itemID);
+
+            if (id == null || !id.ShowCardOnAcquire) return;
 
             itemDisplayNameText.text = id.DisplayName;
             itemInstructionText.text = id.Instruction;
@@ -65,7 +67,7 @@ namespace KRG
 
         private void OnDestroy()
         {
-            G.inv.KeyItemAcquired -= OnItemAcquired;
+            G.inv.ItemAcquired -= OnItemAcquired;
         }
 
         private void Hide()

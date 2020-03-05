@@ -9,24 +9,29 @@ namespace KRG
     /// </summary>
     public struct SaveFile
     {
+        public const int LATEST_VERSION = 2;
+
         public int version;
         public SaveContext saveContext;
         public int saveSlotIndex;
         public int gameplaySceneId;
-        public int checkpointId; //for loading position upon loading this save
-        public Vector3 position; //for resetting position during gameplay only
-        public int[] acquiredItems; //TODO: change to ItemStack[] items LATER; ItemStack: context (e.g. ItemContext.Acquired), keyItemId, count
+        public int checkpointId; // for loading position upon loading this save
+        public Vector3 position; // for resetting position during gameplay only
+        public int[] acquiredItems; // DEPRECATED as of version 2
         public AutoMapSaveData[] autoMaps;
         public Dictionary<int, int> switchStates;
-        //etc...
+        public Dictionary<int, float> items;
+        public Dictionary<int, float> stats;
 
         public static SaveFile New(SaveContext sc)
         {
             return new SaveFile
             {
-                version = 1,
+                version = LATEST_VERSION,
                 saveContext = sc,
-                switchStates = new Dictionary<int, int>()
+                switchStates = new Dictionary<int, int>(),
+                items = new Dictionary<int, float>(),
+                stats = new Dictionary<int, float>()
             };
         }
 
@@ -45,6 +50,30 @@ namespace KRG
             }
             G.U.Err("unknown saveContext", saveContext);
             return "UnknownSaveFile";
+        }
+
+        public void Validate()
+        {
+            while (version < LATEST_VERSION)
+            {
+                switch (version)
+                {
+                    case 1:
+                        items = new Dictionary<int, float>();
+                        stats = new Dictionary<int, float>();
+                        if (acquiredItems != null)
+                        {
+                            for (int i = 0; i < acquiredItems.Length; ++i)
+                            {
+                                int itemID = acquiredItems[i];
+                                items[itemID] = 1;
+                            }
+                            acquiredItems = null;
+                        }
+                        break;
+                }
+                ++version;
+            }
         }
     }
 }

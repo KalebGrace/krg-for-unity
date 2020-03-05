@@ -22,7 +22,7 @@ namespace KRG
         protected string instruction = default;
 
         [SerializeField, Tooltip("If this represents a key item, set it here.")]
-        [Enum(typeof(KeyItem))]
+        [Enum(typeof(ItemID))]
         protected int m_KeyItem = default;
 
         [SerializeField, Tooltip("A prefab that has an Item component on its root GameObject. " +
@@ -59,7 +59,7 @@ namespace KRG
 
         public bool IsKeyItem => m_KeyItem != 0;
 
-        public int KeyItemIndex => m_KeyItem;
+        public int KeyItemID => m_KeyItem;
 
         public bool ShowCardOnAcquire => showCardOnAcquire;
 

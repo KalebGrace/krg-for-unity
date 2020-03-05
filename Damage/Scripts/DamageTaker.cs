@@ -50,12 +50,12 @@ namespace KRG
 
         public virtual float HP
         {
-            get => IsPlayerCharacter ? (G.inv.StatHP ?? HPMax) : m_HP;
+            get => IsPlayerCharacter ? G.inv.GetStatVal(StatID.HP, HPMax) : m_HP;
             set
             {
                 if (IsPlayerCharacter)
                 {
-                    G.inv.StatHP = value;
+                    G.inv.SetStatVal(StatID.HP, value);
                 }
                 else
                 {
@@ -68,12 +68,12 @@ namespace KRG
 
         public virtual float HPMax
         {
-            get => IsPlayerCharacter ? (G.inv.StatHPMax ?? _damageProfile.HPMax) : m_HPMax;
+            get => IsPlayerCharacter ? G.inv.GetStatVal(StatID.HPMax, _damageProfile.HPMax) : m_HPMax;
             set
             {
                 if (IsPlayerCharacter)
                 {
-                    G.inv.StatHPMax = value;
+                    G.inv.SetStatVal(StatID.HPMax, value);
                 }
                 else
                 {
@@ -223,13 +223,13 @@ namespace KRG
         {
             if (m_Body.IsPlayerCharacter)
             {
-                if (!G.inv.StatHPMax.HasValue)
+                if (!G.inv.HasStatVal(StatID.HPMax))
                 {
-                    G.inv.StatHPMax = _damageProfile.HPMax;
+                    G.inv.SetStatVal(StatID.HPMax, _damageProfile.HPMax);
                 }
-                if (!G.inv.StatHP.HasValue)
+                if (!G.inv.HasStatVal(StatID.HP))
                 {
-                    G.inv.StatHP = G.inv.StatHPMax;
+                    G.inv.SetStatVal(StatID.HP, G.inv.GetStatVal(StatID.HPMax));
                 }
             }
             else
