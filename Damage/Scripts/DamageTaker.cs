@@ -22,7 +22,7 @@ namespace KRG
             Vector3 hitPositionCenter
         );
 
-        // fields
+        // FIELDS
 
         [SerializeField]
         [FormerlySerializedAs("m_damageProfile")]
@@ -38,21 +38,21 @@ namespace KRG
         protected Vector3 _damageHitPositionCenter;
 
         // ENEMY / BOSS current and maximum HP (hit points)
-
         protected float m_HP;
         protected float m_HPMax;
 
-        //damage stuff
+        // damage stuff
         TimeTrigger _invulnerabilityTimeTrigger;
         TimeTrigger _knockBackTimeTrigger;
 
-        // properties: IDamagable implementation
+        // PROPERTIES
 
         public virtual float HP
         {
-            get => IsPlayerCharacter ? G.inv.GetStatVal(StatID.HP, HPMax) : m_HP;
+            get => IsPlayerCharacter ? G.inv.GetStatVal(StatID.HP) : m_HP;
             set
             {
+                value = Mathf.Clamp(value, HPMin, HPMax);
                 if (IsPlayerCharacter)
                 {
                     G.inv.SetStatVal(StatID.HP, value);
@@ -68,7 +68,7 @@ namespace KRG
 
         public virtual float HPMax
         {
-            get => IsPlayerCharacter ? G.inv.GetStatVal(StatID.HPMax, _damageProfile.HPMax) : m_HPMax;
+            get => IsPlayerCharacter ? G.inv.GetStatVal(StatID.HPMax) : m_HPMax;
             set
             {
                 if (IsPlayerCharacter)
@@ -82,18 +82,13 @@ namespace KRG
             }
         }
 
-        // PROPERTIES
-
         public GameObjectBody Body => m_Body;
 
         public virtual Transform centerTransform => m_Body.Refs.VisRect.transform;
 
         public virtual DamageProfile damageProfile
         {
-            get
-            {
-                return _damageProfile;
-            }
+            get => _damageProfile;
             set
             {
                 _damageProfile = value;
@@ -103,11 +98,11 @@ namespace KRG
 
         public virtual bool IsKnockedBack => _knockBackTimeTrigger != null;
 
-        public virtual bool IsKnockedOut => HP.Ap(HPMin);
+        public virtual bool IsKnockedOut => HP <= HPMin;
 
         public virtual bool IsPlayerCharacter => m_Body.IsPlayerCharacter;
 
-        public virtual Direction knockBackDirection { get; set; }
+        public virtual Direction knockBackDirection { get; set; } = Direction.Unknown;
 
         public virtual float knockBackSpeed { get; private set; }
 
@@ -117,13 +112,9 @@ namespace KRG
 
         // MONOBEHAVIOUR METHODS
 
-        protected virtual void Awake()
+        protected virtual void Start()
         {
-            G.U.Require(_damageProfile, "Damage Profile");
-
             InitHP();
-
-            knockBackDirection = Direction.Unknown;
         }
 
         protected virtual void OnDestroy()
@@ -131,7 +122,7 @@ namespace KRG
             Destroyed?.Invoke(this);
         }
 
-        // Primary Methods
+        // PRIMARY METHODS
 
         public bool Damage(
             AttackAbility attackAbility,
@@ -174,7 +165,7 @@ namespace KRG
 
         protected virtual void DealDamage(AttackAbility attackAbility)
         {
-            HP = Mathf.Clamp(HP - attackAbility.hpDamage, HPMin, HPMax);
+            HP -= attackAbility.hpDamage;
         }
 
         protected virtual void DisplayDamageVFX(
@@ -197,31 +188,9 @@ namespace KRG
             }
         }
 
-        /// <summary>
-        /// Sets the HP to the minimum. Does not check isKnockedOut or call OnKnockedOut, etc.
-        /// </summary>
-        protected void SetHPEmpty()
-        {
-            HP = HPMin;
-        }
-
-        /// <summary>
-        /// Sets the HP to the maximum defined by the damage profile (or whatever is defined in the HPMax property).
-        /// </summary>
-        protected void SetHPFull()
-        {
-            HP = HPMax;
-        }
-
-        public void SetNewHpMax(float newHpMax)
-        {
-            HPMax = newHpMax;
-            HP = Mathf.Min(HP, newHpMax);
-        }
-
         private void InitHP()
         {
-            if (m_Body.IsPlayerCharacter)
+            if (IsPlayerCharacter)
             {
                 if (!G.inv.HasStatVal(StatID.HPMax))
                 {
@@ -238,18 +207,7 @@ namespace KRG
             }
         }
 
-        //TODO: this was added as part of the ItemLoot system and needs revision
-        public void AddHP(float hp)
-        {
-            HP = Mathf.Clamp(HP + hp, HPMin, HPMax);
-
-            if (IsKnockedOut)
-            {
-                OnKnockedOut(m_Body.CenterTransform.position);
-            }
-        }
-
-        // Custom Methods
+        // CUSTOM METHODS
 
         protected virtual void CheckCustomPreKOC(
             AttackAbility attackAbility,

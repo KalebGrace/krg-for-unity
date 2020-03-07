@@ -178,7 +178,7 @@ namespace KRG
 
         protected void SetStatVal(int statID, float value)
         {
-            m_Items[statID] = value;
+            m_Stats[statID] = value;
         }
 
 
