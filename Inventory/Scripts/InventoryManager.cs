@@ -254,13 +254,26 @@ namespace KRG
             m_AutoMaps[saveData.gameplaySceneId] = saveData;
         }
 
+        public void RestorePlayerHealth()
+        {
+            if (HasStatVal((int)StatID.HP))
+            {
+                float cur = GetStatVal((int)StatID.HP);
+                float max = GetStatVal((int)StatID.HPMax, 1);
+                if (cur < max)
+                {
+                    SetStatVal((int)StatID.HP, max);
+                }
+            }
+        }
+
 
         // ISAVE METHODS
 
         public virtual void OnSaving(ref SaveFile sf)
         {
-            sf.items = m_Items;
-            sf.stats = m_Stats;
+            sf.items = new Dictionary<int, float>(m_Items);
+            sf.stats = new Dictionary<int, float>(m_Stats);
 
             AutoMapSaveDataRequested?.Invoke();
 
@@ -269,8 +282,8 @@ namespace KRG
 
         public virtual void OnLoading(SaveFile sf)
         {
-            m_Items = sf.items;
-            m_Stats = sf.stats;
+            m_Items = new Dictionary<int, float>(sf.items);
+            m_Stats = new Dictionary<int, float>(sf.stats);
 
             m_AutoMaps.Clear();
             if (sf.autoMaps != null)
