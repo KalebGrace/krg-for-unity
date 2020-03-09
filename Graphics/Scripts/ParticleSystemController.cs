@@ -3,8 +3,7 @@ using UnityEngine.Serialization;
 
 namespace KRG
 {
-    // DEPRECATED (use VFXBasePrefab instead)
-    [System.Obsolete]
+    // DEPRECATED (try using VFXBasePrefab instead)
     public abstract class ParticleSystemController : MonoBehaviour
     {
         [Enum(typeof(TimeThreadInstance))]
@@ -24,7 +23,6 @@ namespace KRG
         private void Awake()
         {
             ParticleSystem = GetComponentInChildren<ParticleSystem>();
-            G.U.Require(ParticleSystem, "Particle System", "this Component or its children");
         }
 
         private void Start()
