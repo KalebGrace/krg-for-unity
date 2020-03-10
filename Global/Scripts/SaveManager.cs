@@ -40,7 +40,15 @@ namespace KRG
         public override void Awake()
         {
 #if KRG_X_EASY_SAVE_3
-            m_CurrentCheckpoint = ES3.Load(DefaultGameplaySaveKey, SaveFile.New(SaveContext.ContinueCheckpoint));
+            try
+            {
+                m_CurrentCheckpoint = ES3.Load(DefaultGameplaySaveKey, SaveFile.New(SaveContext.ContinueCheckpoint));
+            }
+            catch (System.Exception ex)
+            {
+                G.U.Err("Unable to load continue checkpoint data from save file.", DefaultGameplaySaveKey, ex);
+                m_CurrentCheckpoint = SaveFile.New(SaveContext.ContinueCheckpoint);
+            }
 #endif
             m_CurrentCheckpoint.Validate();
         }
