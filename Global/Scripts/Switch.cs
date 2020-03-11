@@ -5,21 +5,27 @@ namespace KRG
 {
     public class Switch : MonoBehaviour
     {
+        // SERIALIZED FIELDS
+
         [SerializeField]
         protected bool m_SaveState = true;
 
-        [SerializeField]
-        protected int m_StateIndex = -1; //TODO: base 0 tooltip
-        //0 is the first state. 1 is the second state. And so on...
+        [SerializeField,
+            Tooltip("-1 is uninitialized. 0 is the first state. 1 is the second state. Etc.")]
+        protected int m_StateIndex = -1;
 
         public List<SwitchState> states = new List<SwitchState>();
 
         [SerializeField]
-        protected int m_ID;
+        protected int m_ID = default;
+
+        // PROPERTIES
 
         public int ID => m_ID;
 
         public int StateIndex => m_StateIndex;
+
+        // MONOBEHAVIOUR METHODS
 
         protected virtual void OnValidate()
         {
@@ -42,13 +48,11 @@ namespace KRG
             }
         }
 
-        protected virtual void OnDisable()
-        {
-        }
+        protected virtual void OnDisable() { }
 
-        protected virtual void Update()
-        {
-        }
+        protected virtual void Update() { }
+
+        // CUSTOM METHODS
 
         public void Prev()
         {
