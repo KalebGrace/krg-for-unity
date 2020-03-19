@@ -181,7 +181,7 @@ namespace KRG
             }
             else
             {
-                G.U.Err(_infiniteLoopError);
+                G.U.Warn(_infiniteLoopError);
             }
         }
     }
