@@ -20,7 +20,7 @@ namespace KRG
 
             if (m_Locks.Count == 1)
             {
-                Locked(true, lockingObject);
+                Locked?.Invoke(true, lockingObject);
             }
         }
 
@@ -33,7 +33,7 @@ namespace KRG
 
             if (m_Locks.Count == 0)
             {
-                Locked(false, lockingObject);
+                Locked?.Invoke(false, lockingObject);
             }
         }
     }
