@@ -28,6 +28,26 @@ namespace KRG
 
         public delegate void FacingDirectionHandler(Direction oldDirection, Direction newDirection);
 
+        // TIME PROPERTIES
+
+        public ITimeThread TimeThread
+        {
+            get
+            {
+                TimeThreadInstance tti;
+                switch (GameObjectType)
+                {
+                    case GameObjectType.UI:
+                        tti = TimeThreadInstance.Application;
+                        break;
+                    default:
+                        tti = TimeThreadInstance.Field;
+                        break;
+                }
+                return G.time.GetTimeThread(tti);
+            }
+        }
+
         // CHARACTER PROPERTIES
 
         public CharacterDossier CharacterDossier { get; set; }
@@ -97,6 +117,9 @@ namespace KRG
                     case GameObjectType.VFX:
                         InitVFX();
                         break;
+                    case GameObjectType.UI:
+                        InitUI();
+                        break;
                     case GameObjectType.None:
                         break;
                     default:
@@ -162,6 +185,8 @@ namespace KRG
         private void InitItem() { }
 
         private void InitVFX() { }
+
+        private void InitUI() { }
 
         private void OnFacingDirectionChange(Direction oldDirection, Direction newDirection)
         {
