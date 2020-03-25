@@ -13,6 +13,8 @@ namespace KRG
     )]
     public class ItemData : ScriptableObject
     {
+        // SERIALIZED FIELDS
+
         [Header("Item Data")]
 
         [SerializeField, Tooltip("The name of the item, as displayed to the player.")]
@@ -20,6 +22,10 @@ namespace KRG
 
         [SerializeField, Tooltip("Instruction for item use, as displayed to the player.")]
         protected string instruction = default;
+
+        [SerializeField, Tooltip("Consumable or Equipment? If Key Item, leave as None.")]
+        [Enum(typeof(ItemType))]
+        protected int m_ItemType = default;
 
         [SerializeField, Tooltip("If this represents a key item, set it here.")]
         [Enum(typeof(ItemID))]
@@ -44,14 +50,12 @@ namespace KRG
         [AudioEvent]
         public string sfxFmodEventOnCollect = default;
 
-
         [Header("Effectors")]
 
         [SerializeField]
         protected List<Effector> effectors = new List<Effector>();
 
-
-        // properties
+        // PROPERTIES
 
         public string DisplayName => displayName;
 
@@ -59,14 +63,15 @@ namespace KRG
 
         public bool IsKeyItem => m_KeyItem != 0;
 
+        public int ItemType => m_ItemType;
+
         public int KeyItemID => m_KeyItem;
 
         public bool ShowCardOnAcquire => showCardOnAcquire;
 
         public bool HasEffectors => effectors != null && effectors.Count > 0;
 
-
-        // MonoBehaviour methods
+        // MONOBEHAVIOUR METHODS
 
         protected virtual void OnValidate()
         {
@@ -84,8 +89,7 @@ namespace KRG
             autoCollect.floatValue = Mathf.Max(0, autoCollect.floatValue);
         }
 
-
-        // custom methods
+        // CUSTOM METHODS
 
         public Item SpawnFrom(ISpawn spawner)
         {

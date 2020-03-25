@@ -15,27 +15,37 @@ namespace KRG
          * When an Item is spawned via Loot, this should be a constructor parameter.
         */
 
+        // SERIALIZED FIELDS
+
         [Header("Item")]
 
-        [SerializeField]
         public ItemData itemData = default;
 
+        [SerializeField]
+        protected int m_ID = default;
 
         [Header("Visual Effects")]
 
         [SerializeField]
         protected Transform animatingBody = default;
 
-
-        // non-serialized fields
+        // NON-SERIALIZED FIELDS
 
         protected ISpawn spawner;
 
+        // PROPERTIES
 
-        // MonoBehaviour methods
+        public int ID => m_ID;
+
+        // MONOBEHAVIOUR METHODS
 
         protected virtual void OnValidate()
         {
+            if (m_ID == 0)
+            {
+                m_ID = GetInstanceID();
+            }
+
             if (itemData != null)
             {
                 itemData.itemPrefab = this;
@@ -85,8 +95,7 @@ namespace KRG
         }
         public virtual void OnTriggerExit(MonoBehaviour source, Collider other) { }
 
-
-        // custom methods
+        // CUSTOM METHODS
 
         public virtual void Init(ItemData itemData, ISpawn spawner)
         {
@@ -108,12 +117,8 @@ namespace KRG
             return true;
         }
 
-        protected virtual void StartAnimateBody()
-        {
-        }
+        protected virtual void StartAnimateBody() { }
 
-        protected virtual void EndAnimateBody()
-        {
-        }
+        protected virtual void EndAnimateBody() { }
     }
 }

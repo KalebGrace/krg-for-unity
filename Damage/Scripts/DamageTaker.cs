@@ -33,6 +33,7 @@ namespace KRG
 
         event System.Action _endInvulnerabilityHandlers;
 
+        protected Attacker _damageAttacker;
         protected AttackAbility _damageAttackAbility;
         protected Vector3 _damageAttackPositionCenter;
         protected Vector3 _damageHitPositionCenter;
@@ -125,34 +126,55 @@ namespace KRG
         // PRIMARY METHODS
 
         public bool Damage(
+            Attack attack,
+            Vector3 attackPositionCenter,
+            Vector3 hitPositionCenter
+        )
+        {
+            _damageAttackAbility = attack.attackAbility;
+            _damageAttacker = attack.attacker;
+            _damageAttackPositionCenter = attackPositionCenter;
+            _damageHitPositionCenter = hitPositionCenter;
+
+            return Damage();
+        }
+
+        public bool Damage(
+            Attacker attacker,
             AttackAbility attackAbility,
             Vector3 attackPositionCenter,
             Vector3 hitPositionCenter
         )
         {
+            _damageAttacker = attacker;
             _damageAttackAbility = attackAbility;
             _damageAttackPositionCenter = attackPositionCenter;
             _damageHitPositionCenter = hitPositionCenter;
 
+            return Damage();
+        }
+
+        private bool Damage()
+        {
             if (!CanBeDamaged()) return false;
 
-            DealDamage(attackAbility);
-            DamageDealt?.Invoke(this, attackAbility, attackPositionCenter, hitPositionCenter);
-            DisplayDamageVFX(attackAbility, attackPositionCenter, hitPositionCenter);
+            DealDamage(_damageAttackAbility);
+            DamageDealt?.Invoke(this, _damageAttackAbility, _damageAttackPositionCenter, _damageHitPositionCenter);
+            DisplayDamageVFX(_damageAttackAbility, _damageAttackPositionCenter, _damageHitPositionCenter);
             PlayDamageSFX();
 
-            CheckCustomPreKOC(attackAbility, attackPositionCenter, hitPositionCenter);
+            CheckCustomPreKOC(_damageAttackAbility, _damageAttackPositionCenter, _damageHitPositionCenter);
 
             if (IsKnockedOut)
             {
-                OnKnockedOut(attackPositionCenter);
+                OnKnockedOut(_damageAttackPositionCenter);
                 return true;
             }
 
-            CheckCustom(attackAbility, attackPositionCenter);
+            CheckCustom(_damageAttackAbility, _damageAttackPositionCenter);
 
-            CheckInvulnerability(attackAbility);
-            CheckKnockBack(attackAbility, attackPositionCenter);
+            CheckInvulnerability(_damageAttackAbility);
+            CheckKnockBack(_damageAttackAbility, _damageAttackPositionCenter);
 
             return true;
         }

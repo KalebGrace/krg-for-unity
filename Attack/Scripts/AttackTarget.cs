@@ -16,6 +16,7 @@ namespace KRG
 
         // private fields
 
+        private readonly Attack _attack;
         private readonly AttackAbility _attackAbility;
         private Vector3 _attackPositionCenter;
         private System.Action _damageDealtCallback;
@@ -42,9 +43,10 @@ namespace KRG
 
         // methods 1 - Public Methods
 
-        public AttackTarget(AttackAbility attackAbility, DamageTaker target, System.Action damageDealtCallback)
+        public AttackTarget(Attack attack, DamageTaker target, System.Action damageDealtCallback)
         {
-            _attackAbility = attackAbility;
+            _attack = attack;
+            _attackAbility = attack.attackAbility;
             this.target = target;
             _damageDealtCallback = damageDealtCallback;
         }
@@ -156,7 +158,8 @@ namespace KRG
 
         private void Damage()
         {
-            bool isHit = target.Damage(_attackAbility, _attackPositionCenter, _hitPositionCenter);
+            G.U.Assert(_attack != null);
+            bool isHit = target.Damage(_attack, _attackPositionCenter, _hitPositionCenter);
             if (isHit)
             {
                 _hitCount++;

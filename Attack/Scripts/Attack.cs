@@ -100,7 +100,7 @@ namespace KRG
             if (at == null)
             {
                 G.U.Assert(damageDealtHandler != null, "The damageDealtHandler must be set before collision occurs.");
-                at = new AttackTarget(_attackAbility, target, () => damageDealtHandler(this, target));
+                at = new AttackTarget(this, target, () => damageDealtHandler(this, target));
                 _attackTargets.Add(at);
             }
             Vector3 attackPositionCenter = m_Body.CenterTransform.position;
