@@ -85,7 +85,7 @@ namespace KRG
 
         public GameObjectBody Body => m_Body;
 
-        public virtual Transform centerTransform => m_Body.Refs.VisRect.transform;
+        public Transform CenterTransform => m_Body.CenterTransform;
 
         public virtual DamageProfile damageProfile
         {
@@ -110,6 +110,8 @@ namespace KRG
         protected virtual GraphicController GraphicController => m_Body.Refs.GraphicController;
 
         protected virtual Rigidbody Rigidbody => m_Body.Refs.Rigidbody;
+
+        GameObjectBody ISpawn.Invoker => _damageAttacker != null ? _damageAttacker.Body : null;
 
         // MONOBEHAVIOUR METHODS
 

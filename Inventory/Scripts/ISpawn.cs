@@ -4,7 +4,8 @@ namespace KRG
 {
     public interface ISpawn
     {
-        Transform centerTransform { get; }
-        Transform transform { get; }
+        Transform transform { get; } // the root transform of the spawner
+        Transform CenterTransform { get; }
+        GameObjectBody Invoker { get; }
     }
 }

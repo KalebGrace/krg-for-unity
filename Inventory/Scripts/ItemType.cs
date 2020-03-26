@@ -6,5 +6,6 @@
         None = 0,
         Consumable = 1,
         Equipment = 2,
+        KeyItem = 3,
     }
 }

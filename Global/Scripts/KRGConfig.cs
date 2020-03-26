@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 using UnityEngine.Serialization;
 
 #if NS_DG_TWEENING
@@ -85,10 +86,7 @@ namespace KRG
 
         [Header("Inventory (KRG)")]
 
-        [SerializeField]
-        ItemData[] _keyItemDataReferences = default;
-
-        public ItemData[] KeyItemDataReferences => (ItemData[])_keyItemDataReferences.Clone();
+        public List<ItemData> ItemDataReferences = default;
 
         [SerializeField]
         AutoMapPaletteData _autoMapPaletteData = default;

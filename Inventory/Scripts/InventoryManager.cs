@@ -22,7 +22,7 @@ namespace KRG
         private Dictionary<int, float> m_Stats
           = new Dictionary<int, float>();
 
-        public delegate void ItemAcquiredHandler(int itemID, bool isNewlyAcquired);
+        public delegate void ItemAcquiredHandler(ItemData itemData, bool isNewlyAcquired);
 
         public event ItemAcquiredHandler ItemAcquired;
 
@@ -75,7 +75,14 @@ namespace KRG
 
         public bool HasKeyItem(ItemID itemID)
         {
-            return HasKeyItem((int)itemID);
+            return HasKeyItem(GetItemData((int)itemID));
+        }
+        public bool HasKeyItem(ItemData itemData)
+        {
+            return itemData != null
+                && itemData.IsKeyItem
+                && m_Items.ContainsKey(itemData.ItemID)
+                && m_Items[itemData.ItemID] >= 1;
         }
 
         public void AddStatVal(StatID statID, float value, float defaultValue = 0)
@@ -99,7 +106,7 @@ namespace KRG
         }
 
 
-        // MAIN METHODS (PROTECTED)
+        // MAIN METHODS (PROTECTED & PRIVATE)
 
         protected void AddItemQty(int itemID, float quantity, float defaultQuantity = 0)
         {
@@ -125,11 +132,6 @@ namespace KRG
             ChangeItemQty(itemID, oldQuantity, newQuantity);
         }
 
-        public bool HasKeyItem(int itemID)
-        {
-            return m_Items.ContainsKey(itemID) && m_Items[itemID] >= 1;
-        }
-
         private void ChangeItemQty(int itemID, float oldQuantity, float newQuantity)
         {
             ItemData itemData = GetItemData(itemID);
@@ -145,19 +147,24 @@ namespace KRG
 
             if (newQuantity > oldQuantity)
             {
-                ItemAcquired?.Invoke(itemID, true);
+                ItemAcquired?.Invoke(itemData, true);
 
                 if (hasKeyItem)
                 {
                     if (m_KeyItemAcquiredHandlers.ContainsKey(itemID))
                     {
-                        m_KeyItemAcquiredHandlers[itemID]?.Invoke(itemID, true);
+                        m_KeyItemAcquiredHandlers[itemID]?.Invoke(itemData, true);
                         m_KeyItemAcquiredHandlers.Remove(itemID);
                     }
 
                     G.save.SaveCheckpoint();
                 }
             }
+        }
+
+        protected bool HasKeyItem(int itemID)
+        {
+            return HasKeyItem(GetItemData(itemID));
         }
 
         protected void AddStatVal(int statID, float value, float defaultValue = 0)
@@ -184,7 +191,7 @@ namespace KRG
 
         // MAIN METHODS 3
 
-        public ItemData GetItemData(int itemID)
+        protected ItemData GetItemData(int itemID)
         {
             return m_ItemDataDictionary.ContainsKey(itemID) ? m_ItemDataDictionary[itemID] : null;
         }
@@ -199,7 +206,7 @@ namespace KRG
         {
             if (HasKeyItem(itemID))
             {
-                handler?.Invoke(itemID, false);
+                handler?.Invoke(GetItemData(itemID), false);
             }
             else
             {
@@ -302,13 +309,18 @@ namespace KRG
 
         private void BuildItemDataDictionary()
         {
-            var refs = config.KeyItemDataReferences;
-
-            for (int i = 0; i < refs.Length; ++i)
+            var refs = config.ItemDataReferences;
+            if (refs != null)
             {
-                ItemData id = refs[i];
-
-                m_ItemDataDictionary.Add(id.KeyItemID, id);
+                for (int i = 0; i < refs.Count; ++i)
+                {
+                    ItemData itemData = refs[i];
+                    int id = itemData.ItemID;
+                    if (id != (int)ItemID.None)
+                    {
+                        m_ItemDataDictionary.Add(id, itemData);
+                    }
+                }
             }
         }
     }

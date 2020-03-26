@@ -4,52 +4,32 @@ namespace KRG
 {
     public class Item : MonoBehaviour, ICollider
     {
-        // STATIC EVENTS
-
-        public static event System.Action<Item, Collider> ItemCollected;
-
-        //TODO: later
-        /*
-         * MAKE SURE that an item has a (non-serialized) property called "owner" that it defaults to if auto-collected.
-         * Also, the default of this default should be the player character.
-         * When an Item is spawned via Loot, this should be a constructor parameter.
-        */
-
         // SERIALIZED FIELDS
 
         [Header("Item")]
 
-        public ItemData itemData = default;
+        [SerializeField]
+        protected ItemData itemData = default;
 
         [SerializeField]
-        protected int m_ID = default;
+        protected int m_InstanceID = default;
 
         [Header("Visual Effects")]
 
         [SerializeField]
         protected Transform animatingBody = default;
 
-        // NON-SERIALIZED FIELDS
-
-        protected ISpawn spawner;
-
         // PROPERTIES
 
-        public int ID => m_ID;
+        public int InstanceID => m_InstanceID;
 
         // MONOBEHAVIOUR METHODS
 
         protected virtual void OnValidate()
         {
-            if (m_ID == 0)
+            if (m_InstanceID == 0)
             {
-                m_ID = GetInstanceID();
-            }
-
-            if (itemData != null)
-            {
-                itemData.itemPrefab = this;
-                //TODO: set as dirty?
+                m_InstanceID = GetInstanceID();
             }
         }
 
@@ -57,7 +37,7 @@ namespace KRG
 
         protected virtual void Start()
         {
-            if (itemData.IsKeyItem && G.inv.HasKeyItem(itemData.KeyItemID))
+            if (G.inv.HasKeyItem(itemData))
             {
                 // player already has this key item
                 gameObject.Dispose();
@@ -78,14 +58,14 @@ namespace KRG
         }
         public virtual void OnTriggerEnter(MonoBehaviour source, Collider other)
         {
-            if (source.GetComponent<Collider>().isTrigger && OnCollect(other))
+            if (this != null && source != null)
             {
-                ItemCollected?.Invoke(this, other);
-                if (!string.IsNullOrWhiteSpace(itemData.sfxFmodEventOnCollect))
+                Collider itemCollider = source.GetComponent<Collider>();
+                if (itemCollider != null && itemCollider.isTrigger && itemData.CanBeCollectedBy(other))
                 {
-                    G.audio.PlaySFX(itemData.sfxFmodEventOnCollect, transform.position);
+                    itemData.Collect(other);
+                    gameObject.Dispose();
                 }
-                gameObject.Dispose();
             }
         }
 
@@ -96,26 +76,6 @@ namespace KRG
         public virtual void OnTriggerExit(MonoBehaviour source, Collider other) { }
 
         // CUSTOM METHODS
-
-        public virtual void Init(ItemData itemData, ISpawn spawner)
-        {
-            this.itemData = itemData;
-            this.spawner = spawner;
-        }
-
-        public virtual bool OnCollect(Collider other)
-        {
-            //TODO: differentiate between inventory items and instant-use items
-            return OnUse(other);
-        }
-
-        public virtual bool OnUse(Collider other)
-        {
-            //TODO: differentiate between the character, etc. using the item
-            if (other.gameObject.tag != "Player") return false;
-            //TODO: do effectors as appropriate
-            return true;
-        }
 
         protected virtual void StartAnimateBody() { }
 

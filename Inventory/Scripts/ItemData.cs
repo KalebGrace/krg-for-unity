@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+using UnityEngine;
+using UnityEngine.Serialization;
 using System.Collections.Generic;
 
 namespace KRG
@@ -13,6 +14,10 @@ namespace KRG
     )]
     public class ItemData : ScriptableObject
     {
+        // STATIC EVENTS
+
+        public static event System.Action<ItemData, GameObjectBody> ItemCollected;
+
         // SERIALIZED FIELDS
 
         [Header("Item Data")]
@@ -23,32 +28,34 @@ namespace KRG
         [SerializeField, Tooltip("Instruction for item use, as displayed to the player.")]
         protected string instruction = default;
 
-        [SerializeField, Tooltip("Consumable or Equipment? If Key Item, leave as None.")]
-        [Enum(typeof(ItemType))]
+        [SerializeField, Enum(typeof(ItemID)), FormerlySerializedAs("m_KeyItem")]
+        protected int m_ItemID = default;
+
+        [SerializeField, Enum(typeof(ItemType))]
         protected int m_ItemType = default;
 
-        [SerializeField, Tooltip("If this represents a key item, set it here.")]
-        [Enum(typeof(ItemID))]
-        protected int m_KeyItem = default;
+        [Header("On Spawn")]
 
-        [SerializeField, Tooltip("A prefab that has an Item component on its root GameObject. " +
-            "This is used to instantiate a physical GameObject for this item in the world.")]
-        public Item itemPrefab = default;
+        [SerializeField, Tooltip("The prefab of the item to spawn.")]
+        protected GameObject m_ItemPrefab = default;
 
-        //will the item be picked up automatically? (makes this an "auto-collected" item)
-        //and if so, how long after the item is instantiated will the item be picked up? (delay in seconds)
-        [SerializeField, Tooltip("Will this be picked up automatically? " +
-            "And if so, with how much delay (in seconds)?")]
-        [LabelText("Auto-Collect (+Delay)")]
-        [BoolObjectDisable(false)]
-        protected BoolFloat autoCollect = default;
+        [SerializeField, Tooltip(
+            "Instead of spawning, the player that caused this item to spawn will collect it automatically.")]
+        protected bool m_AutoPlayerCollect = default;
 
-        [SerializeField, Tooltip("Show item title card upon acquiring. Only applies to key items.")]
+        [Header("On Collect")]
+
+        [SerializeField, Tooltip(
+            "Consumables: Instead of this item going to the inventory, the owner will consume it automatically. -- " +
+            "Equippables: The item will go to the inventory and the owner will equip it automatically.")]
+        protected bool m_AutoOwnerUse = default;
+
+        [SerializeField, Tooltip("Show item title card upon acquiring.")]
         protected bool showCardOnAcquire = default;
 
         [SerializeField, Tooltip("Play this sound effect upon collecting this item.")]
         [AudioEvent]
-        public string sfxFmodEventOnCollect = default;
+        protected string sfxFmodEventOnCollect = default;
 
         [Header("Effectors")]
 
@@ -61,63 +68,69 @@ namespace KRG
 
         public string Instruction => instruction;
 
-        public bool IsKeyItem => m_KeyItem != 0;
+        public bool IsKeyItem => ItemType == (int)KRG.ItemType.KeyItem;
+
+        public int ItemID => m_ItemID;
 
         public int ItemType => m_ItemType;
 
-        public int KeyItemID => m_KeyItem;
-
         public bool ShowCardOnAcquire => showCardOnAcquire;
-
-        public bool HasEffectors => effectors != null && effectors.Count > 0;
 
         // MONOBEHAVIOUR METHODS
 
         protected virtual void OnValidate()
         {
-            if (displayName == null || displayName.Trim() == "")
+            if (string.IsNullOrWhiteSpace(displayName))
             {
                 displayName = name;
             }
-
-            if (itemPrefab != null)
-            {
-                itemPrefab.itemData = this;
-                //TODO: set as dirty?
-            }
-
-            autoCollect.floatValue = Mathf.Max(0, autoCollect.floatValue);
         }
 
         // CUSTOM METHODS
 
         public Item SpawnFrom(ISpawn spawner)
         {
-            if (autoCollect.boolValue && autoCollect.floatValue <= 0)
+            GameObjectBody invoker = spawner.Invoker;
+
+            if (m_AutoPlayerCollect && invoker != null && invoker.IsPlayerCharacter)
             {
-                return InstaCollect(spawner);
+                Collect(invoker);
+                return null;
+            }
+            else if (m_ItemPrefab == null)
+            {
+                G.U.Err("Attempted to spawn item with no prefab.", this, spawner);
+                return null;
             }
             else
             {
-                return SpawnFoSho(spawner);
+                Transform parent = spawner.transform.parent;
+                Vector3 position = spawner.CenterTransform.position;
+
+                GameObject itemInstance = Instantiate(m_ItemPrefab, parent);
+                itemInstance.transform.position = itemInstance.transform.localPosition + position;
+
+                return itemInstance.GetComponent<Item>();
             }
         }
 
-        protected virtual Item InstaCollect(ISpawn spawner)
+        public virtual bool CanBeCollectedBy(Collider other)
         {
-            return SpawnFoSho(spawner);
+            return other.gameObject.tag == "Player";
         }
 
-        protected virtual Item SpawnFoSho(ISpawn spawner)
+        public virtual void Collect(Collider other)
         {
-            Transform parent = spawner.transform.parent;
-            Vector3 position = spawner.centerTransform.position;
+            Collect(other.GetComponent<GameObjectBody>());
+        }
+        public virtual void Collect(GameObjectBody owner)
+        {
+            if (!string.IsNullOrWhiteSpace(sfxFmodEventOnCollect))
+            {
+                G.audio.PlaySFX(sfxFmodEventOnCollect, owner.transform.position);
+            }
 
-            Item item = Instantiate(itemPrefab, parent);
-            item.transform.position = item.transform.localPosition + position;
-            item.Init(this, spawner);
-
-            return item;
+            ItemCollected?.Invoke(this, owner);
         }
     }
 }

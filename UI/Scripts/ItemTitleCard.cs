@@ -11,9 +11,6 @@ namespace KRG
         public TextMeshProUGUI itemDisplayNameText;
         public TextMeshProUGUI itemInstructionText;
 
-        [AudioEvent]
-        public string sfxFmodEventOnShow;
-
         private CanvasGroup canvasGroup;
 
         private ITimeThread ttApplication;
@@ -35,16 +32,12 @@ namespace KRG
             G.inv.ItemAcquired += OnItemAcquired;
         }
 
-        private void OnItemAcquired(int itemID, bool isNewlyAcquired)
+        private void OnItemAcquired(ItemData itemData, bool isNewlyAcquired)
         {
-            if (!isNewlyAcquired) return;
+            if (!isNewlyAcquired || itemData == null || !itemData.ShowCardOnAcquire) return;
 
-            ItemData id = G.inv.GetItemData(itemID);
-
-            if (id == null || !id.ShowCardOnAcquire) return;
-
-            itemDisplayNameText.text = id.DisplayName;
-            itemInstructionText.text = id.Instruction;
+            itemDisplayNameText.text = itemData.DisplayName;
+            itemInstructionText.text = itemData.Instruction;
 
             Show();
 
@@ -52,11 +45,6 @@ namespace KRG
             ttField.QueuePause(PAUSE_KEY);
 
             ttApplication.AddTrigger(WAIT_TIME, OnWaitDone);
-
-            if (!string.IsNullOrEmpty(sfxFmodEventOnShow))
-            {
-                G.audio.PlaySFX(sfxFmodEventOnShow);
-            }
         }
 
         private void OnWaitDone(TimeTrigger tt)
