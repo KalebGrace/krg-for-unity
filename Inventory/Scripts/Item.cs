@@ -19,19 +19,7 @@ namespace KRG
         [SerializeField]
         protected Transform animatingBody = default;
 
-        // PROPERTIES
-
-        public int InstanceID => m_InstanceID;
-
         // MONOBEHAVIOUR METHODS
-
-        protected virtual void OnValidate()
-        {
-            if (m_InstanceID == 0)
-            {
-                m_InstanceID = GetInstanceID();
-            }
-        }
 
         protected virtual void Awake() { }
 
