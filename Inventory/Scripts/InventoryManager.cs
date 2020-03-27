@@ -7,8 +7,15 @@ namespace KRG
     {
         public override float priority => 130;
 
+        // DELEGATES & EVENTS
 
-        // fields, delegates, events : ITEMS & STATS
+        public delegate void ItemAcquiredHandler(ItemData itemData, bool isNewlyAcquired);
+
+        public event System.Action AutoMapSaveDataRequested;
+        public event System.Action AutoMapSaveDataProvided;
+        public event ItemAcquiredHandler ItemAcquired;
+
+        // FIELDS
 
         readonly Dictionary<int, ItemAcquiredHandler> m_KeyItemAcquiredHandlers
            = new Dictionary<int, ItemAcquiredHandler>();
@@ -16,25 +23,16 @@ namespace KRG
         readonly Dictionary<int, ItemData> m_ItemDataDictionary
            = new Dictionary<int, ItemData>();
 
+        private List<int> m_ItemInstancesCollected = new List<int>();
+
         private Dictionary<int, float> m_Items
           = new Dictionary<int, float>();
 
         private Dictionary<int, float> m_Stats
           = new Dictionary<int, float>();
 
-        public delegate void ItemAcquiredHandler(ItemData itemData, bool isNewlyAcquired);
-
-        public event ItemAcquiredHandler ItemAcquired;
-
-
-        // fields & events : AUTOMAPS
-
         readonly Dictionary<int, AutoMapSaveData> m_AutoMaps
            = new Dictionary<int, AutoMapSaveData>();
-
-        public event System.Action AutoMapSaveDataRequested;
-        public event System.Action AutoMapSaveDataProvided;
-
 
         // MONOBEHAVIOUR-LIKE METHODS
 
@@ -50,84 +48,26 @@ namespace KRG
             G.save.Unsubscribe(this);
         }
 
+        // ITEM MODIFYING METHODS
 
-        // MAIN METHODS (PUBLIC)
-
-        public void AddItemQty(ItemID itemID, float quantity, float defaultQuantity = 0)
+        public void AddItemInstanceCollected(int instanceID)
         {
-            AddItemQty((int)itemID, quantity, defaultQuantity);
+            if (instanceID != 0)
+            {
+                m_ItemInstancesCollected.Add(instanceID);
+            }
         }
 
-        public float GetItemQty(ItemID itemID, float defaultQuantity = 0)
-        {
-            return GetItemQty((int)itemID, defaultQuantity);
-        }
-
-        public bool HasItemQty(ItemID itemID)
-        {
-            return HasItemQty((int)itemID);
-        }
-
-        public void SetItemQty(ItemID itemID, float quantity)
-        {
-            SetItemQty((int)itemID, quantity);
-        }
-
-        public bool HasKeyItem(ItemID itemID)
-        {
-            return HasKeyItem(GetItemData((int)itemID));
-        }
-        public bool HasKeyItem(ItemData itemData)
-        {
-            return itemData != null
-                && itemData.IsKeyItem
-                && m_Items.ContainsKey(itemData.ItemID)
-                && m_Items[itemData.ItemID] >= 1;
-        }
-
-        public void AddStatVal(StatID statID, float value, float defaultValue = 0)
-        {
-            AddStatVal((int)statID, value, defaultValue);
-        }
-
-        public float GetStatVal(StatID statID, float defaultValue = 0)
-        {
-            return GetStatVal((int)statID, defaultValue);
-        }
-
-        public bool HasStatVal(StatID statID)
-        {
-            return HasStatVal((int)statID);
-        }
-
-        public void SetStatVal(StatID statID, float value)
-        {
-            SetStatVal((int)statID, value);
-        }
-
-
-        // MAIN METHODS (PROTECTED & PRIVATE)
-
-        protected void AddItemQty(int itemID, float quantity, float defaultQuantity = 0)
+        public void AddItemQty(int itemID, float quantity, float defaultQuantity = 0)
         {
             float oldQuantity = GetItemQty(itemID, defaultQuantity);
             float newQuantity = quantity + oldQuantity;
             ChangeItemQty(itemID, oldQuantity, newQuantity);
         }
 
-        protected float GetItemQty(int itemID, float defaultQuantity = 0)
+        public void SetItemQty(int itemID, float quantity, float defaultQuantity = 0)
         {
-            return m_Items.ContainsKey(itemID) ? m_Items[itemID] : defaultQuantity;
-        }
-
-        protected bool HasItemQty(int itemID)
-        {
-            return m_Items.ContainsKey(itemID);
-        }
-
-        protected void SetItemQty(int itemID, float quantity)
-        {
-            float oldQuantity = GetItemQty(itemID);
+            float oldQuantity = GetItemQty(itemID, defaultQuantity);
             float newQuantity = quantity;
             ChangeItemQty(itemID, oldQuantity, newQuantity);
         }
@@ -162,6 +102,73 @@ namespace KRG
             }
         }
 
+        // PUBLIC ITEM QUANTITY METHODS
+
+        public float GetItemQty(ItemID itemID, float defaultQuantity = 0)
+        {
+            return GetItemQty((int)itemID, defaultQuantity);
+        }
+
+        public bool HasItemQty(ItemID itemID)
+        {
+            return HasItemQty((int)itemID);
+        }
+
+        // PUBLIC STAT VALUE METHODS
+
+        public void AddStatVal(StatID statID, float value, float defaultValue = 0)
+        {
+            AddStatVal((int)statID, value, defaultValue);
+        }
+
+        public float GetStatVal(StatID statID, float defaultValue = 0)
+        {
+            return GetStatVal((int)statID, defaultValue);
+        }
+
+        public bool HasStatVal(StatID statID)
+        {
+            return HasStatVal((int)statID);
+        }
+
+        public void SetStatVal(StatID statID, float value)
+        {
+            SetStatVal((int)statID, value);
+        }
+
+        // PUBLIC KEY ITEM METHODS
+
+        public bool HasKeyItem(ItemID itemID)
+        {
+            return HasKeyItem(GetItemData((int)itemID));
+        }
+        public bool HasKeyItem(ItemData itemData)
+        {
+            return itemData != null
+                && itemData.IsKeyItem
+                && m_Items.ContainsKey(itemData.ItemID)
+                && m_Items[itemData.ItemID] >= 1;
+        }
+
+        // PUBLIC ITEM INSTANCE COLLECTED METHODS
+
+        public bool HasItemInstanceCollected(int instanceID)
+        {
+            return instanceID != 0 && m_ItemInstancesCollected.Contains(instanceID);
+        }
+
+        // MAIN METHODS (PROTECTED & PRIVATE)
+
+        protected float GetItemQty(int itemID, float defaultQuantity = 0)
+        {
+            return m_Items.ContainsKey(itemID) ? m_Items[itemID] : defaultQuantity;
+        }
+
+        protected bool HasItemQty(int itemID)
+        {
+            return m_Items.ContainsKey(itemID);
+        }
+
         protected bool HasKeyItem(int itemID)
         {
             return HasKeyItem(GetItemData(itemID));
@@ -187,7 +194,6 @@ namespace KRG
         {
             m_Stats[statID] = value;
         }
-
 
         // MAIN METHODS 3
 
@@ -274,11 +280,11 @@ namespace KRG
             }
         }
 
-
         // ISAVE METHODS
 
         public virtual void OnSaving(ref SaveFile sf)
         {
+            sf.itemInstancesCollected = new List<int>(m_ItemInstancesCollected);
             sf.items = new Dictionary<int, float>(m_Items);
             sf.stats = new Dictionary<int, float>(m_Stats);
 
@@ -289,6 +295,7 @@ namespace KRG
 
         public virtual void OnLoading(SaveFile sf)
         {
+            m_ItemInstancesCollected = new List<int>(sf.itemInstancesCollected);
             m_Items = new Dictionary<int, float>(sf.items);
             m_Stats = new Dictionary<int, float>(sf.stats);
 
@@ -303,7 +310,6 @@ namespace KRG
                 AutoMapSaveDataProvided?.Invoke();
             }
         }
-
 
         // PRIVATE METHODS
 

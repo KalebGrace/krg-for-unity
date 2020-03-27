@@ -94,7 +94,7 @@ namespace KRG
 
             if (m_AutoPlayerCollect && invoker != null && invoker.IsPlayerCharacter)
             {
-                Collect(invoker);
+                Collect(invoker, 0);
                 return null;
             }
             else if (m_ItemPrefab == null)
@@ -110,21 +110,53 @@ namespace KRG
                 GameObject itemInstance = Instantiate(m_ItemPrefab, parent);
                 itemInstance.transform.position = itemInstance.transform.localPosition + position;
 
-                return itemInstance.GetComponent<Item>();
+                Item item = itemInstance.GetComponent<Item>();
+                if (item != null) item.SpawnInit();
+                return item;
             }
         }
 
-        public virtual bool CanBeCollectedBy(Collider other)
+        public virtual bool CanCollect(Collider other, int instanceID)
         {
             return other.gameObject.tag == "Player";
         }
 
-        public virtual void Collect(Collider other)
+        public virtual void Collect(Collider other, int instanceID)
         {
-            Collect(other.GetComponent<GameObjectBody>());
+            Collect(other.GetComponent<GameObjectBody>(), instanceID);
         }
-        public virtual void Collect(GameObjectBody owner)
+        public virtual void Collect(GameObjectBody owner, int instanceID)
         {
+            AddCollectionRecord(owner, instanceID);
+
+            switch (m_ItemType)
+            {
+                case (int)OSH.ItemType.Consumable:
+                    if (m_AutoOwnerUse)
+                    {
+                        DoEffects((int)EffectorCondition.Use, owner);
+                    }
+                    else
+                    {
+                        AddToInventory(owner, instanceID);
+                    }
+                    break;
+                case (int)OSH.ItemType.Equipment:
+
+                    AddToInventory(owner, instanceID);
+
+                    if (m_AutoOwnerUse)
+                    {
+                        DoEffects((int)EffectorCondition.Equip, owner);
+                    }
+                    break;
+                default:
+
+                    AddToInventory(owner, instanceID);
+
+                    break;
+            }
+
             if (!string.IsNullOrWhiteSpace(sfxFmodEventOnCollect))
             {
                 G.audio.PlaySFX(sfxFmodEventOnCollect, owner.transform.position);
@@ -132,5 +164,23 @@ namespace KRG
 
             ItemCollected?.Invoke(this, owner);
         }
+
+        private void AddCollectionRecord(GameObjectBody owner, int instanceID)
+        {
+            if (owner == G.obj.FirstPlayerCharacter)
+            {
+                G.inv.AddItemInstanceCollected(instanceID);
+            }
+        }
+
+        private void AddToInventory(GameObjectBody owner, int instanceID)
+        {
+            if (owner == G.obj.FirstPlayerCharacter)
+            {
+                G.inv.AddItemQty(m_ItemID, 1);
+            }
+        }
+
+        protected virtual void DoEffects(int condition, GameObjectBody self) { }
     }
 }

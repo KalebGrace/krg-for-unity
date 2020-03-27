@@ -97,7 +97,10 @@ namespace KRG
 
     public enum EffectorCondition
     {
+        // 0 ~ 99 reserved for KRG
         None = 0,
+        Use = 1,
+        Equip = 2,
     }
 
     public enum EffectorSubject

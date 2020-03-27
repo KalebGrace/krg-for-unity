@@ -9,7 +9,7 @@ namespace KRG
     /// </summary>
     public struct SaveFile
     {
-        public const int LATEST_VERSION = 2;
+        public const int LATEST_VERSION = 3;
 
         public int version;
         public SaveContext saveContext;
@@ -20,6 +20,7 @@ namespace KRG
         public int[] acquiredItems; // DEPRECATED as of version 2
         public AutoMapSaveData[] autoMaps;
         public Dictionary<int, int> switchStates;
+        public List<int> itemInstancesCollected;
         public Dictionary<int, float> items;
         public Dictionary<int, float> stats;
 
@@ -30,6 +31,7 @@ namespace KRG
                 version = LATEST_VERSION,
                 saveContext = sc,
                 switchStates = new Dictionary<int, int>(),
+                itemInstancesCollected = new List<int>(),
                 items = new Dictionary<int, float>(),
                 stats = new Dictionary<int, float>()
             };
@@ -70,6 +72,9 @@ namespace KRG
                             }
                             acquiredItems = null;
                         }
+                        break;
+                    case 2:
+                        itemInstancesCollected = new List<int>();
                         break;
                 }
                 ++version;
