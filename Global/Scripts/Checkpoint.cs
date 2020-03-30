@@ -7,7 +7,7 @@ namespace KRG
     //[ExecuteInEditMode]
     public class Checkpoint : MonoBehaviour
     {
-        public LetterName checkpointName;
+        public AlphaBravo checkpointName;
 
         public bool autoNameGameObject = true;
 
@@ -30,9 +30,9 @@ namespace KRG
         }
 
         /*
-        private LetterName previousCheckpointName;
+        private AlphaBravo previousCheckpointName;
 
-        private static readonly Dictionary<LetterName, Checkpoint> dict = new Dictionary<LetterName, Checkpoint>();
+        private static readonly Dictionary<AlphaBravo, Checkpoint> dict = new Dictionary<AlphaBravo, Checkpoint>();
 
         private void Awake()
         {
@@ -97,9 +97,9 @@ namespace KRG
 
         public void AutoIncrement()
         {
-            for (int i = 1; i <= (int)LetterName.Last; ++i)
+            for (int i = 1; i <= (int)AlphaBravo.Last; ++i)
             {
-                checkpointName = (LetterName)i;
+                checkpointName = (AlphaBravo)i;
 
                 if (!dict.ContainsKey(checkpointName))
                 {

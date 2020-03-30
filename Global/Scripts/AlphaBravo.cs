@@ -1,6 +1,6 @@
 ﻿namespace KRG
 {
-    public enum LetterName
+    public enum AlphaBravo
     {
         Alpha = 1,
         Bravo = 2,
@@ -14,6 +14,6 @@
         Juliett = 10,
         Kilo = 11,
         Last = 12,
-        //if you need more, consider a different approach
+        // if you need more, consider a different approach
     }
 }

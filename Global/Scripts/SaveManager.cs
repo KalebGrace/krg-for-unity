@@ -84,13 +84,13 @@ namespace KRG
             return m_CurrentCheckpoint.position;
         }
 
-        public bool IsCurrentCheckpoint(LetterName checkpointName)
+        public bool IsCurrentCheckpoint(AlphaBravo checkpointName)
         {
             return (int)checkpointName == m_CurrentCheckpoint.checkpointId &&
                  G.app.GameplaySceneId == m_CurrentCheckpoint.gameplaySceneId;
         }
 
-        public void SaveCheckpoint(LetterName checkpointName = 0)
+        public void SaveCheckpoint(AlphaBravo checkpointName = 0)
         {
             lock (m_SaveLock)
             {
