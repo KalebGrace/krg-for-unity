@@ -4,8 +4,8 @@ namespace KRG
 {
     public interface ICollider
     {
-        void OnTriggerEnter(MonoBehaviour source, Collider other);
+        void OnTriggerEnter(MonoBehaviour source, int sourceID, Collider other);
 
-        void OnTriggerExit(MonoBehaviour source, Collider other);
+        void OnTriggerExit(MonoBehaviour source, int sourceID, Collider other);
     }
 }

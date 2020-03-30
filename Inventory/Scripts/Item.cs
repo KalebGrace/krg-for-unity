@@ -49,9 +49,9 @@ namespace KRG
 
         private void OnTriggerEnter(Collider other)
         {
-            OnTriggerEnter(this, other);
+            OnTriggerEnter(this, 0, other);
         }
-        public virtual void OnTriggerEnter(MonoBehaviour source, Collider other)
+        public virtual void OnTriggerEnter(MonoBehaviour source, int sourceID, Collider other)
         {
             if (this == null) return; // if we destroy this later, we don't want this running again
             if (source == null) return; // if for some reason the source was unreported, it's not a collect
@@ -65,9 +65,9 @@ namespace KRG
 
         private void OnTriggerExit(Collider other)
         {
-            OnTriggerExit(this, other);
+            OnTriggerExit(this, 0, other);
         }
-        public virtual void OnTriggerExit(MonoBehaviour source, Collider other) { }
+        public virtual void OnTriggerExit(MonoBehaviour source, int sourceID, Collider other) { }
 
         // CUSTOM METHODS
 
