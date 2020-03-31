@@ -50,8 +50,13 @@ namespace KRG
             "Equippables: The item will go to the inventory and the owner will equip it automatically.")]
         protected bool m_AutoOwnerUse = default;
 
-        [SerializeField, Tooltip("Show item title card upon acquiring.")]
-        protected bool showCardOnAcquire = default;
+        [SerializeField, Tooltip(
+            "Show the small item info panel upon collecting this item.")]
+        protected bool m_ShowInfoPanelOnCollect = true;
+
+        [SerializeField, FormerlySerializedAs("showCardOnAcquire"), Tooltip(
+            "Show the large item title card upon collecting this item.")]
+        protected bool m_ShowTitleCardOnCollect = default;
 
         [SerializeField, Tooltip("Play this sound effect upon collecting this item.")]
         [AudioEvent]
@@ -74,7 +79,9 @@ namespace KRG
 
         public int ItemType => m_ItemType;
 
-        public bool ShowCardOnAcquire => showCardOnAcquire;
+        public bool ShowInfoPanelOnCollect => m_ShowInfoPanelOnCollect;
+
+        public bool ShowTitleCardOnCollect => m_ShowTitleCardOnCollect;
 
         // MONOBEHAVIOUR METHODS
 

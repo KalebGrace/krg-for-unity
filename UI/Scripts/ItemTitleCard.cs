@@ -34,7 +34,7 @@ namespace KRG
 
         private void OnItemAcquired(ItemData itemData, bool isNewlyAcquired)
         {
-            if (!isNewlyAcquired || itemData == null || !itemData.ShowCardOnAcquire) return;
+            if (!isNewlyAcquired || itemData == null || !itemData.ShowTitleCardOnCollect) return;
 
             itemDisplayNameText.text = itemData.DisplayName;
             itemInstructionText.text = itemData.Instruction;
