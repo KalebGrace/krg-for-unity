@@ -31,8 +31,6 @@ namespace KRG
         [SerializeField]
         private GameObjectBody m_Body = default;
 
-        event System.Action _endInvulnerabilityHandlers;
-
         protected Attacker _damageAttacker;
         protected AttackAbility _damageAttackAbility;
         protected Vector3 _damageAttackPositionCenter;
@@ -249,16 +247,6 @@ namespace KRG
 
         // INVULNERABILITY METHODS
 
-        public void AddEndInvulnerabilityHandler(System.Action handler)
-        {
-            _endInvulnerabilityHandlers += handler;
-        }
-
-        public void RemoveEndInvulnerabilityHandler(System.Action handler)
-        {
-            _endInvulnerabilityHandlers -= handler;
-        }
-
         protected virtual void CheckInvulnerability(AttackAbility attackAbility)
         {
             if (!attackAbility.causesInvulnerability || _damageProfile.invulnerabilityTime <= 0) return;
@@ -293,7 +281,6 @@ namespace KRG
         {
             _invulnerabilityTimeTrigger = null;
             EndInvulnerabilityVFX();
-            ObjectManager.InvokeEventActions(ref _endInvulnerabilityHandlers);
         }
 
         public virtual bool IsInvulnerableTo(AttackAbility attackAbility)

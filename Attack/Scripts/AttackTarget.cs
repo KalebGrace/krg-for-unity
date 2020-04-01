@@ -67,7 +67,7 @@ namespace KRG
             if (target.IsInvulnerableTo(_attackAbility))
             {
                 _isDelayedDueToInvulnerability = true;
-                target.AddEndInvulnerabilityHandler(DelayCallback);
+                // actually no delay, just ignore
             }
             else if (_attackAbility.timeThread.isPaused)
             {
@@ -85,7 +85,7 @@ namespace KRG
             if (_isDelayedDueToInvulnerability)
             {
                 _isDelayedDueToInvulnerability = false;
-                target.RemoveEndInvulnerabilityHandler(DelayCallback);
+                // actually no delay, just ignore
             }
             else if (_isDelayedDueToTimeThreadPause)
             {
