@@ -4,16 +4,6 @@ namespace KRG
 {
     public class AttackTarget
     {
-        // private constants
-
-        private const string _infiniteLoopError = "To prevent an infinite loop, "
-                                          + "damage has ceased for the remainder of this collision. "
-                                          + "Consider doing one or more of the following: "
-                                          + "1. Set AttackAbility Hp Damage Rate to true. "
-                                          + "2. Set AttackAbility Max Hits Per Target to true. "
-                                          + "3. Set AttackAbility Causes Invulnerability to true, "
-                                          + "and DamageProfile Invulnerability Time to a positive value.";
-
         // private fields
 
         private readonly Attack _attack;
@@ -33,7 +23,7 @@ namespace KRG
             get
             {
                 //has the "hit" count reached the maximum number of "hits" (i.e. damage method calls)?
-                return _attackAbility.hasMaxHitsPerTarget && _hitCount >= _attackAbility.maxHitsPerTarget;
+                return _hitCount >= 1;
             }
         }
 
@@ -140,7 +130,7 @@ namespace KRG
                     }
                     else
                     {
-                        CheckForDelay(DamageInfiniteLoopCheck);
+                        CheckForDelay(StartTakingDamageForReal);
                     }
                 }
             }
@@ -173,18 +163,6 @@ namespace KRG
             if (target != null && !target.IsKnockedOut && !isHitLimitReached)
             {
                 tt.Proceed();
-            }
-        }
-
-        private void DamageInfiniteLoopCheck()
-        {
-            if (_attackAbility.hasMaxHitsPerTarget)
-            {
-                StartTakingDamageForReal();
-            }
-            else
-            {
-                G.U.Warn(_infiniteLoopError);
             }
         }
     }

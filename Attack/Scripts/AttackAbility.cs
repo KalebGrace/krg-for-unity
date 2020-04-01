@@ -142,13 +142,6 @@ namespace KRG
         [BoolObjectDisable(false, "Whenever Able")]
         protected BoolFloat _hpDamageRate = new BoolFloat(false, 60);
 
-        [SerializeField]
-        [Tooltip("Maximum number of \"hits\" (i.e. damage method calls) made by an attack per target."
-        + " Setting this to \"false\" makes the attack have no limit"
-        + " to the number of damage method calls it can make.")]
-        [BoolObjectDisable(false, "No Limit")]
-        protected BoolInt _maxHitsPerTarget = new BoolInt(true, 1);
-
         //
         //
         [Header("Status Effects")]
@@ -276,8 +269,6 @@ namespace KRG
 
         public virtual bool hasHPDamageRate { get { return _hpDamageRate.boolValue; } }
 
-        public virtual bool hasMaxHitsPerTarget { get { return _maxHitsPerTarget.boolValue; } }
-
         public virtual GameObject hitVFXPrefab { get { return _hitVFXPrefab; } }
 
         public virtual float hpDamage { get { return _hpDamage; } }
@@ -310,8 +301,6 @@ namespace KRG
         public virtual float knockBackTime { get { return _knockBackTime; } }
 
         public virtual KnockBackCalcMode knockBackTimeCalcMode { get { return _knockBackTimeCalcMode; } }
-
-        public virtual int maxHitsPerTarget { get { return _maxHitsPerTarget.intValue; } }
 
         public virtual string sfxFmodEvent { get { return _sfxFmodEvent; } }
 
@@ -352,7 +341,6 @@ namespace KRG
             _attackRate = Mathf.Max(FLOAT_MIN, _attackRate);
             _attackLifetime.floatValue = Mathf.Max(FLOAT_MIN, _attackLifetime.floatValue);
             _hpDamageRate.floatValue = Mathf.Max(FLOAT_MIN, _hpDamageRate.floatValue);
-            _maxHitsPerTarget.intValue = Mathf.Max(1, _maxHitsPerTarget.intValue);
             _knockBackTime = Mathf.Max(0, _knockBackTime);
         }
 
