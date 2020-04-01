@@ -22,7 +22,7 @@ namespace KRG
         {
             get
             {
-                //has the "hit" count reached the maximum number of "hits" (i.e. damage method calls)?
+                // has the "hit" count reached the maximum number of "hits" (i.e. damage method calls)?
                 return _hitCount >= 1;
             }
         }
@@ -48,7 +48,7 @@ namespace KRG
             isInProgress = true;
             _attackPositionCenter = attackPositionCenter;
             _hitPositionCenter = hitPositionCenter;
-            if (!isHitLimitReached) CheckForDelay(StartTakingDamageForReal);
+            if (!isHitLimitReached) CheckForDelay();
         }
 
         public void StopTakingDamage()
@@ -62,9 +62,9 @@ namespace KRG
 
         // methods 2 - Check For, And Handle, Delays
 
-        private void CheckForDelay(System.Action onNoDelay)
+        private void CheckForDelay()
         {
-            if (target.IsInvulnerableTo(_attackAbility))
+            if (!target.CanBeDamagedBy(_attack.attacker, _attackAbility))
             {
                 _isDelayedDueToInvulnerability = true;
                 // actually no delay, just ignore
@@ -76,7 +76,7 @@ namespace KRG
             }
             else
             {
-                onNoDelay();
+                StartTakingDamageForReal();
             }
         }
 
@@ -101,7 +101,7 @@ namespace KRG
         private void DelayCallback()
         {
             CheckForDelayCallbackRemoval(DelayCallbackRemovalError);
-            CheckForDelay(StartTakingDamageForReal); //check for any possible additional delays
+            CheckForDelay(); //check for any possible additional delays
         }
 
         private void DelayCallbackRemovalError()
@@ -130,7 +130,7 @@ namespace KRG
                     }
                     else
                     {
-                        CheckForDelay(StartTakingDamageForReal);
+                        //CheckForDelay(); (don't do this; it causes an infinite loop)
                     }
                 }
             }
@@ -148,7 +148,6 @@ namespace KRG
 
         private void Damage()
         {
-            G.U.Assert(_attack != null);
             bool isHit = target.Damage(_attack, _attackPositionCenter, _hitPositionCenter);
             if (isHit)
             {

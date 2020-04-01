@@ -26,7 +26,7 @@ namespace KRG
 
         [SerializeField]
         [FormerlySerializedAs("m_damageProfile")]
-        DamageProfile _damageProfile;
+        protected DamageProfile _damageProfile;
 
         [SerializeField]
         private GameObjectBody m_Body = default;
@@ -41,7 +41,7 @@ namespace KRG
         protected float m_HPMax;
 
         // damage stuff
-        TimeTrigger _invulnerabilityTimeTrigger;
+        protected TimeTrigger _invulnerabilityTimeTrigger;
         TimeTrigger _knockBackTimeTrigger;
 
         // PROPERTIES
@@ -131,8 +131,8 @@ namespace KRG
             Vector3 hitPositionCenter
         )
         {
-            _damageAttackAbility = attack.attackAbility;
             _damageAttacker = attack.attacker;
+            _damageAttackAbility = attack.attackAbility;
             _damageAttackPositionCenter = attackPositionCenter;
             _damageHitPositionCenter = hitPositionCenter;
 
@@ -156,7 +156,7 @@ namespace KRG
 
         private bool Damage()
         {
-            if (!CanBeDamaged()) return false;
+            if (!CanBeDamagedBy(_damageAttacker, _damageAttackAbility)) return false;
 
             DealDamage(_damageAttackAbility);
             DamageDealt?.Invoke(this, _damageAttackAbility, _damageAttackPositionCenter, _damageHitPositionCenter);
@@ -179,10 +179,19 @@ namespace KRG
             return true;
         }
 
-        protected virtual bool CanBeDamaged()
+        public virtual bool CanBeDamagedBy(Attacker attacker, AttackAbility attackAbility)
         {
-            //these could pop up at any time, so let's be safe
-            return this != null && !IsKnockedOut && !IsInvulnerableTo(_damageAttackAbility);
+            if (this == null) return false;
+            if (IsKnockedOut) return false;
+
+            if (_invulnerabilityTimeTrigger != null) return false;
+
+            var vList = _damageProfile.attackVulnerabilities;
+            int count = vList?.Count ?? 0;
+
+            if (count > 0 && !vList.Contains(attackAbility)) return false;
+
+            return true;
         }
 
         protected virtual void DealDamage(AttackAbility attackAbility)
@@ -281,18 +290,6 @@ namespace KRG
         {
             _invulnerabilityTimeTrigger = null;
             EndInvulnerabilityVFX();
-        }
-
-        public virtual bool IsInvulnerableTo(AttackAbility attackAbility)
-        {
-            if (_invulnerabilityTimeTrigger != null) return true;
-
-            var vList = _damageProfile.attackVulnerabilities;
-            int count = vList?.Count ?? 0;
-
-            if (count > 0 && !vList.Contains(attackAbility)) return true;
-
-            return false;
         }
 
         // KnockBack Methods
