@@ -50,7 +50,7 @@ namespace KRG
         [OrderAttribute(-10)]
         [SerializeField]
         [FormerlySerializedAs("m_gifBytes")]
-        TextAsset _gifBytes = default;
+        public TextAsset _gifBytes = default;
 
         [OrderAttribute(-10)]
         [SerializeField]
