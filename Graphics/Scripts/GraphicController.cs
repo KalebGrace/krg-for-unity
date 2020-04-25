@@ -656,6 +656,7 @@ namespace KRG
         /// </summary>
         public void UnloadRendererMaterials()
         {
+            if (m_Renderer == null) return;
             m_Renderer.sharedMaterials = new Material[1] { null };
         }
     }
