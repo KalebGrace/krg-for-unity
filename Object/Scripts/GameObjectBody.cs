@@ -18,6 +18,9 @@ namespace KRG
         [SerializeField, HideInInspector]
         private int m_FacingDirectionOrig = default; // only used OnValidate
 
+        [SerializeField, Enum(typeof(TimeThreadInstance))]
+        private int m_TimeThread = (int)TimeThreadInstance.UseDefault;
+
         public GameObjectRefs Refs = default;
 
         public GameObjectData Data = default;
@@ -34,15 +37,18 @@ namespace KRG
         {
             get
             {
-                TimeThreadInstance tti;
-                switch (GameObjectType)
+                TimeThreadInstance tti = (TimeThreadInstance)m_TimeThread;
+                if (tti == TimeThreadInstance.UseDefault)
                 {
-                    case GameObjectType.UI:
-                        tti = TimeThreadInstance.Application;
-                        break;
-                    default:
-                        tti = TimeThreadInstance.Field;
-                        break;
+                    switch (GameObjectType)
+                    {
+                        case GameObjectType.UI:
+                            tti = TimeThreadInstance.Application;
+                            break;
+                        default:
+                            tti = TimeThreadInstance.Field;
+                            break;
+                    }
                 }
                 return G.time.GetTimeThread(tti);
             }
