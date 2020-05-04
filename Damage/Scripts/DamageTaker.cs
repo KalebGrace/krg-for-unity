@@ -60,6 +60,7 @@ namespace KRG
                 {
                     m_HP = value;
                 }
+                _ = ResolveKnockedOut();
             }
         }
 
@@ -165,11 +166,7 @@ namespace KRG
 
             CheckCustomPreKOC(_damageAttackAbility, _damageAttackPositionCenter, _damageHitPositionCenter);
 
-            if (IsKnockedOut)
-            {
-                OnKnockedOut(_damageAttackPositionCenter);
-                return true;
-            }
+            if (ResolveKnockedOut()) return true;
 
             CheckCustom(_damageAttackAbility, _damageAttackPositionCenter);
 
@@ -247,6 +244,16 @@ namespace KRG
         )
         {
             //allow derived class to check conditions (before knock out check)
+        }
+
+        protected virtual bool ResolveKnockedOut()
+        {
+            if (IsKnockedOut)
+            {
+                OnKnockedOut();
+                return true;
+            }
+            return false;
         }
 
         protected virtual void CheckCustom(AttackAbility attackAbility, Vector3 attackPositionCenter)
@@ -378,7 +385,7 @@ namespace KRG
 
         // MISC
 
-        protected virtual void OnKnockedOut(Vector3 attackPositionCenter)
+        protected virtual void OnKnockedOut()
         {
             var ld = _damageProfile.knockedOutLoot;
             if (ld != null) ld.Drop(this);
