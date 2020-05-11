@@ -19,6 +19,10 @@ namespace KRG
         [Enum(typeof(SceneName))]
         public int EnvironmentID;
 
+        [Header("Environment Data")]
+
+        public EnvironmentData Data;
+
         private void OnValidate()
         {
             FileName = name.Replace(ENVIRONMENT_CHART_SUFFIX, "");
