@@ -14,27 +14,32 @@ namespace KRG
         public PersistentData(
             Persist persist,
             string key,
-            T value,
+            T defaultValue,
+            int loadState = 0,
             ValueChangedHandler valueChangedHandler = null)
         {
             Persist = persist;
             Key = key;
             Type = typeof(T);
-            Value = value;
+            Value = defaultValue;
+            ValueChanged = valueChangedHandler;
 
-            if (valueChangedHandler != null)
-            {
-                ValueChanged += valueChangedHandler;
-            }
+            // TODO: apply load state as needed
 
             switch (Persist)
             {
                 case Persist.PlayerPrefs:
                     G.DoPlayerPrefsAction(ReadFromPlayerPrefs);
-                    ValueChanged += WriteToPlayerPrefs;
                     break;
                 case Persist.PlayerPrefs_Overwrite:
                     G.DoPlayerPrefsAction(WriteToPlayerPrefs);
+                    break;
+            }
+
+            switch (Persist)
+            {
+                case Persist.PlayerPrefs:
+                case Persist.PlayerPrefs_Overwrite:
                     ValueChanged += WriteToPlayerPrefs;
                     break;
             }
