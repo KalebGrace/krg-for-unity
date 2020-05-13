@@ -8,13 +8,14 @@ namespace KRG
     {
         public override float priority => 50;
 
-        public delegate void CharacterIDHandler(int id);
-
+        public delegate void CharacterIDHandler(int characterID);
+        public delegate void EnvironmentIDHandler(int environmentID);
         public delegate void GameObjectBodyHandler(GameObjectBody body);
 
         public event CharacterIDHandler CharacterIDAdded;
         public event CharacterIDHandler CharacterIDRemoved;
-
+        public event EnvironmentIDHandler EnvironmentIDAdded;
+        public event EnvironmentIDHandler EnvironmentIDRemoved;
         public event GameObjectBodyHandler PlayerCharacterAdded;
         public event GameObjectBodyHandler PlayerCharacterRemoved;
 
@@ -31,6 +32,7 @@ namespace KRG
         public Dictionary<int, int> CharacterCounts { get; } = new Dictionary<int, int>();
 
         public Dictionary<int, CharacterDossier> CharacterDossiers { get; } = new Dictionary<int, CharacterDossier>();
+        public Dictionary<int, EnvironmentChart> EnvironmentCharts { get; } = new Dictionary<int, EnvironmentChart>();
 
         public GameObjectBody FirstPlayerCharacter => PlayerCharacters.Count > 0 ? PlayerCharacters[0] : null;
 
@@ -66,6 +68,8 @@ namespace KRG
         {
             bool doneUnloading = false;
 
+            UnloadAllEnvironmentAssets();
+
             foreach (var cc in CharacterCounts.OrderBy(cc => cc.Value))
             {
                 if (cc.Value == 0)
@@ -85,6 +89,8 @@ namespace KRG
                     LoadCharacterAssetPack(cc.Key);
                 }
             }
+
+            LoadEnvironmentAssets(G.env.CurrentEnvironmentID);
         }
 
         // MAIN PUBLIC METHODS
@@ -245,18 +251,18 @@ namespace KRG
 
         private void LoadCharacterDossier(GameObjectBody body)
         {
-            int id = body.CharacterID;
+            int characterID = body.CharacterID;
 
-            if (id == 0)
+            if (characterID == 0)
             {
                 return;
             }
 
             CharacterDossier cd;
 
-            if (CharacterDossiers.ContainsKey(id))
+            if (CharacterDossiers.ContainsKey(characterID))
             {
-                cd = CharacterDossiers[id];
+                cd = CharacterDossiers[characterID];
 
                 if (cd != null)
                 {
@@ -265,16 +271,16 @@ namespace KRG
                     return;
                 }
 
-                CharacterDossiers.Remove(id);
+                CharacterDossiers.Remove(characterID);
             }
 
-            string bundleName = CharacterDossier.GetBundleName(id);
+            string bundleName = CharacterDossier.GetBundleName(characterID);
 
             AssetBundle assetBundle = LoadAssetBundle(bundleName);
 
             if (assetBundle == null)
             {
-                G.U.Err("Failed to load AssetBundle for character ID {0}.", id);
+                G.U.Err("Failed to load AssetBundle for characterID {0}.", characterID);
                 return;
             }
 
@@ -294,7 +300,7 @@ namespace KRG
                     bundleName, cd.FileName);
             }
 
-            CharacterDossiers.Add(id, cd);
+            CharacterDossiers.Add(characterID, cd);
 
             body.CharacterDossier = cd;
 
@@ -339,7 +345,7 @@ namespace KRG
         {
             CharacterDossier cd = CharacterDossiers[characterID];
 
-            AssetBundle ab = LoadAssetBundle(cd.FileName.ToLower());
+            AssetBundle ab = LoadAssetBundle(cd.AssetPackBundleName);
 
             if (ab == null) return;
 
@@ -363,7 +369,7 @@ namespace KRG
                 RasterAnimations.Remove(sa.animationName);
             }
 
-            UnloadAssetBundle(cd.FileName.ToLower());
+            UnloadAssetBundle(cd.AssetPackBundleName);
         }
 
         /// <summary>
@@ -398,6 +404,58 @@ namespace KRG
             ra = assetBundle.LoadAsset<RasterAnimation>(animationName);
 
             RasterAnimations.Add(animationName, ra);
+        }
+
+        // ENVIRONMENT ASSET BUNDLES
+
+        private void LoadEnvironmentAssets(int environmentID)
+        {
+            string bundleName = EnvironmentChart.GetBundleName(environmentID);
+
+            AssetBundle assetBundle = LoadAssetBundle(bundleName);
+
+            if (assetBundle == null)
+            {
+                G.U.Err("Failed to load AssetBundle for environmentID {0}.", environmentID);
+                return;
+            }
+
+            EnvironmentChart[] charts = assetBundle.LoadAllAssets<EnvironmentChart>();
+
+            if (charts.Length == 0)
+            {
+                G.U.Err("Failed to load EnvironmentCharts from AssetBundle {0}.", bundleName);
+                return;
+            }
+
+            EnvironmentChart ec = charts[0];
+
+            if (charts.Length > 1)
+            {
+                G.U.Warn("Multiple EnvironmentCharts in AssetBundle {0}. Falling back to {1}.",
+                    bundleName, ec.FileName);
+            }
+
+            if (!EnvironmentCharts.ContainsKey(environmentID))
+            {
+                EnvironmentCharts.Add(environmentID, ec);
+                EnvironmentIDAdded?.Invoke(environmentID);
+                _ = LoadAssetBundle(ec.AssetPackBundleName);
+            }
+        }
+
+        private void UnloadAllEnvironmentAssets()
+        {
+            while (EnvironmentCharts.Count > 0)
+            {
+                var pair = EnvironmentCharts.First();
+                int id = pair.Key;
+                var ec = pair.Value;
+                UnloadAssetBundle(ec.AssetPackBundleName);
+                EnvironmentIDRemoved?.Invoke(id);
+                UnloadAssetBundle(ec.BundleName);
+                EnvironmentCharts.Remove(id);
+            }
         }
 
         // OLD SHIZ

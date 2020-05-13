@@ -32,6 +32,10 @@ namespace KRG
 
         public GraphicData GraphicData;
 
+        public string AssetPackBundleName => FileName.ToLower();
+
+        public string BundleName => GetBundleName(CharacterID);
+
         private void OnValidate()
         {
             FileName = name.Replace(CHARACTER_DOSSIER_SUFFIX, "");

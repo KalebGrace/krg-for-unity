@@ -16,12 +16,16 @@ namespace KRG
         [ReadOnly]
         public string FileName;
 
-        [Enum(typeof(SceneName))]
+        [Enum(typeof(EnvironmentID))]
         public int EnvironmentID;
 
         [Header("Environment Data")]
 
         public EnvironmentData Data;
+
+        public string AssetPackBundleName => FileName.ToLower();
+
+        public string BundleName => GetBundleName(EnvironmentID);
 
         private void OnValidate()
         {

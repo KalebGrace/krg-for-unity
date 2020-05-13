@@ -67,7 +67,7 @@ namespace KRG
         {
             get
             {
-                if (System.Enum.TryParse(_activeSceneName, out SceneName sn))
+                if (System.Enum.TryParse(_activeSceneName, out EnvironmentID sn))
                 {
                     return (int)sn;
                 }
@@ -78,7 +78,7 @@ namespace KRG
             {
                 if (value != 0)
                 {
-                    SceneName sn = (SceneName)value;
+                    EnvironmentID sn = (EnvironmentID)value;
                     _activeSceneName = sn.ToString();
                 }
             }
