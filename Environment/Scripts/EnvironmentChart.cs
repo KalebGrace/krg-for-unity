@@ -7,14 +7,16 @@ namespace KRG
         menuName = "KRG Scriptable Object/EnvironmentChart",
         order = 503
     )]
-    public class EnvironmentChart : ScriptableObject
+    public class EnvironmentChart : Docket
     {
+        // CONSTANTS
+
         public const string ENVIRONMENT_CHART_SUFFIX = "_EnvironmentChart";
+        public const string DEFAULT_ANIMATION_SUFFIX = "_Default_RasterAnimation";
+
+        // SERIALIZED FIELDS
 
         [Header("Game Object Data")]
-
-        [ReadOnly]
-        public string FileName;
 
         [Enum(typeof(EnvironmentID))]
         public int EnvironmentID;
@@ -23,14 +25,14 @@ namespace KRG
 
         public EnvironmentData Data;
 
-        public string AssetPackBundleName => FileName.ToLower();
+        // PROPERTIES
 
-        public string BundleName => GetBundleName(EnvironmentID);
+        public override int ID => EnvironmentID;
+        public override string BundleName => GetBundleName(EnvironmentID);
+        public override string DocketSuffix => ENVIRONMENT_CHART_SUFFIX;
+        public override string DefaultAnimationSuffix => DEFAULT_ANIMATION_SUFFIX;
 
-        private void OnValidate()
-        {
-            FileName = name.Replace(ENVIRONMENT_CHART_SUFFIX, "");
-        }
+        // METHODS
 
         public static string GetBundleName(int environmentID)
         {

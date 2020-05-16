@@ -7,17 +7,18 @@ namespace KRG
         menuName = "KRG Scriptable Object/CharacterDossier",
         order = 304
     )]
-    public sealed class CharacterDossier : ScriptableObject
+    public sealed class CharacterDossier : Docket
     {
+        // CONSTANTS
+
         public const string CHARACTER_DOSSIER_SUFFIX = "_CharacterDossier";
         public const string IDLE_ANIMATION_SUFFIX = "_Idle_RasterAnimation";
+
+        // SERIALIZED FIELDS
 
         [Header("Game Object Data")]
 
         public string FullName;
-
-        [ReadOnly]
-        public string FileName;
 
         [Enum(typeof(CharacterID))]
         public int CharacterID;
@@ -32,13 +33,16 @@ namespace KRG
 
         public GraphicData GraphicData;
 
-        public string AssetPackBundleName => FileName.ToLower();
+        // PROPERTIES
 
-        public string BundleName => GetBundleName(CharacterID);
+        public override int ID => CharacterID;
+        public override string BundleName => GetBundleName(CharacterID);
+        public override string DocketSuffix => CHARACTER_DOSSIER_SUFFIX;
+        public override string DefaultAnimationSuffix => IDLE_ANIMATION_SUFFIX;
 
-        private void OnValidate()
+        protected override void OnValidate()
         {
-            FileName = name.Replace(CHARACTER_DOSSIER_SUFFIX, "");
+            base.OnValidate();
 
             if (string.IsNullOrWhiteSpace(FullName))
             {
