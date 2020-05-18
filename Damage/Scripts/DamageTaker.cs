@@ -51,6 +51,7 @@ namespace KRG
             get => IsPlayerCharacter ? G.inv.GetStatVal(StatID.HP) : m_HP;
             set
             {
+                float oldValue = HP;
                 value = Mathf.Clamp(value, HPMin, HPMax);
                 if (IsPlayerCharacter)
                 {
@@ -60,7 +61,7 @@ namespace KRG
                 {
                     m_HP = value;
                 }
-                _ = ResolveKnockedOut();
+                ResolveKnockedOut(oldValue, value);
             }
         }
 
@@ -164,11 +165,7 @@ namespace KRG
             DisplayDamageVFX(_damageAttackAbility, _damageAttackPositionCenter, _damageHitPositionCenter);
             PlayDamageSFX();
 
-            CheckCustomPreKOC(_damageAttackAbility, _damageAttackPositionCenter, _damageHitPositionCenter);
-
-            if (ResolveKnockedOut()) return true;
-
-            CheckCustom(_damageAttackAbility, _damageAttackPositionCenter);
+            if (IsKnockedOut) return true;
 
             CheckInvulnerability(_damageAttackAbility);
             CheckKnockBack(_damageAttackAbility, _damageAttackPositionCenter);
@@ -235,30 +232,18 @@ namespace KRG
             }
         }
 
-        // CUSTOM METHODS
+        // KNOCKED OUT (KO) METHODS
 
-        protected virtual void CheckCustomPreKOC(
-            AttackAbility attackAbility,
-            Vector3 attackPositionCenter,
-            Vector3 hitPositionCenter
-        )
+        protected virtual void ResolveKnockedOut(float oldHP, float newHP)
         {
-            //allow derived class to check conditions (before knock out check)
+            if (oldHP > HPMin && newHP <= HPMin) OnKnockedOut();
         }
 
-        protected virtual bool ResolveKnockedOut()
+        protected virtual void OnKnockedOut()
         {
-            if (IsKnockedOut)
-            {
-                OnKnockedOut();
-                return true;
-            }
-            return false;
-        }
-
-        protected virtual void CheckCustom(AttackAbility attackAbility, Vector3 attackPositionCenter)
-        {
-            //allow derived class to check conditions (only if not KO'ed)
+            var ld = _damageProfile.knockedOutLoot;
+            if (ld != null) ld.Drop(this);
+            gameObject.Dispose();
         }
 
         // INVULNERABILITY METHODS
@@ -384,13 +369,6 @@ namespace KRG
         }
 
         // MISC
-
-        protected virtual void OnKnockedOut()
-        {
-            var ld = _damageProfile.knockedOutLoot;
-            if (ld != null) ld.Drop(this);
-            gameObject.Dispose();
-        }
 
         public void InitBody(GameObjectBody body)
         {
