@@ -58,6 +58,10 @@ namespace KRG
             "Show the large item title card upon collecting this item.")]
         protected bool m_ShowTitleCardOnCollect = default;
 
+        [SerializeField, Tooltip(
+            "Show the soft currency panel upon collecting this item.")]
+        protected bool m_ShowSoftCurrencyPanelOnCollect = default;
+
         [SerializeField, Tooltip("Play this sound effect upon collecting this item.")]
         [AudioEvent]
         protected string sfxFmodEventOnCollect = default;
@@ -82,6 +86,8 @@ namespace KRG
         public bool ShowInfoPanelOnCollect => m_ShowInfoPanelOnCollect;
 
         public bool ShowTitleCardOnCollect => m_ShowTitleCardOnCollect;
+
+        public bool ShowSoftCurrencyPanelOnCollect => m_ShowSoftCurrencyPanelOnCollect;
 
         // MONOBEHAVIOUR METHODS
 
