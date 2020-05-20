@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 
 namespace KRG
 {
@@ -21,10 +21,9 @@ namespace KRG
         {
             G.U.Assert(lockingObject != null);
 
-            if (!m_Locks.Contains(lockingObject))
-            {
-                m_Locks.Add(lockingObject);
-            }
+            if (m_Locks.Contains(lockingObject)) return;
+
+            m_Locks.Add(lockingObject);
 
             if (m_Locks.Count == 1)
             {
@@ -34,10 +33,11 @@ namespace KRG
 
         public void RemoveLock(object lockingObject, Options options = new Options())
         {
-            if (m_Locks.Contains(lockingObject))
-            {
-                m_Locks.Remove(lockingObject);
-            }
+            G.U.Assert(lockingObject != null);
+
+            if (!m_Locks.Contains(lockingObject)) return;
+
+            m_Locks.Remove(lockingObject);
 
             if (m_Locks.Count == 0)
             {
