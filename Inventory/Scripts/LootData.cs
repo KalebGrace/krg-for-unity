@@ -7,9 +7,9 @@ namespace KRG
     /// Loot data. Represents the conditions and probability of generating an item.
     /// </summary>
     [CreateAssetMenu(
-        fileName = "NewKRGLootData.asset",
+        fileName = "SomeOne_LootData.asset",
         menuName = "KRG Scriptable Object/Loot Data",
-        order = 123
+        order = 1204
     )]
     public class LootData : ScriptableObject
     {

@@ -93,7 +93,7 @@ namespace KRG
             set
             {
                 _damageProfile = value;
-                InitHP();
+                if (G.U.IsPlayMode(this)) InitHP();
             }
         }
 
@@ -241,7 +241,7 @@ namespace KRG
 
         protected virtual void OnKnockedOut()
         {
-            var ld = _damageProfile.knockedOutLoot;
+            var ld = _damageProfile.KnockedOutLoot;
             if (ld != null) ld.Drop(this);
             gameObject.Dispose();
         }

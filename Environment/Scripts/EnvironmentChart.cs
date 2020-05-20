@@ -4,7 +4,7 @@ namespace KRG
 {
     [CreateAssetMenu(
         fileName = "SomeWhere_EnvironmentChart.asset",
-        menuName = "KRG Scriptable Object/EnvironmentChart",
+        menuName = "KRG Scriptable Object/Environment Chart",
         order = 503
     )]
     public class EnvironmentChart : Docket

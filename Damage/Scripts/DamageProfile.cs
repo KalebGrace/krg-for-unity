@@ -5,12 +5,18 @@ using UnityEngine.Serialization;
 namespace KRG
 {
     [CreateAssetMenu(
-        fileName = "NewKRGDamageProfile.asset",
+        fileName = "SomeOne_DamageProfile.asset",
         menuName = "KRG Scriptable Object/Damage Profile",
-        order = 123
+        order = 416
     )]
     public class DamageProfile : ScriptableObject
     {
+        // CONSTANTS
+
+        public const string DAMAGE_PROFILE_SUFFIX = "_DamageProfile";
+
+        // SERIALIZED FIELDS
+
         [Header("Primary Stats")]
 
         [SerializeField]
@@ -59,8 +65,8 @@ namespace KRG
 
         [Header("Loot")]
 
-        [SerializeField]
-        LootData _knockedOutLoot = default;
+        [FormerlySerializedAs("_knockedOutLoot")]
+        public LootData KnockedOutLoot = default;
 
         [Header("Attack Vulnerabilities")]
 
@@ -78,6 +84,8 @@ namespace KRG
         protected ITimeThread _timeThread;
 
 
+        // PROPERTIES
+
         public virtual List<AttackAbility> attackVulnerabilities => _attackVulnerabilities;
 
         public virtual int HPMin => 0;
@@ -89,8 +97,6 @@ namespace KRG
         public virtual float knockBackDistance { get { return _knockBackDistance; } }
 
         public virtual float knockBackTime { get { return _knockBackTime; } }
-
-        public virtual LootData knockedOutLoot { get { return _knockedOutLoot; } }
 
         public virtual bool invulnerabilityFlicker { get { return _invulnerabilityFlicker; } }
 
