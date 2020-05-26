@@ -17,17 +17,19 @@ namespace KRG
 
         public override void OnInspectorGUI()
         {
+            // prevent inputs from wrapping down to second line
             EditorGUIUtility.wideMode = TransformInspector.WIDE_MODE;
 
-            // align field to right of inspector
-            EditorGUIUtility.labelWidth = EditorGUIUtility.currentViewWidth / 3.5f;
+            // use fixed value (rather than fraction of current view)
+            // to allow for proper display in prefab override view
+            EditorGUIUtility.labelWidth = 60;
 
             _resetAllStyle = new GUIStyle(EditorStyles.miniButton);
             _resetAllStyle.fixedHeight = 20;
-            _resetAllStyle.fixedWidth = EditorGUIUtility.labelWidth + 28;
+            _resetAllStyle.fixedWidth = EditorGUIUtility.labelWidth;
 
             _resetSingleStyle = new GUIStyle(EditorStyles.miniButton);
-            _resetSingleStyle.fixedWidth = 30;
+            _resetSingleStyle.fixedWidth = EditorGUIUtility.labelWidth / 2f;
 
             serializedObject.Update();
 
