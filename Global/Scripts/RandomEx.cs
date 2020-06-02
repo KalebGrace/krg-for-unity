@@ -4,10 +4,17 @@ namespace KRG
 {
     public static class RandomEx
     {
+        public static bool Chance(float probability)
+        {
+            if (probability <= 0) return false;
+            float rf = Random.Range(0f, 1f);
+            return rf <= probability;
+        }
+
         public static T Pick<T>(params T[] options)
         {
-            int i = Random.Range(0, options.Length);
-            return options[i];
+            int ri = Random.Range(0, options.Length);
+            return options[ri];
         }
     }
 }
