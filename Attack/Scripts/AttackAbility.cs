@@ -207,6 +207,13 @@ namespace KRG
         [SerializeField]
         protected List<Effector> effectors = new List<Effector>();
 
+        //
+        //
+        [Header("AI Behaviour")]
+
+        [SerializeField]
+        protected float _aiAttackDistance = default;
+
         #endregion
 
         #region FIELDS: PROTECTED
@@ -223,6 +230,8 @@ namespace KRG
         #endregion
 
         #region PROPERTIES
+
+        public virtual float aiAttackDistance => _aiAttackDistance;
 
         public virtual float attackDelay { get { return _attackDelay; } }
 
