@@ -83,6 +83,9 @@ namespace KRG
         [Order(15), SerializeField, TextArea(6, 24)]
         protected string m_FrameParagraph = default;
 
+        [Order(15), SerializeField]
+        private bool m_FrameParagraphParse = default;
+
         [OrderAttribute(20)]
         [SerializeField]
         [FormerlySerializedAs("m_frameSequences")]
@@ -131,7 +134,11 @@ namespace KRG
             int max = (_frameSequences == null || _frameSequences.Length == 0) ? 0 : _frameSequences.Length - 1;
             _loopToSequence = Mathf.Clamp(_loopToSequence, 0, max);
 
-            ParseFrameParagraph();
+            if (m_FrameParagraphParse)
+            {
+                m_FrameParagraphParse = false;
+                ParseFrameParagraph();
+            }
 
             if (_frameSequences != null)
             {
