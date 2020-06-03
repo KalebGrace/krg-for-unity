@@ -276,7 +276,7 @@ namespace KRG
         {
             if (string.IsNullOrEmpty(m_FrameParagraph)) return;
 
-            m_FrameParagraph = m_FrameParagraph.Trim();
+            m_FrameParagraph = m_FrameParagraph.Trim().Replace("\r\n", "\n");
 
             if (m_FrameParagraph == "") return;
 
