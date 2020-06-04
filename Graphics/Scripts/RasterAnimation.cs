@@ -47,8 +47,7 @@ namespace KRG
 
         [Header("GIF Import")]
 
-        [OrderAttribute(-10)]
-        [SerializeField]
+        [Order(-10)]
         [FormerlySerializedAs("m_gifBytes")]
         public TextAsset _gifBytes = default;
 
@@ -60,10 +59,9 @@ namespace KRG
 
         [Header("Looping")]
 
-        [OrderAttribute(10)]
-        [SerializeField]
+        [Order(10)]
         [FormerlySerializedAs("m_loop")]
-        bool _loop = true;
+        public bool _loop = true;
 
         [OrderAttribute(10)]
         [SerializeField]
@@ -158,7 +156,7 @@ namespace KRG
         public void ReplaceGifWithFrameTextures(Gif gif, List<Texture2D> frameTextures)
         {
             m_GifName = _gifBytes.name;
-            m_SecondsPerFrame = gif.delay;
+            m_SecondsPerFrame = gif.delay.Ap(0) ? 0.05f : gif.delay;
             m_Dimensions = new Vector2Int(gif.width, gif.height);
             m_FrameTextures = frameTextures;
         }
