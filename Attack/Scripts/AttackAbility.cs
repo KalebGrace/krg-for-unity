@@ -1,6 +1,6 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace KRG
 {
@@ -209,10 +209,12 @@ namespace KRG
 
         //
         //
-        [Header("AI Behaviour")]
+        [Header("Enemy AI Parameters")]
 
-        [SerializeField]
-        protected float _aiAttackDistance = default;
+        [FormerlySerializedAs("_aiAttackDistance")]
+        public float AI_AttackDistancePCStationary = default;
+        public float AI_AttackDistancePCApproach = default;
+        public float AI_AttackDistancePCFlee = default;
 
         #endregion
 
@@ -230,8 +232,6 @@ namespace KRG
         #endregion
 
         #region PROPERTIES
-
-        public virtual float aiAttackDistance => _aiAttackDistance;
 
         public virtual float attackDelay { get { return _attackDelay; } }
 
