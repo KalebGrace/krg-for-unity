@@ -232,7 +232,7 @@ namespace KRG
                 if (sceneName == _activeSceneName)
                 {
                     SendLevelStartAnalytics(sceneName);
-                    if (GetSceneType(sceneName) == SceneType.Gameplay)
+                    if (sc.SceneType == SceneType.Gameplay)
                     {
                         InvokeGameplaySceneStarted();
                     }
@@ -308,11 +308,6 @@ namespace KRG
         protected virtual void SendLevelStartAnalytics(string sceneName)
         {
             _ = AnalyticsEvent.LevelStart(sceneName);
-        }
-
-        public virtual SceneType GetSceneType(string sceneName)
-        {
-            return SceneType.Gameplay;
         }
     }
 }

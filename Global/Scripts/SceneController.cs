@@ -13,6 +13,8 @@ namespace KRG
         /// </summary>
         public abstract string sceneName { get; }
 
+        public virtual SceneType SceneType => SceneType.None;
+
         /// <summary>
         /// Awake this instance.
         /// </summary>

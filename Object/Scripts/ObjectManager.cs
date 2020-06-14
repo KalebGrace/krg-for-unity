@@ -440,7 +440,7 @@ namespace KRG
             {
                 EnvironmentCharts.Add(environmentID, ec);
                 EnvironmentIDAdded?.Invoke(environmentID);
-                _ = LoadAssetBundle(ec.AssetPackBundleName);
+                LoadEnvironmentAssetPack(environmentID);
             }
         }
 
@@ -451,11 +451,42 @@ namespace KRG
                 var pair = EnvironmentCharts.First();
                 int id = pair.Key;
                 var ec = pair.Value;
-                UnloadAssetBundle(ec.AssetPackBundleName);
+                UnloadEnvironmentAssetPack(id);
                 EnvironmentIDRemoved?.Invoke(id);
                 UnloadAssetBundle(ec.BundleName);
                 EnvironmentCharts.Remove(id);
             }
+        }
+
+        private void LoadEnvironmentAssetPack(int environmentID)
+        {
+            EnvironmentChart ec = EnvironmentCharts[environmentID];
+
+            AssetBundle ab = LoadAssetBundle(ec.AssetPackBundleName);
+
+            if (ab == null) return;
+
+            foreach (string animationName in ec.AnimationNames)
+            {
+                if (!RasterAnimations.ContainsKey(animationName))
+                {
+                    RasterAnimation ra = ab.LoadAsset<RasterAnimation>(animationName);
+
+                    RasterAnimations.Add(animationName, ra);
+                }
+            }
+        }
+
+        private void UnloadEnvironmentAssetPack(int environmentID)
+        {
+            EnvironmentChart ec = EnvironmentCharts[environmentID];
+
+            foreach (string animationName in ec.AnimationNames)
+            {
+                RasterAnimations.Remove(animationName);
+            }
+
+            UnloadAssetBundle(ec.AssetPackBundleName);
         }
 
         // OLD SHIZ

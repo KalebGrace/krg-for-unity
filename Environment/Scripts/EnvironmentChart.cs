@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 
 namespace KRG
 {
@@ -24,6 +25,10 @@ namespace KRG
         [Header("Environment Data")]
 
         public EnvironmentData Data;
+
+        [Header("Animation Data")]
+
+        public List<string> AnimationNames;
 
         // PROPERTIES
 

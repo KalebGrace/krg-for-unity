@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace KRG
@@ -14,6 +15,12 @@ namespace KRG
         public static T Pick<T>(params T[] options)
         {
             int ri = Random.Range(0, options.Length);
+            return options[ri];
+        }
+
+        public static T Pick<T>(List<T> options)
+        {
+            int ri = Random.Range(0, options.Count);
             return options[ri];
         }
     }
