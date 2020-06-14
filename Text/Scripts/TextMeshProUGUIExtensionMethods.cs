@@ -1,4 +1,4 @@
-﻿using TMPro;
+using TMPro;
 using UnityEngine;
 
 #if NS_DG_TWEENING
@@ -18,6 +18,11 @@ namespace KRG
         public static Tweener DOFade(this TextMeshProUGUI text, float endValue, float duration)
         {
             return DOTween.To(() => text.alpha, x => text.alpha = x, endValue, duration);
+        }
+
+        public static Tweener DOFontSize(this TextMeshProUGUI text, float endValue, float duration)
+        {
+            return DOTween.To(() => text.fontSize, x => text.fontSize = x, endValue, duration);
         }
 #endif
     }
