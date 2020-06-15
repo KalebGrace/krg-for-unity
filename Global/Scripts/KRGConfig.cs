@@ -109,6 +109,8 @@ namespace KRG
 
         public GameObject[] autoInstancedPrefabs { get { return (GameObject[])_autoInstancedPrefabs.Clone(); } }
 
+        public List<RasterAnimation> ExtraRasterAnimations = default;
+
 
         [Header("Time (KRG)")]
 

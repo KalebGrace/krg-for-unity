@@ -47,11 +47,18 @@ namespace KRG
             // eject any editor bundles/assets from memory
             AssetBundle.UnloadAllAssetBundles(true);
 
+            var anims = config.ExtraRasterAnimations;
+            for (int i = 0; i < anims.Count; ++i)
+            {
+                var anim = anims[i];
+                RasterAnimations.Add(anim.name, anim);
+            }
+
             G.app.GameplaySceneStarted += OnGameplaySceneStarted;
 
             // instantiate KRGLoader child GameObjects from prefabs
             GameObject[] ps = config.autoInstancedPrefabs;
-            for (int i = 0; i < ps.Length; i++)
+            for (int i = 0; i < ps.Length; ++i)
             {
                 G.U.New(ps[i], transform);
             }
