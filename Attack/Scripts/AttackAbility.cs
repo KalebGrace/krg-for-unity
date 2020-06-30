@@ -4,7 +4,6 @@ using UnityEngine.Serialization;
 
 namespace KRG
 {
-
     /// <summary>
     /// AttackAbility: Attack Ability
     /// 1.  AttackAbility is a body of data that defines an "attack". Specifically, it defines
@@ -25,6 +24,7 @@ namespace KRG
     )]
     public class AttackAbility : ScriptableObject
     {
+        public const float DPS_INTERVAL = 0.05f;
 
         protected const float FLOAT_DEFAULT = 1.5f;
         protected const float FLOAT_MIN = 0.0001f;
@@ -133,14 +133,10 @@ namespace KRG
         protected float _hpDamage = 10;
 
         [SerializeField]
-        [Tooltip("Times HP Damage will be dealt per second during a hit."
-        + " Setting this to \"false\" makes the attack always deal damage whenever able (e.g. not invulnerable)."
-        + " Setting this to \"true\" and specifing an HP Damage Rate can be used to deal very specific DPS:"
-        + " E.G. 10 HP Damage * 10 HP Damage Rate = 100 Damage Per Second."
+        [Tooltip("HP Damage dealt per second during contact with the target."
         + " NOTE: This requires setting \"Causes Invulnerability\" to false,"
         + " or dealing damage to someone without it.")]
-        [BoolObjectDisable(false, "Whenever Able")]
-        protected BoolFloat _hpDamageRate = new BoolFloat(false, 60);
+        protected float _hpDamagePerSecond = default;
 
         //
         //
@@ -223,8 +219,9 @@ namespace KRG
         //minimum seconds between new attacks (calculated from _attackRate)
         protected float _attackRateSec;
 
-        //seconds between dealing HP Damage (calculated from _hpDamageRate)
-        protected float _hpDamageRateSec;
+        //is this a DPS clone?
+        //-   a DPS clone is a special attack ability that deals DPS (damage per second) during contact with the target
+        protected bool _isDPSClone;
 
         //applicable time thread interface (from _timeThreadIndex)
         protected ITimeThread _timeThread;
@@ -276,26 +273,13 @@ namespace KRG
 
         public virtual bool hasAttackLifetime { get { return _attackLifetime.boolValue; } }
 
-        public virtual bool hasHPDamageRate { get { return _hpDamageRate.boolValue; } }
-
         public virtual GameObject hitVFXPrefab { get { return _hitVFXPrefab; } }
 
         public virtual float hpDamage { get { return _hpDamage; } }
 
-        public virtual float hpDamageRate { get { return _hpDamageRate.floatValue; } }
-
-        public virtual float hpDamageRateSec
-        {
-            get
-            {
-#if UNITY_EDITOR
-                SetHPDamageRateSec();
-#endif
-                return _hpDamageRateSec;
-            }
-        }
-
         public virtual InputSignature inputSignature { get { return _inputSignature; } }
+
+        public virtual bool isDPSClone => _isDPSClone;
 
         public virtual bool isJoinedToAttacker { get { return _isJoinedToAttacker; } }
 
@@ -310,6 +294,8 @@ namespace KRG
         public virtual float knockBackTime { get { return _knockBackTime; } }
 
         public virtual KnockBackCalcMode knockBackTimeCalcMode { get { return _knockBackTimeCalcMode; } }
+
+        public virtual bool requiresDPSClone => !_hpDamagePerSecond.Ap(0);
 
         public virtual string sfxFmodEvent { get { return _sfxFmodEvent; } }
 
@@ -349,14 +335,12 @@ namespace KRG
             _attackLimit = Mathf.Max(1, _attackLimit);
             _attackRate = Mathf.Max(FLOAT_MIN, _attackRate);
             _attackLifetime.floatValue = Mathf.Max(FLOAT_MIN, _attackLifetime.floatValue);
-            _hpDamageRate.floatValue = Mathf.Max(FLOAT_MIN, _hpDamageRate.floatValue);
             _knockBackTime = Mathf.Max(0, _knockBackTime);
         }
 
         protected virtual void OnEnable()
         {
             SetAttackRateSec();
-            SetHPDamageRateSec();
         }
 
         #endregion
@@ -385,6 +369,22 @@ namespace KRG
             return GetAttackerAnimation(i) as RasterAnimation;
         }
 
+        /// <summary>
+        /// Gets the clone of this attack ability used for DPS (damage per second).
+        /// </summary>
+        /// <returns>The DPS clone.</returns>
+        /// <param name="iv">Time INTERVAL (in seconds).</param>
+        public virtual AttackAbility GetDPSClone(float iv)
+        {
+            G.U.Assert(iv > 0);
+            AttackAbility aa = Instantiate(this);
+            aa._isDPSClone = true;
+            aa._sfxFmodEvent = null;
+            aa._causesInvulnerability = false;
+            aa._hpDamage = aa._hpDamagePerSecond * iv;
+            return aa;
+        }
+
         #endregion
 
         #region METHODS: PROTECTED
@@ -401,11 +401,6 @@ namespace KRG
         void SetAttackRateSec()
         {
             _attackRateSec = 1f / _attackRate;
-        }
-
-        void SetHPDamageRateSec()
-        {
-            _hpDamageRateSec = 1f / _hpDamageRate.floatValue;
         }
 
         void UpdateSerializedVersion()

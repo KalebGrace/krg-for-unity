@@ -199,6 +199,8 @@ namespace KRG
             Vector3 hitPositionCenter
         )
         {
+            if (attackAbility.isDPSClone) return;
+
             G.damage.DisplayDamageValue(this, Mathf.RoundToInt(attackAbility.hpDamage));
             GameObject p = attackAbility.hitVFXPrefab;
             if (p != null) Instantiate(p, hitPositionCenter, Quaternion.identity);
@@ -206,6 +208,8 @@ namespace KRG
 
         protected virtual void PlayDamageSFX()
         {
+            if (_damageAttackAbility.isDPSClone) return;
+
             string sfxFmodEvent = _damageProfile.sfxFmodEvent;
             if (!string.IsNullOrEmpty(sfxFmodEvent))
             {

@@ -8,13 +8,14 @@ namespace KRG
 
         private readonly Attack _attack;
         private readonly AttackAbility _attackAbility;
+        private AttackAbility _attackAbilityDPSClone;
         private Vector3 _attackPositionCenter;
         private System.Action _damageDealtCallback;
-        private TimeTrigger _damageTimeTrigger;
         private int _hitCount;
         private Vector3 _hitPositionCenter;
         private bool _isDelayedDueToInvulnerability;
         private bool _isDelayedDueToTimeThreadPause;
+        private TimeTrigger _timeTriggerDPSClone;
 
         // properties
 
@@ -49,6 +50,13 @@ namespace KRG
             _attackPositionCenter = attackPositionCenter;
             _hitPositionCenter = hitPositionCenter;
             if (!isHitLimitReached) CheckForDelay();
+
+            if (_attackAbility.requiresDPSClone)
+            {
+                _attackAbilityDPSClone = _attackAbility.GetDPSClone(AttackAbility.DPS_INTERVAL);
+                _timeTriggerDPSClone = _attackAbilityDPSClone.timeThread.AddTrigger(AttackAbility.DPS_INTERVAL, Damage);
+                _timeTriggerDPSClone.doesMultiFire = true;
+            }
         }
 
         public void StopTakingDamage()
@@ -56,8 +64,10 @@ namespace KRG
             G.U.Assert(isInProgress,
                 "StopTakingDamage was called, but this AttackTarget has already stopped taking damage.");
             isInProgress = false;
-            //
-            if (!isHitLimitReached) CheckForDelayCallbackRemoval(StopTakingDamageForReal);
+            if (!isHitLimitReached) CheckForDelayCallbackRemoval(null);
+
+            _timeTriggerDPSClone?.Dispose();
+            _attackAbilityDPSClone = null;
         }
 
         // methods 2 - Check For, And Handle, Delays
@@ -76,7 +86,7 @@ namespace KRG
             }
             else
             {
-                StartTakingDamageForReal();
+                Damage();
             }
         }
 
@@ -94,7 +104,7 @@ namespace KRG
             }
             else
             {
-                onNoRemoval();
+                onNoRemoval?.Invoke();
             }
         }
 
@@ -109,42 +119,7 @@ namespace KRG
             G.U.Err("DelayCallback was made with no delay flags set to true.");
         }
 
-        // methods 3 - Start & Stop Damage For Real
-
-        private void StartTakingDamageForReal()
-        {
-            if (_damageTimeTrigger != null)
-            {
-                _attackAbility.timeThread.LinkTrigger(_damageTimeTrigger);
-            }
-            else
-            {
-                Damage();
-                if (target != null && !target.IsKnockedOut && !isHitLimitReached)
-                {
-                    if (_attackAbility.hasHPDamageRate)
-                    {
-                        _damageTimeTrigger = _attackAbility.timeThread.AddTrigger(
-                            _attackAbility.hpDamageRateSec, Damage);
-                        _damageTimeTrigger.doesMultiFire = true;
-                    }
-                    else
-                    {
-                        //CheckForDelay(); (don't do this; it causes an infinite loop)
-                    }
-                }
-            }
-        }
-
-        private void StopTakingDamageForReal()
-        {
-            if (_damageTimeTrigger != null)
-            {
-                G.U.Assert(_attackAbility.timeThread.UnlinkTrigger(_damageTimeTrigger));
-            }
-        }
-
-        // methods 4 - The Actual Damage
+        // methods 3 - The Actual Damage
 
         private void Damage()
         {
@@ -156,13 +131,17 @@ namespace KRG
             }
         }
 
+        // DPS clone damage method
         private void Damage(TimeTrigger tt)
         {
-            Damage();
-            if (target != null && !target.IsKnockedOut && !isHitLimitReached)
+            if (target == null)
             {
-                tt.Proceed();
+                G.U.Warn("Taking DPS clone damage when target has been destroyed.");
+                return;
             }
+            Vector3 p = target.transform.position;
+            target.Damage(_attack.attacker, _attackAbilityDPSClone, p, p);
+            tt.Proceed();
         }
     }
 }
