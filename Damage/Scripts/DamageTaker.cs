@@ -201,7 +201,17 @@ namespace KRG
         {
             if (attackAbility.isDPSClone) return;
 
-            G.damage.DisplayDamageValue(this, Mathf.RoundToInt(attackAbility.hpDamage));
+            string damage;
+            if (attackAbility.hpDamage.Ap(0) && attackAbility.requiresDPSClone)
+            {
+                damage = "DPS";
+            }
+            else
+            {
+                damage = Mathf.RoundToInt(attackAbility.hpDamage).ToString();
+            }
+            G.damage.DisplayDamageValue(this, damage);
+
             GameObject p = attackAbility.hitVFXPrefab;
             if (p != null) Instantiate(p, hitPositionCenter, Quaternion.identity);
         }

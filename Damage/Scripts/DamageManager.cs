@@ -17,7 +17,7 @@ namespace KRG
         /// <param name="target">Target.</param>
         /// <param name="damage">Damage.</param>
         /// <typeparam name="T">The 1st type parameter.</typeparam>
-        public void DisplayDamageValue(DamageTaker target, int damage)
+        public void DisplayDamageValue(DamageTaker target, string damage)
         {
             DisplayDamageValue(target, target.transform, damage);
         }
@@ -31,7 +31,7 @@ namespace KRG
         /// <param name="target">Target.</param>
         /// <param name="anchor">Anchor (parent Transform).</param>
         /// <param name="damage">Damage.</param>
-        public void DisplayDamageValue<T>(IDestroyedEvent<T> target, Transform anchor, int damage)
+        public void DisplayDamageValue<T>(IDestroyedEvent<T> target, Transform anchor, string damage)
         {
             G.U.New(config.damageValuePrefab, anchor).Init(target, damage);
         }

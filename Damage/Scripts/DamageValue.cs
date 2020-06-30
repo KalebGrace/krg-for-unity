@@ -34,19 +34,18 @@ namespace KRG
 
         private ITimeThread timeThread => G.time.GetTimeThread(_timeThreadIndex, TimeThreadInstance.Gameplay);
 
-        public void Init<T>(IDestroyedEvent<T> target, int damage)
+        public void Init<T>(IDestroyedEvent<T> target, string damage)
         {
             target.Destroyed += _ => OnTargetDestroy();
 
-            string d = damage.ToString();
-            int l = d.Length;
+            int l = damage.Length;
             switch (l)
             {
                 case 1:
                     _text100.gameObject.SetActive(false);
                     _text010.gameObject.SetActive(false);
 
-                    _text001.text = d[l - 1].ToString();
+                    _text001.text = damage[l - 1].ToString();
 
                     _text001.transform.localPosition = Vector3.zero;
 
@@ -55,8 +54,8 @@ namespace KRG
                 case 2:
                     _text100.gameObject.SetActive(false);
 
-                    _text010.text = d[l - 2].ToString();
-                    _text001.text = d[l - 1].ToString();
+                    _text010.text = damage[l - 2].ToString();
+                    _text001.text = damage[l - 1].ToString();
 
                     _text010.transform.localPosition = Vector3.left * 0.25f;
                     _text001.transform.localPosition = Vector3.right * 0.25f;
@@ -67,9 +66,9 @@ namespace KRG
                     Animate(_text001, 0.75f);
                     break;
                 case 3:
-                    _text100.text = d[l - 3].ToString();
-                    _text010.text = d[l - 2].ToString();
-                    _text001.text = d[l - 1].ToString();
+                    _text100.text = damage[l - 3].ToString();
+                    _text010.text = damage[l - 2].ToString();
+                    _text001.text = damage[l - 1].ToString();
 
                     _text100.transform.localPosition = Vector3.left * 0.5f;
                     _text010.transform.localPosition = Vector3.zero;
@@ -83,7 +82,7 @@ namespace KRG
                     Animate(_text001, 0.75f);
                     break;
                 default:
-                    G.U.Err("Damage must be 1~3 digits in length. Damage value is: " + d);
+                    G.U.Err("Damage must be 1~3 characters in length. Damage value is: " + damage);
                     break;
             }
         }
