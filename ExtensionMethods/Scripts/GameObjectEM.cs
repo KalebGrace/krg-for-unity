@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace KRG
 {
-    public static class GameObjectEM
+    public static class GameObjectEM // GameObject extension methods
     {
         public static void Dispose(this GameObject me)
         {

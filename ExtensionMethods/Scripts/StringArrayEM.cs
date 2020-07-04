@@ -2,7 +2,7 @@
 
 namespace KRG
 {
-    public static class StringArrayEM
+    public static class StringArrayEM // string[] extension methods
     {
         public static string[] plus(this string[] me, string to_add)
         {

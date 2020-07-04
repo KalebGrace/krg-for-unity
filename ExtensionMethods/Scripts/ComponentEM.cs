@@ -2,7 +2,7 @@
 
 namespace KRG
 {
-    public static class ComponentEM
+    public static class ComponentEM // Component extension methods
     {
         public static void Dispose(this Component me)
         {

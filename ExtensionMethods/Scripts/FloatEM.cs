@@ -2,14 +2,24 @@ using UnityEngine;
 
 namespace KRG
 {
-    public static class FloatEM
+    public static class FloatEM // float extension methods
     {
         /// <summary>
         /// Is approximately equal to...
         /// </summary>
-        public static bool Ap(this float me, float f)
+        /// <param name="me">The first value to be compared.</param>
+        /// <param name="v3">The second value to be compared.</param>
+        /// <param name="tolerance">If greater than 0, use this value. Else use Mathf.Approximately.</param>
+        public static bool Ap(this float me, float f, float tolerance = 0)
         {
-            return Mathf.Approximately(me, f);
+            if (tolerance > 0)
+            {
+                return Mathf.Abs(me - f) <= tolerance;
+            }
+            else
+            {
+                return Mathf.Approximately(me, f);
+            }
         }
 
         public static Rotation Rotation(this float me)

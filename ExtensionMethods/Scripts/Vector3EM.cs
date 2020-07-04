@@ -1,11 +1,9 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-namespace KRG {
-
-    public static class Vector3ExtensionMethods {
-
+namespace KRG
+{
+    public static class Vector3EM // Vector3 extension methods
+    {
         public delegate float V3Func(float value);
 
         public static Vector3 Add(this Vector3 v3, float x = 0, float y = 0, float z = 0) {
@@ -13,6 +11,30 @@ namespace KRG {
             v3.y += y;
             v3.z += z;
             return v3;
+        }
+
+        /// <summary>
+        /// Is approximately equal to...
+        /// </summary>
+        /// <param name="me">The first value to be compared.</param>
+        /// <param name="v3">The second value to be compared.</param>
+        /// <param name="tolerance">If greater than 0, use this value. Else use Mathf.Approximately.</param>
+        public static bool Ap(this Vector3 me, Vector3 v3, float tolerance = 0)
+        {
+            bool x, y, z;
+            if (tolerance > 0)
+            {
+                x = Mathf.Abs(me.x - v3.x) <= tolerance;
+                y = Mathf.Abs(me.y - v3.y) <= tolerance;
+                z = Mathf.Abs(me.z - v3.z) <= tolerance;
+            }
+            else
+            {
+                x = Mathf.Approximately(me.x, v3.x);
+                y = Mathf.Approximately(me.y, v3.y);
+                z = Mathf.Approximately(me.z, v3.z);
+            }
+            return x && y && z;
         }
 
         public static Vector3 Func(this Vector3 v3, V3Func fx = null, V3Func fy = null, V3Func fz = null) {
