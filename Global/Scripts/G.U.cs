@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Text;
+using UnityEngine;
 
 namespace KRG
 {
@@ -17,6 +18,10 @@ namespace KRG
             // CONSTANTS
 
             private const string FORMAT_MAGIC_STRING = "{0";
+
+            // STATIC FIELDS
+
+            private static StringBuilder s_InfoStringBuilder = new StringBuilder();
 
             // COMPOUND PROPERTIES
 
@@ -300,32 +305,39 @@ namespace KRG
             {
                 int len;
                 object o;
-                string s = "";
+                s_InfoStringBuilder.Clear();
                 if (objs == null)
                 {
-                    s = "<NULL LITERAL>";
+                    s_InfoStringBuilder.Append("<NULL LITERAL>");
                 }
                 else
                 {
                     len = objs.Length;
                     if (len == 0)
                     {
-                        s = "<ZERO PARAMS>";
+                        s_InfoStringBuilder.Append("<ZERO PARAMS>");
                     }
                     else
                     {
                         for (int i = 0; i < len; i++)
                         {
                             o = objs[i];
-                            if (i > 0) s += "\n";
-                            s += string.Format("[#{0}] {1}", i, o);
+                            if (i > 0)
+                            {
+                                s_InfoStringBuilder.Append("\n");
+                            }
+                            s_InfoStringBuilder.Append("[#");
+                            s_InfoStringBuilder.Append(i);
+                            s_InfoStringBuilder.Append("] ");
+                            s_InfoStringBuilder.Append(o);
                             if (o == null)
                             {
-                                s += "<NULL PARAM>";
+                                s_InfoStringBuilder.Append("<NULL PARAM>");
                             }
                             else
                             {
-                                s += ", type " + o.GetType();
+                                s_InfoStringBuilder.Append(", type ");
+                                s_InfoStringBuilder.Append(o.GetType());
 #pragma warning disable 0168
                                 //as of Unity 5.5.0f3...
                                 //the following is the only way to GetInstanceID for a destroyed UnityEngine.Object,
@@ -336,7 +348,8 @@ namespace KRG
                                 //TODO: using the knowledge from IsNull(), see if this can be fixed
                                 try
                                 {
-                                    s += ", id " + ((Object)o).GetInstanceID();
+                                    s_InfoStringBuilder.Append(", id ");
+                                    s_InfoStringBuilder.Append(((Object)o).GetInstanceID());
                                 }
                                 catch (System.Exception ex)
                                 {
@@ -346,8 +359,11 @@ namespace KRG
                         }
                     }
                 }
-                s += "\n[*] frame " + Time.frameCount + ", sec " + Time.realtimeSinceStartup;
-                return s;
+                s_InfoStringBuilder.Append("\n[*] frame ");
+                s_InfoStringBuilder.Append(Time.frameCount);
+                s_InfoStringBuilder.Append(", sec ");
+                s_InfoStringBuilder.Append(Time.realtimeSinceStartup);
+                return s_InfoStringBuilder.ToString();
             }
 
             internal static bool SourceExists(Object source, System.Type t, bool throwException)
@@ -383,6 +399,8 @@ namespace KRG
             /// <returns>If the condition was asserted to be true.</returns>
             public static bool Assert(bool condition, string message, params object[] objs)
             {
+                if (condition) return true;
+
                 if (message.Contains(FORMAT_MAGIC_STRING))
                 {
                     Debug.AssertFormat(condition, message, objs);
