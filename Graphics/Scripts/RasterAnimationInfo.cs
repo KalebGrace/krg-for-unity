@@ -49,50 +49,52 @@ namespace KRG
         public int frameNumber { get; set; }
 
 
-        void Awake()
+        private void Awake()
         {
             _text = GetComponent<TextMeshPro>();
-#if !DEBUG_VISIBILITY
-            _text?.Dispose();
-#else
-            G.U.Require(_text, "TextMesh (Pro) Component", gameObject, "this GameObject");
-#endif
+
+            if (G.U.IsDebugMode)
+            {
+                G.U.Require(_text, "TextMesh (Pro) Component", gameObject, "this GameObject");
+            }
+            else
+            {
+                _text?.Dispose();
+            }
         }
 
         public void Clear()
         {
-#if !DEBUG_VISIBILITY
-            // do nothing
-#else
-            _text.text = "N/A";
-#endif
+            if (G.U.IsDebugMode)
+            {
+                _text.text = "N/A";
+            }
         }
 
         public void Refresh()
         {
-#if !DEBUG_VISIBILITY
-            // do nothing
-#else
-            _text.text = string.Format(
-                _infoFormat,
-                frameSequenceName,
-                frameSequenceFromFrameMin,
-                frameSequenceFromFrame,
-                frameSequenceFromFrameMax,
-                frameSequenceToFrameMin,
-                frameSequenceToFrame,
-                frameSequenceToFrameMax,
-                frameSequencePlayCountMin,
-                frameSequencePlayCount,
-                frameSequencePlayCountMax,
-                frameSequenceIndex + 1,
-                frameSequenceCount,
-                frameSequencePlayIndex + 1,
-                frameSequencePlayCount,
-                frameNumber,
-                frameSequenceToFrame
-            );
-#endif
+            if (G.U.IsDebugMode)
+            {
+                _text.text = string.Format(
+                    _infoFormat,
+                    frameSequenceName,
+                    frameSequenceFromFrameMin,
+                    frameSequenceFromFrame,
+                    frameSequenceFromFrameMax,
+                    frameSequenceToFrameMin,
+                    frameSequenceToFrame,
+                    frameSequenceToFrameMax,
+                    frameSequencePlayCountMin,
+                    frameSequencePlayCount,
+                    frameSequencePlayCountMax,
+                    frameSequenceIndex + 1,
+                    frameSequenceCount,
+                    frameSequencePlayIndex + 1,
+                    frameSequencePlayCount,
+                    frameNumber,
+                    frameSequenceToFrame
+                );
+            }
         }
     }
 }

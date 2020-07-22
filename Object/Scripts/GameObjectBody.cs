@@ -179,10 +179,11 @@ namespace KRG
             }
             else
             {
-#if DEBUG_VISIBILITY
-                Transform centerTransform = Refs.VisRect?.transform ?? transform;
-                Instantiate(G.config.characterDebugTextPrefab, centerTransform).Init(this);
-#endif
+                if (G.U.IsDebugMode)
+                {
+                    Transform centerTransform = Refs.VisRect?.transform ?? transform;
+                    Instantiate(G.config.characterDebugTextPrefab, centerTransform).Init(this);
+                }
             }
         }
 

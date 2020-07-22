@@ -17,6 +17,8 @@ namespace KRG
         {
             // CONSTANTS
 
+            public const string DEBUG_MODE_KEY = "KRG.DebugMode";
+
             private const string FORMAT_MAGIC_STRING = "{0";
 
             // STATIC FIELDS
@@ -47,6 +49,14 @@ namespace KRG
                     return s_EditModePlayerCharacter;
                 }
             }
+
+            // SHORTCUT PROPERTIES
+
+#if UNITY_EDITOR
+            public static bool IsDebugMode => UnityEditor.EditorPrefs.GetBool(DEBUG_MODE_KEY, false);
+#else
+            public static bool IsDebugMode => false;
+#endif
 
             // PLAY MODE? EDIT MODE?
 
