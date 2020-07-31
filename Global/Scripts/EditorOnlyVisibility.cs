@@ -5,6 +5,8 @@ namespace KRG
     [ExecuteAlways]
     public class EditorOnlyVisibility : MonoBehaviour
     {
+        public Color WireColor = Color.magenta;
+
         private BoxCollider m_BoxCollider;
         private Renderer m_Renderer;
 
@@ -33,7 +35,7 @@ namespace KRG
         {
             if (m_BoxCollider != null)
             {
-                Gizmos.color = Color.magenta;
+                Gizmos.color = WireColor;
                 Vector3 center = transform.position + m_BoxCollider.center;
                 Vector3 size = transform.lossyScale.Multiply(m_BoxCollider.size);
                 Gizmos.DrawWireCube(center, size);
