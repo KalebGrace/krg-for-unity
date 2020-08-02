@@ -131,7 +131,7 @@ namespace KRG
 
         public virtual bool CanCollect(Collider other, int instanceID)
         {
-            return other.gameObject.tag == "Player";
+            return G.obj.IsPlayerCharacter(other);
         }
 
         public virtual void Collect(Collider other, int instanceID)
