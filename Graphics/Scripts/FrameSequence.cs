@@ -26,8 +26,7 @@ namespace KRG
 
         // SERIALIZED FIELDS
 
-        [SerializeField, HideInInspector]
-        [FormerlySerializedAs("m_serializedVersion")]
+        [SerializeField, HideInInspector, FormerlySerializedAs("m_serializedVersion")]
         private int _serializedVersion = VERSION;
 
         [Header("Frame Sequence")]
@@ -146,7 +145,7 @@ namespace KRG
                 _playCount.minValue = 1;
             }
 
-            MigrateDeprecatedValues();
+            UpdateSerializedVersion();
 
             // real validation
             _playCount.minValue = Mathf.Max(0, _playCount.minValue);
@@ -154,80 +153,82 @@ namespace KRG
             ConvertFramesToFrameList();
         }
 
-        // METHODS: MigrateDeprecatedValues
+        // METHODS: UpdateSerializedVersion
 
-        private void MigrateDeprecatedValues()
+        private void UpdateSerializedVersion()
         {
             while (_serializedVersion < VERSION)
             {
-                if (_serializedVersion == 0)
+                switch (_serializedVersion)
                 {
-                    if (m_ObsoleteFrom > 0)
-                    {
-                        m_ObsoleteFromFrame.minValue = m_ObsoleteFrom;
-                        m_ObsoleteFromFrame.maxValue = m_ObsoleteFrom;
-                        m_ObsoleteFrom = 0;
-                    }
-                    if (m_ObsoleteTo > 0)
-                    {
-                        m_ObsoleteToFrame.minValue = m_ObsoleteTo;
-                        m_ObsoleteToFrame.maxValue = m_ObsoleteTo;
-                        m_ObsoleteTo = 0;
-                    }
-                }
-                else if (_serializedVersion == 1)
-                {
-                    if (m_ObsoleteDoesCallCode)
-                    {
-                        _name += " [DOES CALL CODE]";
-                    }
-                    m_ObsoleteDoesCallCode = false;
-                }
-                else if (_serializedVersion == 2)
-                {
-                    if (m_ObsoletePreSequenceAction != 0)
-                    {
-                        if (_preSequenceActions == null)
+                    case 0:
+                        if (m_ObsoleteFrom > 0)
                         {
-                            _preSequenceActions = new List<int>(1);
+                            m_ObsoleteFromFrame.minValue = m_ObsoleteFrom;
+                            m_ObsoleteFromFrame.maxValue = m_ObsoleteFrom;
+                            m_ObsoleteFrom = 0;
                         }
-                        _preSequenceActions.Add(m_ObsoletePreSequenceAction);
-                    }
-                    m_ObsoletePreSequenceAction = 0;
-                }
-                else if (_serializedVersion == 3)
-                {
-                    m_ObsoleteFromFrame.Inclusivize();
-                    m_ObsoleteToFrame.Inclusivize();
-                    m_ObsoleteFromFrame.minValue = Mathf.Max(1, m_ObsoleteFromFrame.minValue);
-                    m_ObsoleteToFrame.minValue = Mathf.Max(m_ObsoleteFromFrame.maxValue, m_ObsoleteToFrame.minValue);
-                    string fromFrames = m_ObsoleteFromFrame.minValue.ToString();
-                    if (m_ObsoleteFromFrame.minValue != m_ObsoleteFromFrame.maxValue)
-                    {
-                        fromFrames += "r" + m_ObsoleteFromFrame.maxValue.ToString();
-                    }
-                    string toFrames = m_ObsoleteToFrame.minValue.ToString();
-                    if (m_ObsoleteToFrame.minValue != m_ObsoleteToFrame.maxValue)
-                    {
-                        toFrames += "r" + m_ObsoleteToFrame.maxValue.ToString();
-                    }
-                    string newFrames = fromFrames;
-                    if (fromFrames != toFrames)
-                    {
-                        newFrames += "-" + toFrames;
-                    }
-                    if (string.IsNullOrWhiteSpace(_frames))
-                    {
-                        _frames = newFrames;
-                    }
-                    else if (newFrames != "1")
-                    {
-                        _frames += "/" + newFrames;
-                    }
-                    m_ObsoleteFromFrame.minValue = 1;
-                    m_ObsoleteFromFrame.maxValue = 1;
-                    m_ObsoleteToFrame.minValue = 1;
-                    m_ObsoleteToFrame.maxValue = 1;
+                        if (m_ObsoleteTo > 0)
+                        {
+                            m_ObsoleteToFrame.minValue = m_ObsoleteTo;
+                            m_ObsoleteToFrame.maxValue = m_ObsoleteTo;
+                            m_ObsoleteTo = 0;
+                        }
+                        break;
+                    case 1:
+                        if (m_ObsoleteDoesCallCode)
+                        {
+                            _name += " [DOES CALL CODE]";
+                        }
+                        m_ObsoleteDoesCallCode = false;
+                        break;
+                    case 2:
+                        if (m_ObsoletePreSequenceAction != 0)
+                        {
+                            if (_preSequenceActions == null)
+                            {
+                                _preSequenceActions = new List<int>(1);
+                            }
+                            _preSequenceActions.Add(m_ObsoletePreSequenceAction);
+                        }
+                        m_ObsoletePreSequenceAction = 0;
+                        break;
+                    case 3:
+                        m_ObsoleteFromFrame.Inclusivize();
+                        m_ObsoleteToFrame.Inclusivize();
+                        m_ObsoleteFromFrame.minValue = Mathf.Max(1, m_ObsoleteFromFrame.minValue);
+                        m_ObsoleteToFrame.minValue = Mathf.Max(m_ObsoleteFromFrame.maxValue, m_ObsoleteToFrame.minValue);
+                        string fromFrames = m_ObsoleteFromFrame.minValue.ToString();
+                        if (m_ObsoleteFromFrame.minValue != m_ObsoleteFromFrame.maxValue)
+                        {
+                            fromFrames += "r" + m_ObsoleteFromFrame.maxValue.ToString();
+                        }
+                        string toFrames = m_ObsoleteToFrame.minValue.ToString();
+                        if (m_ObsoleteToFrame.minValue != m_ObsoleteToFrame.maxValue)
+                        {
+                            toFrames += "r" + m_ObsoleteToFrame.maxValue.ToString();
+                        }
+                        string newFrames = fromFrames;
+                        if (fromFrames != toFrames)
+                        {
+                            newFrames += "-" + toFrames;
+                        }
+                        if (string.IsNullOrWhiteSpace(_frames))
+                        {
+                            _frames = newFrames;
+                        }
+                        else if (newFrames != "1")
+                        {
+                            _frames += "/" + newFrames;
+                        }
+                        m_ObsoleteFromFrame.minValue = 1;
+                        m_ObsoleteFromFrame.maxValue = 1;
+                        m_ObsoleteToFrame.minValue = 1;
+                        m_ObsoleteToFrame.maxValue = 1;
+                        break;
+                    case 4:
+                        // no change
+                        break;
                 }
                 ++_serializedVersion;
             }

@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Serialization;
 
@@ -20,13 +20,6 @@ namespace KRG
         public const string RESOURCE_PATH = "KRGConfig";
 
 #endif
-
-        /*
-        [HideInInspector]
-        [SerializeField]
-        [FormerlySerializedAs("m_serializedVersion")]
-        int _serializedVersion = default;
-        */
 
 
         [Header("Global (KRG)")]
@@ -120,33 +113,9 @@ namespace KRG
         public string timeThreadInstanceEnum { get { return _timeThreadInstanceEnum; } }
 
 
-        //WARNING: this function will only be called automatically if playing a GAME BUILD
-        //...it will NOT be called if using the Unity editor
-        void Awake()
+        private void Awake() // GAME BUILD only
         {
             characterDebugTextPrefab = Resources.Load<CharacterDebugText>("Character/CharacterDebugText");
-
-            UpdateSerializedVersion();
-        }
-
-        //WARNING: this function will only be called automatically if using the UNITY EDITOR
-        //...it will NOT be called if playing a game build
-        void OnValidate()
-        {
-            UpdateSerializedVersion();
-        }
-
-
-        void UpdateSerializedVersion()
-        {
-            /*
-            switch (_serializedVersion) {
-                case 0:
-                    //put code here to assign default values or update existing values
-                    _serializedVersion = 1;
-                    break;
-            }
-            */
         }
     }
 }

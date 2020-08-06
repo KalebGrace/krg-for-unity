@@ -109,12 +109,12 @@ namespace KRG
 
         // MONOBEHAVIOUR METHODS
 
-        protected virtual void Awake()
+        protected virtual void Awake() // GAME BUILD only
         {
             Init();
         }
 
-        protected virtual void OnValidate()
+        protected virtual void OnValidate() // UNITY EDITOR only
         {
             Init();
         }
@@ -123,8 +123,6 @@ namespace KRG
 
         private void Init()
         {
-            UpdateSerializedVersion();
-
             // validate _loopCount
             _loopCount.intValue = Mathf.Max(_loopCount.intValue, 1);
 
@@ -256,18 +254,6 @@ namespace KRG
                 }
             }
             hasPlayableFrameSequences = false;
-        }
-
-        protected virtual void UpdateSerializedVersion()
-        {
-            /*
-            switch (_serializedVersion) {
-                case 0:
-                    //put code here to assign default values or update existing values
-                    _serializedVersion = 1;
-                    break;
-            }
-            */
         }
 
         private void ParseFrameParagraph()

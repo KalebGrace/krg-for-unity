@@ -24,6 +24,10 @@ namespace KRG
     )]
     public class AttackAbility : ScriptableObject
     {
+        // CONSTANTS
+
+        public const int VERSION = 2;
+
         public const float DPS_INTERVAL = 0.05f;
 
         protected const float FLOAT_DEFAULT = 1.5f;
@@ -31,10 +35,8 @@ namespace KRG
 
         #region FIELDS: SERIALIZED
 
-        //private serialized data version
-        [HideInInspector]
-        [SerializeField]
-        int _serializedVersion;
+        [SerializeField, HideInInspector]
+        private int _serializedVersion;
 
         [SerializeField]
         [Tooltip("An optional string key intended to reference this attack ability.")]
@@ -320,16 +322,12 @@ namespace KRG
 
         #region METHODS: MonoBehaviour
 
-        //WARNING: this function will only be called automatically if playing a GAME BUILD
-        //...it will NOT be called if using the Unity editor
-        protected virtual void Awake()
+        protected virtual void Awake() // GAME BUILD only
         {
             UpdateSerializedVersion();
         }
 
-        //WARNING: this function will only be called automatically if using the UNITY EDITOR
-        //...it will NOT be called if playing a game build
-        protected virtual void OnValidate()
+        protected virtual void OnValidate() // UNITY EDITOR only
         {
             UpdateSerializedVersion();
             _attackLimit = Mathf.Max(1, _attackLimit);
@@ -396,53 +394,51 @@ namespace KRG
 
         #endregion
 
-        #region METHODS: PRIVATE
-
-        void SetAttackRateSec()
+        private void SetAttackRateSec()
         {
             _attackRateSec = 1f / _attackRate;
         }
 
-        void UpdateSerializedVersion()
+        private void UpdateSerializedVersion()
         {
-            if (_serializedVersion == 0)
+            while (_serializedVersion < VERSION)
             {
+                switch (_serializedVersion)
+                {
+                    case 0:
 #pragma warning disable CS0618 // Type or member is obsolete
-                if (m_attackerAnimation != null)
-                {
-                    if (_attackerAnimations == null)
-                    {
-                        _attackerAnimations = new AnimationData[1];
-                    }
-                    int ol = _attackerAnimations.Length; //original length
-                    if (_attackerAnimations[ol - 1] == null)
-                    {
-                        _attackerAnimations[ol - 1] = m_attackerAnimation;
-                    }
-                    else
-                    {
-                        System.Array.Resize(ref _attackerAnimations, ol + 1);
-                        _attackerAnimations[ol] = m_attackerAnimation;
-                    }
-                    m_attackerAnimation = null;
-                }
+                        if (m_attackerAnimation != null)
+                        {
+                            if (_attackerAnimations == null)
+                            {
+                                _attackerAnimations = new AnimationData[1];
+                            }
+                            int ol = _attackerAnimations.Length; //original length
+                            if (_attackerAnimations[ol - 1] == null)
+                            {
+                                _attackerAnimations[ol - 1] = m_attackerAnimation;
+                            }
+                            else
+                            {
+                                System.Array.Resize(ref _attackerAnimations, ol + 1);
+                                _attackerAnimations[ol] = m_attackerAnimation;
+                            }
+                            m_attackerAnimation = null;
+                        }
 #pragma warning restore CS0618 // Type or member is obsolete
-                _serializedVersion = 1;
-            }
-            if (_serializedVersion == 1)
-            {
+                        break;
+                    case 1:
 #pragma warning disable CS0612 // Type or member is obsolete
-                if (!_attackerMoveDistance.Ap(0))
-                {
-                    AttackerMoveSpeed = _attackerMoveDistance / _attackerMoveTime;
-                    _attackerMoveDistance = 0;
-                }
+                        if (!_attackerMoveDistance.Ap(0))
+                        {
+                            AttackerMoveSpeed = _attackerMoveDistance / _attackerMoveTime;
+                            _attackerMoveDistance = 0;
+                        }
 #pragma warning restore CS0612 // Type or member is obsolete
-                _serializedVersion = 2;
+                        break;
+                }
+                ++_serializedVersion;
             }
         }
-
-        #endregion
-
     }
 }
