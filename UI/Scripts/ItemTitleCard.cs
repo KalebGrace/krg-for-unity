@@ -34,7 +34,13 @@ namespace KRG
 
         private void OnItemAcquired(ItemData itemData, bool isNewlyAcquired)
         {
-            if (!isNewlyAcquired || itemData == null || !itemData.ShowTitleCardOnCollect) return;
+            if (itemData == null)
+            {
+                G.U.Warn("Missing item data.");
+                return;
+            }
+
+            if (!isNewlyAcquired || !itemData.ShowTitleCardOnCollect) return;
 
             itemDisplayNameText.text = itemData.DisplayName;
             itemInstructionText.text = itemData.Instruction;

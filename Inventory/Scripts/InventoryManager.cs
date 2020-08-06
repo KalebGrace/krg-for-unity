@@ -76,6 +76,11 @@ namespace KRG
         {
             ItemData itemData = GetItemData(itemID);
 
+            if (itemData == null)
+            {
+                G.U.Warn("Missing item data.");
+            }
+
             bool hasKeyItem = itemData != null && itemData.IsKeyItem && newQuantity >= 1;
 
             if (hasKeyItem)

@@ -14,11 +14,18 @@ namespace KRG
     )]
     public class ItemData : ScriptableObject
     {
+        // CONSTANTS
+
+        public const int VERSION = 1;
+
         // STATIC EVENTS
 
         public static event System.Action<ItemData, GameObjectBody> ItemCollected;
 
         // SERIALIZED FIELDS
+
+        [SerializeField, HideInInspector]
+        private int _serializedVersion;
 
         [Header("Item Data")]
 
@@ -91,8 +98,15 @@ namespace KRG
 
         // MONOBEHAVIOUR METHODS
 
-        protected virtual void OnValidate()
+        protected virtual void Awake() // GAME BUILD only
         {
+            UpdateSerializedVersion();
+        }
+
+        protected virtual void OnValidate() // UNITY EDITOR only
+        {
+            UpdateSerializedVersion();
+
             if (string.IsNullOrWhiteSpace(displayName))
             {
                 displayName = name;
@@ -195,5 +209,39 @@ namespace KRG
         }
 
         protected virtual void DoEffects(int condition, GameObjectBody self) { }
+
+        private void UpdateSerializedVersion()
+        {
+            while (_serializedVersion < VERSION)
+            {
+                switch (_serializedVersion)
+                {
+                    case 0:
+                        for (int i = 0; i < effectors.Count; ++i)
+                        {
+                            Effector e = effectors[i];
+                            // update EffectorProperty value
+                            switch (e.property)
+                            {
+                                case 1100: // HP
+                                    e.property = (int)StatID.HP;
+                                    break;
+                                case 1200: // SP
+                                    e.property = 104;
+                                    break;
+                                case 2100: // HPMax
+                                    e.property = (int)StatID.HPMax;
+                                    break;
+                                case 2200: // SPMax
+                                    e.property = 114;
+                                    break;
+                            }
+                            effectors[i] = e;
+                        }
+                        break;
+                }
+                ++_serializedVersion;
+            }
+        }
     }
 }
