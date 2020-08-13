@@ -2,12 +2,14 @@
 using DG.Tweening;
 #endif
 
-namespace KRG {
+namespace KRG
+{
 
     /// <summary>
     /// This is a fake TimeThread class to be used when the app is shutting down and the TimeManager has been destroyed.
     /// </summary>
-    public class TimeThreadFacade : ITimeThread {
+    public class TimeThreadFacade : ITimeThread
+    {
 
         public void AddPauseHandler(System.Action handler) { }
 
@@ -31,7 +33,8 @@ namespace KRG {
 
         public void QueueTimeRate(TimeRate timeRate, float timeScale = 1, int pauseKey = -1) { }
 
-        public TimeTrigger AddTrigger(float iv, TimeTriggerHandler handler, bool disallowFacade = false) {
+        public TimeTrigger AddTrigger(float iv, TimeTriggerHandler handler, bool disallowFacade = false)
+        {
             return null;
         }
 
@@ -50,8 +53,10 @@ namespace KRG {
         public void RemoveTween(Tween t) { }
 
         public void Tween(ref Tween t_ref, Tween t) { }
+        public void Tween(ref Tweener t_ref, Tweener t) { }
 
         public void Untween(ref Tween t_ref) { }
+        public void Untween(ref Tweener t_ref) { }
 
 #endif
 

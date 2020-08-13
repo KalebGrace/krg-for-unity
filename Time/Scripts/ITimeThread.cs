@@ -2,11 +2,13 @@
 using DG.Tweening;
 #endif
 
-namespace KRG {
+namespace KRG
+{
 
-    public interface ITimeThread {
-        
-#region Properties
+    public interface ITimeThread
+    {
+
+        #region Properties
 
         float deltaTime { get; }
 
@@ -20,9 +22,9 @@ namespace KRG {
 
         float timeScale { get; }
 
-#endregion
+        #endregion
 
-#region Methods: Handler
+        #region Methods: Handler
 
         void AddPauseHandler(System.Action handler);
 
@@ -32,9 +34,9 @@ namespace KRG {
 
         void RemoveUnpauseHandler(System.Action handler);
 
-#endregion
+        #endregion
 
-#region Methods: Queue
+        #region Methods: Queue
 
         /// <summary>
         /// Queues the time freeze (freezes the time thread for the specified unscaled realtime duration).
@@ -61,9 +63,9 @@ namespace KRG {
         /// <param name="pauseKey">Pause key (optional).</param>
         void QueueTimeRate(TimeRate timeRate, float timeScale = 1, int pauseKey = -1);
 
-#endregion
+        #endregion
 
-#region Methods: Trigger
+        #region Methods: Trigger
 
         TimeTrigger AddTrigger(float iv, TimeTriggerHandler handler, bool disallowFacade = false);
 
@@ -75,21 +77,23 @@ namespace KRG {
 
         void trigger(ref TimeTrigger tt, float iv, TimeTriggerHandler handler, bool disallowFacade = false);
 
-#endregion
+        #endregion
 
 #if NS_DG_TWEENING
-        
-#region Methods: Tween
+
+        #region Methods: Tween
 
         void AddTween(Tween t);
 
         void RemoveTween(Tween t);
 
         void Tween(ref Tween t_ref, Tween t);
+        void Tween(ref Tweener t_ref, Tweener t);
 
         void Untween(ref Tween t_ref);
+        void Untween(ref Tweener t_ref);
 
-#endregion
+        #endregion
 
 #endif
 
