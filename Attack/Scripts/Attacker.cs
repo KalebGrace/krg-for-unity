@@ -43,13 +43,15 @@ namespace KRG
         private SortedDictionary<InputSignature, AttackAbilityUse> _availableAttacksBase =
             new SortedDictionary<InputSignature, AttackAbilityUse>(new InputSignatureComparer());
 
-        private Attack _currentAttack;
-
         private Dictionary<int, InputSignature> _inputEzKeySigMap = new Dictionary<int, InputSignature>();
 
         private AttackAbilityUse _queuedAttack;
 
         private bool m_IsAttackerAnimating;
+
+        // STORAGE PROPERTIES
+
+        public Attack CurrentAttack { get; private set; }
 
         // SHORTCUT PROPERTIES
 
@@ -174,7 +176,7 @@ namespace KRG
             EndCurrentAttack(false);
 
             //now, set up the NEW current attack
-            _currentAttack = attack;
+            CurrentAttack = attack;
             attack.Destroyed += OnAttackDestroy;
             attack.damageDealtHandler = OnDamageDealt;
             UpdateAvailableAttacks(attack);
@@ -191,7 +193,7 @@ namespace KRG
 
         protected void EndCurrentAttack(bool isCompleted)
         {
-            Attack attack = _currentAttack;
+            Attack attack = CurrentAttack;
             //if there is no current attack, return
             if (attack == null) return;
 
@@ -210,7 +212,7 @@ namespace KRG
             {
                 attack.Dispose(isCompleted);
             }
-            _currentAttack = null;
+            CurrentAttack = null;
 
             //we now have no current attack, so try the queued attack; if successful, return (otherwise, proceed)
             if (_queuedAttack != null)
@@ -260,7 +262,7 @@ namespace KRG
 
         private void OnAttackDestroy(Attack attack)
         {
-            G.U.Assert(attack == _currentAttack);
+            G.U.Assert(attack == CurrentAttack);
             //the current attack has been destroyed by external forces, so end it
             EndCurrentAttack(attack.IsCompleted);
         }
