@@ -21,7 +21,7 @@ KRG also provides support for many third-party libraries, such as TextMesh Pro.
 
 * NOTE: Now that Unity Hub has been released, new paths are needed. Here are the classic instructions:
 * Copy KRG\UnityInstall\81-C# Script-NewBehaviourScript.cs.txt to...
-  * macOS: /Applications/Unity/Unity.app/Contents/Resources/ScriptTemplates
+  * macOS: /Applications/Unity/Hub/Editor/{CurrentVersion}/Unity.app/Contents/Resources/ScriptTemplates
   * Windows: C:\Program Files\Unity\Editor\Data\Resources\ScriptTemplates
 * This will need to be redone if installing a new version of Unity.
 
