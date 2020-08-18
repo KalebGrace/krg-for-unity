@@ -13,6 +13,9 @@ namespace KRG
 
         public bool saveOnTriggerEnter = true;
 
+        [Enum(typeof(FacingDirection))]
+        public int spawnFacingDirection;
+
         private void OnValidate()
         {
             if (autoNameGameObject)
