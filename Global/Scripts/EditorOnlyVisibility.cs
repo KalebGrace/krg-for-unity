@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 
 namespace KRG
 {
@@ -8,6 +9,7 @@ namespace KRG
         public Color WireColor = Color.magenta;
 
         private BoxCollider m_BoxCollider;
+        private Image m_Image;
         private Renderer m_Renderer;
 
         private void OnValidate()
@@ -23,7 +25,13 @@ namespace KRG
         private void Awake()
         {
             m_BoxCollider = GetComponent<BoxCollider>();
+            m_Image = GetComponent<Image>();
             m_Renderer = GetComponent<Renderer>();
+
+            if (m_Image != null)
+            {
+                m_Image.enabled = G.U.IsEditMode(this);
+            }
 
             if (m_Renderer != null)
             {
