@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 
 namespace KRG
 {
@@ -14,22 +14,22 @@ namespace KRG
         public AutoMapSaveData(int gameplaySceneId, int width, int height)
         {
             version = 1;
+
             this.gameplaySceneId = gameplaySceneId;
 
             visited = new bool[width][];
-
             for (int i = 0; i < width; ++i)
             {
                 visited[i] = new bool[height];
             }
         }
 
-        public bool GetIsVisited(int x, int y)
+        public bool IsVisited(int x, int y)
         {
             return visited[x][y];
         }
 
-        public void SetIsVisted(int x, int y, bool value)
+        public void Visit(int x, int y, bool value = true)
         {
             visited[x][y] = value;
         }

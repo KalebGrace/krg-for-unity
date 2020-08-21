@@ -104,9 +104,9 @@ namespace KRG
         {
             var ai = GetArrayIndices(cp);
 
-            if (IsInBounds(cp) && !saveData.GetIsVisited(ai.x, ai.y))
+            if (IsInBounds(cp) && !saveData.IsVisited(ai.x, ai.y))
             {
-                saveData.SetIsVisted(ai.x, ai.y, true);
+                saveData.Visit(ai.x, ai.y);
                 return true;
             }
             return false;
@@ -116,7 +116,7 @@ namespace KRG
         {
             var ai = GetArrayIndices(cp);
 
-            return IsInBounds(cp) && saveData.GetIsVisited(ai.x, ai.y);
+            return IsInBounds(cp) && saveData.IsVisited(ai.x, ai.y);
         }
 
         bool IsInBounds(Vector3Int cp)
