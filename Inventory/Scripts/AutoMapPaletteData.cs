@@ -8,28 +8,31 @@ namespace KRG
     [System.Serializable]
     public struct AutoMapPaletteData
     {
-        //unvisited always starts at 0
-
-        public int visitedStartIndex;
-
-        public TileBase[] tiles;
+        public TileBase[] normalTiles;
+        public TileBase[] visHidTiles;
 
         public TileBase GetVisitedTile(TileBase currentTile)
         {
-            int i = int.Parse(currentTile.name.Split('_')[1]);
-
-            if (i < visitedStartIndex)
+            for (int i = 0; i < normalTiles.Length; ++i)
             {
-                return tiles[i + visitedStartIndex];
+                if (currentTile.name == normalTiles[i].name)
+                {
+                    return visHidTiles[i];
+                }
             }
             return currentTile;
         }
 
         public bool IsHiddenArea(TileBase currentTile)
         {
-            int i = int.Parse(currentTile.name.Split('_')[1]);
-
-            return i >= visitedStartIndex;
+            for (int i = 0; i < visHidTiles.Length; ++i)
+            {
+                if (currentTile.name == visHidTiles[i].name)
+                {
+                    return true;
+                }
+            }
+            return false;
         }
     }
 }
