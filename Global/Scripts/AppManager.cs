@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Analytics;
 using UnityEngine.SceneManagement;
@@ -60,7 +60,6 @@ namespace KRG
         /// </summary>
         protected List<SceneController> _sceneControllers = new List<SceneController>();
 
-
         // MAIN PROPERTIES
 
         public virtual int GameplaySceneId
@@ -69,7 +68,7 @@ namespace KRG
             {
                 if (System.Enum.TryParse(_activeSceneName, out EnvironmentID sn))
                 {
-                    return (int)sn;
+                    return (int) sn;
                 }
                 G.U.Err("Active scene {0} does not exist in SceneName enum.", _activeSceneName);
                 return 0;
@@ -78,7 +77,7 @@ namespace KRG
             {
                 if (value != 0)
                 {
-                    EnvironmentID sn = (EnvironmentID)value;
+                    EnvironmentID sn = (EnvironmentID) value;
                     _activeSceneName = sn.ToString();
                 }
             }
@@ -94,7 +93,6 @@ namespace KRG
         public virtual bool isQuitting { get; private set; }
 
         public virtual string masterSceneName { get { return masterSceneNameDefault; } }
-
 
         // METHODS
 

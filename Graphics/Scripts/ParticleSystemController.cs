@@ -9,7 +9,7 @@ namespace KRG
         [Enum(typeof(TimeThreadInstance))]
         [SerializeField]
         [FormerlySerializedAs("m_timeThreadIndex")]
-        protected int _timeThreadIndex = (int)TimeThreadInstance.UseDefault;
+        protected int _timeThreadIndex = (int) TimeThreadInstance.UseDefault;
 
         [SerializeField]
         [Tooltip("When the ParticleSystem is no longer alive, dispose of this GameObject.")]

@@ -1,12 +1,14 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Serialization;
 
-namespace KRG {
+namespace KRG
+{
 
     [System.Serializable]
-    public class RangeInt : RangeObject {
+    public class RangeInt : RangeObject
+    {
 
         [SerializeField]
         [FormerlySerializedAs("m_minValue")]
@@ -15,24 +17,30 @@ namespace KRG {
         [FormerlySerializedAs("m_maxValue")]
         int _maxValue;
 
-        public int minValue {
+        public int minValue
+        {
             get { return _minValue; }
-            set {
+            set
+            {
                 _minValue = value;
                 OnValidate();
             }
         }
 
-        public int maxValue {
+        public int maxValue
+        {
             get { return _maxValue; }
-            set {
+            set
+            {
                 _maxValue = value;
                 OnValidate();
             }
         }
 
-        public int randomValue {
-            get {
+        public int randomValue
+        {
+            get
+            {
                 //
                 int min, max, r;
                 //
@@ -47,30 +55,36 @@ namespace KRG {
             }
         }
 
-        public RangeInt() { //will call base constructor with ResetInclusives()
+        public RangeInt()
+        { //will call base constructor with ResetInclusives()
             ResetValues();
         }
 
-        public RangeInt(int minValue, int maxValue) { //will call base constructor with ResetInclusives()
+        public RangeInt(int minValue, int maxValue)
+        { //will call base constructor with ResetInclusives()
             _minValue = minValue;
             _maxValue = maxValue;
         }
 
-        public override void Reset() {
+        public override void Reset()
+        {
             base.Reset();
             ResetValues();
         }
 
-        void ResetValues() { //do not make this virtual
+        void ResetValues()
+        { //do not make this virtual
             _minValue = 0;
             _maxValue = 0;
         }
 
-        protected override void OnValidate() {
+        protected override void OnValidate()
+        {
             _maxValue = Mathf.Max(_minValue, _maxValue);
             bool same = _minValue == _maxValue;
             bool near = _minValue < int.MaxValue && _minValue + 1 == _maxValue;
-            if (same || near) {
+            if (same || near)
+            {
                 _minInclusive = true;
                 _maxInclusive = true;
             }

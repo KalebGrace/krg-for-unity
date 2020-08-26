@@ -1,4 +1,4 @@
-﻿#if NS_DG_TWEENING
+#if NS_DG_TWEENING
 using DG.Tweening;
 #endif
 
@@ -24,7 +24,7 @@ namespace KRG
 
         #endregion
 
-        #region Methods: Handler
+        #region Methods : Handler
 
         void AddPauseHandler(System.Action handler);
 
@@ -36,7 +36,7 @@ namespace KRG
 
         #endregion
 
-        #region Methods: Queue
+        #region Methods : Queue
 
         /// <summary>
         /// Queues the time freeze (freezes the time thread for the specified unscaled realtime duration).
@@ -65,7 +65,7 @@ namespace KRG
 
         #endregion
 
-        #region Methods: Trigger
+        #region Methods : Trigger
 
         TimeTrigger AddTrigger(float iv, TimeTriggerHandler handler, bool disallowFacade = false);
 
@@ -81,7 +81,7 @@ namespace KRG
 
 #if NS_DG_TWEENING
 
-        #region Methods: Tween
+        #region Methods : Tween
 
         void AddTween(Tween t);
 

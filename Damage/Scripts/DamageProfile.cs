@@ -28,7 +28,7 @@ namespace KRG
         [SerializeField, FormerlySerializedAs("m_timeThreadIndex")]
         [Order(-90), Tooltip("Applicable time thread index")]
         [Enum(typeof(TimeThreadInstance))]
-        protected int _timeThreadIndex = (int)TimeThreadInstance.UseDefault;
+        protected int _timeThreadIndex = (int) TimeThreadInstance.UseDefault;
 
         [SerializeField, FormerlySerializedAs("m_sfxFmodEvent")]
         [Order(-90), Tooltip("Sound effect FMOD event string")]
@@ -73,16 +73,13 @@ namespace KRG
         [SerializeField, Tooltip("If none are listed explicity, it is vulnerable to all attacks.")]
         List<AttackAbility> _attackVulnerabilities = new List<AttackAbility>();
 
-
         // DEPRECATED
 
         [SerializeField, HideInInspector, FormerlySerializedAs("m_hpMax")]
         private float _hpMax;
 
-
         //applicable time thread interface, from _timeThreadIndex
         protected ITimeThread _timeThread;
-
 
         // PROPERTIES
 
@@ -127,7 +124,7 @@ namespace KRG
         {
             if (_hpMax > 0)
             {
-                m_HPMax = (int)_hpMax;
+                m_HPMax = (int) _hpMax;
                 _hpMax = 0;
             }
             m_HPMax = Mathf.Max(1, m_HPMax);

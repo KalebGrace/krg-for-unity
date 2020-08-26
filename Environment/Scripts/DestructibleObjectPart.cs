@@ -1,4 +1,4 @@
-﻿#if NS_DG_TWEENING
+#if NS_DG_TWEENING
 using DG.Tweening;
 #endif
 using UnityEngine;

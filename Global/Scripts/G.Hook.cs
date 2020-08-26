@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -25,13 +25,11 @@ namespace KRG
                 }
             }
 
-
             /// ----------
             ///   EVENT!
             /// ----------
 
             public static event Delegate.RefString FungusSayOnEnterDisplayText;
-
 
             /// ----------
             ///  DELEGATE
@@ -41,7 +39,6 @@ namespace KRG
             {
                 public delegate void RefString(ref string s);
             }
-
 
             /// ----------
             ///     ID

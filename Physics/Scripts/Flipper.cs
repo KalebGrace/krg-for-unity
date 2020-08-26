@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 
 #if UNITY_EDITOR
 using UnityEditor;
@@ -35,7 +35,7 @@ namespace KRG
         {
             if (G.U.IsPlayMode(this) && m_Body != null)
             {
-                m_Body.FacingDirectionChanged += ((IFacingDirection)this).OnFacingDirectionChange;
+                m_Body.FacingDirectionChanged += ((IFacingDirection) this).OnFacingDirectionChange;
             }
         }
 
@@ -43,7 +43,7 @@ namespace KRG
         {
             if (G.U.IsPlayMode(this) && m_Body != null)
             {
-                m_Body.FacingDirectionChanged -= ((IFacingDirection)this).OnFacingDirectionChange;
+                m_Body.FacingDirectionChanged -= ((IFacingDirection) this).OnFacingDirectionChange;
             }
         }
 
@@ -55,11 +55,11 @@ namespace KRG
             Undo.RecordObject(this, "Changed Facing Direction");
 #endif
             // while oldDirection is provided, we want to check our own data instead
-            if (newDirection.IsOpposite((Direction)m_FacingDirection))
+            if (newDirection.IsOpposite((Direction) m_FacingDirection))
             {
                 Flip();
             }
-            m_FacingDirection = (int)newDirection;
+            m_FacingDirection = (int) newDirection;
         }
 
         private void Flip()

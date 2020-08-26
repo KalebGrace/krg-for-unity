@@ -1,4 +1,4 @@
-﻿namespace KRG
+namespace KRG
 {
     /// <summary>
     /// This is the preferred enum for use with serialized fields.
@@ -9,8 +9,8 @@
         Uninitialized = 0,
 
         /* It's typically nice to set the default as zero,
-         * but whenever possible, link values to those in the Direction enum.
-         * EXAMPLE:
+        * but whenever possible, link values to those in the Direction enum.
+        * EXAMPLE:
         
         Right = -3,
         Left = -7,

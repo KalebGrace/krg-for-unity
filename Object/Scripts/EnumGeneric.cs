@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -23,9 +23,7 @@ namespace KRG
         string _stringType;
 #pragma warning restore 0414
 
-
         Type _type;
-
 
         public bool hasType { get { return _type != null; } }
 
@@ -56,7 +54,6 @@ namespace KRG
         }
 
         public Array values { get; private set; }
-
 
         public EnumGeneric(string enumType)
         {
@@ -109,7 +106,7 @@ namespace KRG
                 match = false;
                 foreach (var value in vals)
                 {
-                    if ((int)value == startValue + increment * i)
+                    if ((int) value == startValue + increment * i)
                     {
                         match = true;
                         break;
@@ -157,7 +154,7 @@ namespace KRG
             if (AssertIsEnum(enumType))
             {
                 object o = Enum.ToObject(enumType, value);
-                return (Enum)o;
+                return (Enum) o;
             }
             else
             {

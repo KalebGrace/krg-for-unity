@@ -1,10 +1,12 @@
-﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine;
 
-namespace KRG {
+namespace KRG
+{
 
-    public interface IPrefab {
+    public interface IPrefab
+    {
 
         Dictionary<string, Transform> prefabs { get; }
 

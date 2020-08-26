@@ -1,4 +1,4 @@
-﻿namespace KRG
+namespace KRG
 {
     /// <summary>
     /// IOnDestroy is intended for implementation by Manager classes.

@@ -1,4 +1,4 @@
-﻿namespace KRG
+namespace KRG
 {
     public enum CharacterID
     {
@@ -61,7 +61,7 @@
         public static string ToAssetLabel(this CharacterType characterType)
         {
             // direct cast from CharacterType enum to CharacterAssetLabel enum
-            CharacterAssetLabel characterAssetLabel = (CharacterAssetLabel)characterType;
+            CharacterAssetLabel characterAssetLabel = (CharacterAssetLabel) characterType;
 
             return characterAssetLabel.ToString();
         }
@@ -69,7 +69,7 @@
         public static string ToTag(this CharacterType characterType)
         {
             // direct cast from CharacterType enum to CharacterTag enum
-            CharacterTag characterTag = (CharacterTag)characterType;
+            CharacterTag characterTag = (CharacterTag) characterType;
 
             return characterTag.ToString();
         }

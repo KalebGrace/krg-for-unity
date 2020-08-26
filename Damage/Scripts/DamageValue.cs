@@ -1,4 +1,4 @@
-﻿#if NS_DG_TWEENING
+#if NS_DG_TWEENING
 using DG.Tweening;
 #endif
 using System.Collections.Generic;
@@ -12,7 +12,7 @@ namespace KRG
 #pragma warning disable 0414
         [Enum(typeof(TimeThreadInstance))]
         [SerializeField]
-        private int _timeThreadIndex = (int)TimeThreadInstance.UseDefault;
+        private int _timeThreadIndex = (int) TimeThreadInstance.UseDefault;
 #pragma warning restore 0414
 
         [SerializeField]

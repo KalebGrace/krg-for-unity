@@ -2,11 +2,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace KRG {
+namespace KRG
+{
 
-    public interface ISingletonComponent<T> where T : Component {
+    public interface ISingletonComponent<T> where T : Component
+    {
 
-#region Add To Class
+        #region Add To Class
 
         /*
         static event System.Action _instantiateHandlers;
@@ -49,21 +51,21 @@ namespace KRG {
             BaseCallAndOrOtherCode(); } ObjectManager.OnDestroySingletonComponent(this); }
          */
 
-#endregion
+        #endregion
 
-#region Back With Static Property
+        #region Back With Static Property
 
         T singletonInstance { get; set; }
 
-#endregion
+        #endregion
 
-#region Back With Constant Value
+        #region Back With Constant Value
 
         SingletonType singletonType { get; }
 
-#endregion
+        #endregion
 
-#region Back With Member Properties
+        #region Back With Member Properties
 
         /// <summary>
         /// Gets or sets the DestroyType of the duplicate instance.
@@ -77,9 +79,9 @@ namespace KRG {
         /// <value><c>true</c> if it is a duplicate instance; <c>false</c> if it is the singleton instance.</value>
         bool isDuplicateInstance { get; set; }
 
-#endregion
+        #endregion
 
-#region Back With Member Method
+        #region Back With Member Method
 
         /// <summary>
         /// Raises the event for when this is a duplicate instance.
@@ -89,7 +91,7 @@ namespace KRG {
         /// </summary>
         void OnIsDuplicateInstance();
 
-#endregion
+        #endregion
 
     }
 }

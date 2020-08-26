@@ -1,4 +1,4 @@
-﻿using System.Text;
+using System.Text;
 using UnityEngine;
 
 namespace KRG
@@ -292,7 +292,6 @@ namespace KRG
                 }
             }
 
-
             public static T Require<T>(T thing) where T : Component
             {
                 if (thing == default(T)) throw new RequireException(typeof(T));
@@ -359,11 +358,9 @@ namespace KRG
                                 try
                                 {
                                     s_InfoStringBuilder.Append(", id ");
-                                    s_InfoStringBuilder.Append(((Object)o).GetInstanceID());
+                                    s_InfoStringBuilder.Append(((Object) o).GetInstanceID());
                                 }
-                                catch (System.Exception ex)
-                                {
-                                }
+                                catch (System.Exception ex) { }
 #pragma warning restore 0168
                             }
                         }
@@ -561,8 +558,8 @@ namespace KRG
                 int len = IsNull(comps) ? 0 : comps.Length;
                 if (len < minCount)
                 {
-                    string s = string.Format("{0} or more {1} Components must exist on the {2}'s {3} GameObject."
-                               + " But it has {4} of them.", minCount, typeof(T), source.GetType(), source.name, len);
+                    string s = string.Format("{0} or more {1} Components must exist on the {2}'s {3} GameObject." +
+                        " But it has {4} of them.", minCount, typeof(T), source.GetType(), source.name, len);
                     ErrorOrException(s, throwException);
                     return null;
                 }
@@ -588,8 +585,8 @@ namespace KRG
                 int len = IsNull(comps) ? 0 : comps.Length;
                 if (len < minCount)
                 {
-                    string s = string.Format("{0} or more {1} Components must exist on the {2} GameObject."
-                               + " But it has {4} of them.", minCount, typeof(T), source.name, len);
+                    string s = string.Format("{0} or more {1} Components must exist on the {2} GameObject." +
+                        " But it has {4} of them.", minCount, typeof(T), source.name, len);
                     ErrorOrException(s, throwException);
                     return null;
                 }

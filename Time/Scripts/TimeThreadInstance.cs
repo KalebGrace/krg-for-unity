@@ -1,4 +1,4 @@
-﻿namespace KRG
+namespace KRG
 {
     /// <summary>
     /// Time thread instance.

@@ -2,17 +2,19 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace KRG {
+namespace KRG
+{
 
-    public enum DestroyType {
-        
-        None                 = 0,
-        ComponentImmediate   = 1,
-        ComponentNormal      = 2,
-        ComponentLateUpdate  = 3,
-        GameObjectImmediate  = 4,
-        GameObjectNormal     = 5,
+    public enum DestroyType
+    {
+
+        None = 0,
+        ComponentImmediate = 1,
+        ComponentNormal = 2,
+        ComponentLateUpdate = 3,
+        GameObjectImmediate = 4,
+        GameObjectNormal = 5,
         GameObjectLateUpdate = 6,
-        AlreadyDestroyed     = 7,
+        AlreadyDestroyed = 7,
     }
 }

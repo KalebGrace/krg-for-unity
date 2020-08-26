@@ -8,9 +8,10 @@ namespace KRG
     /// Add this script to any GameObject to ensure it always faces a particular camera.
     /// Handlers must be added to rotYGetter and (optionally) posGetter for this to work.
     /// </summary>
-    public class CameraFacingBillboard : MonoBehaviour, IBodyComponent {
+    public class CameraFacingBillboard : MonoBehaviour, IBodyComponent
+    {
 
-#region Static
+        #region Static
 
         static Vector3 _pos;
         static float _rotY;
@@ -19,13 +20,19 @@ namespace KRG
         /// Gets the pos (position) values.
         /// </summary>
         /// <value>The pos (position) values.</value>
-        public static Vector3 pos {
-            get {
-                if (posGetter != null) {
-                    if (posGetter.Target == null || !posGetter.Target.Equals(null)) {
+        public static Vector3 pos
+        {
+            get
+            {
+                if (posGetter != null)
+                {
+                    if (posGetter.Target == null || !posGetter.Target.Equals(null))
+                    {
                         //This is either a static method OR an instance method with a valid target.
                         _pos = posGetter();
-                    } else {
+                    }
+                    else
+                    {
                         //This is an instance method with an invalid target, so remove it.
                         posGetter = null;
                     }
@@ -46,13 +53,19 @@ namespace KRG
         /// Gets the rotY (Y rotation) value.
         /// </summary>
         /// <value>The rotY (Y rotation) value.</value>
-        public static float rotY {
-            get {
-                if (rotYGetter != null) {
-                    if (rotYGetter.Target == null || !rotYGetter.Target.Equals(null)) {
+        public static float rotY
+        {
+            get
+            {
+                if (rotYGetter != null)
+                {
+                    if (rotYGetter.Target == null || !rotYGetter.Target.Equals(null))
+                    {
                         //This is either a static method OR an instance method with a valid target.
                         _rotY = rotYGetter();
-                    } else {
+                    }
+                    else
+                    {
                         //This is an instance method with an invalid target, so remove it.
                         rotYGetter = null;
                     }
@@ -69,7 +82,7 @@ namespace KRG
         /// <value>The rotY getter.</value>
         public static System.Func<float> rotYGetter { get; set; }
 
-#endregion
+        #endregion
 
         [SerializeField]
         [FormerlySerializedAs("m_useInitialRotation")]
@@ -80,11 +93,14 @@ namespace KRG
 
         float _initialRotY;
 
-        public bool useInitialRotation {
-            get {
+        public bool useInitialRotation
+        {
+            get
+            {
                 return _useInitialRotation;
             }
-            set {
+            set
+            {
                 _useInitialRotation = value;
             }
         }
@@ -96,20 +112,23 @@ namespace KRG
             m_Body = body;
         }
 
-        void Start() {
+        void Start()
+        {
             _initialRotY = transform.eulerAngles.y;
         }
 
-        void LateUpdate() {
+        void LateUpdate()
+        {
             UpdateFacing();
             //UpdateFlipX();
         }
 
-        void UpdateFacing() {
+        void UpdateFacing()
+        {
             float offsetRotY = _useInitialRotation ? _initialRotY : 0;
             transform.eulerAngles = transform.eulerAngles.SetY((rotY + offsetRotY) % 360);
         }
-        
+
         /*
         void UpdateFlipX() {
             Vector3 myPos = transform.position;

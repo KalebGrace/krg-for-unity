@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 
 namespace KRG
 {
@@ -43,9 +43,9 @@ namespace KRG
 
         public GameObjectBody Body => m_Body;
 
-        public Vector3 Center => ((BoxCollider)Collider).center;
+        public Vector3 Center => ((BoxCollider) Collider).center;
 
-        public Vector3 Size => ((BoxCollider)Collider).size;
+        public Vector3 Size => ((BoxCollider) Collider).size;
 
         // METHODS
 

@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -115,7 +115,7 @@ namespace KRG
 
         public TimeThread(int index)
         {
-            if (index == (int)TimeThreadInstance.Application)
+            if (index == (int) TimeThreadInstance.Application)
             {
                 _isAppThread = true;
                 _timeRate = TimeRate.Unscaled;
@@ -131,7 +131,7 @@ namespace KRG
             UpdateTriggers();
         }
 
-        #region Methods: Handler
+        #region Methods : Handler
 
         public void AddPauseHandler(System.Action handler)
         {
@@ -165,7 +165,7 @@ namespace KRG
             ObjectManager.InvokeEventActions(ref _unpauseHandlers);
         }
 
-        #region Methods: Queue
+        #region Methods : Queue
 
         public void QueueFreeze(float iv, int pauseKey = -2)
         {
@@ -377,7 +377,7 @@ namespace KRG
             InvokeUnpauseHandlers();
         }
 
-        #region Methods: Trigger
+        #region Methods : Trigger
 
         /// <summary>
         /// Adds a time trigger to this time thread.

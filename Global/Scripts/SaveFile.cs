@@ -29,11 +29,11 @@ namespace KRG
             return new SaveFile
             {
                 version = LATEST_VERSION,
-                saveContext = sc,
-                switchStates = new Dictionary<int, int>(),
-                itemInstancesCollected = new List<int>(),
-                items = new Dictionary<int, float>(),
-                stats = new Dictionary<int, float>()
+                    saveContext = sc,
+                    switchStates = new Dictionary<int, int>(),
+                    itemInstancesCollected = new List<int>(),
+                    items = new Dictionary<int, float>(),
+                    stats = new Dictionary<int, float>()
             };
         }
 

@@ -1,11 +1,13 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace KRG {
+namespace KRG
+{
 
-    public class TimeTrigger : System.IComparable<TimeTrigger> {
-		
+    public class TimeTrigger : System.IComparable<TimeTrigger>
+    {
+
         //If true, this will fire multiple times if trigger is pulled more than once over delta.
         public virtual bool doesMultiFire { get; set; }
 
@@ -24,7 +26,8 @@ namespace KRG {
         List<TimeTriggerHandler> _handlers = new List<TimeTriggerHandler>();
         MultiFireState _multiFireState = MultiFireState.Running;
 
-        public enum MultiFireState {
+        public enum MultiFireState
+        {
             Running,
             RestartWait,
             ProceedWait,
@@ -35,7 +38,8 @@ namespace KRG {
         /// Constructor for TimeTriggerFacade.
         /// </summary>
         /// <param name="th">Linked TimeTHREAD.</param>
-        protected TimeTrigger(TimeThread th) {
+        protected TimeTrigger(TimeThread th)
+        {
             timeThread = th;
         }
 
@@ -44,37 +48,46 @@ namespace KRG {
         /// </summary>
         /// <param name="th">Linked TimeTHREAD.</param>
         /// <param name="iv">Time INTERVAL (in seconds).</param>
-        public TimeTrigger(TimeThread th, float iv) {
+        public TimeTrigger(TimeThread th, float iv)
+        {
             G.U.Assert(iv > 0);
             timeRemaining = iv;
             timeThread = th;
             totalInterval = iv;
         }
 
-        public int CompareTo(TimeTrigger tt) {
-            if (tt != null) {
+        public int CompareTo(TimeTrigger tt)
+        {
+            if (tt != null)
+            {
                 return this.timeRemaining.CompareTo(tt.timeRemaining);
-            } else {
+            }
+            else
+            {
                 return 1;
             }
         }
 
-        public virtual void AddHandler(TimeTriggerHandler handler) {
+        public virtual void AddHandler(TimeTriggerHandler handler)
+        {
             _handlers.Add(handler);
         }
 
-        public virtual bool RemoveHandler(TimeTriggerHandler handler) {
+        public virtual bool RemoveHandler(TimeTriggerHandler handler)
+        {
             return _handlers.Remove(handler);
         }
 
-        public virtual bool HasHandler(TimeTriggerHandler handler) {
+        public virtual bool HasHandler(TimeTriggerHandler handler)
+        {
             return _handlers.Contains(handler);
         }
 
         /// <summary>
         /// Pull the trigger immediately.
         /// </summary>
-        public virtual void Trigger() {
+        public virtual void Trigger()
+        {
             Update(totalInterval, false);
         }
 
@@ -82,52 +95,64 @@ namespace KRG {
         /// Advance time.
         /// </summary>
         /// <param name="delta">The time delta.</param>
-        public virtual void Update(float delta) {
+        public virtual void Update(float delta)
+        {
             Update(delta, true);
         }
 
-        void Update(float delta, bool updatesTimeElapsed) {
-            if (updatesTimeElapsed) {
+        void Update(float delta, bool updatesTimeElapsed)
+        {
+            if (updatesTimeElapsed)
+            {
                 timeElapsed += delta;
             }
-			
-            if (timeRemaining <= 0) {
+
+            if (timeRemaining <= 0)
+            {
                 //The trigger was previously pulled,
                 //but nothing was done to reset this object.
                 //We will simply dispose of this object to be cautious.
                 Dispose();
                 return;
             }
-			
+
             timeRemaining -= delta;
-			
-            if (timeRemaining > 0) {
+
+            if (timeRemaining > 0)
+            {
                 //Time passed, but the trigger was not pulled.
                 return;
             }
-			
-            if (doesMultiFire) {
+
+            if (doesMultiFire)
+            {
                 MultiFireEvent();
-            } else {
+            }
+            else
+            {
                 //Simply pull the trigger once.
                 FireEvent();
             }
         }
 
-        void MultiFireEvent() {
+        void MultiFireEvent()
+        {
             //Calculate the number of "shots".
             int i = 1 + Mathf.FloorToInt(Mathf.Abs(timeRemaining) / totalInterval);
-			
-            while (i > 0 && doesMultiFire && !isDisposed) { //doesMultiFire & isDisposed could be changed by the fired event.
+
+            while (i > 0 && doesMultiFire && !isDisposed)
+            { //doesMultiFire & isDisposed could be changed by the fired event.
                 FireEvent();
                 i--;
             }
-			
-            if (isDisposed) {
+
+            if (isDisposed)
+            {
                 return;
             }
-			
-            switch (_multiFireState) {
+
+            switch (_multiFireState)
+            {
                 case MultiFireState.RestartWait:
                     _multiFireState = MultiFireState.Finishing;
                     Restart();
@@ -137,19 +162,23 @@ namespace KRG {
                     Proceed();
                     break;
                 default:
-				//This trigger is obviously no longer needed.
+                    //This trigger is obviously no longer needed.
                     break;
             }
-			
+
             _multiFireState = MultiFireState.Running;
         }
 
-        void FireEvent() {
-            for (int i = 0; i < _handlers.Count; i++) {
-                if (isDisposed) { //isDisposed could be changed by the fired event.
+        void FireEvent()
+        {
+            for (int i = 0; i < _handlers.Count; i++)
+            {
+                if (isDisposed)
+                { //isDisposed could be changed by the fired event.
                     break;
                 }
-                if (_handlers[i] == null) { //The object that contains the handler could no longer exist.
+                if (_handlers[i] == null)
+                { //The object that contains the handler could no longer exist.
                     _handlers.RemoveAt(i--);
                     continue;
                 }
@@ -160,9 +189,12 @@ namespace KRG {
         /// <summary>
         /// Re-activate the TimeTrigger, while maintaining continuity in the cycle.
         /// </summary>
-        public virtual void Proceed() {
-            if (doesMultiFire) {
-                switch (_multiFireState) {
+        public virtual void Proceed()
+        {
+            if (doesMultiFire)
+            {
+                switch (_multiFireState)
+                {
                     case MultiFireState.Running:
                         _multiFireState = MultiFireState.ProceedWait;
                         return;
@@ -172,7 +204,8 @@ namespace KRG {
                         return;
                 }
             }
-            while (timeRemaining <= 0) {
+            while (timeRemaining <= 0)
+            {
                 timeRemaining += totalInterval;
             }
         }
@@ -180,9 +213,12 @@ namespace KRG {
         /// <summary>
         /// Re-activate the TimeTrigger, and start from the beginning of the cycle.
         /// </summary>
-        public virtual void Restart() {
-            if (doesMultiFire) {
-                switch (_multiFireState) {
+        public virtual void Restart()
+        {
+            if (doesMultiFire)
+            {
+                switch (_multiFireState)
+                {
                     case MultiFireState.Running:
                     case MultiFireState.ProceedWait:
                         _multiFireState = MultiFireState.RestartWait;
@@ -204,7 +240,8 @@ namespace KRG {
         /// <see cref="Dispose"/> method leaves the <see cref="KRG.TimeTrigger"/> in an unusable state. After calling
         /// <see cref="Dispose"/>, you must release all references to the <see cref="KRG.TimeTrigger"/> so the garbage
         /// collector can reclaim the memory that the <see cref="KRG.TimeTrigger"/> was occupying.</remarks>
-        public void Dispose() {
+        public void Dispose()
+        {
             timeRemaining = 0f;
             _handlers.Clear();
             isDisposed = true;

@@ -1,14 +1,16 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace KRG {
+namespace KRG
+{
 
     /// <summary>
     /// Singleton type.
     /// See ISingletonComponent for usage.
     /// </summary>
-    public enum SingletonType {
+    public enum SingletonType
+    {
 
         //not a singleton; any number of instances can exist
         None = 0,

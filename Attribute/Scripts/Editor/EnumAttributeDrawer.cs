@@ -1,4 +1,4 @@
-﻿using UnityEditor;
+using UnityEditor;
 using UnityEngine;
 
 namespace KRG
@@ -24,7 +24,7 @@ namespace KRG
             }
             else
             {
-                EnumAttribute attr = (EnumAttribute)attribute;
+                EnumAttribute attr = (EnumAttribute) attribute;
                 string enumType = attr.EnumType.ToString();
                 SwapEnum(ref enumType);
 
@@ -36,8 +36,8 @@ namespace KRG
                 }
                 else
                 {
-                    G.U.Err("The Enum attribute doesn't have support for the {0} type."
-                        + " Property name: {1}. Attribute enum type: {2}.",
+                    G.U.Err("The Enum attribute doesn't have support for the {0} type." +
+                        " Property name: {1}. Attribute enum type: {2}.",
                         property.propertyType, property.name, enumType);
                     EditorGUI.PropertyField(rect, property, label);
                 }

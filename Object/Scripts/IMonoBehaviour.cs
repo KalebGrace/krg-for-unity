@@ -1,10 +1,12 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace KRG {
+namespace KRG
+{
 
-    public interface IMonoBehaviour {
+    public interface IMonoBehaviour
+    {
 
         /// <summary>
         /// Awake this instance. Called at the beginning, whether enabled or disabled.

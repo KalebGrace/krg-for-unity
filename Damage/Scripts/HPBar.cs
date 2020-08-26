@@ -1,8 +1,9 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace KRG {
+namespace KRG
+{
 
     /// <summary>
     /// HPBar: Hit Point Bar
@@ -12,14 +13,15 @@ namespace KRG {
     /// 4.  HPBar can be extended, and a custom HPBar prefab can be assigned in the KRGConfig scriptable object.
     /// Last Refactor: 1.00.003 / 2018-07-15
     /// </summary>
-    public class HPBar : MonoBehaviour {
+    public class HPBar : MonoBehaviour
+    {
 
-#region FIELDS: SERIALIZED
+        #region FIELDS : SERIALIZED
 
         [Header("Parameters")]
 
         [SerializeField, Enum(typeof(TimeThreadInstance))]
-        protected int _timeThreadIndex = (int)TimeThreadInstance.UseDefault;
+        protected int _timeThreadIndex = (int) TimeThreadInstance.UseDefault;
 
         [SerializeField, BoolObjectDisable(false, "Always"), Tooltip(
             "The default display duration. If checked, display for this many seconds. If unchecked, display always.")]
@@ -30,9 +32,9 @@ namespace KRG {
         [SerializeField]
         protected GameObject _hpBarFill;
 
-#endregion
+        #endregion
 
-#region FIELDS: PROTECTED
+        #region FIELDS : PROTECTED
 
         protected float _displayDurationMin = 0.01f;
         protected TimeTrigger _displayTimeTrigger;
@@ -40,38 +42,45 @@ namespace KRG {
         protected Transform _hpBarFillTF;
         protected DamageTaker _target;
 
-#endregion
+        #endregion
 
-#region PROPERTIES
+        #region PROPERTIES
 
         public virtual DamageTaker target { get { return _target; } }
 
-        protected virtual ITimeThread timeThread {
-            get {
+        protected virtual ITimeThread timeThread
+        {
+            get
+            {
                 return G.time.GetTimeThread(_timeThreadIndex, TimeThreadInstance.Gameplay);
             }
         }
 
-#endregion
+        #endregion
 
-#region METHODS: MonoBehaviour
+        #region METHODS : MonoBehaviour
 
-        protected virtual void Awake() {
-            if (_hpBarFill != null) {
+        protected virtual void Awake()
+        {
+            if (_hpBarFill != null)
+            {
                 _hpBarFillSR = _hpBarFill.GetComponent<SpriteRenderer>();
                 _hpBarFillTF = _hpBarFill.transform;
             }
         }
 
-        protected virtual void OnDestroy() {
+        protected virtual void OnDestroy()
+        {
             KillDisplayTimer();
         }
 
-        protected virtual void OnValidate() {
+        protected virtual void OnValidate()
+        {
             _displayDuration.floatValue = Mathf.Max(_displayDurationMin, _displayDuration.floatValue);
         }
 
-        protected virtual void Update() {
+        protected virtual void Update()
+        {
             float value = _target.HPMax > 0 ? _target.HP / _target.HPMax : 0;
             //size
             _hpBarFillTF.localScale = _hpBarFillTF.localScale.SetX(value);
@@ -80,16 +89,17 @@ namespace KRG {
             _hpBarFillSR.color = value >= 0.7f ? Color.green : (value >= 0.4f ? Color.yellow : Color.red);
         }
 
-#endregion
+        #endregion
 
-#region METHODS: PUBLIC
+        #region METHODS : PUBLIC
 
         /// <summary>
         /// Display the HPBar for the default display duration specified on the game object / prefab.
         /// If always is set to true, default display duration is ignored; instead, always display the HPBar!
         /// </summary>
         /// <param name="always">If set to <c>true</c> always display the HPBar.</param>
-        public void Display(bool always = false) {
+        public void Display(bool always = false)
+        {
             Display(!always, false, 0);
         }
 
@@ -98,10 +108,12 @@ namespace KRG {
         /// The duration is for this call only; it does NOT set a new default display duration.
         /// </summary>
         /// <param name="duration">Duration.</param>
-        public void Display(float duration) {
-            if (duration < _displayDurationMin) {
+        public void Display(float duration)
+        {
+            if (duration < _displayDurationMin)
+            {
                 G.U.Err("The duration must be at least {0}, but the provided value was {1}. " +
-                "Did you mean to call Display(bool) or Hide()?", _displayDurationMin, duration);
+                    "Did you mean to call Display(bool) or Hide()?", _displayDurationMin, duration);
                 return;
             }
             Display(false, true, duration);
@@ -110,7 +122,8 @@ namespace KRG {
         /// <summary>
         /// Hide the HPBar.
         /// </summary>
-        public void Hide() {
+        public void Hide()
+        {
             KillDisplayTimer();
             gameObject.SetActive(false);
         }
@@ -118,47 +131,54 @@ namespace KRG {
         /// <summary>
         /// Initialize the HPBar.
         /// </summary>
-        public void Init(DamageTaker target) {
+        public void Init(DamageTaker target)
+        {
             _target = target;
             Hide();
         }
 
-#endregion
+        #endregion
 
-#region METHODS: PROTECTED
+        #region METHODS : PROTECTED
 
         protected virtual void OnDisplay() { }
 
-#endregion
+        #endregion
 
-#region METHODS: PRIVATE
+        #region METHODS : PRIVATE
 
-        void Display(bool useDefault, bool useDuration, float duration) {
+        void Display(bool useDefault, bool useDuration, float duration)
+        {
             KillDisplayTimer();
             gameObject.SetActive(true);
-            if (useDefault) {
+            if (useDefault)
+            {
                 useDuration = _displayDuration.boolValue;
                 duration = _displayDuration.floatValue;
             }
-            if (useDuration) {
+            if (useDuration)
+            {
                 G.U.Assert(duration >= _displayDurationMin);
                 _displayTimeTrigger = timeThread.AddTrigger(duration, Hide);
             }
             OnDisplay();
         }
 
-        void Hide(TimeTrigger tt) {
+        void Hide(TimeTrigger tt)
+        {
             Hide();
         }
 
-        void KillDisplayTimer() {
-            if (_displayTimeTrigger != null) {
+        void KillDisplayTimer()
+        {
+            if (_displayTimeTrigger != null)
+            {
                 _displayTimeTrigger.Dispose();
                 _displayTimeTrigger = null;
             }
         }
 
-#endregion
+        #endregion
 
     }
 }

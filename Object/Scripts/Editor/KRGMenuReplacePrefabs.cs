@@ -1,4 +1,4 @@
-﻿using UnityEditor;
+using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -21,7 +21,7 @@ namespace KRG
             foreach (PrefabReplacer pr in prefabReplacers)
             {
                 Object instance = PrefabUtility.InstantiatePrefab(pr.NewPrefab, pr.transform);
-                GameObject go = (GameObject)instance;
+                GameObject go = (GameObject) instance;
                 go.transform.parent = pr.transform.parent;
                 go.name = pr.name;
                 Object.DestroyImmediate(pr.gameObject);

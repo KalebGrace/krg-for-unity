@@ -1,10 +1,10 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 
 namespace KRG
 {
     public abstract class InfiniteStateMachine<TOwner, TLogic>
         where TOwner : IStateOwner
-        where TLogic : IStateLogic<TOwner>
+    where TLogic : IStateLogic<TOwner>
     {
         // STATIC STATE LOGIC OBJECTS
 
@@ -80,8 +80,8 @@ namespace KRG
             if (!IsVerified(stateLogic)) return;
             //cache the pending addition so it can be viewed by callbacks (e.g. those on removed locked states)
             if (pendingAddition.HasValue) G.U.Warn(
-                    "State {0} is being added before the pending addition of state {1} has completed.",
-                    stateIndex, pendingAddition.Value);
+                "State {0} is being added before the pending addition of state {1} has completed.",
+                stateIndex, pendingAddition.Value);
             pendingAddition = stateIndex;
             //add locks as applicable
             if (statesToLock != null)

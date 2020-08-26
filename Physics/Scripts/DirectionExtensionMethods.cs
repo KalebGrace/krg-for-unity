@@ -34,7 +34,7 @@ namespace KRG
                     break;
                 default:
                     string s = "The compassTop parameter must be cardinal. " +
-                               "Its current value is \"{0}\" and its direction type is \"{1}\".";
+                        "Its current value is \"{0}\" and its direction type is \"{1}\".";
                     G.U.Err(s, compassTop.ToString(), compassTop.GetDirectionType());
                     return direction;
             }
@@ -44,8 +44,8 @@ namespace KRG
                 case DirectionType.Ordinal:
                     return direction;
                 case DirectionType.Relative:
-                    int convertedForNorth = Mathf.Abs((int)direction + 1) * 45;
-                    return (Direction)((convertedForNorth + (int)compassTop) % 360);
+                    int convertedForNorth = Mathf.Abs((int) direction + 1) * 45;
+                    return (Direction) ((convertedForNorth + (int) compassTop) % 360);
                 default:
                     string s = "The direction \"{0}\" is of an unsupported direction type \"{1}\".";
                     G.U.Err(s, direction.ToString(), direction.GetDirectionType());
@@ -95,11 +95,11 @@ namespace KRG
             {
                 case DirectionType.Cardinal:
                 case DirectionType.Ordinal:
-                    newDir = (int)direction + 45;
-                    return (Direction)(newDir == 360 ? 0 : newDir);
+                    newDir = (int) direction + 45;
+                    return (Direction) (newDir == 360 ? 0 : newDir);
                 case DirectionType.Relative:
-                    newDir = (int)direction - 1;
-                    return (Direction)(newDir == -9 ? -1 : newDir);
+                    newDir = (int) direction - 1;
+                    return (Direction) (newDir == -9 ? -1 : newDir);
                 default:
                     G.U.Err("Currently unsupported.");
                     return Direction.Unknown;
@@ -114,11 +114,11 @@ namespace KRG
             {
                 case DirectionType.Cardinal:
                 case DirectionType.Ordinal:
-                    newDir = (int)direction - 45;
-                    return (Direction)(newDir == -45 ? 315 : newDir);
+                    newDir = (int) direction - 45;
+                    return (Direction) (newDir == -45 ? 315 : newDir);
                 case DirectionType.Relative:
-                    newDir = (int)direction + 1;
-                    return (Direction)(newDir == 0 ? -8 : newDir);
+                    newDir = (int) direction + 1;
+                    return (Direction) (newDir == 0 ? -8 : newDir);
                 default:
                     G.U.Err("Currently unsupported.");
                     return Direction.Unknown;
@@ -127,7 +127,7 @@ namespace KRG
 
         public static DirectionType GetDirectionType(this Direction direction)
         {
-            int dir = (int)direction;
+            int dir = (int) direction;
             if (dir >= 0)
             {
                 switch (dir % 90)
@@ -156,15 +156,15 @@ namespace KRG
 
         public static Direction GetOpposite(this Direction direction)
         {
-            int d = (int)direction;
+            int d = (int) direction;
             if (d >= 0) // Cardinal & Ordinal
             {
-                return (Direction)((d + 180) % 360);
+                return (Direction) ((d + 180) % 360);
             }
             if (d >= -8) // Relative
             {
                 d -= 4;
-                return (Direction)(d >= -8 ? d : d + 8);
+                return (Direction) (d >= -8 ? d : d + 8);
             }
             switch (direction)
             {
@@ -188,8 +188,8 @@ namespace KRG
                     {
                         case DirectionType.Cardinal:
                         case DirectionType.Ordinal:
-                            newDir = (int)target - (int)culprit;
-                            return (Direction)(newDir.ClampRotationDegrees());
+                            newDir = (int) target - (int) culprit;
+                            return (Direction) (newDir.ClampRotationDegrees());
                         default:
                             G.U.Err("Currently unsupported.");
                             return Direction.Unknown;
@@ -206,7 +206,7 @@ namespace KRG
             {
                 case DirectionType.Cardinal:
                 case DirectionType.Ordinal:
-                    return (int)direction;
+                    return (int) direction;
                 default:
                     G.U.Err("Currently unsupported.");
                     return 0f;
@@ -219,7 +219,7 @@ namespace KRG
             {
                 case DirectionType.Cardinal:
                 case DirectionType.Ordinal:
-                    return new Vector3(0f, (int)direction, 0f);
+                    return new Vector3(0f, (int) direction, 0f);
                 default:
                     G.U.Err("Currently unsupported.");
                     return Vector3.zero;

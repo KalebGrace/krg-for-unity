@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace KRG
@@ -86,17 +86,17 @@ namespace KRG
 
         public bool IsCurrentCheckpoint(AlphaBravo checkpointName)
         {
-            return (int)checkpointName == m_CurrentCheckpoint.checkpointId &&
-                 G.app.GameplaySceneId == m_CurrentCheckpoint.gameplaySceneId;
+            return (int) checkpointName == m_CurrentCheckpoint.checkpointId &&
+                G.app.GameplaySceneId == m_CurrentCheckpoint.gameplaySceneId;
         }
 
         public void SaveCheckpoint(AlphaBravo checkpointName = 0)
         {
-            lock (m_SaveLock)
+            lock(m_SaveLock)
             {
                 m_CurrentCheckpoint = SaveFile.New(SaveContext.ContinueCheckpoint);
 
-                m_CurrentCheckpoint.checkpointId = (int)checkpointName;
+                m_CurrentCheckpoint.checkpointId = (int) checkpointName;
 
                 m_CurrentCheckpoint.switchStates = m_SwitchStates;
 
@@ -122,7 +122,7 @@ namespace KRG
 
         private void Load(SaveFile sf)
         {
-            lock (m_SaveLock)
+            lock(m_SaveLock)
             {
                 //TODO: add this for implementing quicksaves/hardsaves
                 //ReadFromDisk();

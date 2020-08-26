@@ -19,7 +19,7 @@ namespace KRG
         private int m_FacingDirectionOrig = default; // only used OnValidate
 
         [SerializeField, Enum(typeof(TimeThreadInstance))]
-        private int m_TimeThread = (int)TimeThreadInstance.UseDefault;
+        private int m_TimeThread = (int) TimeThreadInstance.UseDefault;
 
         public GameObjectRefs Refs = default;
 
@@ -37,7 +37,7 @@ namespace KRG
         {
             get
             {
-                TimeThreadInstance tti = (TimeThreadInstance)m_TimeThread;
+                TimeThreadInstance tti = (TimeThreadInstance) m_TimeThread;
                 if (tti == TimeThreadInstance.UseDefault)
                 {
                     switch (GameObjectType)
@@ -77,13 +77,13 @@ namespace KRG
 
         public Direction FacingDirection
         {
-            get => (Direction)m_FacingDirection;
+            get => (Direction) m_FacingDirection;
             set
             {
-                if (m_FacingDirection != (int)value)
+                if (m_FacingDirection != (int) value)
                 {
-                    OnFacingDirectionChange((Direction)m_FacingDirection, value);
-                    m_FacingDirection = (int)value;
+                    OnFacingDirectionChange((Direction) m_FacingDirection, value);
+                    m_FacingDirection = (int) value;
                 }
             }
         }
@@ -98,7 +98,7 @@ namespace KRG
         {
             if (m_FacingDirectionOrig != m_FacingDirection)
             {
-                OnFacingDirectionChange((Direction)m_FacingDirectionOrig, (Direction)m_FacingDirection);
+                OnFacingDirectionChange((Direction) m_FacingDirectionOrig, (Direction) m_FacingDirection);
                 m_FacingDirectionOrig = m_FacingDirection;
             }
 

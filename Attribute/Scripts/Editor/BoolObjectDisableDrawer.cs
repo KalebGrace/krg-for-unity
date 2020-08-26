@@ -1,30 +1,36 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
-namespace KRG {
+namespace KRG
+{
 
     /// <summary>
     /// Bool object disable drawer.
     /// Last Refactor: 0.05.002 / 2018-05-05
     /// </summary>
     [CustomPropertyDrawer(typeof(BoolObjectDisableAttribute))]
-    public class BoolObjectDisableDrawer : BoolObjectDrawer {
+    public class BoolObjectDisableDrawer : BoolObjectDrawer
+    {
 
-#region protected methods
+        #region protected methods
 
-        protected override void DrawObjectField(bool boolPropValue, Rect objectRect, SerializedProperty objectProp) {
+        protected override void DrawObjectField(bool boolPropValue, Rect objectRect, SerializedProperty objectProp)
+        {
             var attr = attribute as BoolObjectDisableAttribute;
             string des = attr.disableDescription;
             bool atv = attr.boolValue;
             bool isDisabled = (atv && boolPropValue) || (!atv && !boolPropValue);
 
-            if (!isDisabled || string.IsNullOrEmpty(des)) {
+            if (!isDisabled || string.IsNullOrEmpty(des))
+            {
                 EditorGUI.BeginDisabledGroup(isDisabled);
                 EditorGUI.PropertyField(objectRect, objectProp, GUIContent.none);
                 EditorGUI.EndDisabledGroup();
-            } else {
+            }
+            else
+            {
                 const float w = 44;
 
                 Rect desRect = new Rect(objectRect);
@@ -44,7 +50,7 @@ namespace KRG {
             }
         }
 
-#endregion
+        #endregion
 
     }
 }

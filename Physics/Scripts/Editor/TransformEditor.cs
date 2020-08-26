@@ -1,4 +1,4 @@
-﻿using UnityEditor;
+using UnityEditor;
 using UnityEngine;
 
 namespace KRG
@@ -54,7 +54,7 @@ namespace KRG
             EditorGUILayout.PropertyField(scaleProperty, scaleGUIContent);
             EditorGUILayout.EndHorizontal();
 
-            if (!ValidatePosition(((Transform)target).position))
+            if (!ValidatePosition(((Transform) target).position))
             {
                 EditorGUILayout.HelpBox(positionWarningText, MessageType.Warning);
             }

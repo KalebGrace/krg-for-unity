@@ -1,10 +1,12 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace KRG {
+namespace KRG
+{
 
-    public enum VisibilityCondition {
+    public enum VisibilityCondition
+    {
 
         Default = 0,
         DebugOnly = 1,

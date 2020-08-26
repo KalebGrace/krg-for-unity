@@ -1,12 +1,14 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Serialization;
 
-namespace KRG {
+namespace KRG
+{
 
     [System.Serializable]
-    public class RangeFloat : RangeObject {
+    public class RangeFloat : RangeObject
+    {
 
         [SerializeField]
         [FormerlySerializedAs("m_minValue")]
@@ -15,27 +17,34 @@ namespace KRG {
         [FormerlySerializedAs("m_maxValue")]
         float _maxValue;
 
-        public float minValue {
+        public float minValue
+        {
             get { return _minValue; }
-            set {
+            set
+            {
                 _minValue = value;
                 OnValidate();
             }
         }
 
-        public float maxValue {
+        public float maxValue
+        {
             get { return _maxValue; }
-            set {
+            set
+            {
                 _maxValue = value;
                 OnValidate();
             }
         }
 
-        public float randomValue {
-            get {
+        public float randomValue
+        {
+            get
+            {
                 bool ok = false;
                 float min, max, r = 0;
-                while (!ok) {
+                while (!ok)
+                {
                     min = _minValue;
                     max = _maxValue;
                     r = Random.Range(min, max); //as of Unity 5.6.2f1, this is said to be (inclusive, inclusive)
@@ -47,30 +56,36 @@ namespace KRG {
             }
         }
 
-        public RangeFloat() { //will call base constructor with ResetInclusives()
+        public RangeFloat()
+        { //will call base constructor with ResetInclusives()
             ResetValues();
         }
 
-        public RangeFloat(float minValue, float maxValue) { //will call base constructor with ResetInclusives()
+        public RangeFloat(float minValue, float maxValue)
+        { //will call base constructor with ResetInclusives()
             _minValue = minValue;
             _maxValue = maxValue;
         }
 
-        public override void Reset() {
+        public override void Reset()
+        {
             base.Reset();
             ResetValues();
         }
 
-        void ResetValues() { //do not make this virtual
+        void ResetValues()
+        { //do not make this virtual
             _minValue = 0;
             _maxValue = 0;
         }
 
-        protected override void OnValidate() {
+        protected override void OnValidate()
+        {
             _maxValue = Mathf.Max(_minValue, _maxValue);
             bool same = Mathf.Approximately(_minValue, _maxValue);
             //
-            if (same) {
+            if (same)
+            {
                 _minInclusive = true;
                 _maxInclusive = true;
             }

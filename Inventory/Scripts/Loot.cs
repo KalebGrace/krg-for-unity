@@ -1,10 +1,12 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace KRG {
+namespace KRG
+{
 
-    public class Loot : MonoBehaviour {
-        
+    public class Loot : MonoBehaviour
+    {
+
     }
 }

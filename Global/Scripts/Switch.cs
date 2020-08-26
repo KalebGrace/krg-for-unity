@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace KRG
@@ -11,7 +11,8 @@ namespace KRG
         protected bool m_SaveState = true;
 
         [SerializeField,
-            Tooltip("-1 is uninitialized. 0 is the first state. 1 is the second state. Etc.")]
+            Tooltip("-1 is uninitialized. 0 is the first state. 1 is the second state. Etc.")
+        ]
         protected int m_StateIndex = -1;
 
         public List<SwitchState> states = new List<SwitchState>();

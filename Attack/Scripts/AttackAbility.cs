@@ -33,7 +33,7 @@ namespace KRG
         protected const float FLOAT_DEFAULT = 1.5f;
         protected const float FLOAT_MIN = 0.0001f;
 
-        #region FIELDS: SERIALIZED
+        #region FIELDS : SERIALIZED
 
         [SerializeField, HideInInspector]
         private int _serializedVersion;
@@ -66,7 +66,7 @@ namespace KRG
         [Enum(typeof(TimeThreadInstance))]
         [SerializeField]
         [Tooltip("The applicable time thread index.")]
-        protected int _timeThreadIndex = (int)TimeThreadInstance.UseDefault;
+        protected int _timeThreadIndex = (int) TimeThreadInstance.UseDefault;
 
         [AudioEvent]
         [SerializeField]
@@ -94,19 +94,19 @@ namespace KRG
         [Header("Attack Instance Parameters")]
 
         [SerializeField]
-        [Tooltip("The lifetime of the attack in seconds."
-        + " Setting this to \"false\" makes the attack live forever (until explicitly destroyed).")]
+        [Tooltip("The lifetime of the attack in seconds." +
+            " Setting this to \"false\" makes the attack live forever (until explicitly destroyed).")]
         [BoolObjectDisable(false, "Infinite Lifetime")]
         protected BoolFloat _attackLifetime = new BoolFloat(true, 0.5f);
 
         [SerializeField]
-        [Tooltip("Is the attack physically joined to the attacker?"
-        + " Setting this to \"false\" makes the attack parent to the hierarchy root and operate in world space.")]
+        [Tooltip("Is the attack physically joined to the attacker?" +
+            " Setting this to \"false\" makes the attack parent to the hierarchy root and operate in world space.")]
         protected bool _isJoinedToAttacker;
 
         [SerializeField]
-        [Tooltip("Distance traveled by attack in units per second (the speed)."
-        + " Using a value of \"0\" makes the attack's local position stationary.")]
+        [Tooltip("Distance traveled by attack in units per second (the speed)." +
+            " Using a value of \"0\" makes the attack's local position stationary.")]
         protected float _travelSpeed = FLOAT_DEFAULT;
 
         //
@@ -130,14 +130,14 @@ namespace KRG
         [Header("HP Damage & DPS")]
 
         [SerializeField]
-        [Tooltip("Hit point damage dealt by attack."
-        + " Using a value of \"0\" makes the attack deal no hit point damage.")]
+        [Tooltip("Hit point damage dealt by attack." +
+            " Using a value of \"0\" makes the attack deal no hit point damage.")]
         protected float _hpDamage = 10;
 
         [SerializeField]
-        [Tooltip("HP Damage dealt per second during contact with the target."
-        + " NOTE: This requires setting \"Causes Invulnerability\" to false,"
-        + " or dealing damage to someone without it.")]
+        [Tooltip("HP Damage dealt per second during contact with the target." +
+            " NOTE: This requires setting \"Causes Invulnerability\" to false," +
+            " or dealing damage to someone without it.")]
         protected float _hpDamagePerSecond = default;
 
         //
@@ -162,8 +162,8 @@ namespace KRG
         protected Vector3 _knockBackForceImpulse = default;
 
         [SerializeField]
-        [Tooltip("How to apply the following Knock Back Distance"
-        + " against the corresponding value in the target's Damage Profile.")]
+        [Tooltip("How to apply the following Knock Back Distance" +
+            " against the corresponding value in the target's Damage Profile.")]
         protected KnockBackCalcMode _knockBackDistanceCalcMode = KnockBackCalcMode.Multiply;
 
         [SerializeField]
@@ -171,8 +171,8 @@ namespace KRG
         protected float _knockBackDistance = 1;
 
         [SerializeField]
-        [Tooltip("How to apply the following Knock Back Time"
-        + " against the corresponding value in the target's Damage Profile.")]
+        [Tooltip("How to apply the following Knock Back Time" +
+            " against the corresponding value in the target's Damage Profile.")]
         protected KnockBackCalcMode _knockBackTimeCalcMode = KnockBackCalcMode.Multiply;
 
         [SerializeField]
@@ -216,7 +216,7 @@ namespace KRG
 
         #endregion
 
-        #region FIELDS: PROTECTED
+        #region FIELDS : PROTECTED
 
         //minimum seconds between new attacks (calculated from _attackRate)
         protected float _attackRateSec;
@@ -320,7 +320,7 @@ namespace KRG
 
         #endregion
 
-        #region METHODS: MonoBehaviour
+        #region METHODS : MonoBehaviour
 
         protected virtual void Awake() // GAME BUILD only
         {
@@ -343,7 +343,7 @@ namespace KRG
 
         #endregion
 
-        #region METHODS: PUBLIC
+        #region METHODS : PUBLIC
 
         /// <summary>
         /// Gets the attacker animation.
@@ -355,8 +355,8 @@ namespace KRG
             G.U.Assert(_attackerAnimations != null);
             if (index < 0 || index >= _attackerAnimations.Length)
             {
-                G.U.Err("Invalid index {1} specified. "
-                + "Did you forget to add an attacker animation to the {0} attack ability?", this, index);
+                G.U.Err("Invalid index {1} specified. " +
+                    "Did you forget to add an attacker animation to the {0} attack ability?", this, index);
             }
             return _attackerAnimations[index];
         }
@@ -385,7 +385,7 @@ namespace KRG
 
         #endregion
 
-        #region METHODS: PROTECTED
+        #region METHODS : PROTECTED
 
         protected virtual void SetTimeThread()
         {

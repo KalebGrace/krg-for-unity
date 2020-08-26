@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using UnityEngine.Serialization;
 
 namespace KRG
@@ -14,7 +14,7 @@ namespace KRG
         [Enum(typeof(TimeThreadInstance))]
         [SerializeField]
         [FormerlySerializedAs("m_timeThreadIndex")]
-        protected int _timeThreadIndex = (int)TimeThreadInstance.UseDefault;
+        protected int _timeThreadIndex = (int) TimeThreadInstance.UseDefault;
 
         [SerializeField]
         [FormerlySerializedAs("m_lifetime")]
@@ -37,10 +37,8 @@ namespace KRG
         [FormerlySerializedAs("m_doesFade")]
         bool _doesFade = true;
 
-
         //applicable time thread interface (from _timeThreadIndex)
         protected ITimeThread _timeThread;
-
 
         public virtual ITimeThread timeThread
         {
@@ -55,7 +53,6 @@ namespace KRG
             }
         }
 
-
         public virtual bool DoesFade => _doesFade;
 
         public virtual float ExplosionForce => _explosionForce;
@@ -67,7 +64,6 @@ namespace KRG
         public virtual PhysicMaterial PhysicMaterial => _physicMaterial;
 
         public virtual int TimeThreadIndex => _timeThreadIndex;
-
 
         protected virtual void SetTimeThread()
         {

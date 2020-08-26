@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -6,16 +6,19 @@ using UnityEngine;
 using DG.Tweening;
 #endif
 
-namespace KRG {
+namespace KRG
+{
 
-    public static class TweenExtensionMethods {
+    public static class TweenExtensionMethods
+    {
 
 #if NS_DG_TWEENING
-        public static T SetTimeThread<T>(this T t, ITimeThread th) where T : Tween {
+        public static T SetTimeThread<T>(this T t, ITimeThread th) where T : Tween
+        {
             th.AddTween(t);
             return t;
         }
 #endif
-        
+
     }
 }

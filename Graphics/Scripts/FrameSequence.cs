@@ -61,9 +61,9 @@ namespace KRG
         private List<int> _frameList = new List<int>();
 
         [SerializeField]
-        [Tooltip("Count of playthroughs, or \"loops\", of this sequence."
-            + " Anything with a value of 100 or higher will be considered an infinite loop"
-            + " and will play indefinitely until code tells it otherwise.")]
+        [Tooltip("Count of playthroughs, or \"loops\", of this sequence." +
+            " Anything with a value of 100 or higher will be considered an infinite loop" +
+            " and will play indefinitely until code tells it otherwise.")]
         [FormerlySerializedAs("m_playCount")]
         private RangeInt _playCount = new RangeInt();
 
@@ -299,8 +299,8 @@ namespace KRG
             }
             else
             {
-                Error("Did you forget a number before/after a symbol?"
-                + " Number string is null or empty in AddNumberToCommands.");
+                Error("Did you forget a number before/after a symbol?" +
+                    " Number string is null or empty in AddNumberToCommands.");
             }
         }
 
@@ -357,8 +357,8 @@ namespace KRG
                 }
                 else
                 {
-                    Error("Unrecognized symbol. Should only be a number,"
-                    + " an extender (x), a range dash (-), or a separator comma (,).");
+                    Error("Unrecognized symbol. Should only be a number," +
+                        " an extender (x), a range dash (-), or a separator comma (,).");
                 }
             }
         }

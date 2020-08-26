@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace KRG
@@ -13,10 +13,8 @@ namespace KRG
             {
                 enableChainSwitches[i].enabled = true;
             }
-		}
+        }
 
-		protected virtual void Update()
-		{
-		}
-	}
+        protected virtual void Update() { }
+    }
 }

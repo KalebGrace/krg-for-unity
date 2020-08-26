@@ -1,10 +1,12 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace KRG {
+namespace KRG
+{
 
-    public enum LogType {
+    public enum LogType
+    {
 
         Log = 0,
         Warning = 1,

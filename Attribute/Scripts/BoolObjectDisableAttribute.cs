@@ -1,8 +1,9 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace KRG {
+namespace KRG
+{
 
     /// <summary>
     /// Disables the object value when the specified bool value is set.
@@ -10,17 +11,18 @@ namespace KRG {
     /// Used with BoolObject and BoolObjectDisableDrawer.
     /// Last Refactor: 0.05.002 / 2018-05-05
     /// </summary>
-    public class BoolObjectDisableAttribute : PropertyAttribute {
+    public class BoolObjectDisableAttribute : PropertyAttribute
+    {
 
-#region properties
+        #region properties
 
         public bool boolValue { get; private set; }
 
         public string disableDescription { get; private set; }
 
-#endregion
+        #endregion
 
-#region constructors
+        #region constructors
 
         /// <summary>
         /// Disables the object value when the specified bool value is set.
@@ -28,12 +30,13 @@ namespace KRG {
         /// </summary>
         /// <param name="boolValue">This is the bool value that will disable the object value.</param>
         /// <param name="disableDescription">Description to be displayed in place of the disabled object value.</param>
-        public BoolObjectDisableAttribute(bool boolValue, string disableDescription = null) {
+        public BoolObjectDisableAttribute(bool boolValue, string disableDescription = null)
+        {
             this.boolValue = boolValue;
             this.disableDescription = disableDescription;
         }
 
-#endregion
+        #endregion
 
     }
 }

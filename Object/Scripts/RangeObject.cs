@@ -1,12 +1,14 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Serialization;
 
-namespace KRG {
+namespace KRG
+{
 
     [System.Serializable]
-    public abstract class RangeObject {
+    public abstract class RangeObject
+    {
 
         [SerializeField]
         [FormerlySerializedAs("m_minInclusive")]
@@ -15,31 +17,38 @@ namespace KRG {
         [FormerlySerializedAs("m_maxInclusive")]
         protected bool _maxInclusive;
 
-        public bool minInclusive {
+        public bool minInclusive
+        {
             get { return _minInclusive; }
-            set {
+            set
+            {
                 _minInclusive = value;
                 OnValidate();
             }
         }
 
-        public bool maxInclusive {
+        public bool maxInclusive
+        {
             get { return _maxInclusive; }
-            set {
+            set
+            {
                 _maxInclusive = value;
                 OnValidate();
             }
         }
 
-        protected RangeObject() {
+        protected RangeObject()
+        {
             ResetInclusives();
         }
 
-        public virtual void Reset() {
+        public virtual void Reset()
+        {
             ResetInclusives();
         }
 
-        void ResetInclusives() { //do not make this virtual
+        void ResetInclusives()
+        { //do not make this virtual
             _minInclusive = true;
             _maxInclusive = true;
         }

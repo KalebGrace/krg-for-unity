@@ -1,4 +1,4 @@
-﻿namespace KRG
+namespace KRG
 {
     public class TimeManager : Manager, IFixedUpdate, IUpdate
     {
@@ -42,14 +42,14 @@
             int len = eg.length;
             if (len < 3)
             {
-                G.U.Err("There must be at least three time thread instance enum entries. "
-                + _timeThreadInstanceInfo);
+                G.U.Err("There must be at least three time thread instance enum entries. " +
+                    _timeThreadInstanceInfo);
                 len = 3;
             }
             else if (!eg.HasSequentialValues(-1, 1))
             {
-                G.U.Err("Time thread instance integer values must start at -1 and increment by 1. "
-                + _timeThreadInstanceInfo);
+                G.U.Err("Time thread instance integer values must start at -1 and increment by 1. " +
+                    _timeThreadInstanceInfo);
             }
             _threadCount = len - 1; //ignore "UseDefault"
             _threads = new TimeThread[_threadCount];
@@ -71,7 +71,7 @@
 
         public ITimeThread GetTimeThread(int timeThreadIndex, System.Enum defaultTimeThreadInstance)
         {
-            if (timeThreadIndex == (int)TimeThreadInstance.UseDefault)
+            if (timeThreadIndex == (int) TimeThreadInstance.UseDefault)
             {
                 return GetTimeThread(defaultTimeThreadInstance);
             }

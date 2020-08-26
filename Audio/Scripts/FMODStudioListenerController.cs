@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -6,9 +6,11 @@ using UnityEngine;
 using FMODUnity;
 #endif
 
-namespace KRG {
+namespace KRG
+{
 
-    public class FMODStudioListenerController : MonoBehaviour {
+    public class FMODStudioListenerController : MonoBehaviour
+    {
 
 #if NS_FMOD
 
@@ -20,28 +22,34 @@ namespace KRG {
 
         AudioListener _unityListener;
 
-        void Awake() {
+        void Awake()
+        {
             _controllers.Add(this);
-            if (_activeController != null) {
+            if (_activeController != null)
+            {
                 DeactivateActiveController();
             }
             Activate();
         }
 
-        void OnDestroy() {
+        void OnDestroy()
+        {
             _controllers.Remove(this);
-            if (_activeController == this) {
+            if (_activeController == this)
+            {
                 DeactivateActiveController();
                 ReactivateRemainingController();
             }
         }
 
-        void Activate() {
+        void Activate()
+        {
             _activeController = this;
             GuaranteeListeners();
         }
 
-        void GuaranteeListeners() {
+        void GuaranteeListeners()
+        {
             G.U.Assert(_fmodListener == null);
             _fmodListener = G.U.Guarantee<StudioListener>(this);
 
@@ -49,24 +57,30 @@ namespace KRG {
             _unityListener = G.U.Guarantee<AudioListener>(this);
         }
 
-        void RemoveListeners() {
-            if (_fmodListener != null) {
+        void RemoveListeners()
+        {
+            if (_fmodListener != null)
+            {
                 Destroy(_fmodListener);
                 _fmodListener = null;
             }
-            if (_unityListener != null) {
+            if (_unityListener != null)
+            {
                 Destroy(_unityListener);
                 _unityListener = null;
             }
         }
 
-        static void DeactivateActiveController() {
+        static void DeactivateActiveController()
+        {
             _activeController.RemoveListeners();
             _activeController = null;
         }
 
-        static void ReactivateRemainingController() {
-            if (_controllers.Count > 0) {
+        static void ReactivateRemainingController()
+        {
+            if (_controllers.Count > 0)
+            {
                 _controllers[0].Activate();
             }
         }

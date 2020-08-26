@@ -1,6 +1,6 @@
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Serialization;
-using System.Collections.Generic;
 
 namespace KRG
 {
@@ -84,7 +84,7 @@ namespace KRG
 
         public string Instruction => instruction;
 
-        public bool IsKeyItem => ItemType == (int)KRG.ItemType.KeyItem;
+        public bool IsKeyItem => ItemType == (int) KRG.ItemType.KeyItem;
 
         public int ItemID => m_ItemID;
 
@@ -158,23 +158,23 @@ namespace KRG
 
             switch (m_ItemType)
             {
-                case (int)OSH.ItemType.Consumable:
+                case (int) OSH.ItemType.Consumable:
                     if (m_AutoOwnerUse)
                     {
-                        DoEffects((int)EffectorCondition.Use, owner);
+                        DoEffects((int) EffectorCondition.Use, owner);
                     }
                     else
                     {
                         AddToInventory(owner, instanceID);
                     }
                     break;
-                case (int)OSH.ItemType.Equipment:
+                case (int) OSH.ItemType.Equipment:
 
                     AddToInventory(owner, instanceID);
 
                     if (m_AutoOwnerUse)
                     {
-                        DoEffects((int)EffectorCondition.Equip, owner);
+                        DoEffects((int) EffectorCondition.Equip, owner);
                     }
                     break;
                 default:
@@ -224,13 +224,13 @@ namespace KRG
                             switch (e.property)
                             {
                                 case 1100: // HP
-                                    e.property = (int)StatID.HP;
+                                    e.property = (int) StatID.HP;
                                     break;
                                 case 1200: // SP
                                     e.property = 104;
                                     break;
                                 case 2100: // HPMax
-                                    e.property = (int)StatID.HPMax;
+                                    e.property = (int) StatID.HPMax;
                                     break;
                                 case 2200: // SPMax
                                     e.property = 114;

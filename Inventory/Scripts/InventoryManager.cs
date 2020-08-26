@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace KRG
@@ -17,22 +17,17 @@ namespace KRG
 
         // FIELDS
 
-        readonly Dictionary<int, ItemAcquiredHandler> m_KeyItemAcquiredHandlers
-           = new Dictionary<int, ItemAcquiredHandler>();
+        readonly Dictionary<int, ItemAcquiredHandler> m_KeyItemAcquiredHandlers = new Dictionary<int, ItemAcquiredHandler>();
 
-        readonly Dictionary<int, ItemData> m_ItemDataDictionary
-           = new Dictionary<int, ItemData>();
+        readonly Dictionary<int, ItemData> m_ItemDataDictionary = new Dictionary<int, ItemData>();
 
         private List<int> m_ItemInstancesCollected = new List<int>();
 
-        private Dictionary<int, float> m_Items
-          = new Dictionary<int, float>();
+        private Dictionary<int, float> m_Items = new Dictionary<int, float>();
 
-        private Dictionary<int, float> m_Stats
-          = new Dictionary<int, float>();
+        private Dictionary<int, float> m_Stats = new Dictionary<int, float>();
 
-        readonly Dictionary<int, AutoMapSaveData> m_AutoMaps
-           = new Dictionary<int, AutoMapSaveData>();
+        readonly Dictionary<int, AutoMapSaveData> m_AutoMaps = new Dictionary<int, AutoMapSaveData>();
 
         // MONOBEHAVIOUR-LIKE METHODS
 
@@ -111,48 +106,48 @@ namespace KRG
 
         public float GetItemQty(ItemID itemID, float defaultQuantity = 0)
         {
-            return GetItemQty((int)itemID, defaultQuantity);
+            return GetItemQty((int) itemID, defaultQuantity);
         }
 
         public bool HasItemQty(ItemID itemID)
         {
-            return HasItemQty((int)itemID);
+            return HasItemQty((int) itemID);
         }
 
         // PUBLIC STAT VALUE METHODS
 
         public void AddStatVal(StatID statID, float value, float defaultValue = 0)
         {
-            AddStatVal((int)statID, value, defaultValue);
+            AddStatVal((int) statID, value, defaultValue);
         }
 
         public float GetStatVal(StatID statID, float defaultValue = 0)
         {
-            return GetStatVal((int)statID, defaultValue);
+            return GetStatVal((int) statID, defaultValue);
         }
 
         public bool HasStatVal(StatID statID)
         {
-            return HasStatVal((int)statID);
+            return HasStatVal((int) statID);
         }
 
         public void SetStatVal(StatID statID, float value)
         {
-            SetStatVal((int)statID, value);
+            SetStatVal((int) statID, value);
         }
 
         // PUBLIC KEY ITEM METHODS
 
         public bool HasKeyItem(ItemID itemID)
         {
-            return HasKeyItem(GetItemData((int)itemID));
+            return HasKeyItem(GetItemData((int) itemID));
         }
         public bool HasKeyItem(ItemData itemData)
         {
-            return itemData != null
-                && itemData.IsKeyItem
-                && m_Items.ContainsKey(itemData.ItemID)
-                && m_Items[itemData.ItemID] >= 1;
+            return itemData != null &&
+                itemData.IsKeyItem &&
+                m_Items.ContainsKey(itemData.ItemID) &&
+                m_Items[itemData.ItemID] >= 1;
         }
 
         // PUBLIC ITEM INSTANCE COLLECTED METHODS
@@ -274,13 +269,13 @@ namespace KRG
 
         public void RestorePlayerHealth()
         {
-            if (HasStatVal((int)StatID.HP))
+            if (HasStatVal((int) StatID.HP))
             {
-                float cur = GetStatVal((int)StatID.HP);
-                float max = GetStatVal((int)StatID.HPMax, 1);
+                float cur = GetStatVal((int) StatID.HP);
+                float max = GetStatVal((int) StatID.HPMax, 1);
                 if (cur < max)
                 {
-                    SetStatVal((int)StatID.HP, max);
+                    SetStatVal((int) StatID.HP, max);
                 }
             }
         }
@@ -327,7 +322,7 @@ namespace KRG
                 {
                     ItemData itemData = refs[i];
                     int id = itemData.ItemID;
-                    if (id != (int)ItemID.None)
+                    if (id != (int) ItemID.None)
                     {
                         m_ItemDataDictionary.Add(id, itemData);
                     }

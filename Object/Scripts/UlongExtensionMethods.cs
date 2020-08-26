@@ -1,12 +1,15 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace KRG {
+namespace KRG
+{
 
-    public static class UlongExtensionMethods {
+    public static class UlongExtensionMethods
+    {
 
-        public static bool HasFlag(this ulong flagsEnum, ulong flag) {
+        public static bool HasFlag(this ulong flagsEnum, ulong flag)
+        {
             return (flagsEnum & flag) == flag;
         }
     }

@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 
 namespace KRG
 {
@@ -80,13 +80,13 @@ namespace KRG
             get
             {
                 ValueRequested?.Invoke(this);
-                return (T)m_Value;
+                return (T) m_Value;
             }
             set
             {
                 object oldValue = m_Value;
                 m_Value = value;
-                ValueChanged?.Invoke(this, (T)oldValue, value);
+                ValueChanged?.Invoke(this, (T) oldValue, value);
             }
         }
 
@@ -146,7 +146,7 @@ namespace KRG
                     m_Value = PlayerPrefs.GetString(Key, m_Value.ToString());
                     break;
             }
-            ValueChanged?.Invoke(this, (T)oldValue, (T)m_Value);
+            ValueChanged?.Invoke(this, (T) oldValue, (T) m_Value);
             IsReadingPlayerPrefs = false;
         }
     }

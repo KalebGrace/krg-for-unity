@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using UnityEngine;
 
 namespace KRG
@@ -27,27 +27,27 @@ namespace KRG
 
             if (max)
             {
-                operation = (int)EffectorOperation.SetToXPercentOfMax;
+                operation = (int) EffectorOperation.SetToXPercentOfMax;
                 value = 100;
             }
             else if (min)
             {
-                operation = (int)EffectorOperation.SetToXPercentOfMax;
+                operation = (int) EffectorOperation.SetToXPercentOfMax;
                 value = 0;
             }
             else if (v.HasValue)
             {
-                operation = (int)EffectorOperation.SetTo;
+                operation = (int) EffectorOperation.SetTo;
                 value = v.Value + d;
             }
             else if (!d.Ap(0))
             {
-                operation = (int)EffectorOperation.Add;
+                operation = (int) EffectorOperation.Add;
                 value = d;
             }
             else
             {
-                operation = (int)EffectorOperation.None;
+                operation = (int) EffectorOperation.None;
                 value = 0;
             }
         }
@@ -60,9 +60,9 @@ namespace KRG
                 return false;
             }
 
-            float ev = (float)value;
+            float ev = (float) value;
 
-            switch ((EffectorOperation)operation)
+            switch ((EffectorOperation) operation)
             {
                 case EffectorOperation.None:
                     // do nothing
@@ -85,7 +85,7 @@ namespace KRG
                     ev += pv;
                     break;
                 default:
-                    G.U.Unsupported(null, (EffectorOperation)operation);
+                    G.U.Unsupported(null, (EffectorOperation) operation);
                     return false;
             }
 

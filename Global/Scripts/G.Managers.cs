@@ -1,6 +1,6 @@
-﻿using System.Collections.Generic;
-using System.Reflection;
+using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 
 namespace KRG
 {
@@ -39,23 +39,17 @@ namespace KRG
 
         readonly List<Manager> m_Managers = new List<Manager>();
 
-        readonly SortedList<float, IStart> m_ManagerEventsStart
-        = new SortedList<float, IStart>();
+        readonly SortedList<float, IStart> m_ManagerEventsStart = new SortedList<float, IStart>();
 
-        readonly SortedList<float, IFixedUpdate> m_ManagerEventsFixedUpdate
-        = new SortedList<float, IFixedUpdate>();
+        readonly SortedList<float, IFixedUpdate> m_ManagerEventsFixedUpdate = new SortedList<float, IFixedUpdate>();
 
-        readonly SortedList<float, IUpdate> m_ManagerEventsUpdate
-        = new SortedList<float, IUpdate>();
+        readonly SortedList<float, IUpdate> m_ManagerEventsUpdate = new SortedList<float, IUpdate>();
 
-        readonly SortedList<float, ILateUpdate> m_ManagerEventsLateUpdate
-        = new SortedList<float, ILateUpdate>();
+        readonly SortedList<float, ILateUpdate> m_ManagerEventsLateUpdate = new SortedList<float, ILateUpdate>();
 
-        readonly SortedList<float, IOnApplicationQuit> m_ManagerEventsOnApplicationQuit
-        = new SortedList<float, IOnApplicationQuit>();
+        readonly SortedList<float, IOnApplicationQuit> m_ManagerEventsOnApplicationQuit = new SortedList<float, IOnApplicationQuit>();
 
-        readonly SortedList<float, IOnDestroy> m_ManagerEventsOnDestroy
-        = new SortedList<float, IOnDestroy>();
+        readonly SortedList<float, IOnDestroy> m_ManagerEventsOnDestroy = new SortedList<float, IOnDestroy>();
 
         void InitManagers()
         {
@@ -98,7 +92,6 @@ namespace KRG
             app.StartApp();
         }
 
-
         // TRUE MONOBEHAVIOUR METHODS
 
         void Start()
@@ -126,7 +119,6 @@ namespace KRG
             foreach (var m in m_ManagerEventsOnApplicationQuit.Values) m.OnApplicationQuit();
         }
 
-
         // PRIVATE KRG METHODS
 
         void DestroyManagers()
@@ -135,7 +127,6 @@ namespace KRG
 
             foreach (var m in reversedList) m.OnDestroy();
         }
-
 
         // PUBLIC KRG METHODS
 

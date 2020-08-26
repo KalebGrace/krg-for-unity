@@ -1,4 +1,4 @@
-﻿using TMPro;
+using TMPro;
 using UnityEngine;
 
 namespace KRG
@@ -47,7 +47,6 @@ namespace KRG
         public int frameSequencePlayIndex { get; set; }
 
         public int frameNumber { get; set; }
-
 
         private void Awake()
         {

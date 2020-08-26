@@ -1,4 +1,4 @@
-﻿namespace KRG
+namespace KRG
 {
     public class ValObj<T> : IValue<T>
     {
@@ -22,9 +22,7 @@
             }
         }
 
-        public ValObj()
-        {
-        }
+        public ValObj() { }
 
         public ValObj(T v)
         {

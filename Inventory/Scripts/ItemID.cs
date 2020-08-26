@@ -1,4 +1,4 @@
-﻿namespace KRG
+namespace KRG
 {
     public enum ItemID
     {

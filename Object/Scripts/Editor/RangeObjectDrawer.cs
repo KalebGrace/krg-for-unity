@@ -1,17 +1,20 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
-namespace KRG {
+namespace KRG
+{
 
     [CustomPropertyDrawer(typeof(RangeFloat))]
     [CustomPropertyDrawer(typeof(RangeInt))]
-    public class RangeObjectDrawer : PropertyDrawer {
-        
+    public class RangeObjectDrawer : PropertyDrawer
+    {
+
         SerializedProperty _minInclusiveProp, _minValueProp, _maxValueProp, _maxInclusiveProp;
 
-        public override void OnGUI(Rect position, SerializedProperty property, GUIContent label) {
+        public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
+        {
             const float wInclusive = 15;
 
             EditorGUI.BeginProperty(position, label, property);
@@ -41,7 +44,8 @@ namespace KRG {
             EditorGUI.EndProperty();
         }
 
-        static Rect AddField(SerializedProperty property, float width, Rect previousField) {
+        static Rect AddField(SerializedProperty property, float width, Rect previousField)
+        {
             Rect r = new Rect(previousField);
             r.x += r.width;
             r.width = width;
@@ -49,7 +53,8 @@ namespace KRG {
             return r;
         }
 
-        void AddSummary(Rect overlayField) {
+        void AddSummary(Rect overlayField)
+        {
             Rect r = new Rect(overlayField);
 
             GUIStyle sameStyle = new GUIStyle(EditorStyles.whiteBoldLabel);
@@ -62,12 +67,16 @@ namespace KRG {
             GUIStyle currStyle = null;
             string summary = "";
 
-            switch (_minValueProp.type) {
+            switch (_minValueProp.type)
+            {
                 case "float":
-                    if (Mathf.Approximately(_minValueProp.floatValue, _maxValueProp.floatValue)) {
+                    if (Mathf.Approximately(_minValueProp.floatValue, _maxValueProp.floatValue))
+                    {
                         currStyle = sameStyle;
                         summary = _minValueProp.floatValue.ToString();
-                    } else {
+                    }
+                    else
+                    {
                         currStyle = diffStyle;
                         const string f = "#0.#";
                         string min = _minValueProp.floatValue.ToString(f) + (_minInclusiveProp.boolValue ? "" : "*");
@@ -76,10 +85,13 @@ namespace KRG {
                     }
                     break;
                 case "int":
-                    if (_minValueProp.intValue == _maxValueProp.intValue) {
+                    if (_minValueProp.intValue == _maxValueProp.intValue)
+                    {
                         currStyle = sameStyle;
                         summary = _minValueProp.intValue.ToString();
-                    } else {
+                    }
+                    else
+                    {
                         currStyle = diffStyle;
                         int min = _minValueProp.intValue + (_minInclusiveProp.boolValue ? 0 : 1);
                         int max = _maxValueProp.intValue - (_maxInclusiveProp.boolValue ? 0 : 1);

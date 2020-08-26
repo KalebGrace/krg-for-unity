@@ -21,7 +21,6 @@ namespace KRG
 
 #endif
 
-
         [Header("Global (KRG)")]
 
         [SerializeField]
@@ -29,14 +28,12 @@ namespace KRG
 
         public string ApplicationNamespace => _applicationNamespace;
 
-
         [Header("Audio (KRG)")]
 
         [SerializeField]
         float _musicVolumeScale = 1;
 
         public float MusicVolumeScale => _musicVolumeScale;
-
 
         [Header("Damage (KRG)")]
 
@@ -48,7 +45,6 @@ namespace KRG
         public DamageValue damageValuePrefab { get { return _damageValuePrefab; } }
 
         public HPBar hpBarPrefab { get { return _hpBarPrefab; } }
-
 
         [Header("DOTween (KRG)")]
 
@@ -63,7 +59,6 @@ namespace KRG
         LogBehaviour _doTweenLogBehaviour = LogBehaviour.Default;
 #endif
 
-
         public CharacterDebugText characterDebugTextPrefab { get; private set; }
 
         public bool doTweenUseInitSettings { get { return _doTweenUseInitSettings; } }
@@ -76,7 +71,6 @@ namespace KRG
         public LogBehaviour doTweenLogBehaviour { get { return _doTweenLogBehaviour; } }
 #endif
 
-
         [Header("Inventory (KRG)")]
 
         public List<ItemData> ItemDataReferences = default;
@@ -85,7 +79,6 @@ namespace KRG
         AutoMapPaletteData _autoMapPaletteData = default;
 
         public AutoMapPaletteData AutoMapPaletteData => _autoMapPaletteData;
-
 
         [Header("Object (KRG)")]
 
@@ -96,14 +89,13 @@ namespace KRG
         public bool IsSinglePlayerGame => _isSinglePlayerGame;
 
         [SerializeField]
-        [Tooltip("Add prefabs here to have them automatically instantiated as child GameObjects of KRGLoader."
-        + " As children of KRGLoader, they will persist across scenes for the lifetime of the application.")]
+        [Tooltip("Add prefabs here to have them automatically instantiated as child GameObjects of KRGLoader." +
+            " As children of KRGLoader, they will persist across scenes for the lifetime of the application.")]
         GameObject[] _autoInstancedPrefabs = default;
 
-        public GameObject[] autoInstancedPrefabs { get { return (GameObject[])_autoInstancedPrefabs.Clone(); } }
+        public GameObject[] autoInstancedPrefabs { get { return (GameObject[]) _autoInstancedPrefabs.Clone(); } }
 
         public List<RasterAnimation> ExtraRasterAnimations = default;
-
 
         [Header("Time (KRG)")]
 
@@ -111,7 +103,6 @@ namespace KRG
         string _timeThreadInstanceEnum = "KRG.TimeThreadInstance";
 
         public string timeThreadInstanceEnum { get { return _timeThreadInstanceEnum; } }
-
 
         private void Awake() // GAME BUILD only
         {

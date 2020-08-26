@@ -1,10 +1,12 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace KRG {
+namespace KRG
+{
 
-    public static class RectTransformExtensionMethods {
+    public static class RectTransformExtensionMethods
+    {
 
         /// <summary>
         /// Center the specified RectTransform on its parent using the specified size.
@@ -12,7 +14,8 @@ namespace KRG {
         /// </summary>
         /// <param name="rt">RectTransform.</param>
         /// <param name="size">Size.</param>
-        public static void Center(this RectTransform rt, Vector2 size) {
+        public static void Center(this RectTransform rt, Vector2 size)
+        {
             rt.pivot = new Vector2(0.5f, 0.5f);
             rt.anchorMin = rt.pivot;
             rt.anchorMax = rt.pivot;
@@ -27,7 +30,8 @@ namespace KRG {
         /// This will modify the pivot, anchors, position, size, and scale.
         /// </summary>
         /// <param name="rt">RectTransform.</param>
-        public static void Stretch(this RectTransform rt) {
+        public static void Stretch(this RectTransform rt)
+        {
             rt.pivot = new Vector2(0.5f, 0.5f);
             rt.anchorMin = Vector2.zero;
             rt.anchorMax = Vector2.one;

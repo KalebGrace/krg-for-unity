@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 
 namespace KRG
 {
@@ -6,9 +6,7 @@ namespace KRG
     {
         public override float priority { get { return 90; } }
 
-        public override void Awake()
-        {
-        }
+        public override void Awake() { }
 
         /// <summary>
         /// Gets the active camera (typically the main camera).

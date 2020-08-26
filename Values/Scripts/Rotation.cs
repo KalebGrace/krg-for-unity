@@ -1,4 +1,4 @@
-﻿namespace KRG
+namespace KRG
 {
     public struct Rotation : IValue<float>
     {
@@ -24,10 +24,10 @@
             get
             {
                 var d = clamped_0_360x;
-                return d >= 315 || d < 45 ? Direction.North
-                        : d < 135 ? Direction.East
-                        : d < 225 ? Direction.South
-                        : Direction.West;
+                return d >= 315 || d < 45 ? Direction.North :
+                    d < 135 ? Direction.East :
+                    d < 225 ? Direction.South :
+                    Direction.West;
             }
         }
 
@@ -36,14 +36,14 @@
             get
             {
                 var d = clamped_0_360x;
-                return d >= 337.5f || d < 22.5f ? Direction.North
-                        : d < 67.5f ? Direction.NorthEast
-                        : d < 112.5f ? Direction.East
-                        : d < 157.5f ? Direction.SouthEast
-                        : d < 202.5f ? Direction.South
-                        : d < 247.5f ? Direction.SouthWest
-                        : d < 292.5f ? Direction.West
-                        : Direction.NorthWest;
+                return d >= 337.5f || d < 22.5f ? Direction.North :
+                    d < 67.5f ? Direction.NorthEast :
+                    d < 112.5f ? Direction.East :
+                    d < 157.5f ? Direction.SouthEast :
+                    d < 202.5f ? Direction.South :
+                    d < 247.5f ? Direction.SouthWest :
+                    d < 292.5f ? Direction.West :
+                    Direction.NorthWest;
             }
         }
     }

@@ -1,14 +1,16 @@
-﻿using UnityEngine;
 using System.Collections;
+using UnityEngine;
 
-namespace KRG {
+namespace KRG
+{
 
     /// <summary>
     /// Time rate.
     /// Add any new entries to the end.
     /// </summary>
-    public enum TimeRate {
-        
+    public enum TimeRate
+    {
+
         Paused = -1,
         Scaled = 0,
         Unscaled = 1,

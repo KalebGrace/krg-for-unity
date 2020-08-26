@@ -1,10 +1,12 @@
-﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine;
 
-namespace KRG {
+namespace KRG
+{
 
-    public class Movement {
+    public class Movement
+    {
 
         public const float defaultStepHeight = 0.5f;
 
@@ -13,8 +15,10 @@ namespace KRG {
         bool _doesRespectRigidbodyFreeze; //TODO: This needs to be used in more places.
         SpatialOptions _spatialOptions;
 
-        float safetyCushion {
-            get {
+        float safetyCushion
+        {
+            get
+            {
                 //NOTE: Don't try and cache Physics.defaultContactOffset early, as it might come out as 0.
                 return 3f * Physics.defaultContactOffset;
             }
@@ -25,7 +29,8 @@ namespace KRG {
         /// doesRespectRigidbodyFreeze will be false.
         /// </summary>
         /// <param name="options">Options. Old default was SpatialOptions.AdditiveCardinal.</param>
-        public Movement(SpatialOptions options) {
+        public Movement(SpatialOptions options)
+        {
             _spatialOptions = options;
         }
 
@@ -35,7 +40,8 @@ namespace KRG {
         /// </summary>
         /// <param name="options">Options.</param>
         /// <param name="doesRespectRigidbodyFreeze">If set to <c>true</c> does respect rigidbody freeze.</param>
-        public Movement(SpatialOptions options, bool doesRespectRigidbodyFreeze) {
+        public Movement(SpatialOptions options, bool doesRespectRigidbodyFreeze)
+        {
             _spatialOptions = options;
             _doesRespectRigidbodyFreeze = doesRespectRigidbodyFreeze;
         }
@@ -54,7 +60,8 @@ namespace KRG {
             float dist,
             float stepHeight,
             params int[] passthroughLayers
-        ) {
+        )
+        {
             //Ensure the user-supplied stepHeight adheres to the restrictions.
             float adjustedStepHeight = GetAdjustedStepHeight(stepHeight);
 
@@ -71,14 +78,17 @@ namespace KRG {
             tf.position += lift;
 
             TranslateOutcomes(new Position(Direction.Below, dist + adjustedStepHeight),
-                v3 => { //Success.
+                v3 =>
+                { //Success.
                     Debug.DrawRay(tf.position, v3, Color.cyan, 3f);
                     tf.position += v3;
                 },
-                v3 => { //Obstruction.
+                v3 =>
+                { //Obstruction.
                     Debug.DrawRay(tf.position, v3, Color.yellow, 1f);
                 },
-                v3 => { //Partial.
+                v3 =>
+                { //Partial.
                     Debug.DrawRay(tf.position, v3, Color.cyan, 3f);
                     tf.position += v3;
                 },
@@ -102,8 +112,10 @@ namespace KRG {
             float dist,
             float stepHeight,
             params int[] passthroughLayers
-        ) {
-            switch (dir.GetDirectionType()) {
+        )
+        {
+            switch (dir.GetDirectionType())
+            {
                 case DirectionType.Cardinal:
                 case DirectionType.Ordinal:
                     break;
@@ -111,9 +123,9 @@ namespace KRG {
                     //TODO: Is this restriction still relevant? If so, why? SoAm only?
                     //May have had to do with "Remainder" of AttemptMove, but this has been updated.
                     G.U.Err("The direction parameter must be of " +
-                    "an absolute direction type. " +
-                    "Its current value is \"{0}\" " +
-                    "and its direction type is \"{1}\".",
+                        "an absolute direction type. " +
+                        "Its current value is \"{0}\" " +
+                        "and its direction type is \"{1}\".",
                         dir,
                         dir.GetDirectionType());
                     return;
@@ -136,7 +148,8 @@ namespace KRG {
             Vector3 travelVector,
             float stepHeight,
             params int[] passthroughLayers
-        ) {
+        )
+        {
             Position posDelta = new Position(travelVector, _spatialOptions);
             MoveBasic(tf, body, posDelta, stepHeight, passthroughLayers);
         }
@@ -155,7 +168,8 @@ namespace KRG {
             Position posDelta,
             float stepHeight,
             params int[] passthroughLayers
-        ) {
+        )
+        {
             //Ensure the user-supplied stepHeight adheres to the restrictions.
             float adjustedStepHeight = GetAdjustedStepHeight(stepHeight);
 
@@ -169,12 +183,14 @@ namespace KRG {
 
             //#3: Drop back down to the original height (or the ground, if closer).
             TranslateOutcomes(new Position(Direction.Below, adjustedStepHeight),
-                v3 => { //Success.
+                v3 =>
+                { //Success.
                     Debug.DrawRay(tf.position, v3, Color.white, 1f);
                     tf.position += v3;
                 },
                 null,
-                v3 => { //Partial.
+                v3 =>
+                { //Partial.
                     Debug.DrawRay(tf.position, v3, Color.green, 3f);
                     tf.position += v3;
                 },
@@ -187,20 +203,25 @@ namespace KRG {
             Transform tf,
             Rigidbody body,
             params int[] passthroughLayers
-        ) {
+        )
+        {
             TranslateOutcomes(attempt,
-                v3 => { //Success.
+                v3 =>
+                { //Success.
                     Debug.DrawRay(tf.position, v3, Color.white, 1f);
                     tf.position += v3;
                 },
-                v3 => { //Obstruction.
+                v3 =>
+                { //Obstruction.
                     Debug.DrawRay(tf.position, v3 * 2f, Color.red, 2f);
                 },
-                v3 => { //Partial.
+                v3 =>
+                { //Partial.
                     Debug.DrawRay(tf.position, v3, Color.white, 1f);
                     tf.position += v3;
                 },
-                v3 => { //Remainder. (Attempt to move in a different direction against an angled surface.)
+                v3 =>
+                { //Remainder. (Attempt to move in a different direction against an angled surface.)
                     bool tryRemainder = true;
                     float distRem = v3.magnitude;
                     Direction dir = attempt.initialDirection;
@@ -208,7 +229,8 @@ namespace KRG {
                     //TODO: Find out if these adjustments to options/distRem are correct.
                     //It should already be handling this stuff in Position.SetDirectionMagnitude(...).
                     //Also, take into account the value of _spatialOptions.
-                    switch (dir.GetDirectionType()) {
+                    switch (dir.GetDirectionType())
+                    {
                         case DirectionType.Cardinal:
                             options = SpatialOptions.AdditiveCardinal; //For remaining ordinal movement.
                             break;
@@ -219,10 +241,12 @@ namespace KRG {
                             tryRemainder = false;
                             break;
                     }
-                    if (_doesRespectRigidbodyFreeze) {
-                        int freezeX = (int)body.constraints & (int)RigidbodyConstraints.FreezePositionX;
-                        int freezeZ = (int)body.constraints & (int)RigidbodyConstraints.FreezePositionZ;
-                        switch (dir) {
+                    if (_doesRespectRigidbodyFreeze)
+                    {
+                        int freezeX = (int) body.constraints & (int) RigidbodyConstraints.FreezePositionX;
+                        int freezeZ = (int) body.constraints & (int) RigidbodyConstraints.FreezePositionZ;
+                        switch (dir)
+                        {
                             case Direction.North:
                             case Direction.South:
                                 tryRemainder &= freezeX <= 0;
@@ -242,7 +266,8 @@ namespace KRG {
                                 break;
                         }
                     }
-                    if (tryRemainder) {
+                    if (tryRemainder)
+                    {
                         float cwDistAllowed = 0f;
                         float ccwDistAllowed = 0f;
                         Direction cwDir = dir.GetClockwiseDirection();
@@ -253,9 +278,12 @@ namespace KRG {
                         ForecastTranslate(body, ccwPos, out ccwDistAllowed, passthroughLayers);
 
                         Vector3 v3rem;
-                        if (cwDistAllowed > ccwDistAllowed) {
+                        if (cwDistAllowed > ccwDistAllowed)
+                        {
                             v3rem = cwPos.v3.normalized * cwDistAllowed;
-                        } else {
+                        }
+                        else
+                        {
                             v3rem = ccwPos.v3.normalized * ccwDistAllowed;
                         }
                         tf.position += v3rem;
@@ -284,23 +312,31 @@ namespace KRG {
             MovementHandler remainder,
             Rigidbody body,
             params int[] passthroughLayers
-        ) {
+        )
+        {
             float distAllowed;
             Vector3 attemptV3 = attempt.v3;
             Vector3 attemptV3_Normalized = attemptV3.normalized;
 
-            if (ForecastTranslate(body, attempt, out distAllowed, passthroughLayers)) {
-                if (success != null) {
+            if (ForecastTranslate(body, attempt, out distAllowed, passthroughLayers))
+            {
+                if (success != null)
+                {
                     success(attemptV3);
                 }
-            } else {
-                if (obstruction != null) {
+            }
+            else
+            {
+                if (obstruction != null)
+                {
                     obstruction(attemptV3);
                 }
-                if (partial != null && distAllowed > 0f) {
+                if (partial != null && distAllowed > 0f)
+                {
                     partial(attemptV3_Normalized * distAllowed);
                 }
-                if (remainder != null) {
+                if (remainder != null)
+                {
                     remainder(attemptV3_Normalized * (attemptV3.magnitude - distAllowed));
                 }
             }
@@ -320,16 +356,18 @@ namespace KRG {
             Position attempt,
             out float distAllowed,
             params int[] passthroughLayers
-        ) {
+        )
+        {
             Vector3 attemptV3 = attempt.v3;
             distAllowed = attemptV3.magnitude; //Initialization.
-            
+
             //TODO: Check the following line to make sure it's not assuming AdditiveCardinal.
             float safetyMulti = attempt.initialDirection.GetDirectionType() == DirectionType.Ordinal ? Mathf.Sqrt(2f) : 1f;
             float adjustedSafetyCushion = safetyCushion * safetyMulti;
 
             //Prevent jittering when using MoveBasic under the following circumstances.
-            if (!body.isKinematic && body.useGravity && attempt.initialDirection == Direction.Below) {
+            if (!body.isKinematic && body.useGravity && attempt.initialDirection == Direction.Below)
+            {
                 adjustedSafetyCushion = 0f;
             }
 
@@ -341,26 +379,32 @@ namespace KRG {
             bool isPassthrough;
             int passthroughLayerCount = passthroughLayers.Length;
 
-            for (int i = 0; i < hitCount; i++) {
+            for (int i = 0; i < hitCount; i++)
+            {
                 hit = hits[i];
 
-                if (hit.collider.isTrigger) {
+                if (hit.collider.isTrigger)
+                {
                     continue;
                 }
 
                 isPassthrough = false;
-                for (int j = 0; j < passthroughLayerCount; j++) {
-                    if (hit.transform.gameObject.layer == passthroughLayers[j]) {
+                for (int j = 0; j < passthroughLayerCount; j++)
+                {
+                    if (hit.transform.gameObject.layer == passthroughLayers[j])
+                    {
                         isPassthrough = true;
                         break;
                     }
                 }
-                if (isPassthrough) {
+                if (isPassthrough)
+                {
                     continue;
                 }
 
                 distAllowed = Mathf.Min(distAllowed, hit.distance - adjustedSafetyCushion);
-                if (distAllowed <= 0f) {
+                if (distAllowed <= 0f)
+                {
                     distAllowed = 0f;
                     break;
                 }
@@ -369,7 +413,8 @@ namespace KRG {
             return Mathf.Approximately(distAllowed, attemptV3.magnitude);
         }
 
-        float GetAdjustedStepHeight(float stepHeight) {
+        float GetAdjustedStepHeight(float stepHeight)
+        {
             return Mathf.Max(stepHeight + safetyCushion, safetyCushion);
         }
     }

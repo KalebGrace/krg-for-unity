@@ -1,4 +1,4 @@
-﻿namespace KRG
+namespace KRG
 {
     public struct Sign : IValue<int>
     {
@@ -53,7 +53,7 @@
 
         //shortcut properties
 
-        public float f_1_n1 { get { return (float)val(Flags.ZeroAsPos1); } }
+        public float f_1_n1 { get { return (float) val(Flags.ZeroAsPos1); } }
     }
 
     public static class SignFlagsEM

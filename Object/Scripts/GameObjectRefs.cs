@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 
 namespace KRG
 {
@@ -13,8 +13,8 @@ namespace KRG
 
         public GraphicController GraphicController;
 
-        [Tooltip("The VisRect GameObject should be positioned at the visual center (e.g. character torso)."
-            + " By contrast, the root GameObject should be positioned at the visual base (e.g. character soles).")]
+        [Tooltip("The VisRect GameObject should be positioned at the visual center (e.g. character torso)." +
+            " By contrast, the root GameObject should be positioned at the visual base (e.g. character soles).")]
         public VisRect VisRect;
 
         [Tooltip("The main bounding box for the game object.")]

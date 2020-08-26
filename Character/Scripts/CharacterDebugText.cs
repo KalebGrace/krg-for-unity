@@ -1,4 +1,4 @@
-﻿using TMPro;
+using TMPro;
 using UnityEngine;
 
 namespace KRG
@@ -24,8 +24,8 @@ namespace KRG
 
             if (m_Interface == null)
             {
-                string message = "This MonoBehaviour must implement the"
-                    + "ICharacterDebugText interface to show debug info.";
+                string message = "This MonoBehaviour must implement the" +
+                    "ICharacterDebugText interface to show debug info.";
 
                 G.U.Warn(message, this, monoBehaviour);
 

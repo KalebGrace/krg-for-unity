@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace KRG
@@ -15,9 +15,7 @@ namespace KRG
         [SerializeField]
         protected List<InputSignatureElement> m_Elements;
 
-
         string m_Key;
-
 
         public virtual int complexity { get { return m_Elements != null ? m_Elements.Count : 0; } }
 
@@ -53,7 +51,6 @@ namespace KRG
                 return m_Key;
             }
         }
-
 
         public abstract bool IsExecuted(Attacker attacker);
     }

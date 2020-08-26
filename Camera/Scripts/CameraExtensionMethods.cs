@@ -1,22 +1,26 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace KRG {
+namespace KRG
+{
 
-    public static class CameraExtensionMethods {
+    public static class CameraExtensionMethods
+    {
 
         /// <summary>
         /// Get the orthographic bounds of the camera.
         /// </summary>
         /// <returns>The orthographic bounds.</returns>
         /// <param name="camera">Camera.</param>
-        public static Bounds GetOrthographicBounds(this Camera camera) {
-            if (!camera.orthographic) {
+        public static Bounds GetOrthographicBounds(this Camera camera)
+        {
+            if (!camera.orthographic)
+            {
                 G.U.Err("The {0} Camera does not use orthographic projection.", camera.name);
                 return new Bounds();
             }
-            float screenAspect = (float)Screen.width / (float)Screen.height;
+            float screenAspect = (float) Screen.width / (float) Screen.height;
             float cameraHeight = camera.orthographicSize * 2;
             return new Bounds(
                 camera.transform.position,
@@ -30,8 +34,10 @@ namespace KRG {
         /// <returns>The perspective bounds.</returns>
         /// <param name="camera">Camera.</param>
         /// <param name="z">The distance to the specified plane from the camera along the z-axis.</param>
-        public static Bounds GetPerspectiveBounds(this Camera camera, float z) {
-            if (camera.orthographic) {
+        public static Bounds GetPerspectiveBounds(this Camera camera, float z)
+        {
+            if (camera.orthographic)
+            {
                 G.U.Err("The {0} Camera does not use perspective projection.", camera.name);
                 return new Bounds();
             }

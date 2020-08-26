@@ -218,8 +218,6 @@ namespace KRG
             return fs?.AudioEvent;
         }
 
-
-
         protected virtual FrameSequence GetFrameSequence(int frameSequenceIndex)
         {
             if (_frameSequences.Length > frameSequenceIndex)

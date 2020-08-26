@@ -1,4 +1,4 @@
-﻿namespace KRG
+namespace KRG
 {
 #if KRG_X_ODIN
     public class OrderAttribute : Sirenix.OdinInspector.PropertyOrderAttribute

@@ -205,8 +205,8 @@ namespace KRG
 
         public bool IsPlayerCharacter(Collider collider)
         {
-            return collider.CompareTag(CharacterTag.Player.ToString())
-                && collider.gameObject.layer == Layer.PCBoundBox;
+            return collider.CompareTag(CharacterTag.Player.ToString()) &&
+                collider.gameObject.layer == Layer.PCBoundBox;
         }
         public bool IsPlayerCharacter(Collision collision)
         {
@@ -223,8 +223,8 @@ namespace KRG
             }
 
             AssetBundle assetBundle = AssetBundle.GetAllLoadedAssetBundles()
-                   .Where(ab => ab.name == bundleName)
-                   .SingleOrDefault();
+                .Where(ab => ab.name == bundleName)
+                .SingleOrDefault();
 
             if (assetBundle == null)
             {
@@ -250,8 +250,8 @@ namespace KRG
         private void UnloadAssetBundle(string bundleName)
         {
             AssetBundle.GetAllLoadedAssetBundles()
-                   .Where(ab => ab.name == bundleName)
-                   .SingleOrDefault()?.Unload(true);
+                .Where(ab => ab.name == bundleName)
+                .SingleOrDefault()?.Unload(true);
         }
 
         // CHARACTER ASSET BUNDLES
@@ -520,7 +520,7 @@ namespace KRG
             System.Action action;
             for (int i = 0; i < list.Length; i++)
             {
-                action = (System.Action)list[i];
+                action = (System.Action) list[i];
                 if (action.Target == null || !action.Target.Equals(null))
                 {
                     //This is either a static method OR an instance method with a valid target.
@@ -542,14 +542,13 @@ namespace KRG
         /// Awake as the singleton instance for this class.
         /// This is necessary when a GameObject either pre-exists or is created in the scene with this Component on it.
         /// </summary>
-        public static void AwakeSingletonComponent<T>(ISingletonComponent<T> instance
-        ) where T : Component, ISingletonComponent<T>
+        public static void AwakeSingletonComponent<T>(ISingletonComponent<T> instance) where T : Component, ISingletonComponent<T>
         {
             System.Type t = typeof(T);
             if (instance.singletonInstance == null)
             {
                 //this is the FIRST instance; set it as the singleton instance
-                T first = (T)instance;
+                T first = (T) instance;
                 instance.singletonInstance = first;
                 first.PersistNewScene(PersistNewSceneType.MoveToHierarchyRoot);
                 G.U.Prevent(instance.isDuplicateInstance, "First instance marked as duplicate.", instance, t);
@@ -557,7 +556,7 @@ namespace KRG
             else
             {
                 //this is a NEW instance
-                T newIn = (T)instance;
+                T newIn = (T) instance;
                 G.U.Prevent(instance.singletonInstance == newIn, "Singleton instance awoke twice.", instance, t);
                 if (instance.isDuplicateInstance || instance.singletonType == SingletonType.SingletonFirstOnly)
                 {

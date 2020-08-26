@@ -1,8 +1,9 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace KRG {
+namespace KRG
+{
 
     /// <summary>
     /// AttackAbilityUse: Attack Ability Use
@@ -15,9 +16,10 @@ namespace KRG {
     /// 4.  AttackAbilityUse is sealed and currently has no extensibility.
     /// Last Refactor: 1.00.003 / 2018-07-15
     /// </summary>
-    public sealed class AttackAbilityUse {
+    public sealed class AttackAbilityUse
+    {
 
-#region FIELDS
+        #region FIELDS
 
         //attack ability scriptable object
         AttackAbility _attackAbility;
@@ -40,9 +42,9 @@ namespace KRG {
         //attack that opened up the use of this new ability
         Attack _originAttack;
 
-#endregion
+        #endregion
 
-#region PROPERTIES
+        #region PROPERTIES
 
         public AttackAbility attackAbility { get { return _attackAbility; } }
 
@@ -54,16 +56,17 @@ namespace KRG {
         //TODO: no longer used; candidate for removal
         public Attack originAttack { get { return _originAttack; } }
 
-#endregion
+        #endregion
 
-#region CONSTRUCTORS
+        #region CONSTRUCTORS
 
         public AttackAbilityUse(
             AttackAbility attackAbility,
             Attacker attacker,
             bool doesInterrupt = true,
             Attack originAttack = null
-        ) {
+        )
+        {
             _attackAbility = attackAbility;
             _attacker = attacker;
             _doesInterrupt = doesInterrupt;
@@ -75,12 +78,14 @@ namespace KRG {
             _attacks = new List<Attack>(_attackAbility.attackLimit);
         }
 
-#endregion
+        #endregion
 
-#region METHODS: PUBLIC
+        #region METHODS : PUBLIC
 
-        public Attack AttemptAttack() {
-            if (_isAttackReady && _isEnabled && _attacks.Count < _attackAbility.attackLimit) {
+        public Attack AttemptAttack()
+        {
+            if (_isAttackReady && _isEnabled && _attacks.Count < _attackAbility.attackLimit)
+            {
                 //TODO: add more _if_ conditions
                 //E.G. SecS: obj_pc.object.gmx "//Firing (Shooting)."
                 _isAttackReady = false;
@@ -88,16 +93,19 @@ namespace KRG {
                 //E.G. SecS: blocking resets firing, and disables its trigger too
                 _attackAbility.timeThread.AddTrigger(_attackAbility.attackRateSec, ReadyAttack);
                 return Attack();
-            } else {
+            }
+            else
+            {
                 return null;
             }
         }
 
-#endregion
+        #endregion
 
-#region METHODS: PRIVATE
+        #region METHODS : PRIVATE
 
-        Attack Attack() {
+        Attack Attack()
+        {
             //instantiate attack GameObject using transform options
             Transform akerTF = _attacker.transform;
             Attack a = G.U.New(_attackAbility.attackPrefab, _attackAbility.isJoinedToAttacker ? akerTF : null);
@@ -126,7 +134,7 @@ namespace KRG {
             _attacks.Remove(a);
         }
 
-#endregion
+        #endregion
 
     }
 }

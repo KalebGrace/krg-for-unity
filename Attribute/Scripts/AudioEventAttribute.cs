@@ -1,4 +1,4 @@
-﻿namespace KRG
+namespace KRG
 {
 #if NS_FMOD
     public class AudioEventAttribute : FMODUnity.EventRefAttribute { }

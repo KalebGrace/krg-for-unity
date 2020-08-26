@@ -71,11 +71,11 @@ namespace KRG
             Discover(cp);
 
             var camTF = miniMapCamera.transform;
-            var cpV3 = (Vector3)cp;
+            var cpV3 = (Vector3) cp;
             var csz = grid.cellSize;
 
             cpV3.Scale(csz); //cell to world (snapped to grid)
-            cpV3 += anchor;  //if auto-map is not at origin
+            cpV3 += anchor; //if auto-map is not at origin
             cpV3 += csz / 2; //half-cell offset
             cpV3.z = camTF.position.z;
             camTF.position = cpV3;

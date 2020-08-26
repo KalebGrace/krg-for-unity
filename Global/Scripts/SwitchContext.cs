@@ -1,4 +1,4 @@
-﻿namespace KRG
+namespace KRG
 {
     /// <summary>
     /// The MonoBehaviour we wish to operate on.

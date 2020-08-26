@@ -1,58 +1,65 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace KRG {
-	
-	[ExecuteInEditMode]
-	public class SortingLayerExposer : MonoBehaviour {
+namespace KRG
+{
 
-#region serialized fields
+    [ExecuteInEditMode]
+    public class SortingLayerExposer : MonoBehaviour
+    {
 
-		[SerializeField]
-		string _sortingLayerName = "Default";
-		[SerializeField]
-		int _sortingOrder = default;
+        #region serialized fields
 
-#endregion
+        [SerializeField]
+        string _sortingLayerName = "Default";
+        [SerializeField]
+        int _sortingOrder = default;
 
-#region private fields
+        #endregion
 
-		MeshRenderer _meshRenderer;
+        #region private fields
 
-#endregion
+        MeshRenderer _meshRenderer;
 
-#region MonoBehaviour methods
+        #endregion
 
-		//WARNING: this function will only be called automatically if playing a GAME BUILD
-		//...it will NOT be called if using the Unity editor
-		void Awake() {
-			UpdateMeshRenderer();
-		}
+        #region MonoBehaviour methods
 
-		//WARNING: this function will only be called automatically if using the UNITY EDITOR
-		//...it will NOT be called if playing a game build
-		void OnValidate() {
-			UpdateMeshRenderer();
-		}
+        //WARNING: this function will only be called automatically if playing a GAME BUILD
+        //...it will NOT be called if using the Unity editor
+        void Awake()
+        {
+            UpdateMeshRenderer();
+        }
 
-#endregion
+        //WARNING: this function will only be called automatically if using the UNITY EDITOR
+        //...it will NOT be called if playing a game build
+        void OnValidate()
+        {
+            UpdateMeshRenderer();
+        }
 
-#region private methods
+        #endregion
 
-		void UpdateMeshRenderer() {
-			if (_meshRenderer == null) {
-				_meshRenderer = GetComponent<MeshRenderer>();
-				if (_meshRenderer == null) {
-					Debug.LogWarning("There is no MeshRenderer on this game object.");
-					return;
-				}
-			}
-			_meshRenderer.sortingLayerName = _sortingLayerName;
-			_meshRenderer.sortingOrder = _sortingOrder;
-		}
+        #region private methods
 
-#endregion
+        void UpdateMeshRenderer()
+        {
+            if (_meshRenderer == null)
+            {
+                _meshRenderer = GetComponent<MeshRenderer>();
+                if (_meshRenderer == null)
+                {
+                    Debug.LogWarning("There is no MeshRenderer on this game object.");
+                    return;
+                }
+            }
+            _meshRenderer.sortingLayerName = _sortingLayerName;
+            _meshRenderer.sortingOrder = _sortingOrder;
+        }
 
-	}
+        #endregion
+
+    }
 }
