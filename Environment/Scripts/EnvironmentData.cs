@@ -1,7 +1,7 @@
 namespace KRG
 {
     [System.Serializable]
-    public partial struct EnvironmentData //.KRG
+    public partial struct EnvironmentData
     {
         // DO NOT STORE REFERENCES TO BUNDLED ASSETS
         // strings identifying assets are OK
