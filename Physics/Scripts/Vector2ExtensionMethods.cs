@@ -1,13 +1,9 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace KRG
 {
-
     public static class Vector2ExtensionMethods
     {
-
         public delegate float V2Func(float value);
 
         public static Vector2 Add(this Vector2 v2, float x = 0, float y = 0)

@@ -1,13 +1,9 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace KRG
 {
-
     public class Movement
     {
-
         public const float defaultStepHeight = 0.5f;
 
         delegate void MovementHandler(Vector3 v3);
@@ -25,7 +21,7 @@ namespace KRG
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="KRG.Movement"/> class.
+        /// Initializes a new instance of the <see cref="Movement"/> class.
         /// doesRespectRigidbodyFreeze will be false.
         /// </summary>
         /// <param name="options">Options. Old default was SpatialOptions.AdditiveCardinal.</param>
@@ -35,7 +31,7 @@ namespace KRG
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="KRG.Movement"/> class.
+        /// Initializes a new instance of the <see cref="Movement"/> class.
         /// doesRespectRigidbodyFreeze will be set as specified.
         /// </summary>
         /// <param name="options">Options.</param>

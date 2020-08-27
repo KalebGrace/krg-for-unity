@@ -1,12 +1,9 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
 
 namespace KRG
 {
-
     /// <summary>
     /// Scene auto loader.
     /// http://wiki.unity3d.com/index.php/SceneAutoLoader (14:33, 15 October 2017)

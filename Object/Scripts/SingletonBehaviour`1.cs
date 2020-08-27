@@ -1,10 +1,7 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace KRG
 {
-
     /// <summary>
     /// Singleton MonoBehaviour base class. To be concretely derived exactly one level.
     /// Otherwise, consider implementing ISingletonComponent<T>.
@@ -17,7 +14,6 @@ namespace KRG
     public abstract class SingletonBehaviour<T> : MonoBehaviour, ISingletonComponent<T>
         where T : SingletonBehaviour<T>
         {
-
             #region static properties & methods
 
             /// <summary>
@@ -70,7 +66,7 @@ namespace KRG
             public virtual SingletonType singletonType { get { return SingletonType.SingletonFirstOnly; } }
 
             /// <summary>
-            /// Gets a value indicating whether this <see cref="KRG.SingletonBehaviour`1"/> is a duplicate instance.
+            /// Gets a value indicating whether this <see cref="SingletonBehaviour`1"/> is a duplicate instance.
             /// </summary>
             /// <value><c>true</c> if it is a duplicate instance; <c>false</c> if it is the singleton instance.</value>
             protected bool isDuplicateInstance { get { return ((ISingletonComponent<T>) this).isDuplicateInstance; } }

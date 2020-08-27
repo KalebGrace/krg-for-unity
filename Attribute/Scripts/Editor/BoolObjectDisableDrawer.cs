@@ -1,19 +1,11 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
 namespace KRG
 {
-
-    /// <summary>
-    /// Bool object disable drawer.
-    /// Last Refactor: 0.05.002 / 2018-05-05
-    /// </summary>
     [CustomPropertyDrawer(typeof(BoolObjectDisableAttribute))]
     public class BoolObjectDisableDrawer : BoolObjectDrawer
     {
-
         #region protected methods
 
         protected override void DrawObjectField(bool boolPropValue, Rect objectRect, SerializedProperty objectProp)
@@ -51,6 +43,5 @@ namespace KRG
         }
 
         #endregion
-
     }
 }

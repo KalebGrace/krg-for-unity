@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -8,10 +7,8 @@ using DG.Tweening;
 
 namespace KRG
 {
-
     public class TimeThread : ITimeThread
     {
-
         event System.Action _pauseHandlers;
         event System.Action _unpauseHandlers;
 
@@ -556,6 +553,5 @@ namespace KRG
         }
 
 #endif
-
     }
 }

@@ -1,15 +1,11 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Serialization;
 
 namespace KRG
 {
-
     [System.Serializable]
     public class BoolFloat : BoolObject
     {
-
         [SerializeField, FormerlySerializedAs("m_float")]
         float _float;
 

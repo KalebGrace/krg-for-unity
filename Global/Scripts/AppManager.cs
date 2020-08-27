@@ -84,7 +84,7 @@ namespace KRG
         }
 
         /// <summary>
-        /// Gets a value indicating whether this <see cref="KRG.AppManager"/>
+        /// Gets a value indicating whether this <see cref="AppManager"/>
         /// is in the Unity Editor while running a single scene (and the App State is None).
         /// </summary>
         /// <value><c>true</c> if is in single scene editor; otherwise, <c>false</c>.</value>

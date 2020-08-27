@@ -1,14 +1,8 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
 namespace KRG
 {
-
     [System.Flags]
     public enum TransformOptions
     {
-
         None = 0,
         ResetInitialPosition = 1 << 0,
         ResetInitialRotation = 1 << 1,

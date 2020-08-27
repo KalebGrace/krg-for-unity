@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 #if NS_DG_TWEENING
 using DG.Tweening;
@@ -14,11 +13,8 @@ namespace KRG
         //create a KRGConfig.MyGame.cs file containing a partial class KRGConfig with the following constants in it:
 
 #if !KRG_CUSTOM_G
-
         public const string ASSET_PATH = "Assets/Resources/KRGConfig.asset";
-
         public const string RESOURCE_PATH = "KRGConfig";
-
 #endif
 
         [Header("Global (KRG)")]

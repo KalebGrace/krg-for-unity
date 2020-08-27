@@ -1,19 +1,14 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace KRG
 {
-
     /// <summary>
     /// Disables the object value when the specified bool value is set.
     /// An optional description can be displayed in place of the disabled object value.
     /// Used with BoolObject and BoolObjectDisableDrawer.
-    /// Last Refactor: 0.05.002 / 2018-05-05
     /// </summary>
     public class BoolObjectDisableAttribute : PropertyAttribute
     {
-
         #region properties
 
         public bool boolValue { get; private set; }
@@ -37,6 +32,5 @@ namespace KRG
         }
 
         #endregion
-
     }
 }

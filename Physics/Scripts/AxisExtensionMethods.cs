@@ -1,13 +1,9 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace KRG
 {
-
     public static class AxisExtensionMethods
     {
-
         public static bool HasFlag(this Axis axs, Axis flag)
         {
             return (axs & flag) == flag;

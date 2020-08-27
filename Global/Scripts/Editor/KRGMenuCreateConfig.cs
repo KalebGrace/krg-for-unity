@@ -1,14 +1,10 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
 namespace KRG
 {
-
     public static class KRGMenuCreateConfig
     {
-
         [MenuItem("KRG/Create KRGConfig", false, 1)]
         public static void CreateConfig()
         {

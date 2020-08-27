@@ -1,13 +1,10 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 namespace KRG
 {
-
     public class TimeTrigger : System.IComparable<TimeTrigger>
     {
-
         //If true, this will fire multiple times if trigger is pulled more than once over delta.
         public virtual bool doesMultiFire { get; set; }
 
@@ -233,13 +230,13 @@ namespace KRG
         }
 
         /// <summary>
-        /// Releases all resource used by the <see cref="KRG.TimeTrigger"/> object.
+        /// Releases all resource used by the <see cref="TimeTrigger"/> object.
         /// This stops all handlers WITHOUT triggering them.
         /// </summary>
-        /// <remarks>Call <see cref="Dispose"/> when you are finished using the <see cref="KRG.TimeTrigger"/>. The
-        /// <see cref="Dispose"/> method leaves the <see cref="KRG.TimeTrigger"/> in an unusable state. After calling
-        /// <see cref="Dispose"/>, you must release all references to the <see cref="KRG.TimeTrigger"/> so the garbage
-        /// collector can reclaim the memory that the <see cref="KRG.TimeTrigger"/> was occupying.</remarks>
+        /// <remarks>Call <see cref="Dispose"/> when you are finished using the <see cref="TimeTrigger"/>. The
+        /// <see cref="Dispose"/> method leaves the <see cref="TimeTrigger"/> in an unusable state. After calling
+        /// <see cref="Dispose"/>, you must release all references to the <see cref="TimeTrigger"/> so the garbage
+        /// collector can reclaim the memory that the <see cref="TimeTrigger"/> was occupying.</remarks>
         public void Dispose()
         {
             timeRemaining = 0f;

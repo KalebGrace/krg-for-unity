@@ -1,14 +1,8 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
 namespace KRG
 {
-
     [System.Flags]
     public enum Axis
     {
-
         None = 0,
         //x
         Xneg = 1 << 0,

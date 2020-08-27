@@ -1,13 +1,9 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace KRG
 {
-
     public static class DirectionExtensionMethods
     {
-
         /// <summary>
         /// This event can be used to return a new _compassTopCustom value.
         /// As the name implies, this value is used as a custom compass top.

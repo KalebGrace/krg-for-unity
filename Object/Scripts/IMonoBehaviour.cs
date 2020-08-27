@@ -1,13 +1,7 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
 namespace KRG
 {
-
     public interface IMonoBehaviour
     {
-
         /// <summary>
         /// Awake this instance. Called at the beginning, whether enabled or disabled.
         /// </summary>
@@ -29,7 +23,7 @@ namespace KRG
         void OnDestroy();
 
         /// <summary>
-        /// Gets a value indicating whether this <see cref="KRG.IMonoBehaviour"/> is enabled.
+        /// Gets a value indicating whether this <see cref="IMonoBehaviour"/> is enabled.
         /// </summary>
         /// <value><c>true</c> if enabled; otherwise, <c>false</c>.</value>
         bool enabled { get; }

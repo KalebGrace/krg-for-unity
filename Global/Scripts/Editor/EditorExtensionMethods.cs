@@ -1,15 +1,10 @@
-using System.Collections;
-using System.Collections.Generic;
-using KRG;
 using UnityEditor;
 using UnityEngine;
 
 namespace KRG
 {
-
     public static class EditorExtensionMethods
     {
-
         public static void DrawProperty(
             this Editor editor,
             string name,

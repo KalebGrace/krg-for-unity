@@ -1,13 +1,7 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
 namespace KRG
 {
-
     public class TimeTriggerFacade : TimeTrigger
     {
-
         public override bool doesMultiFire
         {
             get

@@ -4,7 +4,7 @@ using UnityEngine.Serialization;
 namespace KRG
 {
     [CreateAssetMenu(
-        fileName = "NewKRGDestructibleObjectData.asset",
+        fileName = "SomeObject_DestructibleObjectData.asset",
         menuName = "KRG Scriptable Object/Destructible Object Data",
         order = 123
     )]

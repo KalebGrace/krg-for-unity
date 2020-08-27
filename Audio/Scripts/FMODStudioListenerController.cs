@@ -8,10 +8,8 @@ using FMODUnity;
 
 namespace KRG
 {
-
     public class FMODStudioListenerController : MonoBehaviour
     {
-
 #if NS_FMOD
 
         static readonly List<FMODStudioListenerController> _controllers = new List<FMODStudioListenerController>();
@@ -86,6 +84,5 @@ namespace KRG
         }
 
 #endif
-
     }
 }

@@ -15,10 +15,9 @@ namespace KRG
     /// 4.  AttackAbility can -- and SHOULD -- be derived on a per-project basis to allow for (future) extension. All
     ///     scriptable objects should be instanced from the derived class. If this is not done from the beginning, any
     ///     future extension work will require the scriptable objects to be re-created or nested, making things messy.
-    /// Last Refactor: 1.00.003 / 2018-07-15
     /// </summary>
     [CreateAssetMenu(
-        fileName = "NewKRGAttackAbility.asset",
+        fileName = "SomeOne_SomeAttack_AttackAbility.asset",
         menuName = "KRG Scriptable Object/Attack Ability",
         order = 123
     )]

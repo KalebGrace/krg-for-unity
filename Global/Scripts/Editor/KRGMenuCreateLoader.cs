@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using System.IO;
 using UnityEditor;
 using UnityEditor.SceneManagement;
@@ -8,10 +6,8 @@ using UnityEngine.SceneManagement;
 
 namespace KRG
 {
-
     public static class KRGMenuCreateLoader
     {
-
         [MenuItem("KRG/Create KRGLoader", false, 0)]
         public static void CreateLoader()
         {

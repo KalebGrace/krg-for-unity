@@ -1,16 +1,12 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Serialization;
 
 namespace KRG
 {
-
     [Serializable]
     public class EnumGeneric
     {
-
         [SerializeField]
         [FormerlySerializedAs("m_intValue")]
         int _intValue;

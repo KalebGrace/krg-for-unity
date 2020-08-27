@@ -9,8 +9,5 @@ namespace KRG
     /// 
     /// KRG.G has a custom script execution order.
     /// </summary>
-    public sealed partial class G : SingletonBehaviour<G>
-    {
-
-    }
+    public sealed partial class G : SingletonBehaviour<G> { }
 }

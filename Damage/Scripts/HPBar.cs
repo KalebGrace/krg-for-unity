@@ -1,21 +1,16 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace KRG
 {
-
     /// <summary>
     /// HPBar: Hit Point Bar
     /// 1.  HPBar will display the health of an IDamagable game object (e.g. a character that can lose life).
     /// 2.  HPBar is used via G.damage.GetHPBar(IDamagable).Display(parameters).
     /// 3.  HPBar consists of a prefab and a script (attached to said prefab's root game object).
     /// 4.  HPBar can be extended, and a custom HPBar prefab can be assigned in the KRGConfig scriptable object.
-    /// Last Refactor: 1.00.003 / 2018-07-15
     /// </summary>
     public class HPBar : MonoBehaviour
     {
-
         #region FIELDS : SERIALIZED
 
         [Header("Parameters")]
@@ -179,6 +174,5 @@ namespace KRG
         }
 
         #endregion
-
     }
 }

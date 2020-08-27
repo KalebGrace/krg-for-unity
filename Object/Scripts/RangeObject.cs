@@ -1,15 +1,11 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Serialization;
 
 namespace KRG
 {
-
     [System.Serializable]
     public abstract class RangeObject
     {
-
         [SerializeField]
         [FormerlySerializedAs("m_minInclusive")]
         protected bool _minInclusive;

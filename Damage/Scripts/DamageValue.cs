@@ -1,9 +1,10 @@
-#if NS_DG_TWEENING
-using DG.Tweening;
-#endif
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+
+#if NS_DG_TWEENING
+using DG.Tweening;
+#endif
 
 namespace KRG
 {

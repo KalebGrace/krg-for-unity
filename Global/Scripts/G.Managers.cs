@@ -15,7 +15,6 @@ namespace KRG
     /// </summary>
     partial class G
     {
-
 #if !KRG_CUSTOM_G
 
         public static readonly AppManager app = new AppManager();

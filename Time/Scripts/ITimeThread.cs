@@ -4,10 +4,8 @@ using DG.Tweening;
 
 namespace KRG
 {
-
     public interface ITimeThread
     {
-
         #region Properties
 
         float deltaTime { get; }
@@ -96,6 +94,5 @@ namespace KRG
         #endregion
 
 #endif
-
     }
 }

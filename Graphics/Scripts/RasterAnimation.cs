@@ -10,7 +10,7 @@ using uGIF;
 namespace KRG
 {
     [CreateAssetMenu(
-        fileName = "NewKRGRasterAnimation.asset",
+        fileName = "SomeOne_SomeState_RasterAnimation.asset",
         menuName = "KRG Scriptable Object/Raster Animation",
         order = 123
     )]

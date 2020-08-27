@@ -1,13 +1,10 @@
-using System.Collections;
 using UnityEngine;
 
 namespace KRG
 {
-
     //TODO: Could possibly be renamed Vector3P or something.
     public class Position
     {
-
         float _axisEW; //"x"
         float _axisAB; //"y"
         float _axisNS; //"z"

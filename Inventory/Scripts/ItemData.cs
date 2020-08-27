@@ -8,7 +8,7 @@ namespace KRG
     /// Item data. Represents the item data, including pickup, effects, and physical GameObject.
     /// </summary>
     [CreateAssetMenu(
-        fileName = "NewKRGItemData.asset",
+        fileName = "SomeItem_ItemData.asset",
         menuName = "KRG Scriptable Object/Item Data",
         order = 123
     )]
@@ -158,7 +158,7 @@ namespace KRG
 
             switch (m_ItemType)
             {
-                case (int) OSH.ItemType.Consumable:
+                case (int) KRG.ItemType.Consumable:
                     if (m_AutoOwnerUse)
                     {
                         DoEffects((int) EffectorCondition.Use, owner);
@@ -168,7 +168,7 @@ namespace KRG
                         AddToInventory(owner, instanceID);
                     }
                     break;
-                case (int) OSH.ItemType.Equipment:
+                case (int) KRG.ItemType.Equipment:
 
                     AddToInventory(owner, instanceID);
 

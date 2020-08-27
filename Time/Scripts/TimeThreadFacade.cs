@@ -4,13 +4,11 @@ using DG.Tweening;
 
 namespace KRG
 {
-
     /// <summary>
     /// This is a fake TimeThread class to be used when the app is shutting down and the TimeManager has been destroyed.
     /// </summary>
     public class TimeThreadFacade : ITimeThread
     {
-
         public void AddPauseHandler(System.Action handler) { }
 
         public void AddUnpauseHandler(System.Action handler) { }

@@ -1,13 +1,9 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace KRG
 {
-
     public static class RectTransformExtensionMethods
     {
-
         /// <summary>
         /// Center the specified RectTransform on its parent using the specified size.
         /// This will modify the pivot, anchors, position, size, and scale.

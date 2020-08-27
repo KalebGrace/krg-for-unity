@@ -1,13 +1,9 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace KRG
 {
-
     public interface ISingletonComponent<T> where T : Component
     {
-
         #region Add To Class
 
         /*
@@ -92,6 +88,5 @@ namespace KRG
         void OnIsDuplicateInstance();
 
         #endregion
-
     }
 }

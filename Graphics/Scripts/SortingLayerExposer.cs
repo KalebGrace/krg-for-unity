@@ -1,14 +1,10 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace KRG
 {
-
     [ExecuteInEditMode]
     public class SortingLayerExposer : MonoBehaviour
     {
-
         #region serialized fields
 
         [SerializeField]
@@ -60,6 +56,5 @@ namespace KRG
         }
 
         #endregion
-
     }
 }

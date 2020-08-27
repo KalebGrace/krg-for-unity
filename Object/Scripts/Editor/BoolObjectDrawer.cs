@@ -1,16 +1,12 @@
-using System.Collections;
-using System.Collections.Generic;
 using System.Linq;
 using UnityEditor;
 using UnityEngine;
 
 namespace KRG
 {
-
     [CustomPropertyDrawer(typeof(BoolObject), true)]
     public class BoolObjectDrawer : PropertyDrawer
     {
-
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
             const float wBool = 15;

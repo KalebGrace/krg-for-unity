@@ -1,16 +1,12 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
 namespace KRG
 {
-
     [CustomPropertyDrawer(typeof(RangeFloat))]
     [CustomPropertyDrawer(typeof(RangeInt))]
     public class RangeObjectDrawer : PropertyDrawer
     {
-
         SerializedProperty _minInclusiveProp, _minValueProp, _maxValueProp, _maxInclusiveProp;
 
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)

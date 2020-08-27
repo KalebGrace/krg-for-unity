@@ -10,7 +10,6 @@ namespace KRG
     /// </summary>
     public class CameraFacingBillboard : MonoBehaviour, IBodyComponent
     {
-
         #region Static
 
         static Vector3 _pos;

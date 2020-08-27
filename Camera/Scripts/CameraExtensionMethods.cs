@@ -1,13 +1,9 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace KRG
 {
-
     public static class CameraExtensionMethods
     {
-
         /// <summary>
         /// Get the orthographic bounds of the camera.
         /// </summary>

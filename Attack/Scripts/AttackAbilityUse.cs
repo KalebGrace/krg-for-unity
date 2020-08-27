@@ -1,10 +1,8 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 namespace KRG
 {
-
     /// <summary>
     /// AttackAbilityUse: Attack Ability Use
     /// 1.  AttackAbilityUse is somewhat of a "wrapper" class for AttackAbility, and is mainly used to track
@@ -14,11 +12,9 @@ namespace KRG
     /// 3.  AttackAbilityUse is part of the Attack system, and is used in conjunction with the following classes:
     ///     Attack, AttackAbility, Attacker, AttackString, AttackTarget, and KnockBackCalcMode.
     /// 4.  AttackAbilityUse is sealed and currently has no extensibility.
-    /// Last Refactor: 1.00.003 / 2018-07-15
     /// </summary>
     public sealed class AttackAbilityUse
     {
-
         #region FIELDS
 
         //attack ability scriptable object
@@ -135,6 +131,5 @@ namespace KRG
         }
 
         #endregion
-
     }
 }
