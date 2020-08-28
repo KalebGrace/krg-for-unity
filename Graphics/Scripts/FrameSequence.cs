@@ -31,19 +31,18 @@ namespace KRG
 
         [Header("Frame Sequence")]
 
-        [SerializeField]
         [Tooltip("An optional name you may give this frame sequence.")]
         [FormerlySerializedAs("m_name")]
-        private string _name = default;
+        public string _name = default;
 
         [SerializeField]
         [Tooltip("Actions to perform before the sequence starts.")]
         [Enum(typeof(FrameSequenceAction))]
         private List<int> _preSequenceActions = default;
 
-        [SerializeField, Delayed]
+        [Delayed]
         [Tooltip("Commas seperate frames/groups. 1-3-1 means 1,2,3,2,1. 1-3x2-1 means 1-3,3-1 means 1,2,3,3,2,1.")]
-        private string _frames = default;
+        public string _frames = default;
 
         [SerializeField, ReadOnly]
         [Tooltip("Count of frames in a single playthrough of this sequence.")]

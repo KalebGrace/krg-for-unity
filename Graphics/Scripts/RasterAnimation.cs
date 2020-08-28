@@ -24,22 +24,22 @@ namespace KRG
 
         [Header("Custom Data")]
 
-        [OrderAttribute(-10)]
+        [Order(-10)]
         public RasterAnimationData Data;
 
         //--
 
         [Header("Essentials")]
 
-        [OrderAttribute(-10)]
+        [Order(-10)]
         [SerializeField]
         protected float m_SecondsPerFrame = default;
 
-        [OrderAttribute(-10)]
+        [Order(-10)]
         [SerializeField]
         protected Vector2Int m_Dimensions = default;
 
-        [OrderAttribute(-10)]
+        [Order(-10)]
         [SerializeField]
         protected List<Texture2D> m_FrameTextures = new List<Texture2D>();
 
@@ -51,7 +51,7 @@ namespace KRG
         [FormerlySerializedAs("m_gifBytes")]
         public TextAsset _gifBytes = default;
 
-        [OrderAttribute(-10)]
+        [Order(-10)]
         [SerializeField]
         protected string m_GifName = default;
 
@@ -63,16 +63,16 @@ namespace KRG
         [FormerlySerializedAs("m_loop")]
         public bool _loop = true;
 
-        [OrderAttribute(10)]
+        [Order(10)]
         [SerializeField]
         [Tooltip("Checked: How many ADDITIONAL times to play this animation. Unchecked: Loop indefinitely.")]
         [BoolObjectDisable(false, "Infinite Loop")]
-        BoolInt _loopCount = new BoolInt(false, 1);
+        private BoolInt _loopCount = new BoolInt(false, 1);
 
-        [OrderAttribute(10)]
+        [Order(10)]
         [SerializeField]
         [Tooltip("Index of the frame sequence from which to start any loops.")]
-        int _loopToSequence = default;
+        private int _loopToSequence = default;
 
         //--
 
@@ -84,10 +84,9 @@ namespace KRG
         [Order(15), SerializeField]
         private bool m_FrameParagraphParse = default;
 
-        [OrderAttribute(20)]
-        [SerializeField]
+        [Order(20)]
         [FormerlySerializedAs("m_frameSequences")]
-        protected FrameSequence[] _frameSequences = default;
+        public FrameSequence[] _frameSequences = default;
 
         // PROPERTIES
 
