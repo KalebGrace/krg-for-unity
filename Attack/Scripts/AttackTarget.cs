@@ -28,8 +28,6 @@ namespace KRG
             }
         }
 
-        public bool isInProgress { get; private set; }
-
         public DamageTaker target { get; private set; }
 
         // methods 1 - Public Methods
@@ -44,9 +42,6 @@ namespace KRG
 
         public void StartTakingDamage(Vector3 attackPositionCenter, Vector3 hitPositionCenter)
         {
-            G.U.Assert(!isInProgress,
-                "StartTakingDamage was called, but this AttackTarget has already started taking damage.");
-            isInProgress = true;
             _attackPositionCenter = attackPositionCenter;
             _hitPositionCenter = hitPositionCenter;
             if (!isHitLimitReached) CheckForDelay();
@@ -61,9 +56,6 @@ namespace KRG
 
         public void StopTakingDamage()
         {
-            G.U.Assert(isInProgress,
-                "StopTakingDamage was called, but this AttackTarget has already stopped taking damage.");
-            isInProgress = false;
             if (!isHitLimitReached) CheckForDelayCallbackRemoval(null);
 
             _timeTriggerDPSClone?.Dispose();

@@ -269,7 +269,7 @@ namespace KRG
             for (int i = 0; i < _attackTargets.Count; i++)
             {
                 at = _attackTargets[i];
-                if (at != null && at.isInProgress && at.target != null)
+                if (at != null && at.target != null)
                 {
                     at.StopTakingDamage();
                 }
