@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 952131039760331399}
   - component: {fileID: 1764315939438898437}
   - component: {fileID: 2699650696646048174}
+  - component: {fileID: 4955759439099042742}
   - component: {fileID: 4544154224495370671}
   m_Layer: 0
   m_Name: VFXBasePrefab
@@ -52,6 +53,7 @@ MonoBehaviour:
   CharacterID: 0
   m_FacingDirection: 0
   m_FacingDirectionOrig: 0
+  m_TimeThread: -1
   Refs:
     Animator: {fileID: 0}
     StateOwner: {fileID: 0}
@@ -181,6 +183,21 @@ ParticleSystemRenderer:
   m_Mesh2: {fileID: 0}
   m_Mesh3: {fileID: 0}
   m_MaskInteraction: 0
+--- !u!114 &4955759439099042742
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7879850450427980334}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7fac1122fb27ce641b6603300a272f70, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  AutoDispose: 1
+  m_Body: {fileID: 3672153584769114817}
+  _timeThreadIndex: -1
 --- !u!198 &4544154224495370671
 ParticleSystem:
   m_ObjectHideFlags: 0
