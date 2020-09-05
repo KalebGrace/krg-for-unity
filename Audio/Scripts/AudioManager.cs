@@ -236,7 +236,7 @@ namespace KRG
             if (eventInstance.hasHandle())
             {
 #if NS_FMOD
-                eventInstance.setVolume(MasterVolume * SFXVolume);
+                eventInstance.setVolume(MasterVolume * G.config.SFXVolumeScale * SFXVolume);
 #endif
             }
         }

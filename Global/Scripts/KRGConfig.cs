@@ -31,6 +31,11 @@ namespace KRG
 
         public float MusicVolumeScale => _musicVolumeScale;
 
+        [SerializeField]
+        float _sfxVolumeScale = 1;
+
+        public float SFXVolumeScale => _sfxVolumeScale;
+
         [Header("Damage (KRG)")]
 
         [SerializeField]
