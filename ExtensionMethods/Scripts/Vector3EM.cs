@@ -14,6 +14,13 @@ namespace KRG
             return v3;
         }
 
+        public static void AddRef(this ref Vector3 v3, float x = 0, float y = 0, float z = 0)
+        {
+            v3.x += x;
+            v3.y += y;
+            v3.z += z;
+        }
+
         /// <summary>
         /// Is approximately equal to...
         /// </summary>
