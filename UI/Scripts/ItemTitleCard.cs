@@ -13,9 +13,9 @@ namespace KRG
 
         private CanvasGroup canvasGroup;
 
-        private ITimeThread ttApplication;
-        private ITimeThread ttGameplay;
-        private ITimeThread ttField;
+        private TimeThread ttApplication;
+        private TimeThread ttGameplay;
+        private TimeThread ttField;
 
         private void Awake()
         {

@@ -34,7 +34,7 @@ namespace KRG
         List<AttackTarget> _attackTargets = new List<AttackTarget>();
         BoxCollider _boxCollider;
         bool _isInitialized;
-        ITimeThread _timeThread;
+        TimeThread _timeThread;
         Vector2 _velocity;
 
         public virtual AttackAbility attackAbility { get { return _attackAbility; } }
@@ -178,7 +178,7 @@ namespace KRG
         {
             _isInitialized = true;
 
-            _timeThread = _attackAbility.timeThread;
+            _timeThread = _attackAbility.TimeThread;
 
             if (_attackAbility.hasAttackLifetime)
             {

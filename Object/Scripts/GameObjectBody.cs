@@ -33,7 +33,7 @@ namespace KRG
 
         // TIME PROPERTIES
 
-        public ITimeThread TimeThread
+        public TimeThread TimeThread
         {
             get
             {

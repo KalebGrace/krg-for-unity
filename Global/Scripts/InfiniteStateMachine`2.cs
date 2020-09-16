@@ -65,7 +65,7 @@ namespace KRG
         /// <param name="removeOnLock">If set to <c>true</c> remove states on lock.</param>
         protected void Add(
             int stateIndex,
-            ITimeThread stateTimeThread = null,
+            TimeThread stateTimeThread = null,
             float stateLifetime = 0,
             int[] statesToLock = null,
             bool removeOnLock = true

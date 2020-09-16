@@ -7,7 +7,7 @@ using DG.Tweening;
 
 namespace KRG
 {
-    public class TimeThread : ITimeThread
+    public class TimeThread
     {
         event System.Action _pauseHandlers;
         event System.Action _unpauseHandlers;

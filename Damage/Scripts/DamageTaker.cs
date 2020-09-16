@@ -270,7 +270,7 @@ namespace KRG
 
         protected virtual void BeginInvulnerability(AttackAbility attackAbility)
         {
-            _invulnerabilityTimeTrigger = _damageProfile.timeThread.AddTrigger(
+            _invulnerabilityTimeTrigger = _damageProfile.TimeThread.AddTrigger(
                 _damageProfile.invulnerabilityTime, EndInvulnerability);
             BeginInvulnerabilityVFX();
         }
@@ -371,7 +371,7 @@ namespace KRG
             if (IsKnockedBack) _knockBackTimeTrigger.Dispose();
 
             knockBackSpeed = knockBackDistance / knockBackTime;
-            _knockBackTimeTrigger = _damageProfile.timeThread.AddTrigger(knockBackTime, EndKnockBack);
+            _knockBackTimeTrigger = _damageProfile.TimeThread.AddTrigger(knockBackTime, EndKnockBack);
             SetKnockBackDirection(attackPositionCenter);
         }
 

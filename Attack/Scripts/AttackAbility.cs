@@ -225,7 +225,7 @@ namespace KRG
         protected bool _isDPSClone;
 
         //applicable time thread interface (from _timeThreadIndex)
-        protected ITimeThread _timeThread;
+        protected TimeThread _timeThread;
 
         #endregion
 
@@ -300,7 +300,7 @@ namespace KRG
 
         public virtual string sfxFmodEvent { get { return _sfxFmodEvent; } }
 
-        public virtual ITimeThread timeThread
+        public virtual TimeThread TimeThread
         {
             get
             {

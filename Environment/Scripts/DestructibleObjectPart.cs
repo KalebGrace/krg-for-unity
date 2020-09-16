@@ -60,7 +60,7 @@ namespace KRG
             transform.parent = null;
 
             //dispose of me later
-            _data.timeThread.AddTrigger(_data.Lifetime, Dispose);
+            _data.TimeThread.AddTrigger(_data.Lifetime, Dispose);
         }
 
         private void Dispose(TimeTrigger tt)

@@ -87,7 +87,7 @@ namespace KRG
                 _isAttackReady = false;
                 //TODO: also set _isAttackReady or _isEnabled to false on related attack abilites
                 //E.G. SecS: blocking resets firing, and disables its trigger too
-                _attackAbility.timeThread.AddTrigger(_attackAbility.attackRateSec, ReadyAttack);
+                _attackAbility.TimeThread.AddTrigger(_attackAbility.attackRateSec, ReadyAttack);
                 return Attack();
             }
             else

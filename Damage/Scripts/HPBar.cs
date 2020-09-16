@@ -43,7 +43,7 @@ namespace KRG
 
         public virtual DamageTaker target { get { return _target; } }
 
-        protected virtual ITimeThread timeThread
+        protected virtual TimeThread timeThread
         {
             get
             {

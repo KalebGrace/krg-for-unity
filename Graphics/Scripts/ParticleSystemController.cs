@@ -29,7 +29,7 @@ namespace KRG
 
         public ParticleSystem ParticleSystem { get; private set; }
 
-        protected virtual ITimeThread TimeThread
+        protected virtual TimeThread TimeThread
         {
             get
             {

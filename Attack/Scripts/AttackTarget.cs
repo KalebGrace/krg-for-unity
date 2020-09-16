@@ -49,7 +49,7 @@ namespace KRG
             if (_attackAbility.requiresDPSClone)
             {
                 _attackAbilityDPSClone = _attackAbility.GetDPSClone(AttackAbility.DPS_INTERVAL);
-                _timeTriggerDPSClone = _attackAbilityDPSClone.timeThread.AddTrigger(AttackAbility.DPS_INTERVAL, Damage);
+                _timeTriggerDPSClone = _attackAbilityDPSClone.TimeThread.AddTrigger(AttackAbility.DPS_INTERVAL, Damage);
                 _timeTriggerDPSClone.doesMultiFire = true;
             }
         }
@@ -71,10 +71,10 @@ namespace KRG
                 _isDelayedDueToInvulnerability = true;
                 // actually no delay, just ignore
             }
-            else if (_attackAbility.timeThread.isPaused)
+            else if (_attackAbility.TimeThread.isPaused)
             {
                 _isDelayedDueToTimeThreadPause = true;
-                _attackAbility.timeThread.AddUnpauseHandler(DelayCallback);
+                _attackAbility.TimeThread.AddUnpauseHandler(DelayCallback);
             }
             else
             {
@@ -92,7 +92,7 @@ namespace KRG
             else if (_isDelayedDueToTimeThreadPause)
             {
                 _isDelayedDueToTimeThreadPause = false;
-                _attackAbility.timeThread.RemoveUnpauseHandler(DelayCallback);
+                _attackAbility.TimeThread.RemoveUnpauseHandler(DelayCallback);
             }
             else
             {

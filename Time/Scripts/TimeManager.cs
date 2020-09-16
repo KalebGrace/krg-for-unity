@@ -69,7 +69,7 @@ namespace KRG
 
         public virtual void Update() { }
 
-        public ITimeThread GetTimeThread(int timeThreadIndex, System.Enum defaultTimeThreadInstance)
+        public TimeThread GetTimeThread(int timeThreadIndex, System.Enum defaultTimeThreadInstance)
         {
             if (timeThreadIndex == (int) TimeThreadInstance.UseDefault)
             {
@@ -81,13 +81,13 @@ namespace KRG
             }
         }
 
-        public ITimeThread GetTimeThread(System.Enum timeThreadInstance)
+        public TimeThread GetTimeThread(System.Enum timeThreadInstance)
         {
             //TODO: consider utilizing the EnumGeneric created in Init
             return GetTimeThread(System.Convert.ToInt32(timeThreadInstance));
         }
 
-        public ITimeThread GetTimeThread(int timeThreadIndex)
+        public TimeThread GetTimeThread(int timeThreadIndex)
         {
             //TODO: FIX
             /*

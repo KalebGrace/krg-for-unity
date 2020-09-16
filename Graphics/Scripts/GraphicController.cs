@@ -138,7 +138,7 @@ namespace KRG
 
         protected virtual bool IsTimePaused => TimeThread.isPaused;
 
-        protected virtual ITimeThread TimeThread => m_Body != null ? m_Body.TimeThread : G.time.GetTimeThread(TimeThreadInstance.Field);
+        protected virtual TimeThread TimeThread => m_Body != null ? m_Body.TimeThread : G.time.GetTimeThread(TimeThreadInstance.Field);
 
         private int AnimationImageCount => m_AnimationTextureList?.Count ?? 0;
 

@@ -38,9 +38,9 @@ namespace KRG
         bool _doesFade = true;
 
         //applicable time thread interface (from _timeThreadIndex)
-        protected ITimeThread _timeThread;
+        protected TimeThread _timeThread;
 
-        public virtual ITimeThread timeThread
+        public virtual TimeThread TimeThread
         {
             get
             {

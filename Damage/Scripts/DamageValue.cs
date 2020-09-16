@@ -33,7 +33,7 @@ namespace KRG
 #else
         private List<Sequence> _tweens = new List<Sequence>();
 
-        private ITimeThread timeThread => G.time.GetTimeThread(_timeThreadIndex, TimeThreadInstance.Gameplay);
+        private TimeThread timeThread => G.time.GetTimeThread(_timeThreadIndex, TimeThreadInstance.Gameplay);
 
         public void Init<T>(IDestroyedEvent<T> target, string damage)
         {

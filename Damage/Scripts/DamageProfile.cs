@@ -79,7 +79,7 @@ namespace KRG
         private float _hpMax;
 
         //applicable time thread interface, from _timeThreadIndex
-        protected ITimeThread _timeThread;
+        protected TimeThread _timeThread;
 
         // PROPERTIES
 
@@ -101,7 +101,7 @@ namespace KRG
 
         public virtual string sfxFmodEvent { get { return _sfxFmodEvent; } }
 
-        public virtual ITimeThread timeThread
+        public virtual TimeThread TimeThread
         {
             get
             {

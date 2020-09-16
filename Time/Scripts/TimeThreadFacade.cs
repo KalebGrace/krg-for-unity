@@ -7,67 +7,66 @@ namespace KRG
     /// <summary>
     /// This is a fake TimeThread class to be used when the app is shutting down and the TimeManager has been destroyed.
     /// </summary>
-    public class TimeThreadFacade : ITimeThread
+    public class TimeThreadFacade : TimeThread
     {
-        public void AddPauseHandler(System.Action handler) { }
+        public TimeThreadFacade(int index = 0) : base(index) { }
 
-        public void AddUnpauseHandler(System.Action handler) { }
+        new public void AddPauseHandler(System.Action handler) { }
 
-        public void RemovePauseHandler(System.Action handler) { }
+        new public void AddUnpauseHandler(System.Action handler) { }
 
-        public void RemoveUnpauseHandler(System.Action handler) { }
+        new public void RemovePauseHandler(System.Action handler) { }
 
-        public void QueueFreeze(float iv, int pauseKey = -2) { }
+        new public void RemoveUnpauseHandler(System.Action handler) { }
 
-        public bool QueuePause(int pauseKey) { return false; }
+        new public void QueueFreeze(float iv, int pauseKey = -2) { }
 
-        public void QueuePause(int pauseKey, System.Action callback) { }
+        new public bool QueuePause(int pauseKey) { return false; }
 
-        public bool QueueUnpause(int pauseKey) { return false; }
+        new public void QueuePause(int pauseKey, System.Action callback) { }
 
-        public void QueueUnpause(int pauseKey, System.Action callback) { }
+        new public bool QueueUnpause(int pauseKey) { return false; }
 
-        public void QueuePauseToggle(int pauseKey) { }
+        new public void QueueUnpause(int pauseKey, System.Action callback) { }
 
-        public void QueueTimeRate(TimeRate timeRate, float timeScale = 1, int pauseKey = -1) { }
+        new public void QueuePauseToggle(int pauseKey) { }
 
-        public TimeTrigger AddTrigger(float iv, TimeTriggerHandler handler, bool disallowFacade = false)
-        {
-            return null;
-        }
+        new public void QueueTimeRate(TimeRate timeRate, float timeScale = 1, int pauseKey = -1) { }
 
-        public void LinkTrigger(TimeTrigger tt) { }
+        new public TimeTrigger AddTrigger(float iv, TimeTriggerHandler handler, bool disallowFacade = false) { return null; }
 
-        public bool RemoveTrigger(TimeTrigger tt) { return false; }
+        new public void LinkTrigger(TimeTrigger tt) { }
 
-        public bool UnlinkTrigger(TimeTrigger tt) { return false; }
+        new public bool RemoveTrigger(TimeTrigger tt) { return false; }
 
-        public void trigger(ref TimeTrigger tt, float iv, TimeTriggerHandler handler, bool disallowFacade = false) { }
+        new public bool UnlinkTrigger(TimeTrigger tt) { return false; }
+
+        new public void trigger(ref TimeTrigger tt, float iv, TimeTriggerHandler handler, bool disallowFacade = false) { }
 
 #if NS_DG_TWEENING
 
-        public void AddTween(Tween t) { }
+        new public void AddTween(Tween t) { }
 
-        public void RemoveTween(Tween t) { }
+        new public void RemoveTween(Tween t) { }
 
-        public void Tween(ref Tween t_ref, Tween t) { }
-        public void Tween(ref Tweener t_ref, Tweener t) { }
+        new public void Tween(ref Tween t_ref, Tween t) { }
+        new public void Tween(ref Tweener t_ref, Tweener t) { }
 
-        public void Untween(ref Tween t_ref) { }
-        public void Untween(ref Tweener t_ref) { }
+        new public void Untween(ref Tween t_ref) { }
+        new public void Untween(ref Tweener t_ref) { }
 
 #endif
 
-        public float deltaTime { get { return 0; } }
+        new public float deltaTime => 0;
 
-        public float fixedDeltaTime { get { return 0; } }
+        new public float fixedDeltaTime => 0;
 
-        public bool isPaused { get { return true; } }
+        new public bool isPaused => true;
 
-        public float speed { get { return 0; } }
+        new public float speed => 0;
 
-        public TimeRate timeRate { get { return TimeRate.Paused; } }
+        new public TimeRate timeRate => TimeRate.Paused;
 
-        public float timeScale { get { return 1; } }
+        new public float timeScale => 1;
     }
 }
