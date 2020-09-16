@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -16,7 +17,7 @@ namespace KRG
         System.Action _callbackUnpause;
         int? _freezePauseKey;
         float _freezeTime;
-        List<int> _pauseKeys = new List<int>();
+        List<object> _pauseKeys = new List<object>();
         bool _isAppThread;
         TimeRate _timeRate = TimeRate.Scaled;
         TimeRate _timeRateQueued = TimeRate.Scaled;
@@ -164,11 +165,11 @@ namespace KRG
 
         #region Methods : Queue
 
-        public void QueueFreeze(float iv, int pauseKey = -2)
+        public void QueueFreeze(float iv, int freezePauseKey = -2)
         {
             if (_freezePauseKey.HasValue)
             {
-                if (_freezePauseKey.Value == pauseKey)
+                if (_freezePauseKey.Value == freezePauseKey)
                 {
                     _freezeTime = Mathf.Max(iv, _freezeTime);
                 }
@@ -180,12 +181,12 @@ namespace KRG
             else
             {
                 _freezeTime = iv;
-                _freezePauseKey = pauseKey;
-                QueuePause(pauseKey);
+                _freezePauseKey = freezePauseKey;
+                QueuePause(freezePauseKey);
             }
         }
 
-        public bool QueuePause(int pauseKey)
+        public bool QueuePause(object pauseKey)
         {
             if (_isAppThread)
             {
@@ -220,14 +221,14 @@ namespace KRG
             return true;
         }
 
-        public void QueuePause(int pauseKey, System.Action callback)
+        public void QueuePause(object pauseKey, System.Action callback)
         {
             //TODO: what should happen to the callback if the time thread is already paused?
             if (!QueuePause(pauseKey)) return;
             _callbackPause += callback;
         }
 
-        public bool QueueUnpause(int pauseKey)
+        public bool QueueUnpause(object pauseKey)
         {
             if (_isAppThread)
             {
@@ -240,6 +241,7 @@ namespace KRG
             }
             if (_pauseKeys.Count == 0)
             {
+                // TODO: What actually happened here?
                 //there is nothing left to unpause, but for functional symmetry, return true
                 return false;
             }
@@ -263,14 +265,14 @@ namespace KRG
             return true;
         }
 
-        public void QueueUnpause(int pauseKey, System.Action callback)
+        public void QueueUnpause(object pauseKey, System.Action callback)
         {
             //TODO: what should happen to the callback if the time thread is already unpaused?
             if (!QueueUnpause(pauseKey)) return;
             _callbackUnpause += callback;
         }
 
-        public void QueuePauseToggle(int pauseKey)
+        public void QueuePauseToggle(object pauseKey)
         {
             if (!_pauseKeys.Contains(pauseKey))
             {
@@ -282,7 +284,7 @@ namespace KRG
             }
         }
 
-        public void QueueTimeRate(TimeRate timeRate, float timeScale = 1, int pauseKey = -1)
+        public void QueueTimeRate(TimeRate timeRate, float timeScale = 1, int timeRatePauseKey = -1)
         {
             if (_isAppThread)
             {
@@ -297,16 +299,16 @@ namespace KRG
             switch (timeRate)
             {
                 case TimeRate.Paused:
-                    QueuePause(pauseKey);
+                    QueuePause(timeRatePauseKey);
                     break;
                 case TimeRate.Scaled:
                     _timeRateUnpause = timeRate;
                     _timeScale = timeScale;
-                    QueueUnpause(pauseKey);
+                    QueueUnpause(timeRatePauseKey);
                     break;
                 case TimeRate.Unscaled:
                     _timeRateUnpause = timeRate;
-                    QueueUnpause(pauseKey);
+                    QueueUnpause(timeRatePauseKey);
                     break;
                 default:
                     G.U.Unsupported(this, _timeRate);
@@ -553,5 +555,29 @@ namespace KRG
         }
 
 #endif
+
+        /// <summary>
+        /// Pause this time thread.
+        /// Must wait at least one frame to ensure safe execution.
+        /// </summary>
+        /// <param name="pausingObject">Usually the object calling this function.</param>
+        /// <returns>The IEnumerator to be used for wait time in a coroutine.</returns>
+        public IEnumerator Pause(object pausingObject)
+        {
+            QueuePause(pausingObject);
+            yield return null;
+        }
+
+        /// <summary>
+        /// Unpause this time thread.
+        /// Must wait at least one frame to ensure safe execution.
+        /// </summary>
+        /// <param name="unpausingObject">Usually the object calling this function.</param>
+        /// <returns>The IEnumerator to be used for wait time in a coroutine.</returns>
+        public IEnumerator Unpause(object unpausingObject)
+        {
+            QueueUnpause(unpausingObject);
+            yield return null;
+        }
     }
 }
