@@ -10,8 +10,12 @@ namespace KRG
 {
     public class TimeThread
     {
+        // PRIVATE EVENTS
+
         event System.Action _pauseHandlers;
         event System.Action _unpauseHandlers;
+
+        // PRIVATE MEMBERS
 
         System.Action _callbackPause;
         System.Action _callbackUnpause;
@@ -31,7 +35,7 @@ namespace KRG
         readonly List<Tween> _tweens = new List<Tween>();
 #endif
 
-        #region Properties
+        // PUBLIC PROPERTIES
 
         public float deltaTime
         {
@@ -71,10 +75,10 @@ namespace KRG
             }
         }
 
-        public bool isPaused { get { return _timeRate == TimeRate.Paused; } }
+        public bool isPaused => _timeRate == TimeRate.Paused;
 
-        //TODO: is this used publicly in SoAm? there is nothing in the interface for it
-        public bool isTimeRateQueued { get { return _timeRate != _timeRateQueued; } }
+        //TODO: is this used publicly in SoAm?
+        public bool isTimeRateQueued => _timeRate != _timeRateQueued;
 
         /// <summary>
         /// Gets the speed of this specific time thread.
@@ -100,16 +104,16 @@ namespace KRG
             }
         }
 
-        public TimeRate timeRate { get { return _timeRate; } }
+        public TimeRate timeRate => _timeRate;
 
         /// <summary>
         /// Gets the time scale of this specific time thread.
         /// NOTE: This is not the same as UnityEngine.Time.timeScale.
         /// </summary>
         /// <value>The time scale.</value>
-        public float timeScale { get { return _timeScale; } }
+        public float timeScale => _timeScale;
 
-        #endregion
+        // CONSTRUCTOR
 
         public TimeThread(int index)
         {
@@ -121,6 +125,8 @@ namespace KRG
             }
         }
 
+        // PUBLIC MONOBEHAVIOUR-LIKE METHODS
+
         public void FixedUpdate()
         {
             CheckFreeze();
@@ -129,7 +135,7 @@ namespace KRG
             UpdateTriggers();
         }
 
-        #region Methods : Handler
+        // PUBLIC HANDLER METHODS
 
         public void AddPauseHandler(System.Action handler)
         {
@@ -151,7 +157,7 @@ namespace KRG
             _unpauseHandlers -= handler;
         }
 
-        #endregion
+        // PRIVATE HANDLER METHODS
 
         void InvokePauseHandlers()
         {
@@ -163,7 +169,7 @@ namespace KRG
             ObjectManager.InvokeEventActions(ref _unpauseHandlers);
         }
 
-        #region Methods : Queue
+        // PUBLIC QUEUE METHODS
 
         public void QueueFreeze(float iv, int freezePauseKey = -2)
         {
@@ -316,7 +322,7 @@ namespace KRG
             }
         }
 
-        #endregion
+        // PRIVATE MISC METHODS
 
         void CheckFreeze()
         {
@@ -376,7 +382,7 @@ namespace KRG
             InvokeUnpauseHandlers();
         }
 
-        #region Methods : Trigger
+        // PUBLIC TRIGGER METHODS
 
         /// <summary>
         /// Adds a time trigger to this time thread.
@@ -478,7 +484,7 @@ namespace KRG
             tt = AddTrigger(iv, handler, disallowFacade);
         }
 
-        #endregion
+        // PRIVATE TRIGGER METHODS
 
         void UpdateTriggers()
         {
@@ -512,7 +518,7 @@ namespace KRG
 
 #if NS_DG_TWEENING
 
-        // TWEEN METHODS
+        // PUBLIC TWEEN METHODS (OLD)
 
         [System.Obsolete]
         public void AddTween(Tween t)
@@ -525,6 +531,8 @@ namespace KRG
         {
             _tweens.Remove(t);
         }
+
+        // PUBLIC TWEEN METHODS (NEW)
 
         public void Tween(ref Tween t_ref, Tween t)
         {
@@ -555,6 +563,8 @@ namespace KRG
         }
 
 #endif
+
+        // PUBLIC PAUSE METHODS (NEW)
 
         /// <summary>
         /// Pause this time thread.
