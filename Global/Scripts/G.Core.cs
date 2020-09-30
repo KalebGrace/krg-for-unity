@@ -12,7 +12,7 @@ namespace KRG
         /// <summary>
         /// The version of G.
         /// </summary>
-        public const int version = 30;
+        public const int version = 31;
 
         /// <summary>
         /// Fires during G's Awake method.
