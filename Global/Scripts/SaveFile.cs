@@ -19,6 +19,7 @@ namespace KRG
         public Vector3 position; // for resetting position during gameplay only
         public int[] acquiredItems; // DEPRECATED as of version 2
         public AutoMapSaveData[] autoMaps;
+        public TeleporterSaveData[] teleporters;
         public Dictionary<int, int> switchStates;
         public List<int> itemInstancesCollected;
         public Dictionary<int, float> items;
@@ -29,11 +30,11 @@ namespace KRG
             return new SaveFile
             {
                 version = LATEST_VERSION,
-                    saveContext = sc,
-                    switchStates = new Dictionary<int, int>(),
-                    itemInstancesCollected = new List<int>(),
-                    items = new Dictionary<int, float>(),
-                    stats = new Dictionary<int, float>()
+                saveContext = sc,
+                switchStates = new Dictionary<int, int>(),
+                itemInstancesCollected = new List<int>(),
+                items = new Dictionary<int, float>(),
+                stats = new Dictionary<int, float>()
             };
         }
 
