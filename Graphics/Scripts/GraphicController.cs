@@ -34,6 +34,10 @@ namespace KRG
         [SerializeField]
         private GameObjectBody m_Body = default;
 
+        // PROTECTED FIELDS
+
+        protected float m_SpeedMultiplier = 1;
+
         // PRIVATE FIELDS
 
         private AnimationEndHandler m_AnimationCallback;
@@ -183,7 +187,9 @@ namespace KRG
 
             m_AnimationTimeElapsed += TimeThread.deltaTime;
 
-            int newFrameIndex = Mathf.FloorToInt(RasterAnimation.FrameRate * m_AnimationTimeElapsed);
+            float f = m_SpeedMultiplier * RasterAnimation.FrameRate * m_AnimationTimeElapsed;
+
+            int newFrameIndex = Mathf.FloorToInt(f);
 
             while (m_AnimationFrameIndex < newFrameIndex)
             {
