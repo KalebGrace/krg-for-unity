@@ -185,11 +185,9 @@ namespace KRG
         {
             if (G.U.IsEditMode(this) || RasterAnimation == null || IsTimePaused) return;
 
-            m_AnimationTimeElapsed += TimeThread.deltaTime;
+            m_AnimationTimeElapsed += m_SpeedMultiplier * TimeThread.deltaTime;
 
-            float f = m_SpeedMultiplier * RasterAnimation.FrameRate * m_AnimationTimeElapsed;
-
-            int newFrameIndex = Mathf.FloorToInt(f);
+            int newFrameIndex = Mathf.FloorToInt(RasterAnimation.FrameRate * m_AnimationTimeElapsed);
 
             while (m_AnimationFrameIndex < newFrameIndex)
             {
