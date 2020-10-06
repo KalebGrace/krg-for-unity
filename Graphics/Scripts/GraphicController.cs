@@ -332,6 +332,8 @@ namespace KRG
                 OnAnimationEnd(false, false);
             }
 
+            OnAnimationClear();
+
             m_AnimationCallback = callback;
             m_AnimationContext = context;
             m_AnimationFrameIndex = 0;
@@ -490,6 +492,8 @@ namespace KRG
         {
             FrameSequencePlayLoopStopped?.Invoke(state);
         }
+
+        protected virtual void OnAnimationClear() { }
 
         protected virtual void OnAnimationSet() { }
 
