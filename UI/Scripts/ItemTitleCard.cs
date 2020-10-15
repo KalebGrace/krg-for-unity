@@ -32,7 +32,7 @@ namespace KRG
             G.inv.ItemAcquired += OnItemAcquired;
         }
 
-        private void OnItemAcquired(ItemData itemData, bool isNewlyAcquired)
+        private void OnItemAcquired(ItemData itemData, GameObjectBody owner, bool isNewlyAcquired)
         {
             if (itemData == null)
             {

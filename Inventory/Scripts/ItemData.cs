@@ -18,10 +18,6 @@ namespace KRG
 
         public const int VERSION = 1;
 
-        // STATIC EVENTS
-
-        public static event System.Action<ItemData, GameObjectBody> ItemCollected;
-
         // SERIALIZED FIELDS
 
         [SerializeField, HideInInspector]
@@ -79,6 +75,8 @@ namespace KRG
         protected List<Effector> effectors = new List<Effector>();
 
         // PROPERTIES
+
+        public bool AutoOwnerUse => m_AutoOwnerUse;
 
         public string DisplayName => displayName;
 
@@ -154,62 +152,21 @@ namespace KRG
         }
         public virtual void Collect(GameObjectBody owner, int instanceID)
         {
-            AddCollectionRecord(owner, instanceID);
-
-            switch (m_ItemType)
+            if (owner == G.obj.FirstPlayerCharacter)
             {
-                case (int) KRG.ItemType.Consumable:
-                    if (m_AutoOwnerUse)
-                    {
-                        DoEffects((int) EffectorCondition.Use, owner);
-                    }
-                    else
-                    {
-                        AddToInventory(owner, instanceID);
-                    }
-                    break;
-                case (int) KRG.ItemType.Equipment:
-
-                    AddToInventory(owner, instanceID);
-
-                    if (m_AutoOwnerUse)
-                    {
-                        DoEffects((int) EffectorCondition.Equip, owner);
-                    }
-                    break;
-                default:
-
-                    AddToInventory(owner, instanceID);
-
-                    break;
+                G.inv.AddItemInstanceCollected(instanceID);
+                G.inv.AddItemQty(m_ItemID, 1);
             }
 
             if (!string.IsNullOrWhiteSpace(sfxFmodEventOnCollect))
             {
                 G.audio.PlaySFX(sfxFmodEventOnCollect, owner.transform.position);
             }
-
-            ItemCollected?.Invoke(this, owner);
         }
 
-        private void AddCollectionRecord(GameObjectBody owner, int instanceID)
-        {
-            if (owner == G.obj.FirstPlayerCharacter)
-            {
-                G.inv.AddItemInstanceCollected(instanceID);
-            }
-        }
+        public virtual void DoEffects(int condition, GameObjectBody self) { }
 
-        private void AddToInventory(GameObjectBody owner, int instanceID)
-        {
-            if (owner == G.obj.FirstPlayerCharacter)
-            {
-                G.inv.AddItemQty(m_ItemID, 1);
-            }
-        }
-
-        protected virtual void DoEffects(int condition, GameObjectBody self) { }
-
+        #region VERSIONING
         private void UpdateSerializedVersion()
         {
             while (_serializedVersion < VERSION)
@@ -243,5 +200,6 @@ namespace KRG
                 ++_serializedVersion;
             }
         }
+        #endregion
     }
 }

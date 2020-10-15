@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine;
 
 namespace KRG
 {
@@ -9,7 +10,7 @@ namespace KRG
 
         // DELEGATES & EVENTS
 
-        public delegate void ItemAcquiredHandler(ItemData itemData, bool isNewlyAcquired);
+        public delegate void ItemAcquiredHandler(ItemData itemData, GameObjectBody owner, bool isNewlyAcquired);
 
         public event System.Action AutoMapSaveDataRequested;
         public event System.Action AutoMapSaveDataProvided;
@@ -83,17 +84,46 @@ namespace KRG
                 newQuantity = 1;
             }
 
-            m_Items[itemID] = newQuantity;
+            GameObjectBody owner = G.obj.FirstPlayerCharacter;
+
+            if (itemData.AutoOwnerUse)
+            {
+                int dq = Mathf.FloorToInt(newQuantity - oldQuantity);
+
+                switch (itemData.ItemType)
+                {
+                    case (int)ItemType.Consumable:
+                        for (int i = 0; i < dq; ++i)
+                        {
+                            itemData.DoEffects((int)EffectorCondition.Use, owner);
+                        }
+                        break;
+                    case (int)ItemType.Equipment:
+                        m_Items[itemID] = newQuantity;
+                        for (int i = 0; i < dq; ++i)
+                        {
+                            itemData.DoEffects((int)EffectorCondition.Equip, owner);
+                        }
+                        break;
+                    default:
+                        m_Items[itemID] = newQuantity;
+                        break;
+                }
+            }
+            else
+            {
+                m_Items[itemID] = newQuantity;
+            }
 
             if (newQuantity > oldQuantity)
             {
-                ItemAcquired?.Invoke(itemData, true);
+                ItemAcquired?.Invoke(itemData, owner, true);
 
                 if (hasKeyItem)
                 {
                     if (m_KeyItemAcquiredHandlers.ContainsKey(itemID))
                     {
-                        m_KeyItemAcquiredHandlers[itemID]?.Invoke(itemData, true);
+                        m_KeyItemAcquiredHandlers[itemID]?.Invoke(itemData, owner, true);
                         m_KeyItemAcquiredHandlers.Remove(itemID);
                     }
 
@@ -210,9 +240,11 @@ namespace KRG
         /// <param name="handler">Handler.</param>
         public void AddKeyItemAcquiredHandler(int itemID, ItemAcquiredHandler handler)
         {
+            GameObjectBody owner = G.obj.FirstPlayerCharacter;
+
             if (HasKeyItem(itemID))
             {
-                handler?.Invoke(GetItemData(itemID), false);
+                handler?.Invoke(GetItemData(itemID), owner, false);
             }
             else
             {
