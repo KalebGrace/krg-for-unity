@@ -12,7 +12,7 @@ namespace KRG
     [CreateAssetMenu(
         fileName = "SomeOne_SomeState_RasterAnimation.asset",
         menuName = "KRG Scriptable Object/Raster Animation",
-        order = 123
+        order = 1801
     )]
     public class RasterAnimation : AnimationData
     {

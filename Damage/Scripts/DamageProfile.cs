@@ -7,7 +7,7 @@ namespace KRG
     [CreateAssetMenu(
         fileName = "SomeOne_DamageProfile.asset",
         menuName = "KRG Scriptable Object/Damage Profile",
-        order = 416
+        order = 401
     )]
     public class DamageProfile : ScriptableObject
     {

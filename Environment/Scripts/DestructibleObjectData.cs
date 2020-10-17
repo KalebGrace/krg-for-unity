@@ -6,7 +6,7 @@ namespace KRG
     [CreateAssetMenu(
         fileName = "SomeObject_DestructibleObjectData.asset",
         menuName = "KRG Scriptable Object/Destructible Object Data",
-        order = 123
+        order = 405
     )]
     public class DestructibleObjectData : ScriptableObject
     {

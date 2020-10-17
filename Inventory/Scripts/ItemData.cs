@@ -10,7 +10,7 @@ namespace KRG
     [CreateAssetMenu(
         fileName = "SomeItem_ItemData.asset",
         menuName = "KRG Scriptable Object/Item Data",
-        order = 123
+        order = 920
     )]
     public class ItemData : ScriptableObject
     {

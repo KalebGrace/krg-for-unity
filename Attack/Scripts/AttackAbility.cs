@@ -19,7 +19,7 @@ namespace KRG
     [CreateAssetMenu(
         fileName = "SomeOne_SomeAttack_AttackAbility.asset",
         menuName = "KRG Scriptable Object/Attack Ability",
-        order = 123
+        order = 120
     )]
     public class AttackAbility : ScriptableObject
     {

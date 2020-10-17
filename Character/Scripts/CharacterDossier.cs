@@ -5,7 +5,7 @@ namespace KRG
     [CreateAssetMenu(
         fileName = "SomeOne_CharacterDossier.asset",
         menuName = "KRG Scriptable Object/Character Dossier",
-        order = 304
+        order = 308
     )]
     public sealed class CharacterDossier : Docket
     {
