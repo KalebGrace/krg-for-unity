@@ -69,6 +69,10 @@ namespace KRG
         [AudioEvent]
         protected string sfxFmodEventOnCollect = default;
 
+        [Header("On Use/Equip")]
+
+        public List<BuffObject> Buffs;
+
         [Header("Effectors")]
 
         [SerializeField]
@@ -186,11 +190,17 @@ namespace KRG
                                 case 1200: // SP
                                     e.property = 104;
                                     break;
+                                case 1401: // LP
+                                    e.property = 105;
+                                    break;
                                 case 2100: // HPMax
                                     e.property = (int) StatID.HPMax;
                                     break;
                                 case 2200: // SPMax
                                     e.property = 114;
+                                    break;
+                                case 2401: // LPMax
+                                    e.property = 115;
                                     break;
                             }
                             effectors[i] = e;

@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using UnityEngine;
 
@@ -10,10 +11,13 @@ namespace KRG
 
         // DELEGATES & EVENTS
 
+        public delegate void BuffHandler(BuffData buffData, GameObjectBody owner);
         public delegate void ItemAcquiredHandler(ItemData itemData, GameObjectBody owner, bool isNewlyAcquired);
 
         public event System.Action AutoMapSaveDataRequested;
         public event System.Action AutoMapSaveDataProvided;
+        public event BuffHandler BuffAdded;
+        public event BuffHandler BuffRemoved;
         public event ItemAcquiredHandler ItemAcquired;
 
         // FIELDS
@@ -28,7 +32,16 @@ namespace KRG
 
         private Dictionary<int, float> m_Stats = new Dictionary<int, float>();
 
+        private List<BuffData> m_Buffs = new List<BuffData>();
+        private List<TimeTrigger> m_BuffTriggers = new List<TimeTrigger>();
+
         readonly Dictionary<int, AutoMapSaveData> m_AutoMaps = new Dictionary<int, AutoMapSaveData>();
+
+        // PROPERTIES
+
+        public ReadOnlyCollection<BuffData> Buffs => m_Buffs.AsReadOnly();
+        public GameObjectBody Owner => G.obj.FirstPlayerCharacter;
+        public TimeThread TimeThread => G.time.GetTimeThread(TimeThreadInstance.Field);
 
         // MONOBEHAVIOUR-LIKE METHODS
 
@@ -84,8 +97,6 @@ namespace KRG
                 newQuantity = 1;
             }
 
-            GameObjectBody owner = G.obj.FirstPlayerCharacter;
-
             if (itemData.AutoOwnerUse)
             {
                 int dq = Mathf.FloorToInt(newQuantity - oldQuantity);
@@ -95,14 +106,16 @@ namespace KRG
                     case (int)ItemType.Consumable:
                         for (int i = 0; i < dq; ++i)
                         {
-                            itemData.DoEffects((int)EffectorCondition.Use, owner);
+                            itemData.DoEffects((int)EffectorCondition.Use, Owner);
+                            AddBuffs(itemData.Buffs);
                         }
                         break;
                     case (int)ItemType.Equipment:
                         m_Items[itemID] = newQuantity;
                         for (int i = 0; i < dq; ++i)
                         {
-                            itemData.DoEffects((int)EffectorCondition.Equip, owner);
+                            itemData.DoEffects((int)EffectorCondition.Equip, Owner);
+                            AddBuffs(itemData.Buffs);
                         }
                         break;
                     default:
@@ -117,13 +130,13 @@ namespace KRG
 
             if (newQuantity > oldQuantity)
             {
-                ItemAcquired?.Invoke(itemData, owner, true);
+                ItemAcquired?.Invoke(itemData, Owner, true);
 
                 if (hasKeyItem)
                 {
                     if (m_KeyItemAcquiredHandlers.ContainsKey(itemID))
                     {
-                        m_KeyItemAcquiredHandlers[itemID]?.Invoke(itemData, owner, true);
+                        m_KeyItemAcquiredHandlers[itemID]?.Invoke(itemData, Owner, true);
                         m_KeyItemAcquiredHandlers.Remove(itemID);
                     }
 
@@ -136,41 +149,41 @@ namespace KRG
 
         public float GetItemQty(ItemID itemID, float defaultQuantity = 0)
         {
-            return GetItemQty((int) itemID, defaultQuantity);
+            return GetItemQty((int)itemID, defaultQuantity);
         }
 
         public bool HasItemQty(ItemID itemID)
         {
-            return HasItemQty((int) itemID);
+            return HasItemQty((int)itemID);
         }
 
         // PUBLIC STAT VALUE METHODS
 
         public void AddStatVal(StatID statID, float value, float defaultValue = 0)
         {
-            AddStatVal((int) statID, value, defaultValue);
+            AddStatVal((int)statID, value, defaultValue);
         }
 
         public float GetStatVal(StatID statID, float defaultValue = 0)
         {
-            return GetStatVal((int) statID, defaultValue);
+            return GetStatVal((int)statID, defaultValue);
         }
 
         public bool HasStatVal(StatID statID)
         {
-            return HasStatVal((int) statID);
+            return HasStatVal((int)statID);
         }
 
         public void SetStatVal(StatID statID, float value)
         {
-            SetStatVal((int) statID, value);
+            SetStatVal((int)statID, value);
         }
 
         // PUBLIC KEY ITEM METHODS
 
         public bool HasKeyItem(ItemID itemID)
         {
-            return HasKeyItem(GetItemData((int) itemID));
+            return HasKeyItem(GetItemData((int)itemID));
         }
         public bool HasKeyItem(ItemData itemData)
         {
@@ -240,11 +253,9 @@ namespace KRG
         /// <param name="handler">Handler.</param>
         public void AddKeyItemAcquiredHandler(int itemID, ItemAcquiredHandler handler)
         {
-            GameObjectBody owner = G.obj.FirstPlayerCharacter;
-
             if (HasKeyItem(itemID))
             {
-                handler?.Invoke(GetItemData(itemID), owner, false);
+                handler?.Invoke(GetItemData(itemID), Owner, false);
             }
             else
             {
@@ -301,13 +312,13 @@ namespace KRG
 
         public void RestorePlayerHealth()
         {
-            if (HasStatVal((int) StatID.HP))
+            if (HasStatVal((int)StatID.HP))
             {
-                float cur = GetStatVal((int) StatID.HP);
-                float max = GetStatVal((int) StatID.HPMax, 1);
+                float cur = GetStatVal((int)StatID.HP);
+                float max = GetStatVal((int)StatID.HPMax, 1);
                 if (cur < max)
                 {
-                    SetStatVal((int) StatID.HP, max);
+                    SetStatVal((int)StatID.HP, max);
                 }
             }
         }
@@ -320,6 +331,18 @@ namespace KRG
             sf.items = new Dictionary<int, float>(m_Items);
             sf.stats = new Dictionary<int, float>(m_Stats);
 
+            sf.buffs = new List<BuffData>(m_Buffs.Count);
+            for (int i = 0; i < m_Buffs.Count; ++i)
+            {
+                BuffData buffData = m_Buffs[i];
+                TimeTrigger tt = m_BuffTriggers[i];
+                if (tt != null)
+                {
+                    buffData.Duration = tt.timeRemaining;
+                }
+                sf.buffs.Add(buffData);
+            }
+
             AutoMapSaveDataRequested?.Invoke();
 
             sf.autoMaps = m_AutoMaps.Values.ToArray();
@@ -330,6 +353,9 @@ namespace KRG
             m_ItemInstancesCollected = new List<int>(sf.itemInstancesCollected);
             m_Items = new Dictionary<int, float>(sf.items);
             m_Stats = new Dictionary<int, float>(sf.stats);
+
+            RemoveAllBuffs();
+            AddBuffs(sf.buffs);
 
             m_AutoMaps.Clear();
             if (sf.autoMaps != null)
@@ -354,12 +380,72 @@ namespace KRG
                 {
                     ItemData itemData = refs[i];
                     int id = itemData.ItemID;
-                    if (id != (int) ItemID.None)
+                    if (id != (int)ItemID.None)
                     {
                         m_ItemDataDictionary.Add(id, itemData);
                     }
                 }
             }
+        }
+
+        // BUFF METHODS
+
+        public void AddBuffs(List<BuffObject> buffs)
+        {
+            if (buffs == null) return;
+            for (int i = 0; i < buffs.Count; ++i)
+            {
+                AddBuff(buffs[i]);
+            }
+        }
+
+        public void AddBuffs(List<BuffData> buffs)
+        {
+            if (buffs == null) return;
+            for (int i = 0; i < buffs.Count; ++i)
+            {
+                AddBuff(buffs[i]);
+            }
+        }
+
+        public void AddBuff(BuffObject buff)
+        {
+            if (buff == null) return;
+            AddBuff(buff.BuffData);
+        }
+
+        public void AddBuff(BuffData buff)
+        {
+            m_Buffs.Add(buff);
+            if (buff.HasDuration)
+            {
+                m_BuffTriggers.Add(TimeThread.AddTrigger(buff.Duration, RemoveBuff));
+            }
+            else
+            {
+                m_BuffTriggers.Add(null);
+            }
+            BuffAdded(buff, Owner);
+        }
+
+        public void RemoveAllBuffs()
+        {
+            for (int i = m_Buffs.Count - 1; i >= 0; --i)
+            {
+                m_BuffTriggers.RemoveAt(i);
+                BuffData buffData = m_Buffs[i];
+                m_Buffs.RemoveAt(i);
+                BuffRemoved(buffData, Owner);
+            }
+        }
+
+        public void RemoveBuff(TimeTrigger tt)
+        {
+            int index = m_BuffTriggers.FindIndex(x => x == tt);
+            m_BuffTriggers.RemoveAt(index);
+            BuffData buffData = m_Buffs[index];
+            m_Buffs.RemoveAt(index);
+            BuffRemoved(buffData, Owner);
         }
     }
 }

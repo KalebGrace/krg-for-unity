@@ -11,7 +11,7 @@ namespace KRG
         public int condition;
         [Enum(typeof(EffectorSubject))]
         public int subject;
-        [Enum(typeof(EffectorProperty))]
+        [Enum(typeof(StatID))]
         public int property;
         [Enum(typeof(EffectorOperation))]
         public int operation;
@@ -109,15 +109,6 @@ namespace KRG
         Self = 100,
         Target = 200,
         PlayerCharacter = 1000,
-    }
-
-    public enum EffectorProperty
-    {
-        None = 0,
-        HP = 3,
-        SP = 104,
-        HPMax = 13,
-        SPMax = 114,
     }
 
     public enum EffectorOperation

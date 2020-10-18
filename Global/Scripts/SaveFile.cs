@@ -24,6 +24,7 @@ namespace KRG
         public List<int> itemInstancesCollected;
         public Dictionary<int, float> items;
         public Dictionary<int, float> stats;
+        public List<BuffData> buffs;
 
         public static SaveFile New(SaveContext sc)
         {
