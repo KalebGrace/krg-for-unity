@@ -16,7 +16,7 @@ namespace KRG
     {
         // CONSTANTS
 
-        public const int VERSION = 1;
+        public const int VERSION = 2;
 
         // SERIALIZED FIELDS
 
@@ -190,14 +190,25 @@ namespace KRG
                                 case 1200: // SP
                                     e.property = 104;
                                     break;
-                                case 1401: // LP
-                                    e.property = 105;
-                                    break;
                                 case 2100: // HPMax
                                     e.property = (int) StatID.HPMax;
                                     break;
                                 case 2200: // SPMax
                                     e.property = 114;
+                                    break;
+                            }
+                            effectors[i] = e;
+                        }
+                        break;
+                    case 1:
+                        for (int i = 0; i < effectors.Count; ++i)
+                        {
+                            Effector e = effectors[i];
+                            // update EffectorProperty value
+                            switch (e.property)
+                            {
+                                case 1401: // LP
+                                    e.property = 105;
                                     break;
                                 case 2401: // LPMax
                                     e.property = 115;
