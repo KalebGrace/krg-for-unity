@@ -73,7 +73,7 @@ namespace KRG
 
         public List<BuffObject> Buffs;
 
-        [Header("Effectors")]
+        [Header("Base Stat Effectors")]
 
         [SerializeField]
         protected List<Effector> effectors = new List<Effector>();

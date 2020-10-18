@@ -12,6 +12,8 @@ namespace KRG
         // INSTANCE EVENTS
 
         public event System.Action<DamageTaker> Destroyed;
+        public event StatChangedHandler StatChanged;
+        public event StatInitializedHandler StatInitialized;
 
         // DELEGATES
 
@@ -20,6 +22,17 @@ namespace KRG
             AttackAbility attackAbility,
             Vector3 attackPositionCenter,
             Vector3 hitPositionCenter
+        );
+        public delegate void StatChangedHandler(
+            DamageTaker damageTaker,
+            int statID,
+            float oldValue,
+            float newValue
+        );
+        public delegate void StatInitializedHandler(
+            DamageTaker damageTaker,
+            int statID,
+            float value
         );
 
         // FIELDS
@@ -61,6 +74,7 @@ namespace KRG
                 {
                     m_HP = value;
                 }
+                InvokeStatChanged((int)StatID.HP, oldValue, value);
                 ResolveKnockedOut(oldValue, value);
             }
         }
@@ -72,6 +86,7 @@ namespace KRG
             get => IsPlayerCharacter ? G.inv.GetStatVal(StatID.HPMax) : m_HPMax;
             set
             {
+                float oldValue = HPMax;
                 if (IsPlayerCharacter)
                 {
                     G.inv.SetStatVal(StatID.HPMax, value);
@@ -80,6 +95,7 @@ namespace KRG
                 {
                     m_HPMax = value;
                 }
+                InvokeStatChanged((int)StatID.HPMax, oldValue, value);
             }
         }
 
@@ -244,6 +260,8 @@ namespace KRG
             {
                 HP = HPMax = _damageProfile.HPMax;
             }
+            InvokeStatInitialized((int)StatID.HPMax, HPMax);
+            InvokeStatInitialized((int)StatID.HP, HP);
         }
 
         // KNOCKED OUT (KO) METHODS
@@ -387,6 +405,16 @@ namespace KRG
         public void InitBody(GameObjectBody body)
         {
             m_Body = body;
+        }
+
+        protected void InvokeStatChanged(int statID, float oldValue, float newValue)
+        {
+            StatChanged?.Invoke(this, statID, oldValue, newValue);
+        }
+
+        protected void InvokeStatInitialized(int statID, float value)
+        {
+            StatInitialized?.Invoke(this, statID, value);
         }
     }
 }
