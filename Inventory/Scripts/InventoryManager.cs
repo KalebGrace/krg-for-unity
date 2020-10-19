@@ -13,12 +13,14 @@ namespace KRG
 
         public delegate void BuffHandler(BuffData buffData, GameObjectBody owner);
         public delegate void ItemAcquiredHandler(ItemData itemData, GameObjectBody owner, bool isNewlyAcquired);
+        public delegate void StatValChangedHandler(int StatID, float oldValue, float newValue);
 
         public event System.Action AutoMapSaveDataRequested;
         public event System.Action AutoMapSaveDataProvided;
         public event BuffHandler BuffAdded;
         public event BuffHandler BuffRemoved;
         public event ItemAcquiredHandler ItemAcquired;
+        public event StatValChangedHandler StatValChanged;
 
         // FIELDS
 
@@ -219,8 +221,10 @@ namespace KRG
 
         protected void AddStatVal(int statID, float value, float defaultValue = 0)
         {
-            float oldValue = GetItemQty(statID, defaultValue);
-            m_Stats[statID] = value + oldValue;
+            float oldValue = GetStatVal(statID, defaultValue);
+            float newValue = value + oldValue;
+            m_Stats[statID] = newValue;
+            StatValChanged?.Invoke(statID, oldValue, newValue);
         }
 
         protected float GetStatVal(int statID, float defaultValue = 0)
@@ -235,7 +239,9 @@ namespace KRG
 
         protected void SetStatVal(int statID, float value)
         {
+            float oldValue = GetStatVal(statID);
             m_Stats[statID] = value;
+            StatValChanged?.Invoke(statID, oldValue, value);
         }
 
         // MAIN METHODS 3
