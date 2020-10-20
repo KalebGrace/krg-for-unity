@@ -41,7 +41,7 @@ namespace KRG
 
         // PROPERTIES
 
-        public ReadOnlyCollection<BuffData> Buffs => m_Buffs.AsReadOnly();
+        public ReadOnlyCollection<BuffData> Buffs { get { UpdateBuffDurations(); return m_Buffs.AsReadOnly(); } }
         public GameObjectBody Owner => G.obj.FirstPlayerCharacter;
         public TimeThread TimeThread => G.time.GetTimeThread(TimeThreadInstance.Field);
 
@@ -337,17 +337,8 @@ namespace KRG
             sf.items = new Dictionary<int, float>(m_Items);
             sf.stats = new Dictionary<int, float>(m_Stats);
 
-            sf.buffs = new List<BuffData>(m_Buffs.Count);
-            for (int i = 0; i < m_Buffs.Count; ++i)
-            {
-                BuffData buffData = m_Buffs[i];
-                TimeTrigger tt = m_BuffTriggers[i];
-                if (tt != null)
-                {
-                    buffData.Duration = tt.timeRemaining;
-                }
-                sf.buffs.Add(buffData);
-            }
+            UpdateBuffDurations();
+            sf.buffs = new List<BuffData>(m_Buffs);
 
             AutoMapSaveDataRequested?.Invoke();
 
@@ -431,7 +422,7 @@ namespace KRG
             {
                 m_BuffTriggers.Add(null);
             }
-            BuffAdded(buff, Owner);
+            BuffAdded?.Invoke(buff, Owner);
         }
 
         public void RemoveAllBuffs()
@@ -441,7 +432,7 @@ namespace KRG
                 m_BuffTriggers.RemoveAt(i);
                 BuffData buffData = m_Buffs[i];
                 m_Buffs.RemoveAt(i);
-                BuffRemoved(buffData, Owner);
+                BuffRemoved?.Invoke(buffData, Owner);
             }
         }
 
@@ -451,7 +442,21 @@ namespace KRG
             m_BuffTriggers.RemoveAt(index);
             BuffData buffData = m_Buffs[index];
             m_Buffs.RemoveAt(index);
-            BuffRemoved(buffData, Owner);
+            BuffRemoved?.Invoke(buffData, Owner);
+        }
+
+        private void UpdateBuffDurations()
+        {
+            for (int i = 0; i < m_Buffs.Count; ++i)
+            {
+                TimeTrigger tt = m_BuffTriggers[i];
+                if (tt != null)
+                {
+                    BuffData buffData = m_Buffs[i];
+                    buffData.Duration = tt.timeRemaining;
+                    m_Buffs[i] = buffData;
+                }
+            }
         }
     }
 }
