@@ -13,6 +13,9 @@ namespace KRG
 
         public void Reset()
         {
+            BuffData.Name = null;
+            BuffData.BuffID = 0;
+            BuffData.BuffStackID = 0;
             BuffData.HasDuration = true;
             BuffData.Duration = 300;
             BuffData.Effectors = null;

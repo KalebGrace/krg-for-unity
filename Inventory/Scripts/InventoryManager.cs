@@ -413,6 +413,20 @@ namespace KRG
 
         public void AddBuff(BuffData buff)
         {
+            // first remove lower buffs in the same stack, if applicable
+            // at this time, we are limiting each stack to a single buff
+            for (int i = 0; i < m_Buffs.Count; ++i)
+            {
+                BuffData bd = m_Buffs[i];
+                if (bd.BuffStackID == buff.BuffStackID)
+                {
+                    m_BuffTriggers.RemoveAt(i);
+                    m_Buffs.RemoveAt(i);
+                    BuffRemoved?.Invoke(bd, Owner);
+                    --i;
+                }
+            }
+            // now add the buff
             m_Buffs.Add(buff);
             if (buff.HasDuration)
             {
