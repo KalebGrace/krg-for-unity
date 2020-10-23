@@ -182,9 +182,6 @@ namespace KRG
         //
         [Header("Attacker Movement")]
 
-        [SerializeField, HideInInspector, System.Obsolete]
-        protected float _attackerMoveDistance;
-
         [SerializeField]
         [Tooltip("Time (in SECONDS) the attacker takes at the start of the attack to move said distance.")]
         protected float _attackerMoveTime;
@@ -196,6 +193,9 @@ namespace KRG
         [SerializeField]
         [Tooltip("Does attacker movement require directional input?")]
         protected bool _attackerMoveRequiresInput;
+
+        [SerializeField, HideInInspector, System.Obsolete]
+        protected float _attackerMoveDistance;
 
         //
         //
