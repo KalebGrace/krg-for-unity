@@ -12,6 +12,8 @@ namespace KRG
 
         public bool isDisposed { get; private set; }
 
+        public bool isFrozen { get; private set; }
+
         public double timeElapsed { get; private set; }
 
         public float timeRemaining { get; private set; }
@@ -99,6 +101,8 @@ namespace KRG
 
         void Update(float delta, bool updatesTimeElapsed)
         {
+            if (isFrozen) return;
+
             if (updatesTimeElapsed)
             {
                 timeElapsed += delta;
@@ -227,6 +231,16 @@ namespace KRG
                 }
             }
             timeRemaining = totalInterval;
+        }
+
+        /// <summary>
+        /// If true, freezes the TimeTrigger, causing no time to elapse until unfrozen.
+        /// Trigger() and Update(...) will not work while the TimeTrigger is frozen.
+        /// If false, unfreezes the TimeTrigger (or "thaws" it, if you prefer).
+        /// </summary>
+        public void Freeze(bool value)
+        {
+            isFrozen = value;
         }
 
         /// <summary>
