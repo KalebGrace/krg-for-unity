@@ -227,7 +227,14 @@ namespace KRG
             string sfxFmodEvent = _attackAbility.sfxFmodEvent;
             if (!string.IsNullOrEmpty(sfxFmodEvent))
             {
-                G.audio.PlaySFX(sfxFmodEvent, transform.position);
+                if (_attackAbility.sfxFollowsAttacker)
+                {
+                    G.audio.PlaySFX(sfxFmodEvent, transform);
+                }
+                else
+                {
+                    G.audio.PlaySFX(sfxFmodEvent, transform.position);
+                }
             }
         }
 

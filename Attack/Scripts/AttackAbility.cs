@@ -72,6 +72,10 @@ namespace KRG
         [Tooltip("The sound effect FMOD event string.")]
         protected string _sfxFmodEvent;
 
+        [SerializeField]
+        [Tooltip("Does this sound effect follow the attacker's position?")]
+        protected bool _sfxFollowsAttacker;
+
         //
         //
         [Header("Attack Generation")]
@@ -299,6 +303,8 @@ namespace KRG
         public virtual bool requiresDPSClone => !_hpDamagePerSecond.Ap(0);
 
         public virtual string sfxFmodEvent { get { return _sfxFmodEvent; } }
+
+        public virtual bool sfxFollowsAttacker { get { return _sfxFollowsAttacker; } }
 
         public virtual TimeThread TimeThread
         {

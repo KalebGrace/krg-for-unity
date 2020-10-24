@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 #if NS_DG_TWEENING
@@ -209,6 +210,24 @@ namespace KRG
 #else
             return new EventInstance();
 #endif
+        }
+
+        public EventInstance PlaySFX(string fmodEvent, Transform transform)
+        {
+            EventInstance eventInstance = PlaySFX(fmodEvent, transform.position);
+            if (!eventInstance.isValid()) return eventInstance;
+            monoBehaviour.StartCoroutine(PlaySFXFollow(eventInstance, transform));
+            return eventInstance;
+        }
+
+        private IEnumerator PlaySFXFollow(EventInstance eventInstance, Transform transform)
+        {
+            yield return null;
+            while (eventInstance.isValid() && transform != null)
+            {
+                eventInstance.set3DAttributes(transform.position.To3DAttributes());
+                yield return null;
+            }
         }
 
         private void UpdateMusicVolume()
