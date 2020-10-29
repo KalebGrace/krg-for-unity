@@ -520,13 +520,17 @@ namespace KRG
 
         // PUBLIC TWEEN METHODS (OLD)
 
-        [System.Obsolete]
+        /// <summary>
+        /// Consider using Tween(...) & Untween(...) instead.
+        /// </summary>
         public void AddTween(Tween t)
         {
             _tweens.Add(t.SetUpdate(UpdateType.Fixed));
         }
 
-        [System.Obsolete]
+        /// <summary>
+        /// Consider using Tween(...) & Untween(...) instead.
+        /// </summary>
         public void RemoveTween(Tween t)
         {
             _tweens.Remove(t);
