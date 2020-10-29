@@ -137,7 +137,9 @@ namespace KRG
 
         public virtual void EraseDefaultGameplaySave()
         {
+#if KRG_X_EASY_SAVE_3
             ES3.DeleteKey(DefaultGameplaySaveKey);
+#endif
             G.app.ResetGameplaySceneId(); //TODO: fix this
             m_CurrentCheckpoint = SaveFile.New(SaveContext.ContinueCheckpoint);
         }

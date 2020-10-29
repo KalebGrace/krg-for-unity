@@ -1,7 +1,10 @@
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Analytics;
 using UnityEngine.SceneManagement;
+
+#if KRG_X_UNITY_ANALYTICS
+using UnityEngine.Analytics;
+#endif
 
 namespace KRG
 {
@@ -22,7 +25,9 @@ namespace KRG
 
         public virtual void StartApp()
         {
+#if KRG_X_UNITY_ANALYTICS
             _ = AnalyticsEvent.GameStart();
+#endif
         }
 
         /// <summary>
@@ -305,7 +310,9 @@ namespace KRG
 
         protected virtual void SendLevelStartAnalytics(string sceneName)
         {
+#if KRG_X_UNITY_ANALYTICS
             _ = AnalyticsEvent.LevelStart(sceneName);
+#endif
         }
     }
 }

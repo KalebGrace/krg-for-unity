@@ -223,11 +223,13 @@ namespace KRG
         private IEnumerator PlaySFXFollow(EventInstance eventInstance, Transform transform)
         {
             yield return null;
+#if NS_FMOD
             while (eventInstance.isValid() && transform != null)
             {
                 eventInstance.set3DAttributes(transform.position.To3DAttributes());
                 yield return null;
             }
+#endif
         }
 
         private void UpdateMusicVolume()

@@ -14,7 +14,6 @@ namespace KRG
         [Enum(typeof(TimeThreadInstance))]
         [SerializeField]
         private int _timeThreadIndex = (int) TimeThreadInstance.UseDefault;
-#pragma warning restore 0414
 
         [SerializeField]
         private TMP_Text _text100 = default;
@@ -24,9 +23,10 @@ namespace KRG
 
         [SerializeField]
         private TMP_Text _text001 = default;
+#pragma warning restore 0414
 
 #if !NS_DG_TWEENING
-        public void Init<T>(IDestroyedEvent<T> target, int damage)
+        public void Init<T>(IDestroyedEvent<T> target, string damage)
         {
             G.U.Err("This class requires DG.Tweening (DOTween).");
         }
