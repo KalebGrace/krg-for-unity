@@ -34,8 +34,8 @@ namespace KRG
             {
                 G.app.GetSceneController(m_Screens.Peek()).enabled = false;
             }
-            G.app.LoadScene(sceneName, false);
             m_Screens.Push(sceneName);
+            G.app.LoadScene(sceneName, false);
         }
 
         public void CloseScreen(string sceneName)
