@@ -4,7 +4,7 @@ namespace KRG
 {
     public abstract class SceneController : MonoBehaviour
     {
-        [SerializeField]
+        [SerializeField, System.Obsolete("Just delete the object.")]
         GameObject[] _redundantObjects = default;
         //TODO: convert to separate script (e.g. RedundantSceneObject) subscribing to this awake event, then remove
 
@@ -21,6 +21,9 @@ namespace KRG
         protected virtual void Awake()
         {
             G.app.AddSceneController(this);
+
+            #region obsolete code
+#pragma warning disable CS0618
             if (!G.app.isInSingleSceneEditor && _redundantObjects != null)
             {
                 for (int i = 0; i < _redundantObjects.Length; i++)
@@ -28,6 +31,8 @@ namespace KRG
                     Destroy(_redundantObjects[i]);
                 }
             }
+#pragma warning restore CS0618
+            #endregion
         }
 
         /// <summary>
