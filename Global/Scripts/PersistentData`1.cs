@@ -143,7 +143,7 @@ namespace KRG
                     m_Value = PlayerPrefs.GetString(Key, s);
                     break;
                 default:
-                    m_Value = PlayerPrefs.GetString(Key, m_Value.ToString());
+                    m_Value = PlayerPrefs.GetString(Key, m_Value?.ToString());
                     break;
             }
             ValueChanged?.Invoke(this, (T) oldValue, (T) m_Value);
