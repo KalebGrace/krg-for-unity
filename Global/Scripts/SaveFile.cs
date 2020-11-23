@@ -9,15 +9,13 @@ namespace KRG
     /// </summary>
     public struct SaveFile
     {
-        public const int LATEST_VERSION = 3;
+        public const int LATEST_VERSION = 4;
 
+        public bool isValid;
         public int version;
-        public SaveContext saveContext;
-        public int saveSlotIndex;
         public int gameplaySceneId;
         public int checkpointId; // for loading position upon loading this save
         public Vector3 position; // for resetting position during gameplay only
-        public int[] acquiredItems; // DEPRECATED as of version 2
         public AutoMapSaveData[] autoMaps;
         public TeleporterSaveData[] teleporters;
         public Dictionary<int, int> switchStates;
@@ -26,12 +24,12 @@ namespace KRG
         public Dictionary<int, float> stats;
         public List<BuffData> buffs;
 
-        public static SaveFile New(SaveContext sc)
+        public static SaveFile New()
         {
             return new SaveFile
             {
+                isValid = true,
                 version = LATEST_VERSION,
-                saveContext = sc,
                 switchStates = new Dictionary<int, int>(),
                 itemInstancesCollected = new List<int>(),
                 items = new Dictionary<int, float>(),
@@ -39,48 +37,20 @@ namespace KRG
             };
         }
 
-        public string Key => GetKeyPrefix(saveContext) + saveSlotIndex;
-
-        public static string GetKeyPrefix(SaveContext saveContext)
-        {
-            switch (saveContext)
-            {
-                case SaveContext.ContinueCheckpoint:
-                    return "CheckSaveFile";
-                case SaveContext.QuickSave:
-                    return "QuickSaveFile";
-                case SaveContext.HardSave:
-                    return "PermaSaveFile";
-            }
-            G.U.Err("unknown saveContext", saveContext);
-            return "UnknownSaveFile";
-        }
-
         public void Validate()
         {
+            isValid = false;
             while (version < LATEST_VERSION)
             {
                 switch (version)
                 {
-                    case 1:
-                        items = new Dictionary<int, float>();
-                        stats = new Dictionary<int, float>();
-                        if (acquiredItems != null)
-                        {
-                            for (int i = 0; i < acquiredItems.Length; ++i)
-                            {
-                                int itemID = acquiredItems[i];
-                                items[itemID] = 1;
-                            }
-                            acquiredItems = null;
-                        }
-                        break;
-                    case 2:
-                        itemInstancesCollected = new List<int>();
+                    case 4:
+                        // code to upgrade from version 4 to version 5 goes here
                         break;
                 }
                 ++version;
             }
+            isValid = true;
         }
     }
 }
