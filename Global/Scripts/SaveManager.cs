@@ -162,7 +162,9 @@ namespace KRG
             else
             {
                 TimeSpan time = TimeSpan.FromSeconds(gd);
-                return time.ToString("h':'mm");
+                int h = time.Hours + time.Days * 24;
+                int m = time.Minutes;
+                return string.Format("{0}:{1:00}", h, m);
             }
         }
 
