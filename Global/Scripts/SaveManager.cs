@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -11,6 +12,7 @@ namespace KRG
 
         private int m_SaveSlotIndex;
         private SaveFile m_SaveFile;
+        private float m_TimeLoaded;
 
         private readonly object m_SaveLock = new object();
 
@@ -75,8 +77,9 @@ namespace KRG
                 if (!SaveFileExists(saveSlotIndex)) return;
                 m_SaveFile = ES3.Load<SaveFile>(ES3Key, filePath);
                 m_SaveFile.Validate();
+                m_TimeLoaded = Time.time;
             }
-            catch (System.Exception ex)
+            catch (Exception ex)
             {
                 G.U.Err("Error while loading save file.", ES3Key, filePath, ex);
             }
@@ -92,7 +95,7 @@ namespace KRG
             {
                 exists = ES3.FileExists(filePath) && ES3.KeyExists(ES3Key, filePath);
             }
-            catch (System.Exception ex)
+            catch (Exception ex)
             {
                 G.U.Err("Error while checking save file.", ES3Key, filePath, ex);
             }
@@ -104,6 +107,7 @@ namespace KRG
         {
             G.app.ResetGameplaySceneId(); //TODO: fix this
             m_SaveFile = SaveFile.New();
+            m_TimeLoaded = Time.time;
         }
 
         public virtual void DeleteSaveFile(int saveSlotIndex = 0)
@@ -114,7 +118,7 @@ namespace KRG
             {
                 ES3.DeleteFile(filePath);
             }
-            catch (System.Exception ex)
+            catch (Exception ex)
             {
                 G.U.Err("Error while deleting save file.", ES3Key, filePath, ex);
             }
@@ -126,6 +130,39 @@ namespace KRG
             for (int i = 1; i <= SaveSlotCount; ++i)
             {
                 DeleteSaveFile(i);
+            }
+        }
+
+        public float GetGameplayDuration(int saveSlotIndex = 0)
+        {
+#if KRG_X_EASY_SAVE_3
+            string filePath = GetES3FilePath(saveSlotIndex);
+            try
+            {
+                if (!SaveFileExists(saveSlotIndex)) return -1;
+                SaveFile sf = ES3.Load<SaveFile>(ES3Key, filePath);
+                sf.Validate();
+                return sf.gameplayDuration;
+            }
+            catch (Exception ex)
+            {
+                G.U.Err("Error while getting gameplay duration.", ES3Key, filePath, ex);
+            }
+#endif
+            return -1;
+        }
+
+        public string GetFormattedGameplayDuration(int saveSlotIndex = 0)
+        {
+            float gd = GetGameplayDuration(saveSlotIndex);
+            if (gd.Ap(-1))
+            {
+                return "NEW";
+            }
+            else
+            {
+                TimeSpan time = TimeSpan.FromSeconds(gd);
+                return time.ToString("h':'mm");
             }
         }
 
@@ -144,7 +181,15 @@ namespace KRG
         {
             lock(m_SaveLock)
             {
+                SaveFile oldSF = m_SaveFile;
+
                 m_SaveFile = SaveFile.New();
+
+                float d = Time.time - m_TimeLoaded;
+
+                m_TimeLoaded = Time.time;
+
+                m_SaveFile.gameplayDuration = oldSF.gameplayDuration + d;
 
                 m_SaveFile.checkpointId = (int)checkpointName;
 

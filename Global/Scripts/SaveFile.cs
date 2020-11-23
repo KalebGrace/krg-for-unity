@@ -9,10 +9,11 @@ namespace KRG
     /// </summary>
     public struct SaveFile
     {
-        public const int LATEST_VERSION = 4;
+        public const int LATEST_VERSION = 5;
 
         public bool isValid;
         public int version;
+        public float gameplayDuration;
         public int gameplaySceneId;
         public int checkpointId; // for loading position upon loading this save
         public Vector3 position; // for resetting position during gameplay only
@@ -44,8 +45,8 @@ namespace KRG
             {
                 switch (version)
                 {
-                    case 4:
-                        // code to upgrade from version 4 to version 5 goes here
+                    case 5:
+                        // code to upgrade from version 5 to version 6 goes here
                         break;
                 }
                 ++version;
