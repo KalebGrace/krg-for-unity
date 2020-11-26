@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
@@ -75,6 +75,14 @@ namespace KRG
             clickedEvent.AddListener(onClick);
 
             m_Items.Add(new Item { Text = text, OnClick = onClick, MenuItem = menuItem });
+        }
+
+        public void RenameItem(int itemIndex, string text)
+        {
+            Item item = m_Items[itemIndex];
+            item.Text = text;
+            item.MenuItem.name = text;
+            item.MenuItem.GetComponentInChildren<TextMeshProUGUI>().text = text;
         }
 
         public void SelectDefaultItem()
