@@ -10,7 +10,6 @@ namespace KRG
 
         // SAVE FILE
 
-        private int m_SaveSlotIndex;
         private SaveFile m_SaveFile;
         private float m_TimeLoaded;
 
@@ -24,6 +23,7 @@ namespace KRG
         private event SaveFileReadHandler Loading;
         private event SaveFileReadHandler LoadingCompleted;
 
+        public virtual int SaveSlot { get; protected set; }
         public virtual int SaveSlotCount => 3;
 
         protected virtual string ES3Key => "SaveFile";
@@ -68,7 +68,7 @@ namespace KRG
 
         public virtual void SetSaveSlot(int saveSlotIndex)
         {
-            m_SaveSlotIndex = saveSlotIndex;
+            SaveSlot = saveSlotIndex;
             m_SaveFile = default;
 #if KRG_X_EASY_SAVE_3
             string filePath = GetES3FilePath(saveSlotIndex);
@@ -238,7 +238,7 @@ namespace KRG
         {
             if (saveSlotIndex == 0)
             {
-                saveSlotIndex = m_SaveSlotIndex;
+                saveSlotIndex = SaveSlot;
             }
             return string.Format("{0}{1:00}.es3", ES3Key, saveSlotIndex);
         }
