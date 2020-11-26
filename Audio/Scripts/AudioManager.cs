@@ -29,6 +29,9 @@ namespace KRG
 
         private const string P_IS_GAME_PAUSED = "isGamePaused";
 
+        public event System.Action MasterVolumeChanged;
+        public event System.Action MusicVolumeChanged;
+        public event System.Action SFXVolumeChanged;
         public event System.Action<string> MusicPlayed;
 
         private bool _isInitialized;
@@ -65,6 +68,7 @@ namespace KRG
                 m_MasterVolume.Value = value;
                 UpdateMusicVolume();
                 UpdateMusicStopVolume();
+                MasterVolumeChanged?.Invoke();
             }
         }
 
@@ -78,6 +82,7 @@ namespace KRG
             {
                 m_MusicVolume.Value = value;
                 UpdateMusicVolume();
+                MusicVolumeChanged?.Invoke();
             }
         }
 
@@ -87,7 +92,11 @@ namespace KRG
         public float SFXVolume
         {
             get => m_SFXVolume.Value;
-            set => m_SFXVolume.Value = value;
+            set
+            {
+                m_SFXVolume.Value = value;
+                SFXVolumeChanged?.Invoke();
+            }
         }
 
         // PRIVATE PROPERTIES
