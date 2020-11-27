@@ -4,6 +4,8 @@ namespace KRG
 {
     public abstract class SceneController : MonoBehaviour
     {
+        public System.Action Destroyed;
+
         [SerializeField, System.Obsolete("Just delete the object.")]
         GameObject[] _redundantObjects = default;
         //TODO: convert to separate script (e.g. RedundantSceneObject) subscribing to this awake event, then remove
@@ -33,6 +35,11 @@ namespace KRG
             }
 #pragma warning restore CS0618
             #endregion
+        }
+
+        protected virtual void OnDestroy()
+        {
+            Destroyed?.Invoke();
         }
 
         /// <summary>
