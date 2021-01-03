@@ -94,6 +94,7 @@ namespace KRG
             FrameSequencePlayLoopStarted = options.FrameSequencePlayLoopStartHandler;
             FrameSequencePlayLoopStopped = options.FrameSequencePlayLoopStopHandler;
             Reset();
+            rasterAnimation.MarkAsPlayed();
         }
 
         // PUBLIC METHODS

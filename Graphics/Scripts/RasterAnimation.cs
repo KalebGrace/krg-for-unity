@@ -147,6 +147,8 @@ namespace KRG
 
         // OTHER METHODS
 
+        public virtual void MarkAsPlayed() { }
+
         public bool IsGifReplacedWithFrameTextures => !string.IsNullOrEmpty(m_GifName);
 
 #if NS_UGIF
