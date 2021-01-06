@@ -258,11 +258,19 @@ namespace KRG
 
         private void LoadCharacterDossier(GameObjectBody body)
         {
-            int characterID = body.CharacterID;
+            CharacterDossier cd = LoadCharacterDossier(body.CharacterID);
 
+            if (cd != null)
+            {
+                body.CharacterDossier = cd;
+            }
+        }
+
+        public CharacterDossier LoadCharacterDossier(int characterID)
+        {
             if (characterID == 0)
             {
-                return;
+                return null;
             }
 
             CharacterDossier cd;
@@ -273,9 +281,7 @@ namespace KRG
 
                 if (cd != null)
                 {
-                    body.CharacterDossier = cd;
-
-                    return;
+                    return cd;
                 }
 
                 CharacterDossiers.Remove(characterID);
@@ -288,7 +294,7 @@ namespace KRG
             if (assetBundle == null)
             {
                 G.U.Err("Failed to load AssetBundle for characterID {0}.", characterID);
-                return;
+                return null;
             }
 
             CharacterDossier[] dossiers = assetBundle.LoadAllAssets<CharacterDossier>();
@@ -296,7 +302,7 @@ namespace KRG
             if (dossiers.Length == 0)
             {
                 G.U.Err("Failed to load CharacterDossiers from AssetBundle {0}.", bundleName);
-                return;
+                return null;
             }
 
             cd = dossiers[0];
@@ -309,14 +315,14 @@ namespace KRG
 
             CharacterDossiers.Add(characterID, cd);
 
-            body.CharacterDossier = cd;
-
             string idleAnimName = cd.GraphicData.IdleAnimationName;
 
             if (!string.IsNullOrWhiteSpace(idleAnimName))
             {
                 AddDefaultAnimation(assetBundle, idleAnimName);
             }
+
+            return cd;
         }
 
         private void UnloadCharacterDossier(int characterID)
