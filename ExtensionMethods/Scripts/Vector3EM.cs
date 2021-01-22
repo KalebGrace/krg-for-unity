@@ -6,6 +6,14 @@ namespace KRG
     {
         public delegate float V3Func(float value);
 
+        public static Vector2 Abs(this Vector3 v3)
+        {
+            v3.x = Mathf.Abs(v3.x);
+            v3.y = Mathf.Abs(v3.y);
+            v3.z = Mathf.Abs(v3.z);
+            return v3;
+        }
+
         public static Vector3 Add(this Vector3 v3, float x = 0, float y = 0, float z = 0)
         {
             v3.x += x;
@@ -101,6 +109,11 @@ namespace KRG
         {
             v3.z = z;
             return v3;
+        }
+
+        public static Vector2 ToVector2(this Vector3 v3)
+        {
+            return new Vector2(v3.x, v3.y);
         }
     }
 }

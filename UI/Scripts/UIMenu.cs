@@ -24,7 +24,7 @@ namespace KRG
 
         public struct Item
         {
-            // TODO: Name/Key
+            public string Key;
             public string Text;
             public UnityAction OnClick;
             public GameObject MenuItem;
@@ -33,6 +33,22 @@ namespace KRG
         // PROPERTIES
 
         public int ItemCount => m_Items.Count;
+
+        public Item SelectedItem
+        {
+            get
+            {
+                for (int i = 0; i < m_Items.Count; i++)
+                {
+                    Item item = m_Items[i];
+                    if (item.MenuItem == EventSystem.current.currentSelectedGameObject)
+                    {
+                        return item;
+                    }
+                }
+                return new Item();
+            }
+        }
 
         public int SelectedItemIndex
         {
@@ -47,22 +63,6 @@ namespace KRG
                     }
                 }
                 return -1;
-            }
-        }
-
-        public string SelectedItemText
-        {
-            get
-            {
-                for (int i = 0; i < m_Items.Count; i++)
-                {
-                    Item item = m_Items[i];
-                    if (item.MenuItem == EventSystem.current.currentSelectedGameObject)
-                    {
-                        return item.Text;
-                    }
-                }
-                return null;
             }
         }
 
@@ -106,19 +106,38 @@ namespace KRG
 
         public void AddItem(string text, UnityAction onClick)
         {
+            AddItem(null, text, onClick);
+        }
+
+        public void AddItem(string key, string text, UnityAction onClick)
+        {
             GameObject menuItem;
             if (m_Items.Count == 0)
             {
                 menuItem = MenuItem;
+                ScrollView.content.sizeDelta = Vector2.zero;
             }
             else
             {
                 menuItem = Instantiate(MenuItem, MenuItem.transform.parent);
                 RectTransform rt = menuItem.GetComponent<RectTransform>();
                 rt.localPosition += ItemOffset * m_Items.Count;
+
+                // we need to set the new content size so the scrolling works properly
+                if (ScrollView.vertical)
+                {
+                    const float referenceHeight = 1080; // TODO: get this dynamically from canvas
+                    float y = Mathf.Abs(rt.localPosition.y) + rt.sizeDelta.y - referenceHeight;
+                    G.U.Log(ScrollView.content.sizeDelta, rt.localPosition.y, rt.sizeDelta.y, y);
+                    ScrollView.content.sizeDelta = ScrollView.content.sizeDelta.SetY(y);
+                }
+                else
+                {
+                    ScrollView.content.sizeDelta = rt.localPosition.ToVector2().Abs() + rt.sizeDelta;
+                }
             }
 
-            menuItem.name = text;
+            menuItem.name = key ?? text;
             menuItem.GetComponentInChildren<TextMeshProUGUI>().text = text;
 
             Button button = menuItem.GetComponent<Button>();
@@ -126,14 +145,20 @@ namespace KRG
             clickedEvent.RemoveAllListeners();
             clickedEvent.AddListener(onClick);
 
-            m_Items.Add(new Item { Text = text, OnClick = onClick, MenuItem = menuItem });
+            m_Items.Add(new Item
+            {
+                Key = key,
+                Text = text,
+                OnClick = onClick,
+                MenuItem = menuItem,
+            });
         }
 
         public void RenameItem(int itemIndex, string text)
         {
             Item item = m_Items[itemIndex];
             item.Text = text;
-            item.MenuItem.name = text;
+            item.MenuItem.name = item.Key ?? text;
             item.MenuItem.GetComponentInChildren<TextMeshProUGUI>().text = text;
         }
 

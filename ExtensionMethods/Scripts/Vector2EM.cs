@@ -2,9 +2,16 @@ using UnityEngine;
 
 namespace KRG
 {
-    public static class Vector2ExtensionMethods
+    public static class Vector2EM // Vector2 extension methods
     {
         public delegate float V2Func(float value);
+
+        public static Vector2 Abs(this Vector2 v2)
+        {
+            v2.x = Mathf.Abs(v2.x);
+            v2.y = Mathf.Abs(v2.y);
+            return v2;
+        }
 
         public static Vector2 Add(this Vector2 v2, float x = 0, float y = 0)
         {
