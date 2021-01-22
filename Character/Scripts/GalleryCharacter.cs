@@ -5,33 +5,34 @@ namespace KRG
     [ExecuteAlways]
     public class GalleryCharacter : MonoBehaviour
     {
-        public Texture2D CharacterTexture;
+        private Material m_Material;
+        private MeshRenderer m_Renderer;
 
-        private void Start()
+        public Material Material
         {
-            UpdateTexture();
+            get
+            {
+                if (m_Material == null)
+                {
+                    m_Material = m_Renderer.material;
+                }
+                return m_Material;
+            }
         }
 
-        private void OnValidate()
+        private void Awake()
         {
-            UpdateTexture();
+            m_Renderer = GetComponent<MeshRenderer>();
         }
 
-        private void UpdateTexture()
+        public void SetKnown(bool isKnown)
         {
-            var r = GetComponent<MeshRenderer>();
-            if (G.U.IsEditMode(this))
-            {
-                var m = r.sharedMaterial;
-                m.mainTexture = CharacterTexture;
-                r.sharedMaterial = m;
-            }
-            else
-            {
-                var m = r.material;
-                m.mainTexture = CharacterTexture;
-                r.material = m;
-            }
+            Material.color = Material.color.SetAlpha(isKnown ? 1 : 0.2f);
+        }
+
+        public void UpdateTexture(Texture2D characterTexture)
+        {
+            Material.mainTexture = characterTexture;
         }
     }
 }

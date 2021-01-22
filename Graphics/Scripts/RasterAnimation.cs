@@ -76,13 +76,17 @@ namespace KRG
 
         //--
 
-        [Header("Frame Sequences")]
+        [Header("Frame Sequence Editor")]
 
         [Order(15), SerializeField, TextArea(6, 24)]
         protected string m_FrameParagraph = default;
 
         [Order(15), SerializeField]
         private bool m_FrameParagraphParse = default;
+
+        //--
+
+        [Header("Frame Sequences")]
 
         [Order(20)]
         [FormerlySerializedAs("m_frameSequences")]

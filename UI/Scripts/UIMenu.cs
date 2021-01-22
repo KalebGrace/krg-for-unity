@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 namespace KRG
@@ -13,6 +14,7 @@ namespace KRG
         public ScrollRect ScrollView;
         public GameObject MenuItem;
         public Vector3 ItemOffset;
+        public bool AllowNoSelectedItem;
 
         // PRIVATE FIELDS
 
@@ -22,12 +24,62 @@ namespace KRG
 
         public struct Item
         {
+            // TODO: Name/Key
             public string Text;
             public UnityAction OnClick;
             public GameObject MenuItem;
         }
 
-        // PUBLIC METHODS
+        // PROPERTIES
+
+        public int ItemCount => m_Items.Count;
+
+        public int SelectedItemIndex
+        {
+            get
+            {
+                for (int i = 0; i < m_Items.Count; i++)
+                {
+                    Item item = m_Items[i];
+                    if (item.MenuItem == EventSystem.current.currentSelectedGameObject)
+                    {
+                        return i;
+                    }
+                }
+                return -1;
+            }
+        }
+
+        public string SelectedItemText
+        {
+            get
+            {
+                for (int i = 0; i < m_Items.Count; i++)
+                {
+                    Item item = m_Items[i];
+                    if (item.MenuItem == EventSystem.current.currentSelectedGameObject)
+                    {
+                        return item.Text;
+                    }
+                }
+                return null;
+            }
+        }
+
+        // MONOBEHAVIOUR METHODS
+
+        private void Update()
+        {
+            if (!AllowNoSelectedItem)
+            {
+                if (EventSystem.current.currentSelectedGameObject == null)
+                {
+                    SelectDefaultItem();
+                }
+            }
+        }
+
+        // PUBLIC CUSTOM METHODS
 
         public void Clear()
         {
