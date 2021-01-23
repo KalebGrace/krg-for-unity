@@ -9,6 +9,14 @@ namespace KRG
 {
     public class UIMenu : MonoBehaviour
     {
+        // EVENTS
+
+        public event ItemSelectionHandler ItemSelectionChanged;
+
+        // DELEGATES
+
+        public delegate void ItemSelectionHandler(int newItemIndex);
+
         // SERIALIZED FIELDS
 
         public ScrollRect ScrollView;
@@ -19,6 +27,7 @@ namespace KRG
         // PRIVATE FIELDS
 
         private List<Item> m_Items = new List<Item>();
+        private int m_PrevSelectedItemIndex = -1;
 
         // STRUCTS
 
@@ -77,6 +86,16 @@ namespace KRG
                     SelectDefaultItem();
                 }
             }
+            int i = SelectedItemIndex;
+            if (i != m_PrevSelectedItemIndex)
+            {
+                if (ScrollView != null && ScrollView.vertical)
+                {
+                    ScrollView.verticalNormalizedPosition = Mathf.InverseLerp(m_Items.Count - 1, 0, i);
+                }
+                ItemSelectionChanged?.Invoke(i);
+                m_PrevSelectedItemIndex = i;
+            }
         }
 
         // PUBLIC CUSTOM METHODS
@@ -128,7 +147,6 @@ namespace KRG
                 {
                     const float referenceHeight = 1080; // TODO: get this dynamically from canvas
                     float y = Mathf.Abs(rt.localPosition.y) + rt.sizeDelta.y - referenceHeight;
-                    G.U.Log(ScrollView.content.sizeDelta, rt.localPosition.y, rt.sizeDelta.y, y);
                     ScrollView.content.sizeDelta = ScrollView.content.sizeDelta.SetY(y);
                 }
                 else

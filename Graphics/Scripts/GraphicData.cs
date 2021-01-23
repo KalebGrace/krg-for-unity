@@ -6,6 +6,8 @@ namespace KRG
     [System.Serializable]
     public struct GraphicData
     {
+        public bool ExcludeFromGallery;
+
         public Material BaseSharedMaterial;
 
         public Texture2D EditorSprite;

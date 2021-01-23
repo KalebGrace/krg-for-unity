@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 
 namespace KRG
 {
@@ -25,6 +25,11 @@ namespace KRG
             m_Renderer = GetComponent<MeshRenderer>();
         }
 
+        public void ScaleTexture(float v)
+        {
+            transform.localScale = new Vector3(v, v, 1);
+        }
+
         public void SetKnown(bool isKnown)
         {
             Material.color = Material.color.SetAlpha(isKnown ? 1 : 0.2f);
@@ -33,6 +38,7 @@ namespace KRG
         public void UpdateTexture(Texture2D characterTexture)
         {
             Material.mainTexture = characterTexture;
+            ScaleTexture(1);
         }
     }
 }
