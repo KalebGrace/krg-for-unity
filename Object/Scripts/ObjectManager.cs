@@ -325,7 +325,7 @@ namespace KRG
             return cd;
         }
 
-        private void UnloadCharacterDossier(int characterID)
+        public void UnloadCharacterDossier(int characterID)
         {
             CharacterDossier cd = CharacterDossiers[characterID];
 

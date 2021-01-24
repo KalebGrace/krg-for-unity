@@ -162,10 +162,13 @@ namespace KRG
             menuItem.name = key ?? text;
             menuItem.GetComponentInChildren<TextMeshProUGUI>().text = text;
 
-            Button button = menuItem.GetComponent<Button>();
-            Button.ButtonClickedEvent clickedEvent = button.onClick;
-            clickedEvent.RemoveAllListeners();
-            clickedEvent.AddListener(onClick);
+            if (onClick != null)
+            {
+                Button button = menuItem.GetComponent<Button>();
+                Button.ButtonClickedEvent clickedEvent = button.onClick;
+                clickedEvent.RemoveAllListeners();
+                clickedEvent.AddListener(onClick);
+            }
 
             m_Items.Add(new Item
             {
