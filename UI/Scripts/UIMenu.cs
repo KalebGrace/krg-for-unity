@@ -105,6 +105,10 @@ namespace KRG
             foreach (Item item in m_Items)
             {
                 GameObject menuItem = item.MenuItem;
+                if (menuItem == EventSystem.current.currentSelectedGameObject)
+                {
+                    EventSystem.current.SetSelectedGameObject(null);
+                }
                 if (menuItem == MenuItem)
                 {
                     menuItem.name = "Menu Item";
@@ -119,8 +123,8 @@ namespace KRG
                     Destroy(menuItem);
                 }
             }
-
             m_Items.Clear();
+            m_PrevSelectedItemIndex = -1;
         }
 
         public void AddItem(string text, UnityAction onClick)
@@ -183,6 +187,20 @@ namespace KRG
         public void SelectDefaultItem()
         {
             ISelectSilently iss = MenuItem.GetComponent<ISelectSilently>();
+            if (iss != null)
+            {
+                iss.SelectSilently();
+            }
+            else
+            {
+                MenuItem.GetComponent<Button>().Select();
+            }
+        }
+
+        public void SelectItem(int itemIndex)
+        {
+            Item item = m_Items[itemIndex];
+            ISelectSilently iss = item.MenuItem.GetComponent<ISelectSilently>();
             if (iss != null)
             {
                 iss.SelectSilently();

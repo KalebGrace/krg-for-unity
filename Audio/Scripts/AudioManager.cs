@@ -151,6 +151,7 @@ namespace KRG
 
         public void PlayMusic(string fmodEvent, float outgoingMusicFadeOutSeconds = MUSIC_FADE_OUT_SECONDS)
         {
+            if (string.IsNullOrWhiteSpace(fmodEvent)) return;
 #if NS_FMOD && !(UNITY_EDITOR && EDITOR_MUSIC_OFF)
             if (_musicFmodEvent == fmodEvent) return;
             StopMusic(outgoingMusicFadeOutSeconds);

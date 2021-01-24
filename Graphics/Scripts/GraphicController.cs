@@ -138,6 +138,8 @@ namespace KRG
             }
         }
 
+        public bool IsAnimationPlaying => m_AnimationContext != AnimationContext.None;
+
         protected virtual GameObject GraphicGameObject => m_Body?.Refs.GraphicGameObject ?? gameObject;
 
         protected virtual bool IsTimePaused => TimeThread.isPaused;

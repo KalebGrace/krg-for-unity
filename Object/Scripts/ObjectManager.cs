@@ -319,7 +319,7 @@ namespace KRG
 
             if (!string.IsNullOrWhiteSpace(idleAnimName))
             {
-                AddDefaultAnimation(assetBundle, idleAnimName);
+                AddAnimation(assetBundle, idleAnimName);
             }
 
             return cd;
@@ -373,7 +373,7 @@ namespace KRG
             }
         }
 
-        private void UnloadCharacterAssetPack(int characterID)
+        public void UnloadCharacterAssetPack(int characterID)
         {
             CharacterDossier cd = CharacterDossiers[characterID];
 
@@ -395,10 +395,19 @@ namespace KRG
 
             AssetBundle assetBundle = LoadAssetBundle(bundleName);
 
-            AddDefaultAnimation(assetBundle, animationName);
+            AddAnimation(assetBundle, animationName);
         }
 
-        private void AddDefaultAnimation(AssetBundle assetBundle, string animationName)
+        public void AddExtraAnimation(CharacterDossier characterDossier, string animationName)
+        {
+            string bundleName = characterDossier.AssetPackBundleName;
+
+            AssetBundle assetBundle = LoadAssetBundle(bundleName);
+
+            AddAnimation(assetBundle, animationName);
+        }
+
+        private void AddAnimation(AssetBundle assetBundle, string animationName)
         {
             RasterAnimation ra;
 
@@ -417,6 +426,14 @@ namespace KRG
             ra = assetBundle.LoadAsset<RasterAnimation>(animationName);
 
             RasterAnimations.Add(animationName, ra);
+        }
+
+        public void RemoveAnimation(string animationName)
+        {
+            if (RasterAnimations.ContainsKey(animationName))
+            {
+                RasterAnimations.Remove(animationName);
+            }
         }
 
         // ENVIRONMENT ASSET BUNDLES
