@@ -8,5 +8,6 @@ namespace KRG
         Item = 3,
         VFX = 4,
         UI = 5,
+        GalleryAnimation = 6,
     }
 }
