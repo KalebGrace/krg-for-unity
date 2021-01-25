@@ -66,6 +66,7 @@ namespace KRG
         public bool IsEnemyOrBoss => IsEnemy || IsBoss;
         public bool IsEnemy => CharacterType == CharacterType.Enemy;
         public bool IsBoss => CharacterType == CharacterType.Boss;
+        public bool IsGalleryAnimation => GameObjectType == GameObjectType.GalleryAnimation;
 
         // ATTACK PROPERTIES
 
@@ -126,6 +127,7 @@ namespace KRG
                     case GameObjectType.UI:
                         InitUI();
                         break;
+                    case GameObjectType.GalleryAnimation:
                     case GameObjectType.None:
                         break;
                     default:
