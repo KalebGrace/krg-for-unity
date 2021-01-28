@@ -11,6 +11,8 @@ namespace KRG
         [ReadOnly]
         public string FileName;
 
+        public string ProperName;
+
         // PROPERTIES
 
         public abstract int ID { get; }
@@ -26,6 +28,11 @@ namespace KRG
         protected virtual void OnValidate()
         {
             FileName = name.Replace(DocketSuffix, "");
+
+            if (string.IsNullOrWhiteSpace(ProperName))
+            {
+                ProperName = FileName;
+            }
         }
     }
 }
