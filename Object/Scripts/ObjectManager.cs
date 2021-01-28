@@ -69,35 +69,45 @@ namespace KRG
             G.app.GameplaySceneStarted -= OnGameplaySceneStarted;
         }
 
-        // EVENT HANDLERS
+        // EVENT HANDLER METHODS
 
         private void OnGameplaySceneStarted()
         {
-            bool doneUnloading = false;
+            EnvironmentChart ec;
+            bool doneUnloadingUnusedAssets = false;
 
-            UnloadAllEnvironmentAssets();
+            // unload all environment assets
+            while (EnvironmentCharts.Count > 0)
+            {
+                int id = EnvironmentCharts.Keys.First();
+                UnloadAssetPack<EnvironmentChart>(id);
+                UnloadDocket<EnvironmentChart>(id);
+            }
 
             foreach (var cc in CharacterCounts.OrderBy(cc => cc.Value))
             {
                 if (cc.Value == 0)
                 {
-                    UnloadCharacterAssetPack(cc.Key);
-                    UnloadCharacterDossier(cc.Key);
+                    UnloadAssetPack<CharacterDossier>(cc.Key);
+                    UnloadDocket<CharacterDossier>(cc.Key);
                     _ = CharacterCounts.Remove(cc.Key);
                 }
                 else
                 {
-                    if (!doneUnloading)
+                    if (!doneUnloadingUnusedAssets)
                     {
                         Resources.UnloadUnusedAssets();
-                        doneUnloading = true;
+                        doneUnloadingUnusedAssets = true;
                     }
 
-                    LoadCharacterAssetPack(cc.Key);
+                    LoadAssetPack<CharacterDossier>(cc.Key);
                 }
             }
 
-            LoadEnvironmentAssets(G.env.CurrentEnvironmentID);
+            // load environment assets
+            int environmentID = G.env.CurrentEnvironmentID;
+            ec = LoadDocket<EnvironmentChart>(environmentID);
+            if (ec != null) LoadAssetPack<EnvironmentChart>(environmentID);
         }
 
         // MAIN PUBLIC METHODS
@@ -133,7 +143,6 @@ namespace KRG
                         PlayerCharacterAdded?.Invoke(body);
                         if (PlayerCharacters.Count == 1) PlayerCharacterExists?.Invoke(body);
                     }
-                    //G.U.Log("Registered {0} (character ID {1}).", body.name, id);
                     break;
             }
             return true;
@@ -164,7 +173,6 @@ namespace KRG
                         CharacterIDRemoved?.Invoke(id);
                     }
                     // never unload the dossier until OnGameplaySceneStarted()
-                    //G.U.Log("Deregistered {0} (character ID {1}).", body.name, id);
                     break;
             }
         }
@@ -213,7 +221,12 @@ namespace KRG
             return IsPlayerCharacter(collision.collider);
         }
 
-        // ASSET BUNDLES
+        // ASSET BUNDLE METHODS
+
+        private AssetBundle GetLoadedAssetBundle(string bundleName) =>
+            AssetBundle.GetAllLoadedAssetBundles()
+            .Where(ab => ab.name == bundleName)
+            .SingleOrDefault();
 
         private AssetBundle LoadAssetBundle(string bundleName)
         {
@@ -222,9 +235,7 @@ namespace KRG
                 bundleName += "." + AssetBundleVariant;
             }
 
-            AssetBundle assetBundle = AssetBundle.GetAllLoadedAssetBundles()
-                .Where(ab => ab.name == bundleName)
-                .SingleOrDefault();
+            AssetBundle assetBundle = GetLoadedAssetBundle(bundleName);
 
             if (assetBundle == null)
             {
@@ -249,16 +260,204 @@ namespace KRG
 
         private void UnloadAssetBundle(string bundleName)
         {
-            AssetBundle.GetAllLoadedAssetBundles()
-                .Where(ab => ab.name == bundleName)
-                .SingleOrDefault()?.Unload(true);
+            AssetBundle assetBundle = GetLoadedAssetBundle(bundleName);
+
+            if (assetBundle != null) assetBundle.Unload(true);
         }
 
-        // CHARACTER ASSET BUNDLES
+        // DOCKET & ASSET PACK METHODS
+
+        private T LoadDocket<T>(int id) where T : Docket
+        {
+            if (id == 0) return null;
+
+            Docket dk;
+            string bundleName;
+            bool isCharacter = typeof(T) == typeof(CharacterDossier);
+
+            // look in dictionary for existing docket; remove stale dockets
+            if (isCharacter)
+            {
+                if (CharacterDossiers.ContainsKey(id))
+                {
+                    dk = CharacterDossiers[id];
+                    if (dk != null) return (T)dk;
+                    CharacterDossiers.Remove(id);
+                }
+                bundleName = CharacterDossier.GetBundleName(id);
+            }
+            else
+            {
+                if (EnvironmentCharts.ContainsKey(id))
+                {
+                    dk = EnvironmentCharts[id];
+                    if (dk != null) return (T)dk;
+                    EnvironmentCharts.Remove(id);
+                }
+                bundleName = EnvironmentChart.GetBundleName(id);
+            }
+
+            // load asset bundle
+            AssetBundle assetBundle = LoadAssetBundle(bundleName);
+            if (assetBundle == null)
+            {
+                G.U.Err("Failed to load AssetBundle for {0}ID {1}.", isCharacter ? "Character" : "Environment", id);
+                return null;
+            }
+
+            // load docket(s)
+            T[] dockets = assetBundle.LoadAllAssets<T>();
+            if (dockets.Length == 0)
+            {
+                G.U.Err("Failed to load {0} dockets from AssetBundle {1}.", typeof(T).ToString(), bundleName);
+                return null;
+            }
+
+            // there shall only be one
+            dk = dockets[0];
+            if (dockets.Length > 1)
+            {
+                G.U.Warn("Multiple {0} dockets in AssetBundle {1}. Falling back to {2}.",
+                    typeof(T).ToString(), bundleName, dk.FileName);
+            }
+
+            // add to dictionary of loaded dockets; invoke event as applicable
+            if (isCharacter)
+            {
+                CharacterDossier cd = (CharacterDossier)dk;
+                CharacterDossiers.Add(id, cd);
+
+                // we always need the Idle animation
+                string idleAnimName = cd.GraphicData.IdleAnimationName;
+                if (!string.IsNullOrWhiteSpace(idleAnimName))
+                {
+                    AddAnimation(assetBundle, idleAnimName);
+                }
+
+                // CharacterIDAdded is invoked in Register
+            }
+            else
+            {
+                EnvironmentChart ec = (EnvironmentChart)dk;
+                EnvironmentCharts.Add(id, ec);
+                EnvironmentIDAdded?.Invoke(id);
+            }
+
+            return (T)dk;
+        }
+
+        private void UnloadDocket<T>(int id) where T : Docket
+        {
+            if (id == 0) return;
+
+            Docket dk;
+            string bundleName;
+            bool isCharacter = typeof(T) == typeof(CharacterDossier);
+
+            // invoke event as applicable; look in dictionary for existing docket
+            if (isCharacter)
+            {
+                // CharacterIDRemoved is invoked in Deregister
+                dk = CharacterDossiers[id];
+            }
+            else
+            {
+                EnvironmentIDRemoved?.Invoke(id);
+                dk = EnvironmentCharts[id];
+            }
+
+            // remove all remaining raster animations for this docket
+            // NOTE: this includes default animations such as Idle
+            string keyPrefix = dk.FileName + "_";
+            List<string> keysToRemove = RasterAnimations
+                .Where(pair => pair.Key.StartsWith(keyPrefix, System.StringComparison.Ordinal))
+                .Select(pair => pair.Key)
+                .ToList();
+            for (int i = 0; i < keysToRemove.Count; ++i)
+            {
+                RasterAnimations.Remove(keysToRemove[i]);
+            }
+
+            // remove docket from dictionary; unload its bundle
+            if (isCharacter)
+            {
+                CharacterDossiers.Remove(id);
+                bundleName = CharacterDossier.GetBundleName(id);
+            }
+            else
+            {
+                EnvironmentCharts.Remove(id);
+                bundleName = EnvironmentChart.GetBundleName(id);
+            }
+            UnloadAssetBundle(bundleName);
+        }
+
+        private void LoadAssetPack<T>(int id) where T : Docket
+        {
+            if (id == 0) return;
+
+            bool isCharacter = typeof(T) == typeof(CharacterDossier);
+            Docket dk = isCharacter ? (Docket)CharacterDossiers[id] : (Docket)EnvironmentCharts[id];
+
+            // load the asset pack asset bundle
+            AssetBundle ab = LoadAssetBundle(dk.AssetPackBundleName);
+
+            if (ab == null) return;
+
+            // add all of its animations to the dictionary of loaded animations
+            if (isCharacter)
+            {
+                foreach (StateAnimation sa in ((CharacterDossier)dk).GraphicData.StateAnimations)
+                {
+                    AddAnimation(ab, sa.animationName);
+                }
+            }
+            else
+            {
+                foreach (string animationName in ((EnvironmentChart)dk).AnimationNames)
+                {
+                    AddAnimation(ab, animationName);
+                }
+            }
+        }
+
+        private void UnloadAssetPack<T>(int id) where T : Docket
+        {
+            if (id == 0) return;
+
+            bool isCharacter = typeof(T) == typeof(CharacterDossier);
+            Docket dk = isCharacter ? (Docket)CharacterDossiers[id] : (Docket)EnvironmentCharts[id];
+
+            // remove all remaining raster animations for this asset pack
+            if (isCharacter)
+            {
+                foreach (StateAnimation sa in ((CharacterDossier)dk).GraphicData.StateAnimations)
+                {
+                    RasterAnimations.Remove(sa.animationName);
+                }
+            }
+            else
+            {
+                foreach (string animationName in ((EnvironmentChart)dk).AnimationNames)
+                {
+                    RasterAnimations.Remove(animationName);
+                }
+            }
+
+            // unload the asset pack asset bundle
+            UnloadAssetBundle(dk.AssetPackBundleName);
+        }
+
+        // CHARACTER & ENVIRONMENT METHODS
+
+        public CharacterDossier LoadCharacterDossier(int characterID) => LoadDocket<CharacterDossier>(characterID);
+        public void UnloadCharacterDossier(int characterID) => UnloadDocket<CharacterDossier>(characterID);
+        public EnvironmentChart LoadEnvironmentChart(int environmentID) => LoadDocket<EnvironmentChart>(environmentID);
+        public void UnloadEnvironmentChart(int environmentID) => UnloadDocket<EnvironmentChart>(environmentID);
 
         private void LoadCharacterDossier(GameObjectBody body)
         {
-            CharacterDossier cd = LoadCharacterDossier(body.CharacterID);
+            CharacterDossier cd = LoadDocket<CharacterDossier>(body.CharacterID);
 
             if (cd != null)
             {
@@ -266,124 +465,18 @@ namespace KRG
             }
         }
 
-        public CharacterDossier LoadCharacterDossier(int characterID)
-        {
-            if (characterID == 0)
-            {
-                return null;
-            }
-
-            CharacterDossier cd;
-
-            if (CharacterDossiers.ContainsKey(characterID))
-            {
-                cd = CharacterDossiers[characterID];
-
-                if (cd != null)
-                {
-                    return cd;
-                }
-
-                CharacterDossiers.Remove(characterID);
-            }
-
-            string bundleName = CharacterDossier.GetBundleName(characterID);
-
-            AssetBundle assetBundle = LoadAssetBundle(bundleName);
-
-            if (assetBundle == null)
-            {
-                G.U.Err("Failed to load AssetBundle for characterID {0}.", characterID);
-                return null;
-            }
-
-            CharacterDossier[] dossiers = assetBundle.LoadAllAssets<CharacterDossier>();
-
-            if (dossiers.Length == 0)
-            {
-                G.U.Err("Failed to load CharacterDossiers from AssetBundle {0}.", bundleName);
-                return null;
-            }
-
-            cd = dossiers[0];
-
-            if (dossiers.Length > 1)
-            {
-                G.U.Warn("Multiple CharacterDossiers in AssetBundle {0}. Falling back to {1}.",
-                    bundleName, cd.FileName);
-            }
-
-            CharacterDossiers.Add(characterID, cd);
-
-            string idleAnimName = cd.GraphicData.IdleAnimationName;
-
-            if (!string.IsNullOrWhiteSpace(idleAnimName))
-            {
-                AddAnimation(assetBundle, idleAnimName);
-            }
-
-            return cd;
-        }
-
-        public void UnloadCharacterDossier(int characterID)
-        {
-            CharacterDossier cd = CharacterDossiers[characterID];
-
-            // remove all remaining raster animations for this character
-            // NOTE: this includes default animations such as Idle
-            string keyPrefix = cd.FileName + "_";
-            List<string> keysToRemove = RasterAnimations
-                .Where(pair => pair.Key.StartsWith(keyPrefix, System.StringComparison.Ordinal))
-                .Select(pair => pair.Key)
-                .ToList();
-            foreach (string key in keysToRemove)
-            {
-                RasterAnimations.Remove(key);
-            }
-
-            CharacterDossiers.Remove(characterID);
-
-            string bundleName = CharacterDossier.GetBundleName(characterID);
-
-            UnloadAssetBundle(bundleName);
-        }
-
         /// <summary>
-        /// This will be called automatically for each character
-        /// in a gameplay scene when the scene is started.
+        /// LoadCharacterAssetPack will be called automatically for each
+        /// character in a gameplay scene when the scene is started.
         /// Call this manually ONLY in the case where
         /// you need to spawn a character dynamically.
         /// </summary>
-        public void LoadCharacterAssetPack(int characterID)
-        {
-            CharacterDossier cd = CharacterDossiers[characterID];
+        public void LoadCharacterAssetPack(int characterID) => LoadAssetPack<CharacterDossier>(characterID);
+        public void UnloadCharacterAssetPack(int characterID) => UnloadAssetPack<CharacterDossier>(characterID);
+        public void LoadEnvironmentAssetPack(int environmentID) => LoadAssetPack<EnvironmentChart>(environmentID);
+        public void UnloadEnvironmentAssetPack(int environmentID) => UnloadAssetPack<EnvironmentChart>(environmentID);
 
-            AssetBundle ab = LoadAssetBundle(cd.AssetPackBundleName);
-
-            if (ab == null) return;
-
-            foreach (StateAnimation sa in cd.GraphicData.StateAnimations)
-            {
-                if (!RasterAnimations.ContainsKey(sa.animationName))
-                {
-                    RasterAnimation ra = ab.LoadAsset<RasterAnimation>(sa.animationName);
-
-                    RasterAnimations.Add(sa.animationName, ra);
-                }
-            }
-        }
-
-        public void UnloadCharacterAssetPack(int characterID)
-        {
-            CharacterDossier cd = CharacterDossiers[characterID];
-
-            foreach (StateAnimation sa in cd.GraphicData.StateAnimations)
-            {
-                RasterAnimations.Remove(sa.animationName);
-            }
-
-            UnloadAssetBundle(cd.AssetPackBundleName);
-        }
+        // ANIMATION METHODS
 
         /// <summary>
         /// Use this only if you need a default EDITOR animation other than Idle.
@@ -411,20 +504,16 @@ namespace KRG
         {
             RasterAnimation ra;
 
+            // look in dictionary for existing animation; remove stale animations
             if (RasterAnimations.ContainsKey(animationName))
             {
                 ra = RasterAnimations[animationName];
-
-                if (ra != null)
-                {
-                    return;
-                }
-
+                if (ra != null) return;
                 RasterAnimations.Remove(animationName);
             }
 
+            // load animation and add to dictionary of loaded animations
             ra = assetBundle.LoadAsset<RasterAnimation>(animationName);
-
             RasterAnimations.Add(animationName, ra);
         }
 
@@ -434,89 +523,6 @@ namespace KRG
             {
                 RasterAnimations.Remove(animationName);
             }
-        }
-
-        // ENVIRONMENT ASSET BUNDLES
-
-        private void LoadEnvironmentAssets(int environmentID)
-        {
-            string bundleName = EnvironmentChart.GetBundleName(environmentID);
-
-            AssetBundle assetBundle = LoadAssetBundle(bundleName);
-
-            if (assetBundle == null)
-            {
-                G.U.Err("Failed to load AssetBundle for environmentID {0}.", environmentID);
-                return;
-            }
-
-            EnvironmentChart[] charts = assetBundle.LoadAllAssets<EnvironmentChart>();
-
-            if (charts.Length == 0)
-            {
-                G.U.Err("Failed to load EnvironmentCharts from AssetBundle {0}.", bundleName);
-                return;
-            }
-
-            EnvironmentChart ec = charts[0];
-
-            if (charts.Length > 1)
-            {
-                G.U.Warn("Multiple EnvironmentCharts in AssetBundle {0}. Falling back to {1}.",
-                    bundleName, ec.FileName);
-            }
-
-            if (!EnvironmentCharts.ContainsKey(environmentID))
-            {
-                EnvironmentCharts.Add(environmentID, ec);
-                EnvironmentIDAdded?.Invoke(environmentID);
-                LoadEnvironmentAssetPack(environmentID);
-            }
-        }
-
-        private void UnloadAllEnvironmentAssets()
-        {
-            while (EnvironmentCharts.Count > 0)
-            {
-                var pair = EnvironmentCharts.First();
-                int id = pair.Key;
-                var ec = pair.Value;
-                UnloadEnvironmentAssetPack(id);
-                EnvironmentIDRemoved?.Invoke(id);
-                UnloadAssetBundle(ec.BundleName);
-                EnvironmentCharts.Remove(id);
-            }
-        }
-
-        private void LoadEnvironmentAssetPack(int environmentID)
-        {
-            EnvironmentChart ec = EnvironmentCharts[environmentID];
-
-            AssetBundle ab = LoadAssetBundle(ec.AssetPackBundleName);
-
-            if (ab == null) return;
-
-            foreach (string animationName in ec.AnimationNames)
-            {
-                if (!RasterAnimations.ContainsKey(animationName))
-                {
-                    RasterAnimation ra = ab.LoadAsset<RasterAnimation>(animationName);
-
-                    RasterAnimations.Add(animationName, ra);
-                }
-            }
-        }
-
-        private void UnloadEnvironmentAssetPack(int environmentID)
-        {
-            EnvironmentChart ec = EnvironmentCharts[environmentID];
-
-            foreach (string animationName in ec.AnimationNames)
-            {
-                RasterAnimations.Remove(animationName);
-            }
-
-            UnloadAssetBundle(ec.AssetPackBundleName);
         }
 
         // OLD SHIZ

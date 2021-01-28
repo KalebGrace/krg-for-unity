@@ -24,7 +24,12 @@ namespace KRG
 
         [Header("Environment Data")]
 
-        public EnvironmentData Data;
+        // DO NOT STORE REFERENCES TO BUNDLED ASSETS
+        // strings identifying assets are OK
+        // ---
+        // (references will be null since the asset pack is not loaded)
+
+        public Texture2D MapIcon;
 
         [Header("Animation Data")]
 
