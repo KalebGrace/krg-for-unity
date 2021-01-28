@@ -2,7 +2,7 @@ namespace KRG
 {
     public interface ISave
     {
-        void OnSaving(ref SaveFile sf);
-        void OnLoading(SaveFile sf);
+        void OnSaving(SaveContext context, ref SaveFile sf);
+        void OnLoading(SaveContext context, SaveFile sf);
     }
 }

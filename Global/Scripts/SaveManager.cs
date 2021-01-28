@@ -8,15 +8,14 @@ namespace KRG
     {
         public override float priority => 5;
 
-        // SAVE FILE
-
         private SaveFile m_SaveFile;
         private float m_TimeLoaded;
 
-        private readonly object m_SaveLock = new object();
+        private readonly object m_MetaGameLock = new object();
+        private readonly object m_SaveFileLock = new object();
 
-        public delegate void SaveFileWriteHandler(ref SaveFile sf);
-        public delegate void SaveFileReadHandler(SaveFile sf);
+        public delegate void SaveFileWriteHandler(SaveContext context, ref SaveFile sf);
+        public delegate void SaveFileReadHandler(SaveContext context, SaveFile sf);
 
         private event SaveFileWriteHandler Saving;
         private event SaveFileReadHandler SavingCompleted;
@@ -63,6 +62,16 @@ namespace KRG
             {
                 SavingCompleted -= iSaveComplete.OnSavingCompleted;
                 LoadingCompleted -= iSaveComplete.OnLoadingCompleted;
+            }
+        }
+
+        public virtual void MetaSave()
+        {
+            lock (m_MetaGameLock)
+            {
+                SaveFile sf = new SaveFile();
+                Saving?.Invoke(SaveContext.MetaGame, ref sf);
+                SavingCompleted?.Invoke(SaveContext.MetaGame, sf);
             }
         }
 
@@ -181,8 +190,10 @@ namespace KRG
 
         public void SaveCheckpoint(AlphaBravo checkpointName = 0)
         {
-            lock(m_SaveLock)
+            lock(m_SaveFileLock)
             {
+                MetaSave();
+
                 SaveFile oldSF = m_SaveFile;
 
                 m_SaveFile = SaveFile.New();
@@ -197,11 +208,11 @@ namespace KRG
 
                 m_SaveFile.switchStates = m_SwitchStates;
 
-                Saving?.Invoke(ref m_SaveFile);
+                Saving?.Invoke(SaveContext.SaveFile, ref m_SaveFile);
 
                 WriteToDisk(m_SaveFile);
 
-                SavingCompleted?.Invoke(m_SaveFile);
+                SavingCompleted?.Invoke(SaveContext.SaveFile, m_SaveFile);
             }
         }
 
@@ -219,16 +230,16 @@ namespace KRG
 
         private void Load(SaveFile sf)
         {
-            lock(m_SaveLock)
+            lock(m_SaveFileLock)
             {
                 //TODO: add this for implementing quicksaves/hardsaves
                 //ReadFromDisk();
 
                 m_SwitchStates = sf.switchStates;
 
-                Loading?.Invoke(sf);
+                Loading?.Invoke(SaveContext.SaveFile, sf);
 
-                LoadingCompleted?.Invoke(sf);
+                LoadingCompleted?.Invoke(SaveContext.SaveFile, sf);
             }
         }
 

@@ -2,7 +2,7 @@ namespace KRG
 {
     public interface ISaveComplete : ISave
     {
-        void OnSavingCompleted(SaveFile sf);
-        void OnLoadingCompleted(SaveFile sf);
+        void OnSavingCompleted(SaveContext context, SaveFile sf);
+        void OnLoadingCompleted(SaveContext context, SaveFile sf);
     }
 }

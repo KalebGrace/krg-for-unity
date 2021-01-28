@@ -30,13 +30,17 @@ namespace KRG
 
         // ISAVE METHODS
 
-        public virtual void OnSaving(ref SaveFile sf)
+        public virtual void OnSaving(SaveContext context, ref SaveFile sf)
         {
+            if (context != SaveContext.SaveFile) return;
+
             sf.teleporters = m_Teleporters.ToArray();
         }
 
-        public virtual void OnLoading(SaveFile sf)
+        public virtual void OnLoading(SaveContext context, SaveFile sf)
         {
+            if (context != SaveContext.SaveFile) return;
+
             m_Teleporters.Clear();
             if (sf.teleporters != null)
             {

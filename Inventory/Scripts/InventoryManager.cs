@@ -331,8 +331,10 @@ namespace KRG
 
         // ISAVE METHODS
 
-        public virtual void OnSaving(ref SaveFile sf)
+        public virtual void OnSaving(SaveContext context, ref SaveFile sf)
         {
+            if (context != SaveContext.SaveFile) return;
+
             sf.itemInstancesCollected = new List<int>(m_ItemInstancesCollected);
             sf.items = new Dictionary<int, float>(m_Items);
             sf.stats = new Dictionary<int, float>(m_Stats);
@@ -345,8 +347,10 @@ namespace KRG
             sf.autoMaps = m_AutoMaps.Values.ToArray();
         }
 
-        public virtual void OnLoading(SaveFile sf)
+        public virtual void OnLoading(SaveContext context, SaveFile sf)
         {
+            if (context != SaveContext.SaveFile) return;
+
             m_ItemInstancesCollected = new List<int>(sf.itemInstancesCollected);
             m_Items = new Dictionary<int, float>(sf.items);
             m_Stats = new Dictionary<int, float>(sf.stats);

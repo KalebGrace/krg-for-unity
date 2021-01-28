@@ -197,7 +197,7 @@ namespace KRG
         }
 
         /// <summary>
-        /// Quits the application.
+        /// Quits the application. The point of no return.
         /// </summary>
         public virtual void Quit()
         {
