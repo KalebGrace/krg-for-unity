@@ -1,9 +1,43 @@
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace KRG
 {
-    public static class Vector3EM // Vector3 extension methods
+    public static class ExtensionMethods
     {
+        // COLLIDER
+
+        public static GameObjectBody GetBody(this Collider other) => other.GetComponent<GameObjectBody>();
+
+        public static bool IsFromAttack(this Collider other)
+        {
+            GameObjectBody body = other.GetBody();
+            return body != null && body.IsAttack;
+        }
+
+        public static bool IsFromCharacter(this Collider other)
+        {
+            GameObjectBody body = other.GetBody();
+            return body != null && body.IsCharacter;
+        }
+
+        // COLLISION
+
+        public static GameObjectBody GetBody(this Collision collision) => collision.collider.GetComponent<GameObjectBody>();
+
+        public static bool IsFromAttack(this Collision collision)
+        {
+            GameObjectBody body = collision.GetBody();
+            return body != null && body.IsAttack;
+        }
+
+        public static bool IsFromCharacter(this Collision collision)
+        {
+            GameObjectBody body = collision.GetBody();
+            return body != null && body.IsCharacter;
+        }
+
+        // VECTOR3
+
         public delegate float V3Func(float value);
 
         public static Vector2 Abs(this Vector3 v3)
