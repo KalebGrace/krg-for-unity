@@ -152,7 +152,10 @@ namespace KRG
         public void PlayMusic(string fmodEvent, float outgoingMusicFadeOutSeconds = MUSIC_FADE_OUT_SECONDS)
         {
             if (string.IsNullOrWhiteSpace(fmodEvent)) return;
-#if NS_FMOD && !(UNITY_EDITOR && EDITOR_MUSIC_OFF)
+#if UNITY_EDITOR
+            if (!G.U.IsEditorMusicEnabled) return;
+#endif
+#if NS_FMOD
             if (_musicFmodEvent == fmodEvent) return;
             StopMusic(outgoingMusicFadeOutSeconds);
             //TODO: if music was stopped, fade in new music to make a proper crossfade,
@@ -167,7 +170,10 @@ namespace KRG
 
         public void StopMusic(float fadeOutSeconds = 0)
         {
-#if NS_FMOD && !(UNITY_EDITOR && EDITOR_MUSIC_OFF)
+#if UNITY_EDITOR
+            if (!G.U.IsEditorMusicEnabled) return;
+#endif
+#if NS_FMOD
             if (!_musicInstance.hasHandle()) return;
 #if NS_DG_TWEENING
             _musicStopTween?.Complete();

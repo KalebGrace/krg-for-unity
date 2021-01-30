@@ -18,6 +18,7 @@ namespace KRG
             // CONSTANTS
 
             public const string DEBUG_MODE_KEY = "KRG.DebugMode";
+            public const string EDITOR_MUSIC_KEY = "KRG.EditorMusic";
 
             private const string FORMAT_MAGIC_STRING = "{0";
 
@@ -54,8 +55,10 @@ namespace KRG
 
 #if UNITY_EDITOR
             public static bool IsDebugMode => UnityEditor.EditorPrefs.GetBool(DEBUG_MODE_KEY, false);
+            public static bool IsEditorMusicEnabled => UnityEditor.EditorPrefs.GetBool(EDITOR_MUSIC_KEY, true);
 #else
             public static bool IsDebugMode => false;
+            public static bool IsEditorMusicEnabled => true;
 #endif
 
             // PLAY MODE? EDIT MODE?
