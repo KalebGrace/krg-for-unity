@@ -1,11 +1,13 @@
 ﻿# KRG #
 
-__Knowledgeably Reaching God__
-
-a Unity 2019 framework library
+__KRG__ a Unity 2019 framework library
 
 KRG serves as a launchpad for initializing any Unity project and providing core functionality for a variety of purposes.
 KRG also provides support for many third-party libraries, such as TextMesh Pro.
+
+## NEW PREREQUISITE ##
+
+You will need this: https://github.com/k76-0G/0G
 
 ## One-Time Setup ##
 
