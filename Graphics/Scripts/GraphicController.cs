@@ -350,7 +350,8 @@ namespace KRG
                     FrameSequenceStartHandler = OnFrameSequenceStart,
                     FrameSequenceStopHandler = OnFrameSequenceStop,
                     FrameSequencePlayLoopStartHandler = OnFrameSequencePlayLoopStart,
-                    FrameSequencePlayLoopStopHandler = OnFrameSequencePlayLoopStop
+                    FrameSequencePlayLoopStopHandler = OnFrameSequencePlayLoopStop,
+                    InfiniteLoopReplacement = m_Body != null && m_Body.IsGalleryAnimation ? 3 : 0,
                 };
                 m_RasterAnimationState = new RasterAnimationState(rasterAnimation, options);
                 m_AnimationImageIndex = m_RasterAnimationState.frameSequenceFromFrame - 1; // 1-based -> 0-based

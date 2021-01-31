@@ -6,6 +6,6 @@ namespace KRG
         public RasterAnimationHandler FrameSequenceStopHandler;
         public RasterAnimationHandler FrameSequencePlayLoopStartHandler;
         public RasterAnimationHandler FrameSequencePlayLoopStopHandler;
-        public bool IgnoreInfiniteLoops;
+        public int InfiniteLoopReplacement; // 0 will retain the infinite loop(s)
     }
 }

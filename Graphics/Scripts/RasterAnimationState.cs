@@ -218,7 +218,7 @@ namespace KRG
             }
             if (playCount >= FrameSequence.INFINITE_PLAY_COUNT)
             {
-                playCount = m_Options.IgnoreInfiniteLoops ? 1 : int.MaxValue;
+                playCount = m_Options.InfiniteLoopReplacement > 0 ? m_Options.InfiniteLoopReplacement : int.MaxValue;
             }
             _frameSequenceIndex = frameSequenceIndex;
             _frameSequenceName = _rasterAnimation.GetFrameSequenceName(frameSequenceIndex);
