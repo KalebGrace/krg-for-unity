@@ -62,6 +62,8 @@ namespace KRG
 
         private System.Action m_ParticleSystemStopCallback;
 
+        private RasterAnimationLoopMode m_RasterAnimationLoopMode;
+
         private RasterAnimationState m_RasterAnimationState;
 
         private RawImage m_RawImage;
@@ -354,6 +356,7 @@ namespace KRG
                     InfiniteLoopReplacement = m_Body != null && m_Body.IsGalleryAnimation ? 3 : 0,
                 };
                 m_RasterAnimationState = new RasterAnimationState(rasterAnimation, options);
+                m_RasterAnimationState.SetLoopMode(m_RasterAnimationLoopMode);
                 m_AnimationImageIndex = m_RasterAnimationState.frameSequenceFromFrame - 1; // 1-based -> 0-based
             }
 
@@ -472,6 +475,26 @@ namespace KRG
             }
 
             m_AnimationImageIndex = frameNumber - 1;
+        }
+
+        public void GoToFrameSequenceWithPreAction(int actionId)
+        {
+            // GraphicController uses zero-based image index (m_AnimationImageIndex)
+            // RasterAnimation uses one-based frame number (frameNumber)
+
+            if (!m_RasterAnimationState.GoToFrameSequenceWithPreAction(actionId, ref m_AnimationFrameListIndex, out int frameNumber))
+            {
+                // do nothing
+                return;
+            }
+
+            m_AnimationImageIndex = frameNumber - 1;
+        }
+
+        public void SetLoopMode(RasterAnimationLoopMode loopMode)
+        {
+            m_RasterAnimationLoopMode = loopMode;
+            m_RasterAnimationState?.SetLoopMode(loopMode);
         }
 
         private void OnFrameSequenceStart(RasterAnimationState state)
@@ -659,6 +682,7 @@ namespace KRG
             if (m_StandaloneAnimation == null) return;
             SetAnimation(m_AnimationContext, m_StandaloneAnimation);
             m_RasterAnimationState = new RasterAnimationState(m_StandaloneAnimation, options);
+            m_RasterAnimationState.SetLoopMode(m_RasterAnimationLoopMode);
             m_AnimationImageIndex = m_RasterAnimationState.frameSequenceFromFrame - 1; // 1-based -> 0-based
         }
 

@@ -40,6 +40,11 @@ namespace KRG
         private int _loopIndex;
 
         /// <summary>
+        /// The current loop mode. This is different from the raster animation's "Loop" setting.
+        /// </summary>
+        private RasterAnimationLoopMode _loopMode;
+
+        /// <summary>
         /// The current frame sequence index (zero-based).
         /// </summary>
         private int _frameSequenceIndex;
@@ -112,7 +117,7 @@ namespace KRG
             {
                 frameNumber = _frameSequenceFrameList[++frameListIndex];
             }
-            else if (_frameSequencePlayIndex < _frameSequencePlayCount - 1)
+            else if (CheckFrameSequenceLoop())
             {
                 FrameSequencePlayLoopStopped?.Invoke(this);
                 ++_frameSequencePlayIndex;
@@ -127,7 +132,7 @@ namespace KRG
                 frameListIndex = 0;
                 frameNumber = _frameSequenceFrameList[0];
             }
-            else if (_rasterAnimation.DoesLoop(_loopIndex))
+            else if (CheckAnimationLoop())
             {
                 InvokeFrameSequenceStopHandlers();
                 ++_loopIndex;
@@ -161,7 +166,7 @@ namespace KRG
                 frameListIndex = 0;
                 frameNumber = _frameSequenceFrameList[0];
             }
-            else if (_rasterAnimation.DoesLoop(_loopIndex))
+            else if (CheckAnimationLoop())
             {
                 InvokeFrameSequenceStopHandlers();
                 ++_loopIndex;
@@ -178,10 +183,52 @@ namespace KRG
             return true;
         }
 
+        /// <summary>
+        /// Goes to the current or next frame sequence with the specified pre-action ID.
+        /// NOTE: It will wrap around the animation to check earilier frame sequences as well.
+        /// </summary>
+        /// <param name="actionId">The specified pre-action ID.</param>
+        /// <param name="frameListIndex">Frame list index.</param>
+        /// <param name="frameNumber">Frame number (one-based).</param>
+        /// <returns><c>true</c>, if this operation was successful, <c>false</c> otherwise.</returns>
+        public virtual bool GoToFrameSequenceWithPreAction(int actionId, ref int frameListIndex, out int frameNumber)
+        {
+            bool doIndex(int i, ref int fListIndex, out int fNumber)
+            {
+                fNumber = 0;
+                List<int> acts = _rasterAnimation.GetFrameSequencePreActions(i);
+                for (int j = 0; j < acts.Count; ++j)
+                {
+                    if (acts[j] == actionId)
+                    {
+                        InvokeFrameSequenceStopHandlers();
+                        SetFrameSequence(i);
+                        fListIndex = 0;
+                        fNumber = _frameSequenceFrameList[0];
+                        return true;
+                    }
+                }
+                return false;
+            }
+
+            frameNumber = 0;
+            for (int i = _frameSequenceIndex; i < _rasterAnimation.frameSequenceCount; ++i)
+            {
+                if (doIndex(i, ref frameListIndex, out frameNumber)) return true;
+            }
+            for (int i = 0; i < _frameSequenceIndex; ++i)
+            {
+                if (doIndex(i, ref frameListIndex, out frameNumber)) return true;
+            }
+            return false;
+        }
+
         public void Reset()
         {
             SetFrameSequence(0);
         }
+
+        public void SetLoopMode(RasterAnimationLoopMode loopMode) => _loopMode = loopMode;
 
         // PROTECTED METHODS
 
@@ -232,6 +279,33 @@ namespace KRG
         }
 
         // PRIVATE METHODS
+
+        private bool CheckAnimationLoop()
+        {
+            switch (_loopMode)
+            {
+                case RasterAnimationLoopMode.LoopAnimationOn:
+                    return true;
+                case RasterAnimationLoopMode.LoopAnimationOff:
+                case RasterAnimationLoopMode.LoopNothing:
+                    return false;
+                default:
+                    return _rasterAnimation.DoesLoop(_loopIndex);
+            }
+        }
+
+        private bool CheckFrameSequenceLoop()
+        {
+            switch (_loopMode)
+            {
+                case RasterAnimationLoopMode.LoopSequence:
+                    return true;
+                case RasterAnimationLoopMode.LoopNothing:
+                    return false;
+                default:
+                    return _frameSequencePlayIndex < _frameSequencePlayCount - 1;
+            }
+        }
 
         private void InvokeFrameSequenceStartHandlers()
         {
