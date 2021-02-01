@@ -2,8 +2,7 @@ using UnityEngine;
 
 namespace KRG
 {
-    [ExecuteAlways]
-    public class GalleryCharacter : MonoBehaviour
+    public class GalleryEntity : MonoBehaviour
     {
         private Material m_Material;
         private MeshRenderer m_Renderer;
