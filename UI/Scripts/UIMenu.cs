@@ -26,6 +26,7 @@ namespace KRG
 
         // PRIVATE FIELDS
 
+        private CanvasGroup m_CanvasGroup;
         private List<Item> m_Items = new List<Item>();
         private int m_PrevSelectedItemIndex = -1;
 
@@ -76,6 +77,11 @@ namespace KRG
         }
 
         // MONOBEHAVIOUR METHODS
+
+        private void Awake()
+        {
+            m_CanvasGroup = GetComponentInChildren<CanvasGroup>(true);
+        }
 
         private void Update()
         {
@@ -212,6 +218,11 @@ namespace KRG
             {
                 MenuItem.GetComponent<Button>().Select();
             }
+        }
+
+        public void SetVisible(bool value)
+        {
+            m_CanvasGroup.alpha = value ? 1 : 0;
         }
     }
 }
