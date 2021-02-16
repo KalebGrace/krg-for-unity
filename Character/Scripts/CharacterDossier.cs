@@ -54,17 +54,20 @@ namespace KRG
                 GraphicData.IdleAnimationName = FileName + IDLE_ANIMATION_SUFFIX;
             }
 
-            for (int i = 0; i < GraphicData.StateAnimations.Count; ++i)
+            if (GraphicData.StateAnimations != null)
             {
-                StateAnimation sa = GraphicData.StateAnimations[i];
-
-                string aniName = sa.animationName;
-
-                if (!string.IsNullOrWhiteSpace(aniName) && !aniName.Contains("_"))
+                for (int i = 0; i < GraphicData.StateAnimations.Count; ++i)
                 {
-                    sa.animationName = string.Format("{0}_{1}_RasterAnimation", FileName, aniName);
+                    StateAnimation sa = GraphicData.StateAnimations[i];
 
-                    GraphicData.StateAnimations[i] = sa;
+                    string aniName = sa.animationName;
+
+                    if (!string.IsNullOrWhiteSpace(aniName) && !aniName.Contains("_"))
+                    {
+                        sa.animationName = string.Format("{0}_{1}_RasterAnimation", FileName, aniName);
+
+                        GraphicData.StateAnimations[i] = sa;
+                    }
                 }
             }
         }
