@@ -25,7 +25,7 @@ namespace KRG
 
         // METHODS
 
-        protected virtual void OnValidate()
+        public virtual void OnValidate()
         {
             FileName = name.Replace(DocketSuffix, "");
 
