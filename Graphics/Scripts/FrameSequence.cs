@@ -4,6 +4,10 @@ using System.Text;
 using UnityEngine;
 using UnityEngine.Serialization;
 
+#if ODIN_INSPECTOR
+using Sirenix.OdinInspector;
+#endif
+
 namespace KRG
 {
     [System.Serializable]
@@ -29,27 +33,37 @@ namespace KRG
         [SerializeField, HideInInspector, FormerlySerializedAs("m_serializedVersion")]
         private int _serializedVersion = VERSION;
 
-        [Header("Frame Sequence")]
-
         [Tooltip("An optional name you may give this frame sequence.")]
         [FormerlySerializedAs("m_name")]
         public string _name = default;
 
+#if ODIN_INSPECTOR
+        [FoldoutGroup("Data", expanded: false)]
+#endif
         [SerializeField]
         [Tooltip("Actions to perform before the sequence starts.")]
         [Enum(typeof(FrameSequenceAction))]
         private List<int> _preSequenceActions = default;
 
+#if ODIN_INSPECTOR
+        [FoldoutGroup("Data")]
+#endif
         [Delayed]
         [Tooltip("Commas seperate frames/groups. 1-3-1 means 1,2,3,2,1. 1-3x2-1 means 1-3,3-1 means 1,2,3,3,2,1.")]
         public string _frames = default;
 
+#if ODIN_INSPECTOR
+        [FoldoutGroup("Data")]
+#endif
         [SerializeField, ReadOnly]
         [Tooltip("Count of frames in a single playthrough of this sequence.")]
 #pragma warning disable IDE0052 // Remove unread private members
         private int _frameCount;
 #pragma warning restore IDE0052 // Remove unread private members
 
+#if ODIN_INSPECTOR
+        [FoldoutGroup("Data")]
+#endif
         [SerializeField, ReadOnly]
         [Tooltip("This is how the code sees your frames input.")]
 #pragma warning disable IDE0052 // Remove unread private members
@@ -59,6 +73,9 @@ namespace KRG
         [SerializeField, HideInInspector]
         private List<int> _frameList = new List<int>();
 
+#if ODIN_INSPECTOR
+        [FoldoutGroup("Data")]
+#endif
         [SerializeField]
         [Tooltip("Count of playthroughs, or \"loops\", of this sequence." +
             " Anything with a value of 100 or higher will be considered an infinite loop" +
@@ -66,10 +83,16 @@ namespace KRG
         [FormerlySerializedAs("m_playCount")]
         private RangeInt _playCount = new RangeInt();
 
+#if ODIN_INSPECTOR
+        [FoldoutGroup("Data")]
+#endif
         [SerializeField]
         [Tooltip("Audio play style, as applicable.")]
         private AudioPlayStyle _audioPlayStyle = default;
 
+#if ODIN_INSPECTOR
+        [FoldoutGroup("Data")]
+#endif
         [SerializeField]
         [Tooltip("Audio event to play upon running this sequence.")]
         [AudioEvent]

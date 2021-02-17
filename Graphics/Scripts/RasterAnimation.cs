@@ -7,6 +7,10 @@ using UnityEngine.Serialization;
 using uGIF;
 #endif
 
+#if ODIN_INSPECTOR
+using Sirenix.OdinInspector;
+#endif
+
 namespace KRG
 {
     [CreateAssetMenu(
@@ -88,6 +92,9 @@ namespace KRG
 
         [Header("Frame Sequences")]
 
+#if ODIN_INSPECTOR
+        [TableList]
+#endif
         [Order(20)]
         [FormerlySerializedAs("m_frameSequences")]
         public FrameSequence[] _frameSequences = default;
