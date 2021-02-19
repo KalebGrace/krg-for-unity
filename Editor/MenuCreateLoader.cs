@@ -1,17 +1,17 @@
-using System.IO;
+﻿using System.IO;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-namespace KRG
+namespace _0G.Legacy
 {
-    public static class KRGMenuCreateLoader
+    public static class MenuCreateLoader
     {
-        [MenuItem("KRG/Create KRGLoader", false, 0)]
+        [MenuItem("0G/Legacy/Create KRGLoader", false, 0)]
         public static void CreateLoader()
         {
-            const string s = "Assets/KRG/Global/Prefabs/KRGLoaderOriginal.prefab";
+            const string s = "Assets/_0G/Legacy/KRGLoaderOriginal.prefab";
             const string t = "Assets/KRGLoader.prefab";
             //see if the prefab source and target exist
             if (!File.Exists(s))

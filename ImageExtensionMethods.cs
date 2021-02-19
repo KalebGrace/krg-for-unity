@@ -1,6 +1,6 @@
-using UnityEngine.UI;
+﻿using UnityEngine.UI;
 
-namespace KRG
+namespace _0G.Legacy
 {
     public static class ImageExtensionMethods
     {

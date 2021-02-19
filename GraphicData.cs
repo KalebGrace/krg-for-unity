@@ -1,7 +1,7 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
-namespace KRG
+namespace _0G.Legacy
 {
     [System.Serializable]
     public struct GraphicData

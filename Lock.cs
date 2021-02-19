@@ -1,6 +1,6 @@
-using _0G;
+﻿using _0G;
 
-namespace KRG
+namespace _0G.Legacy
 {
     public class Lock : Gate { }
 }

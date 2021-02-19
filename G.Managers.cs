@@ -1,8 +1,8 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
-namespace KRG
+namespace _0G.Legacy
 {
     /// <summary>
     /// G.Managers.cs is a partial class of G (G.cs).
@@ -118,7 +118,7 @@ namespace KRG
             foreach (var m in m_ManagerEventsOnApplicationQuit.Values) m.OnApplicationQuit();
         }
 
-        // PRIVATE KRG METHODS
+        // PRIVATE _0G.Legacy METHODS
 
         void DestroyManagers()
         {
@@ -127,7 +127,7 @@ namespace KRG
             foreach (var m in reversedList) m.OnDestroy();
         }
 
-        // PUBLIC KRG METHODS
+        // PUBLIC _0G.Legacy METHODS
 
         public void InvokeManagers<T>(System.Action<T> action)
         {

@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -6,7 +6,7 @@ using UnityEngine;
 using DG.Tweening;
 #endif
 
-namespace KRG
+namespace _0G.Legacy
 {
     public class TimeThread
     {

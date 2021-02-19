@@ -1,7 +1,7 @@
 using System.Text;
 using UnityEngine;
 
-namespace KRG
+namespace _0G.Legacy
 {
     /// <summary>
     /// G.U.cs is a partial class of G (G.cs).
@@ -17,8 +17,8 @@ namespace KRG
         {
             // CONSTANTS
 
-            public const string DEBUG_MODE_KEY = "KRG.DebugMode";
-            public const string EDITOR_MUSIC_KEY = "KRG.EditorMusic";
+            public const string DEBUG_MODE_KEY = "0G.Legacy.DebugMode";
+            public const string EDITOR_MUSIC_KEY = "0G.Legacy.EditorMusic";
 
             private const string FORMAT_MAGIC_STRING = "{0";
 

@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using UnityEngine;
 
 #if NS_DG_TWEENING
@@ -10,7 +10,7 @@ using FMOD.Studio;
 using FMODUnity;
 #endif
 
-namespace KRG
+namespace _0G.Legacy
 {
     public class AudioManager : Manager, IOnDestroy
     {

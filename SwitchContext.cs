@@ -1,4 +1,4 @@
-namespace KRG
+﻿namespace _0G.Legacy
 {
     /// <summary>
     /// The MonoBehaviour we wish to operate on.

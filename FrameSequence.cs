@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Text;
 using UnityEngine;
@@ -8,7 +8,7 @@ using UnityEngine.Serialization;
 using Sirenix.OdinInspector;
 #endif
 
-namespace KRG
+namespace _0G.Legacy
 {
     [System.Serializable]
     public sealed class FrameSequence

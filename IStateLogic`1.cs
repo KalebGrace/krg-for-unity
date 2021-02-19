@@ -1,4 +1,4 @@
-namespace KRG
+﻿namespace _0G.Legacy
 {
     public interface IStateLogic<TOwner> where TOwner : IStateOwner
     {

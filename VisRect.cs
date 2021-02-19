@@ -1,6 +1,6 @@
-using UnityEngine;
+﻿using UnityEngine;
 
-namespace KRG
+namespace _0G.Legacy
 {
     /// <summary>
     /// A VisRect GameObject should have a RectTransform and this VisRect script.

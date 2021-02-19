@@ -1,6 +1,6 @@
-using UnityEngine.Tilemaps;
+﻿using UnityEngine.Tilemaps;
 
-namespace KRG
+namespace _0G.Legacy
 {
     [System.Serializable]
     public struct AutoMapPaletteData

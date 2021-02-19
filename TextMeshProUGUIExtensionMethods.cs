@@ -1,11 +1,11 @@
-using TMPro;
+﻿using TMPro;
 using UnityEngine;
 
 #if NS_DG_TWEENING
 using DG.Tweening;
 #endif
 
-namespace KRG
+namespace _0G.Legacy
 {
     public static class TextMeshProUGUIExtensionMethods
     {

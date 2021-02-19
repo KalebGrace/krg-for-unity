@@ -1,4 +1,4 @@
-namespace KRG
+﻿namespace _0G.Legacy
 {
     /// <summary>
     /// Sorting layer name. Actual order determined in TagManager.asset.

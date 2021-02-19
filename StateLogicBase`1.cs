@@ -1,4 +1,4 @@
-namespace KRG
+﻿namespace _0G.Legacy
 {
     /// <summary>
     /// This is a typical base class implementation of IStateLogic.

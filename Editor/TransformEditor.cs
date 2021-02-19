@@ -1,7 +1,7 @@
-using UnityEditor;
+﻿using UnityEditor;
 using UnityEngine;
 
-namespace KRG
+namespace _0G.Legacy
 {
     [CanEditMultipleObjects, CustomEditor(typeof(Transform))]
     public class TransformEditor : TransformInspector

@@ -1,11 +1,11 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
-namespace KRG
+namespace _0G.Legacy
 {
     [CreateAssetMenu(
         fileName = "SomeWhere_EnvironmentChart.asset",
-        menuName = "KRG Scriptable Object/Environment Chart",
+        menuName = "0G Legacy Scriptable Object/Environment Chart",
         order = 514
     )]
     public class EnvironmentChart : Docket

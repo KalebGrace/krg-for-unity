@@ -1,7 +1,7 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
-namespace KRG
+namespace _0G.Legacy
 {
     public class EnvironmentManager : Manager, ISave, IOnDestroy
     {
@@ -30,14 +30,14 @@ namespace KRG
 
         // ISAVE METHODS
 
-        public virtual void OnSaving(SaveContext context, ref SaveFile sf)
+        public virtual void OnSaving(SaveContext context, ref KRG.SaveFile sf)
         {
             if (context != SaveContext.SaveFile) return;
 
             sf.teleporters = m_Teleporters.ToArray();
         }
 
-        public virtual void OnLoading(SaveContext context, SaveFile sf)
+        public virtual void OnLoading(SaveContext context, KRG.SaveFile sf)
         {
             if (context != SaveContext.SaveFile) return;
 

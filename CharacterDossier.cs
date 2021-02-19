@@ -1,10 +1,10 @@
-using UnityEngine;
+﻿using UnityEngine;
 
-namespace KRG
+namespace _0G.Legacy
 {
     [CreateAssetMenu(
         fileName = "SomeOne_CharacterDossier.asset",
-        menuName = "KRG Scriptable Object/Character Dossier",
+        menuName = "0G Legacy Scriptable Object/Character Dossier",
         order = 308
     )]
     public sealed class CharacterDossier : Docket

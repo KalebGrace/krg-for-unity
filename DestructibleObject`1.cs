@@ -1,7 +1,7 @@
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.Serialization;
 
-namespace KRG
+namespace _0G.Legacy
 {
     public abstract class DestructibleObject<TPart> : MonoBehaviour, IExplodable where TPart : IExplodable
     {

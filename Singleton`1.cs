@@ -1,4 +1,4 @@
-namespace KRG
+﻿namespace _0G.Legacy
 {
     /// <summary>
     /// Singleton base class using a variation of the Static Initialization implementation strategy.

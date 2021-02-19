@@ -1,7 +1,7 @@
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 
-namespace KRG
+namespace _0G.Legacy
 {
     [ExecuteAlways]
     public class EditorOnlyVisibility : MonoBehaviour

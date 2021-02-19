@@ -1,8 +1,8 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-namespace KRG
+namespace _0G.Legacy
 {
     public class ObjectManager : Manager, ILateUpdate, IOnDestroy
     {

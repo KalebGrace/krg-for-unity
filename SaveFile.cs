@@ -1,7 +1,8 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using _0G.Legacy;
 using UnityEngine;
 
-namespace KRG
+namespace KRG // for Easy Save 3 compatibility; actually _0G.Legacy
 {
     /// <summary>
     /// A SaveFile can be used for a checkpoint or hard save.

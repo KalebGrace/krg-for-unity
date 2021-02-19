@@ -1,6 +1,6 @@
-using System;
+﻿using System;
 
-namespace KRG
+namespace _0G.Legacy
 {
     [Serializable]
     public struct InputSignatureElement

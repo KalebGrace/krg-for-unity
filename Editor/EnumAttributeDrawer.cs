@@ -1,7 +1,7 @@
-using UnityEditor;
+﻿using UnityEditor;
 using UnityEngine;
 
-namespace KRG
+namespace _0G.Legacy
 {
     [CustomPropertyDrawer(typeof(EnumAttribute))]
     public class EnumAttributeDrawer : EnumGenericDrawer

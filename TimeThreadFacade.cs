@@ -1,10 +1,10 @@
-using System.Collections;
+﻿using System.Collections;
 
 #if NS_DG_TWEENING
 using DG.Tweening;
 #endif
 
-namespace KRG
+namespace _0G.Legacy
 {
     /// <summary>
     /// This is a fake TimeThread class to be used when the app is shutting down and the TimeManager has been destroyed.

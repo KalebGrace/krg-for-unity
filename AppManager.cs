@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -6,7 +6,7 @@ using UnityEngine.SceneManagement;
 using UnityEngine.Analytics;
 #endif
 
-namespace KRG
+namespace _0G.Legacy
 {
     public class AppManager : Manager, IOnApplicationQuit, IOnDestroy
     {

@@ -1,13 +1,13 @@
-using UnityEditor;
+﻿using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-namespace KRG
+namespace _0G.Legacy
 {
-    public static class KRGMenuReplacePrefabs
+    public static class MenuReplacePrefabs
     {
-        [MenuItem("KRG/Replace Prefabs", false, 1800)]
+        [MenuItem("0G/Legacy/Replace Prefabs", false, 1800)]
         public static void ReplacePrefabs()
         {
             PrefabReplacer[] prefabReplacers = Object.FindObjectsOfType<PrefabReplacer>();

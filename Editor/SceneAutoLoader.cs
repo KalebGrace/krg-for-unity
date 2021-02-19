@@ -1,14 +1,14 @@
-using UnityEditor;
+﻿using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
 
-namespace KRG
+namespace _0G.Legacy
 {
     /// <summary>
     /// Scene auto loader.
     /// http://wiki.unity3d.com/index.php/SceneAutoLoader (14:33, 15 October 2017)
     /// 
-    /// KRG MODIFICATIONS:
+    /// _0G.Legacy MODIFICATIONS:
     /// - EditorApplication.playmodeStateChanged has been changed to EditorApplication.playModeStateChanged.
     /// - OnPlayModeChanged() has been changed to OnPlayModeChanged(PlayModeStateChange pmsc).
     /// - The MasterScene default is now AppManager.masterSceneNameDefault + ".unity".

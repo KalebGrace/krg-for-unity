@@ -1,7 +1,7 @@
-using System.Linq;
+﻿using System.Linq;
 using UnityEngine;
 
-namespace KRG
+namespace _0G.Legacy
 {
     public static class GameObjectEM // GameObject extension methods
     {

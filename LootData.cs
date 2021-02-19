@@ -1,14 +1,14 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
-namespace KRG
+namespace _0G.Legacy
 {
     /// <summary>
     /// Loot data. Represents the conditions and probability of generating an item.
     /// </summary>
     [CreateAssetMenu(
         fileName = "SomeOne_LootData.asset",
-        menuName = "KRG Scriptable Object/Loot Data",
+        menuName = "0G Legacy Scriptable Object/Loot Data",
         order = 1215
     )]
     public class LootData : ScriptableObject

@@ -1,7 +1,7 @@
-using System;
+﻿using System;
 using UnityEngine;
 
-namespace KRG
+namespace _0G.Legacy
 {
     [Serializable]
     public struct Effector
@@ -97,7 +97,7 @@ namespace KRG
 
     public enum EffectorCondition
     {
-        // 0 ~ 99 reserved for KRG
+        // 0 ~ 99 reserved for _0G.Legacy
         None = 0,
         Use = 1,
         Equip = 2,

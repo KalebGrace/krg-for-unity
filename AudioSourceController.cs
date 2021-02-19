@@ -4,7 +4,7 @@
 using Fungus;
 #endif
 
-namespace KRG
+namespace _0G.Legacy
 {
     [RequireComponent(typeof(AudioSource))]
     public class AudioSourceController : MonoBehaviour

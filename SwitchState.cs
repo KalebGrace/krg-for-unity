@@ -1,6 +1,6 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
-namespace KRG
+namespace _0G.Legacy
 {
     [System.Serializable]
     public struct SwitchState

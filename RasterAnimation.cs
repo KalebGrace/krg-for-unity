@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using UnityEngine;
 using UnityEngine.Serialization;
@@ -11,11 +11,11 @@ using uGIF;
 using Sirenix.OdinInspector;
 #endif
 
-namespace KRG
+namespace _0G.Legacy
 {
     [CreateAssetMenu(
         fileName = "SomeOne_SomeState_RasterAnimation.asset",
-        menuName = "KRG Scriptable Object/Raster Animation",
+        menuName = "0G Legacy Scriptable Object/Raster Animation",
         order = 1801
     )]
     public class RasterAnimation : AnimationData

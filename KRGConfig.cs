@@ -1,15 +1,15 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 #if NS_DG_TWEENING
 using DG.Tweening;
 #endif
 
-namespace KRG
+namespace _0G.Legacy
 {
     public sealed partial class KRGConfig : ScriptableObject
     {
-        //If you get an error stating `KRG.KRGConfig' does not contain a definition for `RESOURCE_PATH',
+        //If you get an error stating `_0G.Legacy.KRGConfig' does not contain a definition for `RESOURCE_PATH',
         //create a KRGConfig.MyGame.cs file containing a partial class KRGConfig with the following constants in it:
 
 #if !KRG_CUSTOM_G
@@ -17,14 +17,14 @@ namespace KRG
         public const string RESOURCE_PATH = "KRGConfig";
 #endif
 
-        [Header("Global (KRG)")]
+        [Header("Global (0G Legacy)")]
 
         [SerializeField]
         string _applicationNamespace = "MyGame";
 
         public string ApplicationNamespace => _applicationNamespace;
 
-        [Header("Audio (KRG)")]
+        [Header("Audio (0G Legacy)")]
 
         [SerializeField]
         float _musicVolumeScale = 1;
@@ -36,7 +36,7 @@ namespace KRG
 
         public float SFXVolumeScale => _sfxVolumeScale;
 
-        [Header("Damage (KRG)")]
+        [Header("Damage (0G Legacy)")]
 
         [SerializeField]
         DamageValue _damageValuePrefab = default;
@@ -47,7 +47,7 @@ namespace KRG
 
         public HPBar hpBarPrefab { get { return _hpBarPrefab; } }
 
-        [Header("DOTween (KRG)")]
+        [Header("DOTween (0G Legacy)")]
 
         [SerializeField]
         bool _doTweenUseInitSettings = default;
@@ -72,7 +72,7 @@ namespace KRG
         public LogBehaviour doTweenLogBehaviour { get { return _doTweenLogBehaviour; } }
 #endif
 
-        [Header("Inventory (KRG)")]
+        [Header("Inventory (0G Legacy)")]
 
         public List<ItemData> ItemDataReferences = default;
 
@@ -81,7 +81,7 @@ namespace KRG
 
         public AutoMapPaletteData AutoMapPaletteData => _autoMapPaletteData;
 
-        [Header("Object (KRG)")]
+        [Header("Object (0G Legacy)")]
 
         [SerializeField]
         [Tooltip("Is there to be only a single player character at any time in this game?")]
@@ -98,10 +98,10 @@ namespace KRG
 
         public List<RasterAnimation> ExtraRasterAnimations = default;
 
-        [Header("Time (KRG)")]
+        [Header("Time (0G Legacy)")]
 
         [SerializeField]
-        string _timeThreadInstanceEnum = "KRG.TimeThreadInstance";
+        string _timeThreadInstanceEnum = "_0G.Legacy.TimeThreadInstance";
 
         public string timeThreadInstanceEnum { get { return _timeThreadInstanceEnum; } }
 

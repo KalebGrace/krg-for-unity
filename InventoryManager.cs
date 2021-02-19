@@ -1,9 +1,9 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using UnityEngine;
 
-namespace KRG
+namespace _0G.Legacy
 {
     public class InventoryManager : Manager, ISave, IOnDestroy
     {
@@ -331,7 +331,7 @@ namespace KRG
 
         // ISAVE METHODS
 
-        public virtual void OnSaving(SaveContext context, ref SaveFile sf)
+        public virtual void OnSaving(SaveContext context, ref KRG.SaveFile sf)
         {
             if (context != SaveContext.SaveFile) return;
 
@@ -347,7 +347,7 @@ namespace KRG
             sf.autoMaps = m_AutoMaps.Values.ToArray();
         }
 
-        public virtual void OnLoading(SaveContext context, SaveFile sf)
+        public virtual void OnLoading(SaveContext context, KRG.SaveFile sf)
         {
             if (context != SaveContext.SaveFile) return;
 

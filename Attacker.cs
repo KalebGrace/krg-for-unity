@@ -1,8 +1,8 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Serialization;
 
-namespace KRG
+namespace _0G.Legacy
 {
     /// <summary>
     /// Attacker: Attacker

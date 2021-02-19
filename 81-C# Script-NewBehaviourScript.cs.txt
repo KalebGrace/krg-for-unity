@@ -1,6 +1,7 @@
-﻿using KRG;
 using System.Collections;
 using System.Collections.Generic;
+using _0G;
+using _0G.Legacy;
 using UnityEngine;
 
 namespace MyGame

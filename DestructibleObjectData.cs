@@ -1,11 +1,11 @@
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.Serialization;
 
-namespace KRG
+namespace _0G.Legacy
 {
     [CreateAssetMenu(
         fileName = "SomeObject_DestructibleObjectData.asset",
-        menuName = "KRG Scriptable Object/Destructible Object Data",
+        menuName = "0G Legacy Scriptable Object/Destructible Object Data",
         order = 405
     )]
     public class DestructibleObjectData : ScriptableObject

@@ -1,8 +1,8 @@
-using System;
+﻿using System;
 using UnityEngine;
 using UnityEngine.Serialization;
 
-namespace KRG
+namespace _0G.Legacy
 {
     [Serializable]
     public class EnumGeneric
@@ -127,8 +127,8 @@ namespace KRG
             if (t == null)
             {
                 var parts = enumType.Split('.');
-                string enumTypeKRG = "KRG." + parts[parts.Length - 1];
-                t = System.Reflection.Assembly.GetExecutingAssembly().GetType(enumTypeKRG);
+                string enumType0G = "_0G.Legacy." + parts[parts.Length - 1];
+                t = System.Reflection.Assembly.GetExecutingAssembly().GetType(enumType0G);
                 G.U.Assert(t != null, string.Format("The type \"{0}\" cannot be found.", enumType));
             }
             return t;

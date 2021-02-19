@@ -1,6 +1,6 @@
-using UnityEngine;
+﻿using UnityEngine;
 
-namespace KRG
+namespace _0G.Legacy
 {
     /// <summary>
     /// Singleton MonoBehaviour base class. To be concretely derived exactly one level.

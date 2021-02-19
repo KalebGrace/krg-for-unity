@@ -1,7 +1,7 @@
-using System;
+﻿using System;
 using UnityEngine;
 
-namespace KRG
+namespace _0G.Legacy
 {
     public class EnumAttribute : PropertyAttribute
     {

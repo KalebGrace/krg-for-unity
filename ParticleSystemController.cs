@@ -1,7 +1,7 @@
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.Serialization;
 
-namespace KRG
+namespace _0G.Legacy
 {
     // IMPORTANT: consider using VFXBasePrefab instead
 

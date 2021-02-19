@@ -1,4 +1,4 @@
-namespace KRG
+﻿namespace _0G.Legacy
 {
     public interface IFacingDirection : IBodyComponent
     {

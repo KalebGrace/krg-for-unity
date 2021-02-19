@@ -1,7 +1,7 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
-namespace KRG
+namespace _0G.Legacy
 {
     public class TimeTrigger : System.IComparable<TimeTrigger>
     {

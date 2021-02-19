@@ -1,6 +1,6 @@
-using UnityEngine;
+﻿using UnityEngine;
 
-namespace KRG
+namespace _0G.Legacy
 {
     [RequireComponent(typeof(Collider))]
     public abstract class ColliderController : MonoBehaviour, IBodyComponent

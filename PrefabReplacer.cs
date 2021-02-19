@@ -1,8 +1,8 @@
-using UnityEngine;
+﻿using UnityEngine;
 
-namespace KRG
+namespace _0G.Legacy
 {
-    // to be used with KRGMenuReplacePrefabs
+    // to be used with MenuReplacePrefabs
     public class PrefabReplacer : MonoBehaviour
     {
         [SerializeField]

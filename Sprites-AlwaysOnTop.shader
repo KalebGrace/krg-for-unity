@@ -1,4 +1,4 @@
-// Upgrade NOTE: replaced 'mul(UNITY_MATRIX_MVP,*)' with 'UnityObjectToClipPos(*)'
+﻿// Upgrade NOTE: replaced 'mul(UNITY_MATRIX_MVP,*)' with 'UnityObjectToClipPos(*)'
 
 Shader "Sprites/AlwaysOnTop"
 {
@@ -13,7 +13,7 @@ Shader "Sprites/AlwaysOnTop"
 	{
 		Tags
 		{ 
-			"Queue"="Overlay" //KRG Change 1: Transparent -> Overlay
+			"Queue"="Overlay" //_0G.Legacy Change 1: Transparent -> Overlay
 			"IgnoreProjector"="True" 
 			"RenderType"="Transparent" 
 			"PreviewType"="Plane"
@@ -22,7 +22,7 @@ Shader "Sprites/AlwaysOnTop"
 
 		Cull Off
 		Lighting Off
-		ZTest Always //KRG Change 2: LEqual (default) -> Always
+		ZTest Always //_0G.Legacy Change 2: LEqual (default) -> Always
 		ZWrite Off
 		Fog { Mode Off }
 		Blend SrcAlpha OneMinusSrcAlpha

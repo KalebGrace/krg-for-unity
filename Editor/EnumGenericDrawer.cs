@@ -1,7 +1,7 @@
-using UnityEditor;
+﻿using UnityEditor;
 using UnityEngine;
 
-namespace KRG
+namespace _0G.Legacy
 {
     [CustomPropertyDrawer(typeof(EnumGeneric))]
     public class EnumGenericDrawer : PropertyDrawer
@@ -38,7 +38,7 @@ namespace KRG
         protected virtual bool SwapEnum(ref string enumType)
         {
             string ans = G.config.ApplicationNamespace;
-            enumType = enumType.Replace("KRG.", ans + ".");
+            enumType = enumType.Replace("_0G.Legacy.", ans + ".");
             return true;
         }
 

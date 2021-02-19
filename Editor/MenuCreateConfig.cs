@@ -1,11 +1,11 @@
-using UnityEditor;
+﻿using UnityEditor;
 using UnityEngine;
 
-namespace KRG
+namespace _0G.Legacy
 {
-    public static class KRGMenuCreateConfig
+    public static class MenuCreateConfig
     {
-        [MenuItem("KRG/Create KRGConfig", false, 1)]
+        [MenuItem("0G/Legacy/Create KRGConfig", false, 1)]
         public static void CreateConfig()
         {
             KRGConfig config;

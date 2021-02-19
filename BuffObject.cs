@@ -1,10 +1,10 @@
 ﻿using UnityEngine;
 
-namespace KRG
+namespace _0G.Legacy
 {
     [CreateAssetMenu(
         fileName = "SomeBuff_Buff.asset",
-        menuName = "KRG Scriptable Object/Buff",
+        menuName = "0G Legacy Scriptable Object/Buff",
         order = 221
     )]
     public class BuffObject : ScriptableObject

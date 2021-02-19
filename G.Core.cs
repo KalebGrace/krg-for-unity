@@ -1,6 +1,6 @@
-using UnityEngine;
+﻿using UnityEngine;
 
-namespace KRG
+namespace _0G.Legacy
 {
     /// <summary>
     /// G.Core.cs is a partial class of G (G.cs).
@@ -65,7 +65,7 @@ namespace KRG
             if (m_Config != null) Resources.UnloadAsset(m_Config);
         }
 
-        // KRG METHODS
+        // _0G.Legacy METHODS
 
         private static KRGConfig LoadConfig()
         {
@@ -77,7 +77,7 @@ namespace KRG
                 if (m_Config == null)
                 {
                     G.U.Err("Please ensure a KRGConfig is located in a Resources folder." +
-                        " You may use the KRG menu to create a new one if needed.");
+                        " You may use the 0G > Legacy menu to create a new one if needed.");
                 }
             }
             //return the cached config

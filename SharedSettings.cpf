@@ -807,7 +807,16 @@
     ],
     "sharedIgnoredStackEntries": [
         {
-            "namespaceName": "KRG",
+            "namespaceName": "_0G.Legacy",
+            "className": "G",
+            "methodName": "Err",
+            "name": "Untitled",
+            "isEnabled": true,
+            "collapsed": false,
+            "itemGUID": "233af2f0-7c41-403b-bb65-94861f194d04"
+        },
+        {
+            "namespaceName": "_0G.Legacy",
             "className": "G+U",
             "methodName": "<Any>",
             "name": "Untitled",
@@ -817,21 +826,12 @@
         },
         {
             "namespaceName": "<Any>",
-            "className": "KRG.U",
+            "className": "_0G.Legacy.U",
             "methodName": "<Any>",
             "name": "Untitled",
             "isEnabled": true,
             "collapsed": false,
             "itemGUID": "d042973e-03b3-4725-8126-37f256380492"
-        },
-        {
-            "namespaceName": "KRG",
-            "className": "G",
-            "methodName": "Err",
-            "name": "Untitled",
-            "isEnabled": true,
-            "collapsed": false,
-            "itemGUID": "233af2f0-7c41-403b-bb65-94861f194d04"
         }
     ],
     "sharedIgnoredLogEntries": [

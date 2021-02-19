@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -6,7 +6,7 @@ using UnityEngine.UI;
 using DG.Tweening;
 #endif
 
-namespace KRG
+namespace _0G.Legacy
 {
     public class UIManager : Manager
     {

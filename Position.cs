@@ -1,6 +1,6 @@
-using UnityEngine;
+﻿using UnityEngine;
 
-namespace KRG
+namespace _0G.Legacy
 {
     //TODO: Could possibly be renamed Vector3P or something.
     public class Position

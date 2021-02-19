@@ -1,7 +1,7 @@
-using System.IO;
+﻿using System.IO;
 using UnityEditor;
 
-namespace KRG
+namespace _0G.Legacy
 {
     public static class CreateAssetBundles
     {

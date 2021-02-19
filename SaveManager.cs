@@ -1,8 +1,9 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
+using KRG;
 using UnityEngine;
 
-namespace KRG
+namespace _0G.Legacy
 {
     public class SaveManager : Manager
     {

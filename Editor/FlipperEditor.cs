@@ -1,6 +1,6 @@
-using UnityEditor;
+﻿using UnityEditor;
 
-namespace KRG
+namespace _0G.Legacy
 {
     [CustomEditor(typeof(Flipper))]
     public class FlipperEditor : Editor

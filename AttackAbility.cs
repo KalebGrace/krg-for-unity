@@ -1,8 +1,8 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Serialization;
 
-namespace KRG
+namespace _0G.Legacy
 {
     /// <summary>
     /// AttackAbility: Attack Ability
@@ -18,7 +18,7 @@ namespace KRG
     /// </summary>
     [CreateAssetMenu(
         fileName = "SomeOne_SomeAttack_AttackAbility.asset",
-        menuName = "KRG Scriptable Object/Attack Ability",
+        menuName = "0G Legacy Scriptable Object/Attack Ability",
         order = 120
     )]
     public class AttackAbility : ScriptableObject

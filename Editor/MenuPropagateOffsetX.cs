@@ -1,11 +1,11 @@
-using UnityEditor;
+﻿using UnityEditor;
 using UnityEngine;
 
-namespace KRG
+namespace _0G.Legacy
 {
-    public static class KRGMenuPropagateOffsetX
+    public static class MenuPropagateOffsetX
     {
-        [MenuItem("KRG/Propagate Offset X", false, 1001)]
+        [MenuItem("0G/Legacy/Propagate Offset X", false, 1001)]
         public static void PropagateOffsetX()
         {
             Transform tfRoot = Selection.activeTransform;

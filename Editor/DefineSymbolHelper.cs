@@ -1,6 +1,6 @@
-using UnityEditor;
+﻿using UnityEditor;
 
-namespace KRG
+namespace _0G.Legacy
 {
     public static class DefineSymbolHelper
     {

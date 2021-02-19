@@ -1,15 +1,15 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Serialization;
 
-namespace KRG
+namespace _0G.Legacy
 {
     /// <summary>
     /// Item data. Represents the item data, including pickup, effects, and physical GameObject.
     /// </summary>
     [CreateAssetMenu(
         fileName = "SomeItem_ItemData.asset",
-        menuName = "KRG Scriptable Object/Item Data",
+        menuName = "0G Legacy Scriptable Object/Item Data",
         order = 920
     )]
     public class ItemData : ScriptableObject
@@ -86,7 +86,7 @@ namespace KRG
 
         public string Instruction => instruction;
 
-        public bool IsKeyItem => ItemType == (int) KRG.ItemType.KeyItem;
+        public bool IsKeyItem => ItemType == (int) _0G.Legacy.ItemType.KeyItem;
 
         public int ItemID => m_ItemID;
 

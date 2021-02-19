@@ -1,11 +1,11 @@
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.Serialization;
 
 #if NS_DG_TWEENING
 using DG.Tweening;
 #endif
 
-namespace KRG
+namespace _0G.Legacy
 {
     public class DestructibleObjectPart : MonoBehaviour, IDestroyedEvent<DestructibleObjectPart>, IDestructibleObjectData, IExplodable
     {

@@ -1,7 +1,7 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
-namespace KRG
+namespace _0G.Legacy
 {
     public class RasterAnimationState
     {

@@ -1,8 +1,8 @@
-using System.Linq;
+﻿using System.Linq;
 using UnityEditor;
 using UnityEngine;
 
-namespace KRG
+namespace _0G.Legacy
 {
     [CustomPropertyDrawer(typeof(BoolObject), true)]
     public class BoolObjectDrawer : PropertyDrawer

@@ -1,7 +1,7 @@
-using System;
+﻿using System;
 using UnityEngine;
 
-namespace KRG
+namespace _0G.Legacy
 {
     [ExecuteAlways]
     public sealed class GameObjectBody : MonoBehaviour, ICharacterDebugText

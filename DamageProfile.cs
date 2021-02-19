@@ -1,12 +1,12 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Serialization;
 
-namespace KRG
+namespace _0G.Legacy
 {
     [CreateAssetMenu(
         fileName = "SomeOne_DamageProfile.asset",
-        menuName = "KRG Scriptable Object/Damage Profile",
+        menuName = "0G Legacy Scriptable Object/Damage Profile",
         order = 401
     )]
     public class DamageProfile : ScriptableObject

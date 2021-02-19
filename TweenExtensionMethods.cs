@@ -1,8 +1,8 @@
-#if NS_DG_TWEENING
+﻿#if NS_DG_TWEENING
 using DG.Tweening;
 #endif
 
-namespace KRG
+namespace _0G.Legacy
 {
     public static class TweenExtensionMethods
     {
