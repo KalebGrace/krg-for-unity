@@ -12,7 +12,7 @@ namespace _0G.Legacy
         /// <summary>
         /// The version of G.
         /// </summary>
-        public const int version = 39;
+        public const int version = 40;
 
         /// <summary>
         /// Fires during G's Awake method.
